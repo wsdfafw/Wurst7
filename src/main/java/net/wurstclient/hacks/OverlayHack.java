@@ -25,7 +25,7 @@ public final class OverlayHack extends Hack implements RenderListener
 {
 	public OverlayHack()
 	{
-		super("Overlay");
+		super("挖堀进度");
 		setCategory(Category.RENDER);
 	}
 	

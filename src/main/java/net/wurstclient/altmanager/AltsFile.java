@@ -46,7 +46,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't load " + path.getFileName());
+			System.out.println("无法载入 " + path.getFileName());
 			e.printStackTrace();
 			
 			renameCorrupted();
@@ -62,12 +62,12 @@ public final class AltsFile
 			Path newPath =
 				path.resolveSibling("!CORRUPTED_" + path.getFileName());
 			Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-			System.out.println("Renamed to " + newPath.getFileName());
+			System.out.println("重命名至 " + newPath.getFileName());
 			
 		}catch(IOException e2)
 		{
 			System.out.println(
-				"Couldn't rename corrupted file " + path.getFileName());
+				"无法重命名当前的文件 " + path.getFileName());
 			e2.printStackTrace();
 		}
 	}
@@ -104,8 +104,8 @@ public final class AltsFile
 	
 	private static Alt loadAlt(String email, JsonObject jsonAlt)
 	{
-		String password = JsonUtils.getAsString(jsonAlt.get("password"), "");
-		String name = JsonUtils.getAsString(jsonAlt.get("name"), "");
+		String password = JsonUtils.getAsString(jsonAlt.get("密码"), "");
+		String name = JsonUtils.getAsString(jsonAlt.get("名字"), "");
 		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("starred"), false);
 		
 		return new Alt(email, password, name, starred);
@@ -124,7 +124,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't save " + path.getFileName());
+			System.out.println("无法保存 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}
@@ -137,8 +137,8 @@ public final class AltsFile
 		{
 			JsonObject jsonAlt = new JsonObject();
 			
-			jsonAlt.addProperty("password", alt.getPassword());
-			jsonAlt.addProperty("name", alt.getName());
+			jsonAlt.addProperty("密码", alt.getPassword());
+			jsonAlt.addProperty("名字", alt.getName());
 			jsonAlt.addProperty("starred", alt.isStarred());
 			
 			json.add(alt.getEmail(), jsonAlt);

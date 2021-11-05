@@ -22,32 +22,28 @@ import net.wurstclient.settings.EnumSetting;
 @DontBlock
 public final class HackListOtf extends OtherFeature
 {
-	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"\u00a7lAuto\u00a7r mode renders the whole list if it\n"
-			+ "fits onto the screen.\n"
-			+ "\u00a7lCount\u00a7r mode only renders the number\n"
-			+ "of active hacks.\n"
-			+ "\u00a7lHidden\u00a7r mode renders nothing.",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
+		"§l自动§r 模式 将会展示全部但如果\n显示不全将会显示数量.\n§l数量§r 模式 只展示数字\n已激活的功能.\n§l隐藏§r 模式 任何东西不显示",
 		Mode.values(), Mode.AUTO);
 	
 	private final EnumSetting<Position> position =
-		new EnumSetting<>("Position", Position.values(), Position.LEFT);
+		new EnumSetting<>("位置", Position.values(), Position.LEFT);
 	
 	private final EnumSetting<SortBy> sortBy =
-		new EnumSetting<>("Sort by", SortBy.values(), SortBy.NAME);
+		new EnumSetting<>("排序方式", SortBy.values(), SortBy.NAME);
 	
 	private final CheckboxSetting revSort =
-		new CheckboxSetting("Reverse sorting", false);
+		new CheckboxSetting("反向排序", false);
 	
 	private final CheckboxSetting animations =
-		new CheckboxSetting("Animations", true);
+		new CheckboxSetting("动画", true);
 	
 	private SortBy prevSortBy;
 	private Boolean prevRevSort;
 	
 	public HackListOtf()
 	{
-		super("HackList", "Shows a list of active hacks on the screen.\n"
+		super("黑客列表", "在屏幕上显示活动黑客列表.\n"
 			+ "The \u00a7lLeft\u00a7r position should only be used while TabGui is\n"
 			+ "disabled.");
 		
@@ -107,11 +103,11 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum Mode
 	{
-		AUTO("Auto"),
+		AUTO("自动"),
 		
-		COUNT("Count"),
+		COUNT("数量"),
 		
-		HIDDEN("Hidden");
+		HIDDEN("隐藏");
 		
 		private final String name;
 		
@@ -129,9 +125,9 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum Position
 	{
-		LEFT("Left"),
+		LEFT("左边"),
 		
-		RIGHT("Right");
+		RIGHT("右边");
 		
 		private final String name;
 		
@@ -149,9 +145,9 @@ public final class HackListOtf extends OtherFeature
 	
 	public static enum SortBy
 	{
-		NAME("Name", (a, b) -> a.getName().compareToIgnoreCase(b.getName())),
+		NAME("名字", (a, b) -> a.getName().compareToIgnoreCase(b.getName())),
 		
-		WIDTH("Width", Comparator.comparingInt(
+		WIDTH("长度", Comparator.comparingInt(
 			h -> WurstClient.MC.textRenderer.getWidth(h.getRenderName())));
 		
 		private final String name;

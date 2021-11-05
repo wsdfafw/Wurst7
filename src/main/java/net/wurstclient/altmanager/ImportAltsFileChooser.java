@@ -27,9 +27,9 @@ public final class ImportAltsFileChooser extends JFileChooser
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		fileChooser.addChoosableFileFilter(
-			new FileNameExtensionFilter("TXT file (username:password)", "txt"));
+			new FileNameExtensionFilter("TXT 文件 (username:password)", "txt"));
 		fileChooser.addChoosableFileFilter(
-			new FileNameExtensionFilter("JSON file", "json"));
+			new FileNameExtensionFilter("JSON 文件", "json"));
 		
 		if(fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION)
 			return;

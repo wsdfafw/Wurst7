@@ -31,13 +31,7 @@ public final class BindsCmd extends Command
 {
 	public BindsCmd()
 	{
-		super("binds", "Allows you to manage keybinds through the chat.",
-			".binds add <key> <hacks>", ".binds add <key> <commands>",
-			".binds remove <key>", ".binds list [<page>]",
-			".binds load-profile <file>", ".binds save-profile <file>",
-			".binds list-profiles [<page>]", ".binds remove-all",
-			".binds reset", "Multiple hacks/commands must be separated by ';'.",
-			"Profiles are saved in '.minecraft/wurst/keybinds'.");
+		super("binds", "可以让你管理绑定的键位在聊天栏处", ".binds add <按键名> <功能名>(增加功能快捷键)", ".binds add <按键名> <指令>(增加指令快捷键)", ".binds remove <按键>(删除与某个键相关的快捷键)", ".binds list [<页数>](现用的快捷键的键位)", ".binds load-profile <预设名>(加载现有的某一个预设)", ".binds save-profile <预设名>(将现用的快捷键设置另存为预设)", ".binds list-profiles [<页数>](查看现有的预设)", ".binds remove-all(删除所有快捷键)", ".binds reset(恢复默认快捷键)", "需要设置多个[功能/指令]时,\n用 ';'符号分隔,", "预设保存路径'.minecraft/wurst/keybinds'.");
 	}
 	
 	@Override
@@ -96,7 +90,7 @@ public final class BindsCmd extends Command
 		String commands = String.join(" ", cmdArgs);
 		
 		WURST.getKeybinds().add(key, commands);
-		ChatUtils.message("Keybind set: " + displayKey + " -> " + commands);
+		ChatUtils.message("绑定设置为: " + displayKey + " -> " + commands);
 	}
 	
 	private void remove(String[] args) throws CmdException
@@ -109,10 +103,10 @@ public final class BindsCmd extends Command
 		
 		String commands = WURST.getKeybinds().getCommands(key);
 		if(commands == null)
-			throw new CmdError("Nothing to remove.");
+			throw new CmdError("没有什么可以移除的.");
 		
 		WURST.getKeybinds().remove(key);
-		ChatUtils.message("Keybind removed: " + displayKey + " -> " + commands);
+		ChatUtils.message("按键移除: " + displayKey + " -> " + commands);
 	}
 	
 	private String parseKey(String displayKey) throws CmdSyntaxError
@@ -130,7 +124,7 @@ public final class BindsCmd extends Command
 			
 		}catch(IllegalArgumentException e)
 		{
-			throw new CmdSyntaxError("Unknown key: " + displayKey);
+			throw new CmdSyntaxError("未知的按键: " + displayKey);
 		}
 	}
 	
@@ -145,16 +139,16 @@ public final class BindsCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("Invalid page: " + page);
+			throw new CmdSyntaxError("无效的页码: " + page);
 		
-		String total = "Total: " + binds.size() + " keybind";
+		String total = "合计: " + binds.size() + " 绑定键位";
 		total += binds.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, binds.size());
 		
-		ChatUtils.message("Keybind list (page " + page + "/" + pages + ")");
+		ChatUtils.message("键位绑定列表 (页数 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(binds.get(i).toString());
 	}
@@ -165,7 +159,7 @@ public final class BindsCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[1]))
-			throw new CmdSyntaxError("Not a number: " + args[1]);
+			throw new CmdSyntaxError("不是一个数字: " + args[1]);
 		
 		return Integer.parseInt(args[1]);
 	}
@@ -173,13 +167,13 @@ public final class BindsCmd extends Command
 	private void removeAll()
 	{
 		WURST.getKeybinds().removeAll();
-		ChatUtils.message("All keybinds removed.");
+		ChatUtils.message("所有键位绑定已经移除.");
 	}
 	
 	private void reset()
 	{
 		WURST.getKeybinds().setKeybinds(KeybindList.DEFAULT_KEYBINDS);
-		ChatUtils.message("All keybinds reset to defaults.");
+		ChatUtils.message("所有键位绑定已重设为默认值.");
 	}
 	
 	private void loadProfile(String[] args) throws CmdException
@@ -192,22 +186,22 @@ public final class BindsCmd extends Command
 		try
 		{
 			WURST.getKeybinds().loadProfile(name);
-			ChatUtils.message("Keybinds loaded: " + name);
+			ChatUtils.message("键位绑定载入: " + name);
 			
 		}catch(NoSuchFileException e)
 		{
-			throw new CmdError("Profile '" + name + "' doesn't exist.");
+			throw new CmdError("档案 '" + name + "' 不存在.");
 			
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
 			throw new CmdError(
-				"Profile '" + name + "' is corrupted: " + e.getMessage());
+				"档案 '" + name + "' 是不正确的: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("Couldn't load profile: " + e.getMessage());
+			throw new CmdError("无法载入: " + e.getMessage());
 		}
 	}
 	
@@ -221,12 +215,12 @@ public final class BindsCmd extends Command
 		try
 		{
 			WURST.getKeybinds().saveProfile(name);
-			ChatUtils.message("Keybinds saved: " + name);
+			ChatUtils.message("按键保存: " + name);
 			
 		}catch(IOException | JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("Couldn't save profile: " + e.getMessage());
+			throw new CmdError("无法保存档案: " + e.getMessage());
 		}
 	}
 	
@@ -250,9 +244,9 @@ public final class BindsCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("Invalid page: " + page);
+			throw new CmdSyntaxError("无效的页码: " + page);
 		
-		String total = "Total: " + files.size() + " profile";
+		String total = "合计: " + files.size() + " 档案";
 		total += files.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
@@ -260,7 +254,7 @@ public final class BindsCmd extends Command
 		int end = Math.min(page * 8, files.size());
 		
 		ChatUtils
-			.message("Keybind profile list (page " + page + "/" + pages + ")");
+			.message("键位档案列表 (页数 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

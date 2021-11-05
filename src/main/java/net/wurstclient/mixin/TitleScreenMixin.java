@@ -56,14 +56,14 @@ public abstract class TitleScreenMixin extends Screen
 		}
 		
 		if(realmsButton == null)
-			throw new IllegalStateException("Couldn't find realms button!");
+			throw new IllegalStateException("找不到领域按钮!");
 		
 		// make Realms button smaller
 		realmsButton.setWidth(98);
 		
 		// add AltManager button
 		addDrawableChild(altsButton = new ButtonWidget(width / 2 + 2,
-			realmsButton.y, 98, 20, new LiteralText("Alt Manager"),
+			realmsButton.y, 98, 20, new LiteralText("账户管理器"),
 			b -> client.setScreen(new AltManagerScreen(this,
 				WurstClient.INSTANCE.getAltManager()))));
 	}

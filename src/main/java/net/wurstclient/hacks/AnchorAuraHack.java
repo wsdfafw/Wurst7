@@ -58,109 +58,74 @@ import net.wurstclient.util.RotationUtils.Rotation;
 @SearchTags({"anchor aura", "CrystalAura", "crystal aura"})
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
+	private final SliderSetting range = new SliderSetting("范围",
 		"Determines how far AnchorAura will reach\n"
 			+ "to place, charge and detonate anchors.",
 		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting autoPlace =
-		new CheckboxSetting("Auto-place anchors",
-			"When enabled, AnchorAura will automatically\n"
-				+ "place anchors near valid entities.\n"
-				+ "When disabled, AnchorAura will only charge\n"
-				+ "and detonate manually placed anchors.",
+		new CheckboxSetting("自动放置的锚",
+			"",
 			true);
 	
 	private final EnumSetting<FaceBlocks> faceBlocks =
-		new EnumSetting<>("Face anchors",
-			"Whether or not AnchorAura should face\n"
-				+ "the correct direction when placing and\n"
-				+ "right-clicking respawn anchors.\n\n"
-				+ "Slower but can help with anti-cheat\n" + "plugins.",
+		new EnumSetting<>("面锚",
+			"",
 			FaceBlocks.values(), FaceBlocks.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight",
-		"Ensures that you don't reach through\n"
-			+ "blocks when placing or right-clicking\n" + "respawn anchors.\n\n"
-			+ "Slower but can help with anti-cheat\n" + "plugins.",
+		"检查视线",
+		"",
 		false);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("Take items from",
+		new EnumSetting<>("从下列物品中提取",
 			"Where to look for respawn anchors\n" + "and glowstone.",
 			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final CheckboxSetting filterPlayers =
-		new CheckboxSetting("Filter players",
-			"Won't target other players\n" + "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除玩家",
+			"",
 			false);
 	
 	private final CheckboxSetting filterMonsters =
-		new CheckboxSetting("Filter monsters",
-			"Won't target zombies, creepers, etc.\n"
-				+ "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除怪物",
+			"",
 			true);
 	
 	private final CheckboxSetting filterAnimals =
-		new CheckboxSetting("Filter animals",
-			"Won't target pigs, cows, etc.\n" + "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除动物",
+			"",
 			true);
 	
 	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("Filter traders",
-			"Won't target villagers, wandering traders, etc.\n"
-				+ "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除交易者",
+			"",
 			true);
 	
 	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("Filter golems",
-			"Won't target iron golems,\n" + "snow golems and shulkers.\n"
-				+ "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除魔像",
+			"",
 			true);
 	
 	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"Filter invisible",
-		"Won't target invisible entities\n" + "when auto-placing anchors.\n\n"
-			+ "They can still take damage if\n"
-			+ "they get too close to a valid\n"
-			+ "target or an existing anchor.",
+		"排除隐形",
+		"",
 		false);
 	
 	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"Filter named",
-		"Won't target name-tagged entities\n" + "when auto-placing anchors.\n\n"
-			+ "They can still take damage if\n"
-			+ "they get too close to a valid\n"
-			+ "target or an existing anchor.",
+		"排除命名",
+		"",
 		false);
 	
 	private final CheckboxSetting filterStands =
-		new CheckboxSetting("Filter armor stands",
-			"Won't target armor stands.\n" + "when auto-placing anchors.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing anchor.",
+		new CheckboxSetting("排除装甲架",
+			"",
 			true);
 	
 	public AnchorAuraHack()
 	{
-		super("AnchorAura");
+		super("重生锚光环");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);

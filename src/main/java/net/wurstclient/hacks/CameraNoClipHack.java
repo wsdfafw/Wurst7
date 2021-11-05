@@ -16,7 +16,7 @@ public final class CameraNoClipHack extends Hack
 {
 	public CameraNoClipHack()
 	{
-		super("CameraNoClip");
+		super("视角穿墙");
 		
 		setCategory(Category.RENDER);
 	}

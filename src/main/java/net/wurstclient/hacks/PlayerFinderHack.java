@@ -43,7 +43,7 @@ public final class PlayerFinderHack extends Hack
 	
 	public PlayerFinderHack()
 	{
-		super("PlayerFinder");
+		super("雷声漏洞");
 		setCategory(Category.RENDER);
 	}
 	

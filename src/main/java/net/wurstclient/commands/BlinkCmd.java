@@ -17,7 +17,7 @@ public final class BlinkCmd extends Command
 {
 	public BlinkCmd()
 	{
-		super("blink", "Enables, disables or cancels Blink.", ".blink [on|off]",
+		super("blink", "开启, 关闭 或 取消 Blink.", ".blink [on|off]",
 			".blink cancel");
 	}
 	
@@ -57,7 +57,7 @@ public final class BlinkCmd extends Command
 	private void cancel(BlinkHack blinkHack) throws CmdException
 	{
 		if(!blinkHack.isEnabled())
-			throw new CmdError("Cannot cancel, Blink is already turned off!");
+			throw new CmdError("无法取消，Blink 已关闭!");
 		
 		blinkHack.cancel();
 	}

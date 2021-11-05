@@ -55,10 +55,10 @@ public final class AutoFarmHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting replant =
-		new CheckboxSetting("Replant", true);
+		new CheckboxSetting("补种", true);
 	
 	private final HashMap<BlockPos, Item> plants = new HashMap<>();
 	
@@ -75,7 +75,7 @@ public final class AutoFarmHack extends Hack
 	
 	public AutoFarmHack()
 	{
-		super("AutoFarm");
+		super("自动农场");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -397,12 +397,12 @@ public final class AutoFarmHack extends Hack
 		
 		for(int i = 0; i < sides.length; i++)
 		{
-			// check if neighbor can be right clicked
+			// 检查邻居是否可以被右键点击
 			BlockPos neighbor = pos.offset(sides[i]);
 			if(!BlockUtils.canBeClicked(neighbor))
 				continue;
 			
-			// check line of sight
+			// 检查视线
 			BlockState neighborState = BlockUtils.getState(neighbor);
 			VoxelShape neighborShape =
 				neighborState.getOutlineShape(MC.world, neighbor);

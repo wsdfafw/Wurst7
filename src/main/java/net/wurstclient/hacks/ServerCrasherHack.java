@@ -27,7 +27,7 @@ public final class ServerCrasherHack extends Hack
 {
 	public ServerCrasherHack()
 	{
-		super("ServerCrasher");
+		super("崩服");
 		
 		setCategory(Category.ITEMS);
 	}
@@ -37,7 +37,7 @@ public final class ServerCrasherHack extends Hack
 	{
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
 			return;
 		}

@@ -29,7 +29,7 @@ public final class TrollPotionHack extends Hack
 	
 	public TrollPotionHack()
 	{
-		super("TrollPotion");
+		super("恶作剧药水");
 		setCategory(Category.ITEMS);
 		addSetting(potionType);
 	}
@@ -40,7 +40,7 @@ public final class TrollPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
 			return;
 		}

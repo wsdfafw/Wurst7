@@ -84,7 +84,7 @@ public final class ClickGui
 			
 		windows.addAll(windowMap.values());
 		
-		Window uiSettings = new Window("UI Settings");
+		Window uiSettings = new Window("UI设置");
 		uiSettings.add(new FeatureButton(WURST.getOtfs().wurstLogoOtf));
 		uiSettings.add(new FeatureButton(WURST.getOtfs().hackListOtf));
 		ClickGuiHack clickGuiHack = WURST.getHax().clickGuiHack;
@@ -127,7 +127,7 @@ public final class ClickGui
 			
 		}catch(Exception e)
 		{
-			System.out.println("Failed to load " + windowsFile.getFileName());
+			System.out.println("载入失败 " + windowsFile.getFileName());
 			e.printStackTrace();
 			
 			saveWindows();
@@ -186,7 +186,7 @@ public final class ClickGui
 			
 		}catch(IOException e)
 		{
-			System.out.println("Failed to save " + windowsFile.getFileName());
+			System.out.println("保存失败 " + windowsFile.getFileName());
 			e.printStackTrace();
 		}
 	}

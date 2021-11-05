@@ -32,14 +32,7 @@ public final class TooManyHaxCmd extends Command
 	public TooManyHaxCmd()
 	{
 		super("toomanyhax",
-			"Allows to manage which hacks should be blocked\n"
-				+ "when TooManyHax is enabled.",
-			".toomanyhax block <feature>", ".toomanyhax unblock <feature>",
-			".toomanyhax block-all", ".toomanyhax unblock-all",
-			".toomanyhax list [<page>]", ".toomanyhax load-profile <file>",
-			".toomanyhax save-profile <file>",
-			".toomanyhax list-profiles [<page>]",
-			"Profiles are saved in '.minecraft/wurst/toomanyhax'.");
+			"当TooManyHax被启用时，\n一些功能会被暂时性地禁用,\n你可以在此处设置将要禁用的功能", ".toomanyhax block <功能名>\n禁用某功能", ".toomanyhax unblock <功能名>\n取消禁用某功能", ".toomanyhax block-all\n禁用所有功能", ".toomanyhax unblock-all\n取消禁用所有功能", ".toomanyhax list [<页数>]\n显示禁用列表", ".toomanyhax load-profile <预设名>\n加载预设", ".toomanyhax save-profile <预设名>\n设置预设", ".toomanyhax list-profiles [<页数>]\n预设列表", "预设储存路径'.minecraft/wurst/toomanyhax'.");
 	}
 	
 	@Override
@@ -97,21 +90,21 @@ public final class TooManyHaxCmd extends Command
 		String typeAndName = getType(feature) + " '" + name + "'";
 		
 		if(!feature.isSafeToBlock())
-			throw new CmdError("The " + typeAndName + " is not safe to block.");
+			throw new CmdError("那个 " + typeAndName + " 要被屏蔽并不安全.");
 		
 		TooManyHaxHack tooManyHax = WURST.getHax().tooManyHaxHack;
 		if(tooManyHax.isBlocked(feature))
 		{
-			ChatUtils.error("The " + typeAndName + " is already blocked.");
+			ChatUtils.error("那个 " + typeAndName + " 已经被屏蔽了.");
 			
 			if(!tooManyHax.isEnabled())
-				ChatUtils.message("Enable TooManyHax to see the effect.");
+				ChatUtils.message("开启 TooManyHax 来看看效果怎么样.");
 			
 			return;
 		}
 		
 		tooManyHax.setBlocked(feature, true);
-		ChatUtils.message("Added " + typeAndName + " to TooManyHax list.");
+		ChatUtils.message("增加 " + typeAndName + " 到 TooManyHax 列表中.");
 	}
 	
 	private void unblock(String[] args) throws CmdException
@@ -125,25 +118,25 @@ public final class TooManyHaxCmd extends Command
 		
 		TooManyHaxHack tooManyHax = WURST.getHax().tooManyHaxHack;
 		if(!tooManyHax.isBlocked(feature))
-			throw new CmdError("The " + typeAndName + " is not blocked.");
+			throw new CmdError("那个 " + typeAndName + " 并未被屏蔽.");
 		
 		tooManyHax.setBlocked(feature, false);
-		ChatUtils.message("Removed " + typeAndName + " from TooManyHax list.");
+		ChatUtils.message("移除 " + typeAndName + " 从 TooManyHax 列表中.");
 	}
 	
 	private void blockAll()
 	{
 		WURST.getHax().tooManyHaxHack.blockAll();
-		ChatUtils.message("All* features blocked.");
+		ChatUtils.message("所有功能都被屏蔽了.");
 		ChatUtils
-			.message("*Note: A few features cannot be blocked because they");
-		ChatUtils.message("are required for Wurst to work properly.");
+			.message("*注意: 一些特殊的功能作用无法被屏蔽因为");
+		ChatUtils.message("他们需要驱动Wurst工作.");
 	}
 	
 	private void unblockAll()
 	{
 		WURST.getHax().tooManyHaxHack.unblockAll();
-		ChatUtils.message("All features unblocked.");
+		ChatUtils.message("所有功能被解除屏蔽了.");
 	}
 	
 	private Feature parseFeature(String name) throws CmdSyntaxError
@@ -151,7 +144,7 @@ public final class TooManyHaxCmd extends Command
 		Feature feature = WURST.getFeatureByName(name);
 		if(feature == null)
 			throw new CmdSyntaxError(
-				"A feature named '" + name + "' could not be found");
+				"一个功能名为 '" + name + "' 无法被找到");
 		
 		return feature;
 	}
@@ -182,16 +175,16 @@ public final class TooManyHaxCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("Invalid page: " + page);
+			throw new CmdSyntaxError("无效页码: " + page);
 		
-		String total = "Total: " + blocked.size() + " blocked feature";
+		String total = "合计: " + blocked.size() + " 功能被屏蔽";
 		total += blocked.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, blocked.size());
 		
-		ChatUtils.message("TooManyHax list (page " + page + "/" + pages + ")");
+		ChatUtils.message("TooManyHax 列表 (页码 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(blocked.get(i).getName());
 	}
@@ -202,7 +195,7 @@ public final class TooManyHaxCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[1]))
-			throw new CmdSyntaxError("Not a number: " + args[1]);
+			throw new CmdSyntaxError("不是一个数字: " + args[1]);
 		
 		return Integer.parseInt(args[1]);
 	}
@@ -217,22 +210,22 @@ public final class TooManyHaxCmd extends Command
 		try
 		{
 			WURST.getHax().tooManyHaxHack.loadProfile(name);
-			ChatUtils.message("TooManyHax profile loaded: " + name);
+			ChatUtils.message("TooManyHax 档案载入: " + name);
 			
 		}catch(NoSuchFileException e)
 		{
-			throw new CmdError("Profile '" + name + "' doesn't exist.");
+			throw new CmdError("档案 '" + name + "' 并不存在.");
 			
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
 			throw new CmdError(
-				"Profile '" + name + "' is corrupted: " + e.getMessage());
+				"档案 '" + name + "' 是损坏的: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("Couldn't load profile: " + e.getMessage());
+			throw new CmdError("无法载入档案: " + e.getMessage());
 		}
 	}
 	
@@ -246,12 +239,12 @@ public final class TooManyHaxCmd extends Command
 		try
 		{
 			WURST.getHax().tooManyHaxHack.saveProfile(name);
-			ChatUtils.message("TooManyHax profile saved: " + name);
+			ChatUtils.message("TooManyHax 档案保存: " + name);
 			
 		}catch(IOException | JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("Couldn't save profile: " + e.getMessage());
+			throw new CmdError("无法保存档案: " + e.getMessage());
 		}
 	}
 	
@@ -275,9 +268,9 @@ public final class TooManyHaxCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("Invalid page: " + page);
+			throw new CmdSyntaxError("无效页码: " + page);
 		
-		String total = "Total: " + files.size() + " profile";
+		String total = "合计: " + files.size() + " 档案";
 		total += files.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
@@ -285,7 +278,7 @@ public final class TooManyHaxCmd extends Command
 		int end = Math.min(page * 8, files.size());
 		
 		ChatUtils.message(
-			"TooManyHax profile list (page " + page + "/" + pages + ")");
+			"TooManyHax 档案列表 (页码 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

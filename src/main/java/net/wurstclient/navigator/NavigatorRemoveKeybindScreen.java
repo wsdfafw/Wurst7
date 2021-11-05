@@ -32,7 +32,7 @@ public class NavigatorRemoveKeybindScreen extends NavigatorScreen
 	private TreeMap<String, PossibleKeybind> existingKeybinds;
 	private String hoveredKey = "";
 	private String selectedKey = "";
-	private String text = "Select the keybind you want to remove.";
+	private String text = "选择你想要移除的按键.";
 	private ButtonWidget removeButton;
 	
 	public NavigatorRemoveKeybindScreen(
@@ -48,13 +48,13 @@ public class NavigatorRemoveKeybindScreen extends NavigatorScreen
 	{
 		// OK button
 		removeButton = new ButtonWidget(width / 2 - 151, height - 65, 149, 18,
-			new LiteralText("Remove"), b -> remove());
+			new LiteralText("移除"), b -> remove());
 		removeButton.active = !selectedKey.isEmpty();
 		addDrawableChild(removeButton);
 		
 		// cancel button
 		addDrawableChild(new ButtonWidget(width / 2 + 2, height - 65, 149, 18,
-			new LiteralText("Cancel"), b -> client.setScreen(parent)));
+			new LiteralText("取消"), b -> client.setScreen(parent)));
 	}
 	
 	private void remove()
@@ -120,7 +120,7 @@ public class NavigatorRemoveKeybindScreen extends NavigatorScreen
 		float partialTicks)
 	{
 		// title bar
-		drawCenteredText(matrixStack, client.textRenderer, "Remove Keybind",
+		drawCenteredText(matrixStack, client.textRenderer, "移除绑定键",
 			middleX, 32, 0xffffff);
 		GL11.glEnable(GL11.GL_BLEND);
 		

@@ -17,14 +17,14 @@ public final class AddAltScreen extends AltEditorScreen
 	
 	public AddAltScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(prevScreen, new LiteralText("New Alt"));
+		super(prevScreen, new LiteralText("新的账号"));
 		this.altManager = altManager;
 	}
 	
 	@Override
 	protected String getDoneButtonText()
 	{
-		return "Add";
+		return "添加";
 	}
 	
 	@Override

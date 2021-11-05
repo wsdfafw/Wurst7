@@ -26,7 +26,7 @@ public final class FlightHack extends Hack
 	
 	public FlightHack()
 	{
-		super("Flight");
+		super("飞行");
 		setCategory(Category.MOVEMENT);
 		addSetting(speed);
 	}

@@ -195,7 +195,7 @@ public final class HackList implements UpdateListener
 			
 		}catch(Exception e)
 		{
-			String message = "Initializing Wurst hacks";
+			String message = "正在初始化Wurst中";
 			CrashReport report = CrashReport.create(e, message);
 			throw new CrashException(report);
 		}

@@ -36,7 +36,7 @@ public final class TacoCmd extends Command
 	
 	public TacoCmd()
 	{
-		super("taco", "Spawns a dancing taco on your hotbar.\n"
+		super("taco", "在你的物品栏上方生成一个塔可.\n"
 			+ "\"I love that little guy. So cute!\" -WiZARD");
 		setCategory(Category.FUN);
 	}
@@ -45,7 +45,7 @@ public final class TacoCmd extends Command
 	public void call(String[] args) throws CmdException
 	{
 		if(args.length != 0)
-			throw new CmdSyntaxError("Tacos don't need arguments!");
+			throw new CmdSyntaxError("墨西哥卷不需要任何参数!");
 		
 		enabled = !enabled;
 		
@@ -64,7 +64,7 @@ public final class TacoCmd extends Command
 	@Override
 	public String getPrimaryAction()
 	{
-		return "Be a BOSS!";
+		return "成为老板!";
 	}
 	
 	@Override

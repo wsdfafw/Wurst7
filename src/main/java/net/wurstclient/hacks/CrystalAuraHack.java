@@ -58,109 +58,23 @@ import net.wurstclient.util.RotationUtils.Rotation;
 @SearchTags({"crystal aura"})
 public final class CrystalAuraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
-		"Determines how far CrystalAura will reach\n"
-			+ "to place and detonate crystals.",
-		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
-	
-	private final CheckboxSetting autoPlace =
-		new CheckboxSetting("Auto-place crystals",
-			"When enabled, CrystalAura will automatically\n"
-				+ "place crystals near valid entities.\n"
-				+ "When disabled, CrystalAura will only\n"
-				+ "detonate manually placed crystals.",
-			true);
-	
-	private final EnumSetting<FaceBlocks> faceBlocks =
-		new EnumSetting<>("Face crystals",
-			"Whether or not CrystalAura should face\n"
-				+ "the correct direction when placing and\n"
-				+ "left-clicking end crystals.\n\n"
-				+ "Slower but can help with anti-cheat\n" + "plugins.",
-			FaceBlocks.values(), FaceBlocks.OFF);
-	
-	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("Check line of sight",
-			"Ensures that you don't reach through\n"
-				+ "blocks when placing or left-clicking\n" + "end crystals.\n\n"
-				+ "Slower but can help with anti-cheat\n" + "plugins.",
-			false);
-	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("Take items from", "Where to look for end crystals.",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
-	
-	private final CheckboxSetting filterPlayers =
-		new CheckboxSetting("Filter players",
-			"Won't target other players\n" + "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			false);
-	
-	private final CheckboxSetting filterMonsters =
-		new CheckboxSetting("Filter monsters",
-			"Won't target zombies, creepers, etc.\n"
-				+ "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			true);
-	
-	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"Filter animals",
-		"Won't target pigs, cows, etc.\n" + "when auto-placing crystals.\n\n"
-			+ "They can still take damage if\n"
-			+ "they get too close to a valid\n"
-			+ "target or an existing crystal.",
-		true);
-	
-	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("Filter traders",
-			"Won't target villagers, wandering traders, etc.\n"
-				+ "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			true);
-	
-	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("Filter golems",
-			"Won't target iron golems,\n" + "snow golems and shulkers.\n"
-				+ "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			true);
-	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"Filter invisible",
-		"Won't target invisible entities\n" + "when auto-placing crystals.\n\n"
-			+ "They can still take damage if\n"
-			+ "they get too close to a valid\n"
-			+ "target or an existing crystal.",
-		false);
-	
-	private final CheckboxSetting filterNamed =
-		new CheckboxSetting("Filter named",
-			"Won't target name-tagged entities\n"
-				+ "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			false);
-	
-	private final CheckboxSetting filterStands =
-		new CheckboxSetting("Filter armor stands",
-			"Won't target armor stands.\n" + "when auto-placing crystals.\n\n"
-				+ "They can still take damage if\n"
-				+ "they get too close to a valid\n"
-				+ "target or an existing crystal.",
-			true);
-	
+	private final SliderSetting range = new SliderSetting("范围", "决定放置水晶的范围并\n引爆水晶.", 6.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+    private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置水晶", "当开启时, 水晶功能 将会自动\n放置当有效的实体靠近时候.\n当关闭时候, 水晶将会只会\n引爆请手动放置水晶.", true);
+    private final EnumSetting<FaceBlocks> faceBlocks = new EnumSetting("面朝水晶", "无论怎么样 水晶功能 必须面朝\n正确的方向放置并\n左键引爆重生锚.\n\n虽然会慢下来,但有效\n避开反作弊.", (Enum[])FaceBlocks.values(), (Enum)FaceBlocks.OFF);
+    private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野", "确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.", false);
+    private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting("从哪拿物品", "应该从哪拿末影水晶.", (Enum[])TakeItemsFrom.values(), (Enum)TakeItemsFrom.INVENTORY);
+    private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会以其他玩家作为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
+    private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不会以,僵尸,苦力怕等为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
+    private final CheckboxSetting filterAnimals = new CheckboxSetting("排除动物", "不会以猪,牛,鸡等为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
+    private final CheckboxSetting filterTraders = new CheckboxSetting("排除商人", "不会以村民,流浪商人,诸如此类为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
+    private final CheckboxSetting filterGolems = new CheckboxSetting("排除傀儡们", "不会以铁傀儡,\n雪傀儡 和 潜影盒为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
+    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不会以隐形的实体为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
+    private final CheckboxSetting filterNamed = new CheckboxSetting("排除被命名", "不会以已经被命名的实体为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
+    private final CheckboxSetting filterStands = new CheckboxSetting("排除盔甲架", "不会以盔甲架为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
+
 	public CrystalAuraHack()
 	{
-		super("CrystalAura");
+		super("水晶光环");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);
@@ -506,9 +420,9 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("Hotbar", 9),
+		HOTBAR("快捷栏", 9),
 		
-		INVENTORY("Inventory", 36);
+		INVENTORY("背包", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

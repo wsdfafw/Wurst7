@@ -56,7 +56,7 @@ public final class InstantBunkerHack extends Hack
 	
 	public InstantBunkerHack()
 	{
-		super("InstantBunker");
+		super("自动\"城堡\"");
 		setCategory(Category.BLOCKS);
 	}
 	

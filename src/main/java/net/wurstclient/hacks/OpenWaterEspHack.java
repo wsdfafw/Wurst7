@@ -22,12 +22,12 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.mixinterface.IFishingBobberEntity;
 import net.wurstclient.util.RenderUtils;
 
-@SearchTags({"open water esp", "AutoFishESP", "auto fish esp"})
+@SearchTags({"open water esp", "AutoFishESP", "auto fish esp","OpenWaterESP"})
 public final class OpenWaterEspHack extends Hack implements RenderListener
 {
 	public OpenWaterEspHack()
 	{
-		super("OpenWaterESP");
+		super("开放水域");
 		
 		setCategory(Category.RENDER);
 	}
@@ -41,8 +41,8 @@ public final class OpenWaterEspHack extends Hack implements RenderListener
 			return getName();
 		
 		if(isInOpenWater(bobber))
-			return getName() + " [open]";
-		return getName() + " [shallow]";
+			return getName() + " [开放]";
+		return getName() + " [浅水]";
 	}
 	
 	@Override

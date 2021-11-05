@@ -106,7 +106,7 @@ public enum DefaultAutoBuildTemplates
 				
 			}catch(IOException | JsonException e)
 			{
-				System.out.println("Couldn't save " + path.getFileName());
+				System.out.println("无法保存 " + path.getFileName());
 				e.printStackTrace();
 			}
 		}

@@ -16,7 +16,7 @@ public final class NameTagsHack extends Hack
 {
 	public NameTagsHack()
 	{
-		super("NameTags");
+		super("名字标签");
 		
 		setCategory(Category.RENDER);
 	}

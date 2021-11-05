@@ -22,13 +22,12 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("Health",
-		"Leaves the server when your health\n"
-			+ "reaches this value or falls below it.",
+	private final SliderSetting health = new SliderSetting("生命值",
+		"当您的生命值≤给定值时离开服务器",
 		4, 0.5, 9.5, 0.5,
 		v -> ValueDisplay.DECIMAL.getValueString(v) + " hearts");
 	
-	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
 		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"
 			+ "Bypasses NoCheat+ but not CombatLog.\n\n"
 			+ "\u00a7lChars\u00a7r mode sends a special chat message that\n"
@@ -45,7 +44,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	
 	public AutoLeaveHack()
 	{
-		super("AutoLeave");
+		super("自动退出");
 		
 		setCategory(Category.COMBAT);
 		addSetting(health);
@@ -122,7 +121,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		
 		TELEPORT("TP"),
 		
-		SELFHURT("SelfHurt");
+		SELFHURT("自我伤害");
 		
 		private final String name;
 		
