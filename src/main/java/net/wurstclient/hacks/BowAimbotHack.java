@@ -347,7 +347,7 @@ public final class BowAimbotHack extends Hack
 		
 		matrixStack.push();
 		
-		Matrix4f matrix = matrixStack.peek().getModel();
+		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		String message;

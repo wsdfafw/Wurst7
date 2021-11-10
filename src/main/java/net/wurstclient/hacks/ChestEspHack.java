@@ -348,7 +348,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 			
 			RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.25F);
 			
-			Matrix4f viewMatrix = matrixStack.peek().getModel();
+			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
 			solidBox.setShader(viewMatrix, projMatrix, shader);
@@ -363,7 +363,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	private void renderLines(MatrixStack matrixStack, Vec3d start,
 		ArrayList<Box> boxes, int regionX, int regionZ)
 	{
-		Matrix4f matrix = matrixStack.peek().getModel();
+		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		for(Box box : boxes)
