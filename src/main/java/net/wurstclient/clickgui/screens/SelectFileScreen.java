@@ -92,8 +92,7 @@ public final class SelectFileScreen extends Screen
 			"这将会清空 '" + setting.getFolder().getFileName()
 				+ "'目录并重新生成默认的数值.\n你确定还要继续这样做吗?");
 		
-		client
-			.setScreen(new ConfirmScreen(this::confirmReset, title, message));
+		client.setScreen(new ConfirmScreen(this::confirmReset, title, message));
 	}
 	
 	private void confirmReset(boolean confirmed)

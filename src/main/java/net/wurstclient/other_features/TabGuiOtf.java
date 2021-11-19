@@ -22,7 +22,8 @@ public final class TabGuiOtf extends OtherFeature
 	
 	public TabGuiOtf()
 	{
-		super("TabGui", "允许您在玩游戏时快速切换黑客.使用箭头键导航.");
+		super("TabGUI", "允许你在游戏时快速切换黑客.使用方向键进行导航.\n\n"
+			+ "改变 \u00a76黑客名单 \u00a76位置\u00a7r setting to \u00a76Right\u00a7r 以防止TabGUI与HackList重叠.");
 		
 		addSetting(status);
 	}

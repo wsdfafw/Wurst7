@@ -158,10 +158,8 @@ public final class SearchHack extends Hack
 			chunk = world.getChunk(changedBlocks.get(0));
 			
 		}else if(packet instanceof ChunkDataS2CPacket chunkData)
-		{
 			chunk = world.getChunk(chunkData.getX(), chunkData.getZ());
-			
-		}else
+		else
 			return;
 		
 		chunksToUpdate.add(chunk);
