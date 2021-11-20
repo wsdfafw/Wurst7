@@ -33,7 +33,7 @@ public final class HackListOtf extends OtherFeature
 		Position.values(), Position.LEFT);
 	
 	private final ColorSetting color = new ColorSetting("颜色",
-		"Color of the HackList text.\n"
+		"HackList文本的颜色.\n"
 			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
 		Color.WHITE);
 	
@@ -54,7 +54,7 @@ public final class HackListOtf extends OtherFeature
 	
 	public HackListOtf()
 	{
-		super("HackList", "在屏幕上显示活动黑客列表.");
+		super("Hack列表", "在屏幕上显示活动黑客列表.");
 		
 		addSetting(mode);
 		addSetting(position);
