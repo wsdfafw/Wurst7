@@ -62,12 +62,12 @@ public class CleanUpScreen extends Screen
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 - 24 + 12,
 				() -> "未知的主机: " + removeOrKeep(cleanupUnknown),
-				"Servers that clearly don't exist.",
+				"显然不存在的服务器.",
 				b -> cleanupUnknown = !cleanupUnknown));
 		
 		addDrawableChild(new CleanUpButton(width / 2 - 100, height / 4 + 0 + 12,
 			() -> "过期的版本: " + removeOrKeep(cleanupOutdated),
-			"Servers that run a different Minecraft\n" + "version than you.",
+			"运行不同Minecraft版本的服务器，而不是你的.",
 			b -> cleanupOutdated = !cleanupOutdated));
 		
 		addDrawableChild(
@@ -83,8 +83,8 @@ public class CleanUpScreen extends Screen
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 48 + 12,
 				() -> "\"Grief me\" 服务器: " + removeOrKeep(cleanupGriefMe),
-				"All servers where the name starts with \"Grief me\"\n"
-					+ "Useful for removing servers found by ServerFinder.",
+				"All servers where name starts with \"Grief me\"\n"
+				+ "用于移除由ServerFinder发现的服务器.",
 				b -> cleanupGriefMe = !cleanupGriefMe));
 		
 		addDrawableChild(
