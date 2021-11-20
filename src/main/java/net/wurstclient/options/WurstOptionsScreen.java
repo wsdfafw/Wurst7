@@ -81,10 +81,10 @@ public class WurstOptionsScreen extends Screen
 		
 		new WurstOptionsButton(-154, 96,
 			() -> "翻译: " + (!forceEnglish.isChecked() ? "开启" : "关闭"),
-			"§cThis is an experimental feature!\n"
-				+ "We don't have many translations yet. If you\n"
-				+ "speak both English and some other language,\n"
-				+ "please help us by adding more translations.",
+			"§c这是个实验性的功能！§n"
+				+ "我们还没有很多翻译。\n"
+				+ "既讲英语又讲其他语言，"
+				+ "请通过添加更多的翻译来帮助我们。.",
 			b -> forceEnglish.setChecked(!forceEnglish.isChecked()));
 	}
 	
