@@ -28,4 +28,4 @@ jobs:
         prerelease: true
         title: "wurst Automatic build versions"
         files: |
-          build/libs/Wurst-Client-v7.17.1-MC1.17.1-sources.jar
+          build/libs/Wurst-Client-*-sources.jar
