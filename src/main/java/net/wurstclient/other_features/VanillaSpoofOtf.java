@@ -24,7 +24,7 @@ public final class VanillaSpoofOtf extends OtherFeature
 	implements ConnectionPacketOutputListener
 {
 	private final CheckboxSetting spoof =
-		new CheckboxSetting("Spoof Vanilla", false);
+		new CheckboxSetting("原版伪装", false);
 	
 	public VanillaSpoofOtf()
 	{
