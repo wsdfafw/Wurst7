@@ -13,6 +13,8 @@
 
 https://www.wurstclient.net/download/
 
+[Wurst7](https://socialify-mzymgsg1c-whe.vercel.app/buiawpkgew1/Wurst7/image?description=1&font=Inter&forks=1&issues=1&language=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Dark)
+
 ## Setup (for developers) (using Windows 10 & Eclipse)
 
 要求: [JDK 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot)
