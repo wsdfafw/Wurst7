@@ -1,5 +1,4 @@
 # Wurst Client汉化 v7
-⚡ 汉化不易, 欢迎支持[微信/qq](https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY?groupUin=T5BcGlDMhmyDFAE2uMfQvQ%253D%253D&ADUIN=750215287&ADSESSION=1632535109&ADTAG=CLIENT.QQ.5827_.0&ADPUBNO=27151&jumpuin=750215287)
 ## ⚠ We Are Looking For Translators ⚠
 
 如果你会说英语和其他语言，请通过翻译Wurst来帮助我们.翻译文件位于`src/main/resources/assets/wurst/lang`中，其工作原理与其他Minecraft mods相同.
