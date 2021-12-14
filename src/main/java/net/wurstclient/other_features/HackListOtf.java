@@ -7,6 +7,7 @@
  */
 package net.wurstclient.other_features;
 
+import java.awt.Color;
 import java.util.Comparator;
 
 import net.wurstclient.DontBlock;
@@ -15,6 +16,7 @@ import net.wurstclient.WurstClient;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.other_feature.OtherFeature;
 import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
 
 @SearchTags({"ArrayList", "ModList", "CheatList", "mod list", "array list",
@@ -26,29 +28,38 @@ public final class HackListOtf extends OtherFeature
 		"§l自动§r 模式 将会展示全部但如果\n显示不全将会显示数量.\n§l数量§r 模式 只展示数字\n已激活的功能.\n§l隐藏§r 模式 任何东西不显示",
 		Mode.values(), Mode.AUTO);
 	
-	private final EnumSetting<Position> position =
-		new EnumSetting<>("位置", Position.values(), Position.LEFT);
+	private final EnumSetting<Position> position = new EnumSetting<>("Position",
+		"Which side of the screen the HackList should be shown on."
+			+ "\nChange this to \u00a7lRight\u00a7r when using TabGUI.",
+		Position.values(), Position.LEFT);
 	
-	private final EnumSetting<SortBy> sortBy =
-		new EnumSetting<>("排序方式", SortBy.values(), SortBy.NAME);
+	private final ColorSetting color = new ColorSetting("颜色",
+		"Color of the HackList text.\n"
+			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
+		Color.WHITE);
+	
+	private final EnumSetting<SortBy> sortBy = new EnumSetting<>("Sort by",
+		"Determines how the HackList entries are sorted.\n"
+			+ "Only visible when \u00a76Mode\u00a7r is set to \u00a76Auto\u00a7r.",
+		SortBy.values(), SortBy.NAME);
 	
 	private final CheckboxSetting revSort =
 		new CheckboxSetting("反向排序", false);
 	
-	private final CheckboxSetting animations =
-		new CheckboxSetting("动画", true);
+	private final CheckboxSetting animations = new CheckboxSetting("动画",
+		"启用后，随着黑客的启用和禁用，条目会滑入和滑出HackList.",
+		true);
 	
 	private SortBy prevSortBy;
 	private Boolean prevRevSort;
 	
 	public HackListOtf()
 	{
-		super("黑客列表", "在屏幕上显示活动黑客列表.\n"
-			+ "The \u00a7lLeft\u00a7r position should only be used while TabGui is\n"
-			+ "disabled.");
+		super("黑客列表", "在屏幕上显示活动的黑客列表.");
 		
 		addSetting(mode);
 		addSetting(position);
+		addSetting(color);
 		addSetting(sortBy);
 		addSetting(revSort);
 		addSetting(animations);
@@ -99,6 +110,11 @@ public final class HackListOtf extends OtherFeature
 			prevSortBy = sortBy.getSelected();
 			prevRevSort = revSort.isChecked();
 		}
+	}
+	
+	public int getColor()
+	{
+		return color.getColorI() & 0x00FFFFFF;
 	}
 	
 	public static enum Mode

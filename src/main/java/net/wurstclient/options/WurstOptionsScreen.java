@@ -64,7 +64,8 @@ public class WurstOptionsScreen extends Screen
 		new WurstOptionsButton(-154, 24,
 			() -> "点击朋友: "
 				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
-			middleClickFriends.getDescription(), b -> middleClickFriends
+			middleClickFriends.getWrappedDescription(200),
+			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
