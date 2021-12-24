@@ -24,8 +24,7 @@ import net.wurstclient.settings.EnumSetting;
 @DontBlock
 public final class HackListOtf extends OtherFeature
 {
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"§l自动§r 模式 将会展示全部但如果\n显示不全将会显示数量.\n§l数量§r 模式 只展示数字\n已激活的功能.\n§l隐藏§r 模式 任何东西不显示",
+	private final EnumSetting<Mode> mode = new EnumSetting<>("模式","§l自动§r 模式 将会展示全部但如果\n显示不全将会显示数量.\n§l数量§r 模式 只展示数字\n已激活的功能.\n§l隐藏§r 模式 任何东西不显示",
 		Mode.values(), Mode.AUTO);
 	
 	private final EnumSetting<Position> position = new EnumSetting<>("位置",
@@ -33,8 +32,7 @@ public final class HackListOtf extends OtherFeature
 		Position.values(), Position.LEFT);
 	
 	private final ColorSetting color = new ColorSetting("颜色",
-		"HackList文本的颜色.\n"
-			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
+		"HackList文本的颜色.\n" + "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
 		Color.WHITE);
 	
 	private final EnumSetting<SortBy> sortBy = new EnumSetting<>("排序方式",
@@ -45,8 +43,7 @@ public final class HackListOtf extends OtherFeature
 	private final CheckboxSetting revSort =
 		new CheckboxSetting("反向排序", false);
 	
-	private final CheckboxSetting animations = new CheckboxSetting("动画",
-		"启用后，条目会随着 hacks 的启用和禁用而滑入和滑出 HackList.",
+	private final CheckboxSetting animations = new CheckboxSetting("动画","启用后，条目会随着 hacks 的启用和禁用而滑入和滑出 HackList.",
 		true);
 	
 	private SortBy prevSortBy;
