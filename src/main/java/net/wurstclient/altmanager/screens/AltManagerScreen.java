@@ -16,6 +16,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
@@ -52,6 +53,8 @@ import net.wurstclient.util.json.WsonObject;
 
 public final class AltManagerScreen extends Screen
 {
+	private static final HashSet<Alt> failedLogins = new HashSet<>();
+	
 	private final Screen prevScreen;
 	private final AltManager altManager;
 	
@@ -193,8 +196,11 @@ public final class AltManagerScreen extends Screen
 		if(!error.isEmpty())
 		{
 			errorTimer = 8;
+			failedLogins.add(alt);
 			return;
 		}
+		
+		failedLogins.remove(alt);
 		
 		altManager.setChecked(listGui.selected,
 			client.getSession().getUsername());
@@ -418,6 +424,7 @@ public final class AltManagerScreen extends Screen
 		// red flash for errors
 		if(errorTimer > 0)
 		{
+			RenderSystem.setShader(GameRenderer::getPositionShader);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glEnable(GL11.GL_BLEND);
 			
@@ -439,6 +446,69 @@ public final class AltManagerScreen extends Screen
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderButtonTooltip(matrixStack, mouseX, mouseY);
+		renderAltTooltip(matrixStack, mouseX, mouseY);
+	}
+	
+	public void renderAltTooltip(MatrixStack matrixStack, int mouseX,
+		int mouseY)
+	{
+		if(!listGui.isMouseInList(mouseX, mouseY))
+			return;
+		
+		List<Alt> altList = altManager.getList();
+		int hoveredIndex = listGui.getItemAtPosition(mouseX, mouseY);
+		
+		if(hoveredIndex < 0 || hoveredIndex >= altList.size())
+			return;
+		
+		int itemX = mouseX - (width - listGui.getRowWidth()) / 2;
+		int itemY = mouseY - 36 + (int)listGui.getScrollAmount() - 4
+			- hoveredIndex * 30;
+		
+		if(itemX < 31 || itemY < 15 || itemY >= 25)
+			return;
+		
+		Alt alt = altList.get(hoveredIndex);
+		ArrayList<Text> tooltip = new ArrayList<>();
+		
+		if(itemX >= 31 + textRenderer.getWidth(listGui.getBottomText(alt)))
+			return;
+		
+		if(!alt.isCracked())
+		{
+			tooltip.add(new LiteralText("This alt has a password and can"));
+			tooltip.add(new LiteralText("join all servers."));
+			
+			if(failedLogins.contains(alt))
+			{
+				tooltip.add(new LiteralText("Last time you tried to log in"));
+				tooltip.add(new LiteralText("with this alt, it didn't work."));
+			}
+			
+			if(alt.isUnchecked())
+			{
+				tooltip.add(new LiteralText("You have never successfully"));
+				tooltip.add(new LiteralText("logged in with this alt."));
+				
+			}else
+			{
+				tooltip.add(new LiteralText("The password has worked in the"));
+				tooltip.add(new LiteralText("past."));
+			}
+			
+		}else
+		{
+			tooltip.add(new LiteralText("This alt has no password and will"));
+			tooltip.add(new LiteralText("only work on cracked servers."));
+		}
+		
+		if(alt.isStarred())
+		{
+			tooltip.add(new LiteralText("You have marked this alt as"));
+			tooltip.add(new LiteralText("one of your favorites."));
+		}
+		
+		renderTooltip(matrixStack, tooltip, mouseX, mouseY);
 	}
 	
 	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
@@ -571,15 +641,24 @@ public final class AltManagerScreen extends Screen
 			// name / email
 			client.textRenderer.draw(matrixStack,
 				"名字: " + alt.getNameOrEmail(), x + 31, y + 3, 10526880);
-			
-			// tags
-			String tags = alt.isCracked() ? "\u00a78盗版" : "\u00a72正版";
-			if(alt.isStarred())
-				tags += "\u00a7r, \u00a7e最喜欢的";
-			if(alt.isUnchecked())
-				tags += "\u00a7r, \u00a7c未检查";
-			client.textRenderer.draw(matrixStack, tags, x + 31, y + 15,
+			String bottomText = getBottomText(alt);
+			client.textRenderer.draw(matrixStack, bottomText, x + 31, y + 15,
 				10526880);
+		}
+		
+		public String getBottomText(Alt alt)
+		{
+			String text = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
+			
+			if(alt.isStarred())
+				text += "\u00a7r, \u00a7efavorite";
+			
+			if(failedLogins.contains(alt))
+				text += "\u00a7r, \u00a7cwrong password?";
+			else if(alt.isUnchecked())
+				text += "\u00a7r, \u00a7cunchecked";
+			
+			return text;
 		}
 	}
 }
