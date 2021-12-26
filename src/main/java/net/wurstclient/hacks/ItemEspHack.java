@@ -162,7 +162,7 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		float[] colorF = color.getColorF();
 		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		

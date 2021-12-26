@@ -54,7 +54,7 @@ public final class FlightHack extends Hack
 		ClientPlayerEntity player = MC.player;
 		
 		player.getAbilities().flying = false;
-		player.airStrafingSpeed = speed.getValueF();
+		player.flyingSpeed = speed.getValueF();
 		
 		player.setVelocity(0, 0, 0);
 		Vec3d velocity = player.getVelocity();

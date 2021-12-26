@@ -395,7 +395,7 @@ public final class AltManagerScreen extends Screen
 		renderBackground(matrixStack);
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
@@ -606,7 +606,7 @@ public final class AltManagerScreen extends Screen
 		{
 			Alt alt = list.get(id);
 			
-			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+			Matrix4f matrix = matrixStack.peek().getModel();
 			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 			RenderSystem.setShader(GameRenderer::getPositionShader);
 			

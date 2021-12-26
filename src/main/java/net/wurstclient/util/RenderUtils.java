@@ -112,7 +112,7 @@ public enum RenderUtils
 	
 	public static void drawSolidBox(Box bb, MatrixStack matrixStack)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
@@ -251,7 +251,7 @@ public enum RenderUtils
 	
 	public static void drawOutlinedBox(Box bb, MatrixStack matrixStack)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
@@ -397,7 +397,7 @@ public enum RenderUtils
 	
 	public static void drawCrossBox(Box bb, MatrixStack matrixStack)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
@@ -542,7 +542,7 @@ public enum RenderUtils
 	
 	public static void drawNode(Box bb, MatrixStack matrixStack)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
@@ -689,7 +689,7 @@ public enum RenderUtils
 		double endZ = to.z;
 		
 		matrixStack.push();
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		
 		bufferBuilder
 			.vertex(matrix, (float)startX, (float)startY, (float)startZ).next();

@@ -84,7 +84,7 @@ public abstract class EntityRendererMixin<T extends Entity>
 		
 		matrixStack.scale(-scale, -scale, scale);
 		
-		Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix4f = matrixStack.peek().getModel();
 		float g = WurstClient.MC.options.getTextBackgroundOpacity(0.25F);
 		int k = (int)(g * 255.0F) << 24;
 		

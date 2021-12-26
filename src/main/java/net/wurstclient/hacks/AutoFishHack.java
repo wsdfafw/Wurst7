@@ -348,7 +348,7 @@ public final class AutoFishHack extends Hack
 	
 	private void drawLastBite(MatrixStack matrixStack, int regionX, int regionZ)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		

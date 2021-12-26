@@ -331,7 +331,7 @@ public final class ExcavatorHack extends Hack
 		
 		matrixStack.push();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		String message;

@@ -114,7 +114,7 @@ public final class FreecamHack extends Hack
 		player.setVelocity(Vec3d.ZERO);
 		
 		player.setOnGround(false);
-		player.airStrafingSpeed = speed.getValueF();
+		player.flyingSpeed = speed.getValueF();
 		Vec3d velocity = player.getVelocity();
 		
 		if(MC.options.keyJump.isPressed())
@@ -196,7 +196,7 @@ public final class FreecamHack extends Hack
 			RotationUtils.getClientLookVec().add(RenderUtils.getCameraPos());
 		Vec3d end = fakePlayer.getBoundingBox().getCenter();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		

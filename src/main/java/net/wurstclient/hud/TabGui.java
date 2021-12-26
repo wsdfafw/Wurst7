@@ -214,7 +214,7 @@ public final class TabGui implements KeyPressListener
 		float[] acColor = gui.getAcColor();
 		float opacity = gui.getOpacity();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
