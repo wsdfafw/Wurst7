@@ -1,4 +1,4 @@
-name: "Close stale issues / pull requests"
+name: "关闭陈旧的问题/拉动请求"
 on:
   schedule:
     - cron: "30 1 * * *"
