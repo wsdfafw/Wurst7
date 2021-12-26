@@ -1,4 +1,4 @@
-name: "Close stale issues / pull requests"
+name: "关闭陈旧的问题/拉动请求"
 on:
   schedule:
     - cron: "30 1 * * *"
@@ -10,11 +10,11 @@ jobs:
       - uses: actions/stale@v4
         with:
           stale-issue-message: |
-            This issue has been open for a while. It will be closed soon if nobody comments on it.  
-            Issues should be closed if:
-              - They are duplicates of other issues
-              - There is not enough demand
-              - They are no longer relevant
-              - There are not enough details
+            这个问题已经开放了一段时间。 如果没有人评论它，它将很快关闭。
+             如果出现以下情况，应关闭问题：
+               - 它们是其他问题的重复
+               - 需求不足
+               - 它们不再相关
+               - 没有足够的细节
           days-before-stale: 30
           days-before-close: 30
