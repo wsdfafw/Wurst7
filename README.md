@@ -1,20 +1,22 @@
-# Wurst Client汉化 v7
+# Wurst Client v7
+
 ## ⚠ We Are Looking For Translators ⚠
 
-如果你会说英语和其他语言，请通过翻译Wurst来帮助我们.翻译文件位于`src/main/resources/assets/wurst/lang`中，其工作原理与其他Minecraft mods相同.
+If you speak both English and some other language, please help us by translating Wurst. The translation files are located in `src/main/resources/assets/wurst/lang` and work the same as in other Minecraft mods.
 
-目前，只有黑客描述可以被翻译.其他描述和工具提示将在未来成为可翻译的.
+At the moment, only hack descriptions can be translated. Other descriptions and tooltips will become translatable in the future.
 
-特技的名称（黑客/命令/等等）应始终保持英文.这可以确保每个人都能使用相同的命令、键盘等，而不管他们的语言设置如何.这也使得与使用Wurst的人用不同的语言进行交流更加容易.
+Names of featues (hacks/commands/etc.) should always be kept in English. This ensures that everyone can use the same commands, keybinds, etc. regardless of their language setting. It also makes it easier to communicate with someone who uses Wurst in a different language.
 
-关于翻译的讨论见[问题#404](https://github.com/Wurst-Imperium/Wurst7/issues/404).
+See [Issue #404](https://github.com/Wurst-Imperium/Wurst7/issues/404) for discussion about translations.
+
 ## Downloads (for users)
 
 https://www.wurstclient.net/download/
 
 ## Setup (for developers) (using Windows 10 & Eclipse)
 
-要求: [JDK 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot)
+Requirements: [JDK 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot)
 
 1. Run these two commands in PowerShell:
 

@@ -20,7 +20,8 @@ public final class AddAltCmd extends Command
 {
 	public AddAltCmd()
 	{
-		super("addalt", "增加一个玩家到你的账户管理中(就生成一个盗版账户)", ".addalt <player>", "增加服务器内所有账户请输入: .addalt all");
+		super("addalt", "Adds a player to your alt list.", ".addalt <player>",
+			"Add all players on the server: .addalt all");
 	}
 	
 	@Override
@@ -49,7 +50,7 @@ public final class AddAltCmd extends Command
 			return;
 		
 		WURST.getAltManager().add(new Alt(name, null, null));
-		ChatUtils.message("添加了 1 账户.");
+		ChatUtils.message("Added 1 alt.");
 	}
 	
 	private void addAll()
@@ -74,6 +75,6 @@ public final class AddAltCmd extends Command
 			alts++;
 		}
 		
-		ChatUtils.message("添加了 " + alts + (alts == 1 ? " 账户." : " 账户."));
+		ChatUtils.message("Added " + alts + (alts == 1 ? " alt." : " alts."));
 	}
 }

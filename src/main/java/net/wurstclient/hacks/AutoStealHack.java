@@ -17,16 +17,17 @@ import net.wurstclient.settings.SliderSetting;
 	"steal store buttons", "Steal/Store buttons"})
 public final class AutoStealHack extends Hack
 {
-	private final SliderSetting delay = new SliderSetting("延迟",
-		"移动物品堆之间的延迟.\n对于NoCheat+服务器，应该至少是70ms.",
+	private final SliderSetting delay = new SliderSetting("Delay",
+		"Delay between moving stacks of items.\n"
+			+ "Should be at least 70ms for NoCheat+ servers.",
 		100, 0, 500, 10, v -> (int)v + "ms");
 	
 	private final CheckboxSetting buttons =
-		new CheckboxSetting("Steal/Store buttons", false);
+		new CheckboxSetting("Steal/Store buttons", true);
 	
 	public AutoStealHack()
 	{
-		super("自动窃取");
+		super("AutoSteal");
 		setCategory(Category.ITEMS);
 		addSetting(buttons);
 		addSetting(delay);

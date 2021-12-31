@@ -83,7 +83,7 @@ public final class ChunkSearcher
 	
 	public void cancelSearching()
 	{
-		new Thread(this::cancelNow, "区块寻找-取消").start();
+		new Thread(this::cancelNow, "ChunkSearcher-canceller").start();
 	}
 	
 	private void cancelNow()

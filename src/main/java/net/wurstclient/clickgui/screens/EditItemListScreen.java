@@ -67,27 +67,27 @@ public final class EditItemListScreen extends Screen
 		itemNameField.setMaxLength(256);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, new LiteralText("添加"), b -> {
+			height - 56, 30, 20, new LiteralText("Add"), b -> {
 				itemList.add(itemToAdd);
 				itemNameField.setText("");
 			}));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, new LiteralText("删除选定"),
+			height - 56, 100, 20, new LiteralText("Remove Selected"),
 			b -> itemList.remove(listGui.selected)));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			new LiteralText("重置为默认值"),
+			new LiteralText("Reset to Defaults"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					itemList.resetToDefaults();
 				client.setScreen(EditItemListScreen.this);
-			}, new LiteralText("重置为默认值"),
-				new LiteralText("你确定吗?")))));
+			}, new LiteralText("Reset to Defaults"),
+				new LiteralText("Are you sure?")))));
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				new LiteralText("完成"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Done"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
@@ -302,7 +302,7 @@ public final class EditItemListScreen extends Screen
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				matrixStack.pop();
 				
-				return "\u00a7o未知物品\u00a7r";
+				return "\u00a7ounknown item\u00a7r";
 				
 			}
 			matrixStack.push();

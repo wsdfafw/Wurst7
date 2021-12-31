@@ -41,16 +41,29 @@ import net.wurstclient.util.RotationUtils.Rotation;
 public final class BuildRandomHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final EnumSetting<Mode> mode = new EnumSetting("模式", "§l快速§r 模式可以在其他方块后面放置方块.\n§l合法§r 模式能绕过大部分反作弊.", (Enum[])Mode.values(), (Enum)Mode.FAST);
-    private final CheckboxSetting checkItem = new CheckboxSetting("检查手持物品", "只有在您拿着物品的时候才建造建筑.\n若把这个关闭,可能会导致火,水,岩浆,\n刷怪蛋,或所有可以右键的物品\n放在随机的位置.", true);
-    private final CheckboxSetting fastPlace = new CheckboxSetting("总是 快速放置", "建造的时候 总是开启 快速放置模式,\n即使他是关闭的.", false);
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lFast\u00a7r mode can place blocks behind other blocks.\n"
+			+ "\u00a7lLegit\u00a7r mode can bypass NoCheat+.",
+		Mode.values(), Mode.FAST);
+	
+	private final CheckboxSetting checkItem =
+		new CheckboxSetting("Check held item",
+			"Only builds when you are actually holding a block.\n"
+				+ "Turn this off to build with fire, water, lava,\n"
+				+ "spawn eggs, or if you just want to right click\n"
+				+ "with an empty hand in random places.",
+			true);
+	
+	private final CheckboxSetting fastPlace = new CheckboxSetting(
+		"Always FastPlace",
+		"Builds as if FastPlace was enabled,\n" + "even if it's not.", false);
 	
 	private final Random random = new Random();
 	private BlockPos lastPos;
 	
 	public BuildRandomHack()
 	{
-		super("随机放方块");
+		super("BuildRandom");
 		setCategory(Category.BLOCKS);
 		addSetting(mode);
 		addSetting(checkItem);
@@ -263,9 +276,9 @@ public final class BuildRandomHack extends Hack
 	
 	private enum Mode
 	{
-		FAST("快速"),
+		FAST("Fast"),
 		
-		LEGIT("合法");
+		LEGIT("Legit");
 		
 		private final String name;
 		

@@ -70,7 +70,7 @@ public final class WurstLogo
 		version += " MC" + WurstClient.MC_VERSION;
 		
 		if(WurstClient.INSTANCE.getUpdater().isOutdated())
-			version += " (有更新)";
+			version += " (outdated)";
 		
 		return version;
 	}

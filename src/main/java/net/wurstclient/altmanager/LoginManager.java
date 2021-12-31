@@ -42,21 +42,21 @@ public final class LoginManager
 			
 		}catch(AuthenticationUnavailableException e)
 		{
-			return "\u00a74\u00a7l无法与登录服务器建立连接!";
+			return "\u00a74\u00a7lCannot contact authentication server!";
 			
 		}catch(AuthenticationException e)
 		{
 			e.printStackTrace();
 			
-			if(e.getMessage().contains("无效的用户名或密码.")
+			if(e.getMessage().contains("Invalid username or password.")
 				|| e.getMessage().toLowerCase().contains("account migrated"))
-				return "\u00a74\u00a7l错误的密码! (或 黑号被禁)";
-			return "\u00a74\u00a7l无法联系认证服务器!";
+				return "\u00a74\u00a7lWrong password! (or shadowbanned)";
+			return "\u00a74\u00a7lCannot contact authentication server!";
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7l错误的密码! (或 黑号被禁)";
+			return "\u00a74\u00a7lWrong password! (or shadowbanned)";
 		}
 	}
 	

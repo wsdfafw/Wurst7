@@ -30,7 +30,7 @@ public final class KillPotionHack extends Hack
 	
 	public KillPotionHack()
 	{
-		super("杀戮药水");
+		super("KillPotion");
 		
 		setCategory(Category.ITEMS);
 		addSetting(potionType);
@@ -42,7 +42,7 @@ public final class KillPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("仅限创造模式");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}

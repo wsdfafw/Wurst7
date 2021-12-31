@@ -34,7 +34,7 @@ public final class ItemListEditButton extends Component
 		this.setting = setting;
 		
 		TextRenderer fr = WurstClient.MC.textRenderer;
-		buttonWidth = fr.getWidth("编辑...");
+		buttonWidth = fr.getWidth("Edit...");
 		
 		setWidth(getDefaultWidth());
 		setHeight(getDefaultHeight());
@@ -124,7 +124,7 @@ public final class ItemListEditButton extends Component
 		TextRenderer fr = WurstClient.MC.textRenderer;
 		String text = setting.getName() + ": " + setting.getItemNames().size();
 		fr.draw(matrixStack, text, x1, y1 + 2, txtColor);
-		fr.draw(matrixStack, "编辑...", x3 + 2, y1 + 2, txtColor);
+		fr.draw(matrixStack, "Edit...", x3 + 2, y1 + 2, txtColor);
 	}
 	
 	@Override

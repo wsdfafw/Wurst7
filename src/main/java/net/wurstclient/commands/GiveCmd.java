@@ -32,7 +32,8 @@ public final class GiveCmd extends Command
 	public GiveCmd()
 	{
 		super("give",
-			"给你一个带有自定义NBT的物品\n仅创造模式",
+			"Gives you an item with custom NBT data.\n"
+				+ "Requires creative mode.",
 			".give <item> [<amount>] [<nbt>]", ".give <id> [<amount>] [<nbt>]");
 	}
 	
@@ -44,7 +45,7 @@ public final class GiveCmd extends Command
 			throw new CmdSyntaxError();
 		
 		if(!MC.player.getAbilities().creativeMode)
-			throw new CmdError("仅限创造模式.");
+			throw new CmdError("Creative mode only.");
 		
 		// id/name
 		Item item = getItem(args[0]);

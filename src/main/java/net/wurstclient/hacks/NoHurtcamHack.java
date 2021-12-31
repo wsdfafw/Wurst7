@@ -16,7 +16,7 @@ public final class NoHurtcamHack extends Hack
 {
 	public NoHurtcamHack()
 	{
-		super("反摇摆阳");
+		super("NoHurtcam");
 		setCategory(Category.RENDER);
 	}
 }

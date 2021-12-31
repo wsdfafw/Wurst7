@@ -27,7 +27,7 @@ public abstract class Command extends Feature
 		
 		Objects.requireNonNull(syntax);
 		if(syntax.length > 0)
-			syntax[0] = "语法: " + syntax[0];
+			syntax[0] = "Syntax: " + syntax[0];
 		this.syntax = syntax;
 	}
 	

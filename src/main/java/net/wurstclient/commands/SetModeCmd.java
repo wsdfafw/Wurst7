@@ -23,7 +23,10 @@ public final class SetModeCmd extends Command
 	public SetModeCmd()
 	{
 		super("setmode",
-			"改变 mode 设置的功能. 可以让你\n切换 modes 通过键位.", ".setmode <功能> <设置> <模式>", ".setmode <功能> <设置> (prev(上一个)|next(下一个))");
+			"Changes a mode setting of a feature. Allows you to\n"
+				+ "switch modes through keybinds.",
+			".setmode <feature> <setting> <mode>",
+			".setmode <feature> <setting> (prev|next)");
 	}
 	
 	@Override
@@ -43,7 +46,7 @@ public final class SetModeCmd extends Command
 	{
 		if(!(setting instanceof EnumSetting<?>))
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 不是一个有效的mode设置.");
+				+ " is not a mode setting.");
 		
 		return (EnumSetting<?>)setting;
 	}
@@ -67,7 +70,8 @@ public final class SetModeCmd extends Command
 			boolean successful = setting.setSelected(mode);
 			if(!successful)
 				throw new CmdError(
-					"一个mode名为 '" + mode + "' 在 " + feature.getName() + " " + setting.getName() + " 无法被寻找到.");
+					"A mode named '" + mode + "' in " + feature.getName() + " "
+						+ setting.getName() + " could not be found.");
 			break;
 		}
 	}

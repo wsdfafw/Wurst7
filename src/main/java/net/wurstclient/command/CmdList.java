@@ -83,7 +83,7 @@ public final class CmdList
 			
 		}catch(Exception e)
 		{
-			String message = "初始化 Wurst 命令中";
+			String message = "Initializing Wurst commands";
 			CrashReport report = CrashReport.create(e, message);
 			throw new CrashException(report);
 		}

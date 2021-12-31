@@ -84,7 +84,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 		
 		// cancel button
 		addDrawableChild(new ButtonWidget(width / 2 + 2, height - 65, 149, 18,
-			new LiteralText("取消"), b -> WurstClient.MC.setScreen(parent)));
+			new LiteralText("Cancel"), b -> WurstClient.MC.setScreen(parent)));
 	}
 	
 	@Override
@@ -125,7 +125,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 		// text
 		if(choosingKey)
 		{
-			text = "现在按下应该触发这个功能的绑定键.";
+			text = "Now press the key that should trigger this keybind.";
 			if(!selectedKey.equals("key.keyboard.unknown"))
 			{
 				text += "\n\nKey: " + selectedKey.replace("key.keyboard.", "");
@@ -134,7 +134,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 				if(commands != null)
 				{
 					text +=
-						"\n\n警告: 这个按键已经被绑定作为\n指令:";
+						"\n\nWARNING: This key is already bound to the following\ncommand(s):";
 					commands = commands.replace(";", "\u00a7")
 						.replace("\u00a7\u00a7", ";");
 					
@@ -143,7 +143,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 				}
 			}
 		}else
-			text = "选择这个键位应该要做什么";
+			text = "Select what this keybind should do.";
 		
 		// content height
 		if(choosingKey)
@@ -160,7 +160,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 		int txtColor = gui.getTxtColor();
 		
 		// title bar
-		drawCenteredText(matrixStack, client.textRenderer, "新的键位",
+		drawCenteredText(matrixStack, client.textRenderer, "New Keybind",
 			middleX, 32, txtColor);
 		GL11.glEnable(GL11.GL_BLEND);
 		

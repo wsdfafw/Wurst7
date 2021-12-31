@@ -23,9 +23,22 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"FulLightness", "full lightness", "FullGamma", "full gamma"})
 public final class FullbrightHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Method> method = new EnumSetting("方法", "§l光亮Gamma§r 会设置你的\n的伽马值超过100%,但不会在有光影条件下工作.\n\n§l夜视§r 利用夜视效果的方法\n这个 §o通常§r 兼容\n光影水反效果.", (Enum[])Method.values(), (Enum)Method.GAMMA);
-    private final CheckboxSetting fade = new CheckboxSetting("渐变", "在明亮和黑暗之间转变的渐变.", true);
-    private final SliderSetting defaultGamma = new SliderSetting("默认亮度", "无限夜视功能 关闭后将会设置的你的\n光亮度回到这个数值.", 0.5, 0.0, 1.0, 0.01, SliderSetting.ValueDisplay.PERCENTAGE);
+	private final EnumSetting<Method> method = new EnumSetting<>("Method",
+		"\u00a7lGamma\u00a7r works by setting your brightness slider\n"
+			+ "beyond 100%. Incompatible with shader packs.\n\n"
+			+ "\u00a7lNight Vision\u00a7r works by applying the night\n"
+			+ "vision effect. This \u00a7ousually\u00a7r works with\n"
+			+ "shader packs.",
+		Method.values(), Method.GAMMA);
+	
+	private final CheckboxSetting fade = new CheckboxSetting("Fade",
+		"Slowly fades between brightness and darkness.", true);
+	
+	private final SliderSetting defaultGamma =
+		new SliderSetting("Default brightness",
+			"Fullbright will set your brightness slider\n"
+				+ "back to this value when you turn it off.",
+			0.5, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private boolean wasGammaChanged;
 	private float nightVisionStrength;
@@ -50,7 +63,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			public void onUpdate()
 			{
 				double gamma = MC.options.gamma;
-				System.out.println("亮度开始在 " + gamma);
+				System.out.println("Brightness started at " + gamma);
 				
 				if(gamma > 1)
 					wasGammaChanged = true;
@@ -150,8 +163,8 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	
 	private static enum Method
 	{
-		GAMMA("伽马Gamma"),
-		NIGHT_VISION("夜视药");
+		GAMMA("Gamma"),
+		NIGHT_VISION("Night Vision");
 		
 		private final String name;
 		

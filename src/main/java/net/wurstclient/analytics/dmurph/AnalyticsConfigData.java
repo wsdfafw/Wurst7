@@ -53,7 +53,7 @@ public class AnalyticsConfigData
 	public AnalyticsConfigData(String argTrackingCode, VisitorData visitorData)
 	{
 		if(argTrackingCode == null)
-			throw new RuntimeException("跟踪代码不能为空");
+			throw new RuntimeException("Tracking code cannot be null");
 		trackingCode = argTrackingCode;
 		this.visitorData = visitorData;
 	}

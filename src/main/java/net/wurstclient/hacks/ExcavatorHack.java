@@ -60,12 +60,15 @@ public final class ExcavatorHack extends Hack
 	private ExcavatorPathFinder pathFinder;
 	private PathProcessor processor;
 	
-	private final SliderSetting range = new SliderSetting("范围", 5.0, 2.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Mode> mode = new EnumSetting("模式", (Enum[])Mode.values(), (Enum)Mode.FAST);
+	private final SliderSetting range =
+		new SliderSetting("Range", 5, 2, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("Mode", Mode.values(), Mode.FAST);
 	
 	public ExcavatorHack()
 	{
-		super("区域挖掘");
+		super("Excavator");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -597,13 +600,13 @@ public final class ExcavatorHack extends Hack
 	
 	private static enum Step
 	{
-		START_POS("选择开始的位置.", true),
+		START_POS("Select start position.", true),
 		
-		END_POS("选择结束的位置.", true),
+		END_POS("Select end position.", true),
 		
-		SCAN_AREA("扫描区域中...", false),
+		SCAN_AREA("Scanning area...", false),
 		
-		EXCAVATE("挖掘中...", false);
+		EXCAVATE("Excavating...", false);
 		
 		private static final Step[] SELECT_POSITION_STEPS =
 			{START_POS, END_POS};

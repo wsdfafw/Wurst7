@@ -21,13 +21,13 @@ public final class ChangelogOtf extends OtherFeature
 {
 	public ChangelogOtf()
 	{
-		super("更新日志", "打开更新日志在浏览器中");
+		super("Changelog", "Opens the changelog in your browser.");
 	}
 	
 	@Override
 	public String getPrimaryAction()
 	{
-		return "查看更新日志";
+		return "View Changelog";
 	}
 	
 	@Override

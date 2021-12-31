@@ -23,14 +23,14 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class AutoTotemHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting showCounter = new CheckboxSetting(
-		"显示图腾计数器", "", true);
+		"Show totem counter", "Displays the number of totems you have.", true);
 	
 	private int nextTickSlot;
 	private int totems;
 	
 	public AutoTotemHack()
 	{
-		super("自动不死图腾");
+		super("AutoTotem");
 		setCategory(Category.COMBAT);
 		addSetting(showCounter);
 	}

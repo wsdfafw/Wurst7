@@ -43,7 +43,7 @@ public final class BaseFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final BlockListSetting naturalBlocks = new BlockListSetting(
-		"天然块状物",
+		"Natural Blocks",
 		"These blocks will be considered\n" + "part of natural generation.\n\n"
 			+ "They will NOT be highlighted\n" + "as player bases.",
 		"minecraft:acacia_leaves", "minecraft:acacia_log", "minecraft:air",
@@ -87,7 +87,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("颜色", "手动设置的方块将会\n以这种颜色高亮.", Color.RED);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Man-made blocks will be\n" + "highlighted in this color.", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	
@@ -103,8 +104,7 @@ public final class BaseFinderHack extends Hack
 	
 	public BaseFinderHack()
 	{
-		super("高亮基地");
-		
+		super("BaseFinder");
 		setCategory(Category.RENDER);
 		addSetting(naturalBlocks);
 		addSetting(color);
@@ -145,7 +145,6 @@ public final class BaseFinderHack extends Hack
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
-		
 		matchingBlocks.clear();
 		vertices.clear();
 		oldRegionX = null;
@@ -266,7 +265,7 @@ public final class BaseFinderHack extends Hack
 				ChatUtils
 					.warning("BaseFinder found \u00a7lA LOT\u00a7r of blocks.");
 				ChatUtils.message(
-					"为了防止滞后，它将只显示前10000个块。.");
+					"To prevent lag, it will only show the first 10000 blocks.");
 			}
 			
 			// reset timer

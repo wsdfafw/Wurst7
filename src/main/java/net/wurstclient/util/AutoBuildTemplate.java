@@ -41,14 +41,16 @@ public final class AutoBuildTemplate
 			JsonUtils.GSON.fromJson(json.get("blocks"), int[][].class);
 		
 		if(blocks == null)
-			throw new JsonException("模板不存在方块!");
+			throw new JsonException("Template has no blocks!");
 		
 		for(int i = 0; i < blocks.length; i++)
 		{
 			int length = blocks[i].length;
 			
 			if(length < 3)
-				throw new JsonException("实体方块[" + i + "] 没有 X, Y 和 Z 的设置. 只找到 " + length + " 值");
+				throw new JsonException("Entry blocks[" + i
+					+ "] doesn't have X, Y and Z offset. Only found " + length
+					+ " values");
 		}
 		
 		return new AutoBuildTemplate(path, blocks);

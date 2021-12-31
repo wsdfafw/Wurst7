@@ -68,7 +68,7 @@ public abstract class StatsScreenMixin extends Screen implements StatsListener
 	private void updateWurstButtonText(ButtonWidget button)
 	{
 		WurstClient wurst = WurstClient.INSTANCE;
-		String text = (wurst.isEnabled() ? "关闭" : "开启") + " Wurst";
+		String text = (wurst.isEnabled() ? "Disable" : "Enable") + " Wurst";
 		button.setMessage(new LiteralText(text));
 	}
 }

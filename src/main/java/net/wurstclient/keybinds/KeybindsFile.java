@@ -48,7 +48,7 @@ public final class KeybindsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法载入 " + path.getFileName());
+			System.out.println("Couldn't load " + path.getFileName());
 			e.printStackTrace();
 			
 			list.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
@@ -106,7 +106,7 @@ public final class KeybindsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法保存 " + path.getFileName());
+			System.out.println("Couldn't save " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

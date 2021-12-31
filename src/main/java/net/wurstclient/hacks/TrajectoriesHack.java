@@ -40,11 +40,11 @@ import net.wurstclient.util.RotationUtils;
 public final class TrajectoriesHack extends Hack implements RenderListener
 {
 	private final ColorSetting color =
-		new ColorSetting("颜色", "Color of the trajectory.", Color.GREEN);
+		new ColorSetting("Color", "Color of the trajectory.", Color.GREEN);
 	
 	public TrajectoriesHack()
 	{
-		super("预测轨迹");
+		super("Trajectories");
 		setCategory(Category.RENDER);
 		addSetting(color);
 	}

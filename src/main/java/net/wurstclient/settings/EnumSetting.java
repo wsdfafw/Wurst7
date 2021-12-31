@@ -120,11 +120,11 @@ public final class EnumSetting<T extends Enum<T>> extends Setting
 		
 		String command = ".setmode " + featureName.toLowerCase() + " "
 			+ getName().toLowerCase().replace(" ", "_") + " ";
-		String description = "设置 " + fullName + " 到 ";
+		String description = "Set " + fullName + " to ";
 		
 		LinkedHashSet<PossibleKeybind> pkb = new LinkedHashSet<>();
-		pkb.add(new PossibleKeybind(command + "next", "下一个 " + fullName));
-		pkb.add(new PossibleKeybind(command + "prev", "上一个 " + fullName));
+		pkb.add(new PossibleKeybind(command + "next", "Next " + fullName));
+		pkb.add(new PossibleKeybind(command + "prev", "Previous " + fullName));
 		
 		for(T v : values)
 		{

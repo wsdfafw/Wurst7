@@ -34,7 +34,7 @@ public final class MassTpaHack extends Hack
 	
 	public MassTpaHack()
 	{
-		super("大量TPA请求");
+		super("MassTPA");
 		setCategory(Category.CHAT);
 	}
 	

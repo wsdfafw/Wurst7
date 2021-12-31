@@ -42,20 +42,31 @@ import net.wurstclient.util.FakePlayerEntity;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
-@SearchTags({"player esp", "PlayerTracers", "player tracers","PlayerESP"})
+@SearchTags({"player esp", "PlayerTracers", "player tracers"})
 public final class PlayerEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final EnumSetting<Style> style = new EnumSetting("风格", (Enum[])Style.values(), (Enum)Style.LINES_AND_BOXES);
-    private final EnumSetting<BoxSize> boxSize = new EnumSetting("框大小", "§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.", (Enum[])BoxSize.values(), (Enum)BoxSize.FANCY);
-    private final CheckboxSetting filterSleeping = new CheckboxSetting("排除睡觉", "不会显示正在睡觉的玩家.", false);
-    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不会显示隐身中的玩家.", false);
+	private final EnumSetting<Style> style =
+		new EnumSetting<>("Style", Style.values(), Style.LINES_AND_BOXES);
+	
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact\n"
+			+ "hitbox of each player.\n"
+			+ "\u00a7lFancy\u00a7r mode shows slightly larger\n"
+			+ "boxes that look better.",
+		BoxSize.values(), BoxSize.FANCY);
+	
+	private final CheckboxSetting filterSleeping = new CheckboxSetting(
+		"Filter sleeping", "Won't show sleeping players.", false);
+	
+	private final CheckboxSetting filterInvisible = new CheckboxSetting(
+		"Filter invisible", "Won't show invisible players.", false);
 	
 	private final ArrayList<PlayerEntity> players = new ArrayList<>();
 	
 	public PlayerEspHack()
 	{
-		super("高亮玩家");
+		super("PlayerESP");
 		setCategory(Category.RENDER);
 		
 		addSetting(style);
@@ -229,9 +240,9 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	
 	private enum Style
 	{
-		BOXES("只显示框框", true, false),
-		LINES("只显示线条", false, true),
-		LINES_AND_BOXES("线条和框框", true, true);
+		BOXES("Boxes only", true, false),
+		LINES("Lines only", false, true),
+		LINES_AND_BOXES("Lines and boxes", true, true);
 		
 		private final String name;
 		private final boolean boxes;
@@ -253,8 +264,8 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	
 	private enum BoxSize
 	{
-		ACCURATE("精确", 0),
-		FANCY("更好", 0.1F);
+		ACCURATE("Accurate", 0),
+		FANCY("Fancy", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

@@ -22,14 +22,15 @@ public class FriendsCmd extends Command
 	private static final int FRIENDS_PER_PAGE = 8;
 	
 	private final CheckboxSetting middleClickFriends = new CheckboxSetting(
-		"Middle click friends", "通过用鼠标中键单击来添加/删除朋友.",
+		"Middle click friends", "Add/remove friends by clicking them with\n"
+			+ "the middle mouse button.",
 		true);
 	
 	public FriendsCmd()
 	{
-		super("friends", "管理你的白名单(或者说是\"好友列表\").", ".friends add <玩家ID>(添加某个玩家到白名单)",
-			".friends remove <玩家ID>(删除白名单内的某个玩家)", ".friends remove-all(删除白名单内的所有玩家)",
-			".friends list [<页数>](查看白名单)");
+		super("friends", "Manages your friends list.", ".friends add <name>",
+			".friends remove <name>", ".friends remove-all",
+			".friends list [<page>]");
 		
 		addSetting(middleClickFriends);
 	}
@@ -71,10 +72,10 @@ public class FriendsCmd extends Command
 		String name = args[1];
 		if(WURST.getFriends().contains(name))
 			throw new CmdError(
-				"\"" + name + "\"  已经在你的好友名单中.");
+				"\"" + name + "\" is already in your friends list.");
 		
 		WURST.getFriends().addAndSave(name);
-		ChatUtils.message("添加好友 \"" + name + "\".");
+		ChatUtils.message("Added friend \"" + name + "\".");
 	}
 	
 	private void remove(String[] args) throws CmdException
@@ -84,10 +85,10 @@ public class FriendsCmd extends Command
 		
 		String name = args[1];
 		if(!WURST.getFriends().contains(name))
-			throw new CmdError("\"" + name + "\" 不在你的好友列表内.");
+			throw new CmdError("\"" + name + "\" is not in your friends list.");
 		
 		WURST.getFriends().removeAndSave(name);
-		ChatUtils.message("移除好友 \"" + name + "\".");
+		ChatUtils.message("Removed friend \"" + name + "\".");
 	}
 	
 	private void removeAll(String[] args) throws CmdException
@@ -96,7 +97,7 @@ public class FriendsCmd extends Command
 			throw new CmdSyntaxError();
 		
 		WURST.getFriends().removeAllAndSave();
-		ChatUtils.message("所有好友移除了.");
+		ChatUtils.message("All friends removed. Oof.");
 	}
 	
 	private void list(String[] args) throws CmdException
@@ -110,14 +111,14 @@ public class FriendsCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("无效页码: " + page);
+			throw new CmdSyntaxError("Invalid page: " + page);
 		
-		ChatUtils.message("当前好友: " + friends.size());
+		ChatUtils.message("Current friends: " + friends.size());
 		
 		int start = (page - 1) * FRIENDS_PER_PAGE;
 		int end = Math.min(page * FRIENDS_PER_PAGE, friends.size());
 		
-		ChatUtils.message("好友列表 (页码 " + page + "/" + pages + ")");
+		ChatUtils.message("Friends list (page " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(friends.get(i).toString());
 	}
@@ -128,7 +129,7 @@ public class FriendsCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[1]))
-			throw new CmdSyntaxError("不是一个数字: " + args[1]);
+			throw new CmdSyntaxError("Not a number: " + args[1]);
 		
 		return Integer.parseInt(args[1]);
 	}

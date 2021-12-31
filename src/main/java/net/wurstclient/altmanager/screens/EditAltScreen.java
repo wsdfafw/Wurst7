@@ -20,7 +20,7 @@ public final class EditAltScreen extends AltEditorScreen
 	public EditAltScreen(Screen prevScreen, AltManager altManager,
 		Alt editedAlt)
 	{
-		super(prevScreen, new LiteralText("编辑账户"));
+		super(prevScreen, new LiteralText("Edit Alt"));
 		this.altManager = altManager;
 		this.editedAlt = editedAlt;
 	}
@@ -40,7 +40,7 @@ public final class EditAltScreen extends AltEditorScreen
 	@Override
 	protected String getDoneButtonText()
 	{
-		return "保存";
+		return "Save";
 	}
 	
 	@Override

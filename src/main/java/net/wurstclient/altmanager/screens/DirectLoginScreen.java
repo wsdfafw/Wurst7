@@ -16,13 +16,13 @@ public final class DirectLoginScreen extends AltEditorScreen
 {
 	public DirectLoginScreen(Screen prevScreen)
 	{
-		super(prevScreen, new LiteralText("直接登录"));
+		super(prevScreen, new LiteralText("Direct Login"));
 	}
 	
 	@Override
 	protected String getDoneButtonText()
 	{
-		return "登录";
+		return "Login";
 	}
 	
 	@Override

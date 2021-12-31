@@ -1,10 +1,10 @@
-＃ 行为守则
+# Code of Conduct
 
-1. **在提出索赔之前，请尝试证明自己是错误的。**
-    如果可行，请对其进行测试。 如果没有，谷歌它看看其他人是否已经证明它是错误的。 这可以让您免于尴尬，同时有助于阻止错误信息的传播。
+1. **Before making a claim, try to prove yourself wrong.**  
+   Test it, if feasible. If not, google it to see if someone else has proven it wrong. This saves you from embarrassment and helps to stop the spread of misinformation at the same time.
 
-2. **在提出问题之前，请尝试自己回答。**
-    如果可行，请对其进行测试。 如果没有，谷歌一下，看看之前有没有其他人问过它。 这可以节省您的时间（谷歌搜索比等待人类回复更快）并避免我们感到沮丧（作为主持人，一遍又一遍地回答相同的问题很烦人）。
+2. **Before asking a question, try to answer it for yourself.**  
+   Test it, if feasible. If not, google it to see if someone else has asked it before. This saves you time (it is faster to google something than to wait for a human to reply) and saves us frustration (as a moderator, answering the same question over and over again is tiresome).
 
-3. **不要做混蛋。**
-    我们感谢讨论，但不接受人身攻击和骂人。
+3. **Don't be a jerk.**  
+   We appreciate discussion but do not accept personal attacks and calling people names.

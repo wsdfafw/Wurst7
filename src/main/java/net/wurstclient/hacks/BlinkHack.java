@@ -34,7 +34,7 @@ public final class BlinkHack extends Hack
 	
 	public BlinkHack()
 	{
-		super("闪烁");
+		super("Blink");
 		setCategory(Category.MOVEMENT);
 		addSetting(limit);
 	}

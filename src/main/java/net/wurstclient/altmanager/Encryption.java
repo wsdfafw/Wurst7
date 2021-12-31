@@ -71,7 +71,7 @@ public final class Encryption
 		}catch(GeneralSecurityException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建AES密码"));
+				CrashReport.create(e, "Creating AES ciphers"));
 		}
 	}
 	
@@ -83,7 +83,7 @@ public final class Encryption
 			
 		}catch(IllegalArgumentException | GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "解密字节"));
+			throw new CrashException(CrashReport.create(e, "Decrypting bytes"));
 		}
 	}
 	
@@ -141,7 +141,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "加密字节"));
+			throw new CrashException(CrashReport.create(e, "Encrypting bytes"));
 		}
 	}
 	
@@ -182,7 +182,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | ReflectiveOperationException
 			| IOException e)
 		{
-			System.err.println("无法加载RSA密钥对!");
+			System.err.println("Couldn't load RSA keypair!");
 			e.printStackTrace();
 			
 			return createRsaKeys(publicFile, privateFile);
@@ -200,7 +200,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			System.err.println("无法加载AES密钥!");
+			System.err.println("Couldn't load AES key!");
 			e.printStackTrace();
 			
 			return createAesKey(path, pair);
@@ -211,7 +211,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成RSA密码.");
+			System.out.println("Generating RSA keypair.");
 			
 			// generate keypair
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -247,7 +247,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | IOException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建RSA密钥对"));
+				CrashReport.create(e, "Creating RSA keypair"));
 		}
 	}
 	
@@ -255,7 +255,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成AES密钥.");
+			System.out.println("Generating AES key.");
 			
 			// generate key
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -271,7 +271,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建AES密钥"));
+			throw new CrashException(CrashReport.create(e, "Creating AES key"));
 		}
 	}
 	

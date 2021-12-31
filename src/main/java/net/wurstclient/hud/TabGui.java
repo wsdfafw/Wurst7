@@ -365,7 +365,7 @@ public final class TabGui implements KeyPressListener
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 			{
 				ChatUtils
-					.error(feature.getName() + " 被 TooManyHax 功能所屏蔽.");
+					.error(feature.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			

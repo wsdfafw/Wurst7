@@ -17,6 +17,10 @@ public final class LastServerOtf extends OtherFeature
 {
 	public LastServerOtf()
 	{
-		super("上一个服务器","Wurst在服务器选择屏幕上添加了一个“上一个服务器”按钮,该按钮会自动将您带回上次玩的服务器.\n\n当你被踢和/或有很多服务器时很有用.");
+		super("LastServer",
+			"Wurst adds a \"Last Server\" button to the server selection\n"
+				+ "screen that automatically brings you back to the last\n"
+				+ "server you played on.\n\n"
+				+ "Useful when you get kicked and/or have a lot of servers.");
 	}
 }

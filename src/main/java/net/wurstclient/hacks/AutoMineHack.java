@@ -25,7 +25,7 @@ public final class AutoMineHack extends Hack implements UpdateListener
 	
 	public AutoMineHack()
 	{
-		super("自动挖");
+		super("AutoMine");
 		setCategory(Category.BLOCKS);
 	}
 	

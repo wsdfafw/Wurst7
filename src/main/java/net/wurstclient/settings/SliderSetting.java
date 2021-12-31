@@ -244,8 +244,8 @@ public class SliderSetting extends Setting implements SliderLock
 		command += getName().toLowerCase().replace(" ", "_") + " ";
 		
 		LinkedHashSet<PossibleKeybind> pkb = new LinkedHashSet<>();
-		pkb.add(new PossibleKeybind(command + "more", "增加 " + fullName));
-		pkb.add(new PossibleKeybind(command + "less", "减少 " + fullName));
+		pkb.add(new PossibleKeybind(command + "more", "Increase " + fullName));
+		pkb.add(new PossibleKeybind(command + "less", "Decrease " + fullName));
 		
 		return pkb;
 	}

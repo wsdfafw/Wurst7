@@ -29,7 +29,7 @@ public final class WurstUpdater implements UpdateListener
 	{
 		if(thread == null)
 		{
-			thread = new Thread(this::checkForUpdates, "Wurst更新器");
+			thread = new Thread(this::checkForUpdates, "WurstUpdater");
 			thread.start();
 			return;
 		}
@@ -69,21 +69,22 @@ public final class WurstUpdater implements UpdateListener
 			}
 			
 			if(latestVersion == null)
-				throw new NullPointerException("最新版本并不存在!");
+				throw new NullPointerException("Latest version is missing!");
 			
-			System.out.println("[更新] 当前版本: " + currentVersion);
-			System.out.println("[更新] 最新版本: " + latestVersion);
+			System.out.println("[Updater] Current version: " + currentVersion);
+			System.out.println("[Updater] Latest version: " + latestVersion);
 			outdated = currentVersion.shouldUpdateTo(latestVersion);
 			
 		}catch(Exception e)
 		{
-			System.err.println("[更新程序] 发生错误!");
+			System.err.println("[Updater] An error occurred!");
 			e.printStackTrace();
 		}
 		
 		if(latestVersion == null || latestVersion.isInvalid())
 		{
-			String text = "当检查更新的时候发生了一个错误. 点击 §n这里§r 来手动检查更新";
+			String text = "An error occurred while checking for updates."
+				+ " Click \u00a7nhere\u00a7r to check manually.";
 			String url = "https://www.wurstclient.net/download/";
 			showLink(text, url);
 			return;
@@ -92,8 +93,9 @@ public final class WurstUpdater implements UpdateListener
 		if(!outdated)
 			return;
 		
-		String text = "Wurst " + latestVersion + " 英文原版新版可用. 点击 §n这里§r 提醒作者更新.";
-		String url = "https://docs.qq.com/form/page/DYW1RcmFBVXNZZEdD#/fill-detail";
+		String text = "Wurst " + latestVersion + " is now available."
+			+ " Click \u00a7nhere\u00a7r to download the update.";
+		String url = "https://www.wurstclient.net/download/";
 		showLink(text, url);
 	}
 	

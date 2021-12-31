@@ -1,44 +1,44 @@
-＃ 如何帮助
-感谢您考虑贡献！以下是您可以提供帮助的一些事项，排名不分先后：
+# How To Help
+Thank you for considering to contribute! Here are some things you can help with, in no particular order:
 
-- 修正一个错字
-  - 在 Wurst Client 中（寻找右上角的钢笔图标）
-  - 在 WurstClient.net 上（一直向下滚动并单击“编辑此页面”）
-  - 在 Wurst Wiki（登录并单击“编辑此页面”）
-- 改进现有的错误报告
-  - 找出哪些 Minecraft 版本受到该错误的影响
-  - 你能弄清楚如何让错误每次都发生吗？如果是这样，请告诉我。
-    - ["无法重现"](https://github.com/Wurst-Imperium/Wurst7/labels/could%20not%20reproduce) 标签列出了我无法弄清楚的错误报告。
-- 报告 Minecraft 中可以添加到 Wurst 的新欺骗/利用
-- 帮助处理功能请求
-  - 你能解释一下这个功能是如何工作的吗？
-  - 您可以在拉取请求中添加该功能吗？
-  - 您是否还了解其他未提及的功能？
-- 创建拉取请求
-  - 添加一个新的黑客/命令/等。
-  - 添加新设置以使 Wurst 更具可定制性
-  - 添加/改进描述和工具提示，使 Wurst 更易于使用
-- 下载和测试现有的拉取请求
-  - 你能确认它真的有效吗？
-  - 你发现它有什么问题吗？
-- 为现有的拉取请求编写代码审查
-  - 寻找代码中的错误并指出它们
-  - 建议改进
-  - 检查代码不是从另一个客户端窃取的
-- 帮助 [Wurst Wiki](https://wiki.wurstclient.net/)
-  - 将 Wurst Wiki 文章翻译成另一种语言
-  - 在适当的地方添加功能的屏幕截图
-  - 确保记录最近 Wurst 更新的更改
-  - 挖掘旧的 Wurst 更新以找出添加功能的确切时间
-- 帮助那些不知道如何安装 Wurst 的人
-- 制作教程/操作视频
-  - 如何制作[AutoBuild 模板](https://wiki.wurstclient.net/_detail/autobuild_templates_explained_ll.webp?id=autobuild)
-  - 如何使用[个人资料系统](https://www.wurstclient.net/updates/wurst-7-1/)
-- 创建更多 Wurst 的备份/档案
-  - [创建分叉](https://github.com/Wurst-Imperium/Wurst7/fork) / 这个仓库的镜像
-  - 将 [WurstClient.net](https://www.wurstclient.net/) 页面添加到 Internet Archive
-  - 将 [Wurst Wiki](https://wiki.wurstclient.net/) 文章添加到 Internet Archive
-  - 存档旧的 [Wurst 版本](https://www.wurstclient.net/download/) 和源代码，以防它们被删除
-  - 存档 [WiZARDHAX Wurst 视频](https://www.youtube.com/c/wizardhax/videos)，以防频道被关闭
-- 只是传播这个词，告诉人们关于 Wurst 等。
-- 用更多人们可以做的事情来扩展这个列表（这是我现在能想到的。）
+- fixing a typo
+  - in the Wurst Client itself (look for the pen icon at the top right)
+  - on WurstClient.net (scroll all the way down and click "edit this page")
+  - on the Wurst Wiki (login and click "Edit this page")
+- improving an existing bug report
+  - figuring out which Minecraft versions are affected by the bug
+  - Can you figure out how to make the bug happen every time? If so, please let me know.
+    - The ["could not reproduce"](https://github.com/Wurst-Imperium/Wurst7/labels/could%20not%20reproduce) label lists bug reports where I haven't been able to figure this out.
+- reporting a new dupe/exploit in Minecraft that could be added to Wurst
+- helping with a feature request
+  - Can you explain how the feature works?
+  - Can you add the feature in a Pull Request?
+  - Do you know anything else about the feature that hasn't been mentioned?
+- creating a pull request
+  - adding a new hack/command/etc.
+  - adding new settings to make Wurst more customizable
+  - adding/improving descriptions and tooltips to make Wurst easier to use
+- downloading and testing an existing pull request
+  - Can you confirm that it actually works?
+  - Did you find any problems with it?
+- writing a code review for an existing pull request
+  - looking for bugs in the code and pointing them out
+  - suggesting improvements
+  - checking that the code wasn't stolen from another client
+- helping with the [Wurst Wiki](https://wiki.wurstclient.net/)
+  - translating Wurst Wiki articles to another language
+  - adding screenshots of features where appropriate
+  - making sure that changes from recent Wurst updates are documented
+  - digging through old Wurst updates to find out when exactly a feature was added
+- helping people who can't figure out how to install Wurst
+- making tutorials / how-to videos
+  - how to make [AutoBuild templates](https://wiki.wurstclient.net/_detail/autobuild_templates_explained_ll.webp?id=autobuild)
+  - how to use the [profile system](https://www.wurstclient.net/updates/wurst-7-1/)
+- creating more backups/archives of Wurst
+  - [creating a fork](https://github.com/Wurst-Imperium/Wurst7/fork) / mirror of this repository
+  - adding [WurstClient.net](https://www.wurstclient.net/) pages to the Internet Archive
+  - adding [Wurst Wiki](https://wiki.wurstclient.net/) articles to the Internet Archive
+  - archiving old [Wurst releases](https://www.wurstclient.net/download/) & source code in case they are ever taken down
+  - archiving [WiZARDHAX Wurst videos](https://www.youtube.com/c/wizardhax/videos) in case the channel is ever taken down
+- just spreading the word, telling people about Wurst, etc.
+- expanding this list with more things that people can do to help (This is all I could think of for now.)

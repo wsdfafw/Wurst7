@@ -85,7 +85,7 @@ public enum WurstClient
 	
 	public void initialize()
 	{
-		System.out.println("启动 Wurst Client...");
+		System.out.println("Starting Wurst Client...");
 		
 		wurstFolder = createWurstFolder();
 		
@@ -163,7 +163,7 @@ public enum WurstClient
 		}catch(IOException e)
 		{
 			throw new RuntimeException(
-				"无法创建 .minecraft/wurst 文件夹", e);
+				"Couldn't create .minecraft/wurst folder.", e);
 		}
 		
 		return wurstFolder;
@@ -195,7 +195,7 @@ public enum WurstClient
 		}catch(IOException e)
 		{
 			throw new RuntimeException(
-				"无法创建 '.Wurst encryption' 文件夹", e);
+				"Couldn't create '.Wurst encryption' folder.", e);
 		}
 		
 		return encFolder;

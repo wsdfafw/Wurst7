@@ -45,7 +45,7 @@ public final class PreferencesFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法载入 " + path.getFileName());
+			System.out.println("Couldn't load " + path.getFileName());
 			e.printStackTrace();
 		}
 		
@@ -62,7 +62,7 @@ public final class PreferencesFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法保存 " + path.getFileName());
+			System.out.println("Couldn't save " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

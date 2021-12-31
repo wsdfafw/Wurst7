@@ -56,12 +56,25 @@ import net.wurstclient.util.RotationUtils;
 public class ChestEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final ColorSetting basicColor = new ColorSetting("箱子颜色", "普通的箱将会以\n这种颜色高亮.", Color.GREEN);
-    private final ColorSetting trapColor = new ColorSetting("陷阱箱颜色", "陷阱箱将会以\n这种颜色高亮.", new Color(0xFF8000));
-    private final ColorSetting enderColor = new ColorSetting("末影箱颜色", "末影箱将会以\n这种颜色高亮.", Color.CYAN);
-    private final ColorSetting shulkerColor = new ColorSetting("潜影盒颜色", "潜影盒将会以\n这种颜色高亮.", Color.MAGENTA);
-    private final ColorSetting cartColor = new ColorSetting("矿车箱颜色", "矿车箱将会以\n这种颜色高亮.", Color.GREEN);
-    private final EnumSetting<Style> style = new EnumSetting("风格", (Enum[])Style.values(), (Enum)Style.BOXES);
+	private final ColorSetting basicColor = new ColorSetting("Chest color",
+		"Normal chests will be\n" + "highlighted in this color.", Color.GREEN);
+	
+	private final ColorSetting trapColor = new ColorSetting("Trap color",
+		"Trapped chests will be\n" + "highlighted in this color.",
+		new Color(0xFF8000));
+	
+	private final ColorSetting enderColor = new ColorSetting("Ender color",
+		"Ender chests will be\n" + "highlighted in this color.", Color.CYAN);
+	
+	private final ColorSetting shulkerColor = new ColorSetting("Shulker color",
+		"Shulker boxes will be\n" + "highlighted in this color.",
+		Color.MAGENTA);
+	
+	private final ColorSetting cartColor = new ColorSetting("Cart color",
+		"Minecarts will be\n" + "highlighted in this color.", Color.GREEN);
+	
+	private final EnumSetting<Style> style =
+		new EnumSetting<>("Style", Style.values(), Style.BOXES);
 	
 	private final ArrayList<Box> basicChests = new ArrayList<>();
 	private final ArrayList<Box> trapChests = new ArrayList<>();
@@ -74,7 +87,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	
 	public ChestEspHack()
 	{
-		super("高亮箱子");
+		super("ChestESP");
 		
 		setCategory(Category.RENDER);
 		addSetting(basicColor);

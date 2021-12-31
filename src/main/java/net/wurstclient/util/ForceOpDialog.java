@@ -51,29 +51,29 @@ public class ForceOpDialog extends JDialog
 		setLayout(null);
 		SwingUtils.setExitOnClose(this);
 		
-		addLabel("密码列表", 4, 4);
+		addLabel("Password list", 4, 4);
 		addPwListSelector();
 		addHowToUseButton();
 		
 		addSeparator(4, 56, 498, 4);
 		
-		addLabel("速度", 4, 64);
+		addLabel("Speed", 4, 64);
 		addDelaySelector();
 		addDontWaitCheckbox();
 		
 		addSeparator(4, 132, 498, 4);
 		
-		addLabel("用户名: " + username, 4, 140);
-		lPasswords = addLabel("密码: 错误", 4, 160);
-		lTime = addPersistentLabel("剩余时长: 错误", 4, 180);
-		lAttempts = addPersistentLabel("重试次数: 错误", 4, 200);
+		addLabel("Username: " + username, 4, 140);
+		lPasswords = addLabel("Passwords: error", 4, 160);
+		lTime = addPersistentLabel("Estimated time: error", 4, 180);
+		lAttempts = addPersistentLabel("Attempts: error", 4, 200);
 		addStartButton();
 		
 		updateNumPasswords();
 		setVisible(true);
 		toFront();
 		
-		new Thread(this::handleDialogInput, "ForceOP 日志输入").start();
+		new Thread(this::handleDialogInput, "ForceOP dialog input").start();
 	}
 	
 	private void handleDialogInput()
@@ -124,7 +124,7 @@ public class ForceOpDialog extends JDialog
 		rbGroup.add(rbDefaultList);
 		rbGroup.add(rbTXTList);
 		
-		JButton bBrowse = new JButton("浏览");
+		JButton bBrowse = new JButton("browse");
 		bBrowse.setLocation(rbTXTList.getX() + rbTXTList.getWidth() + 4, 24);
 		bBrowse.setSize(bBrowse.getPreferredSize());
 		bBrowse.setEnabled(rbTXTList.isSelected());
@@ -133,7 +133,7 @@ public class ForceOpDialog extends JDialog
 		
 		rbDefaultList.addActionListener(e -> {
 			bBrowse.setEnabled(false);
-			System.out.println("默认列表");
+			System.out.println("list default");
 		});
 		
 		rbTXTList.addActionListener(e -> {
@@ -155,7 +155,7 @@ public class ForceOpDialog extends JDialog
 		
 		if(!fsTXTList.getSelectedFile().exists())
 		{
-			JOptionPane.showMessageDialog(this, "文件不存在", "错误",
+			JOptionPane.showMessageDialog(this, "File does not exist!", "Error",
 				JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -166,7 +166,7 @@ public class ForceOpDialog extends JDialog
 	
 	private void addHowToUseButton()
 	{
-		JButton bHowTo = new JButton("如何使用(跳转浏览器)");
+		JButton bHowTo = new JButton("How to use");
 		bHowTo.setFont(new Font(bHowTo.getFont().getName(), Font.BOLD, 16));
 		bHowTo.setSize(bHowTo.getPreferredSize());
 		bHowTo.setLocation(506 - bHowTo.getWidth() - 32, 12);
@@ -191,7 +191,7 @@ public class ForceOpDialog extends JDialog
 	
 	private void addDelaySelector()
 	{
-		JLabel lDelay1 = addLabel("重试的延迟:", 4, 84);
+		JLabel lDelay1 = addLabel("Delay between attempts:", 4, 84);
 		
 		spDelay = new JSpinner();
 		spDelay.setToolTipText("<html>"
@@ -222,7 +222,7 @@ public class ForceOpDialog extends JDialog
 	
 	private void addStartButton()
 	{
-		JButton bStart = new JButton("开始");
+		JButton bStart = new JButton("Start");
 		bStart.setFont(new Font(bStart.getFont().getName(), Font.BOLD, 18));
 		bStart.setLocation(506 - 192 - 12, 144);
 		bStart.setSize(192, 66);
@@ -279,7 +279,7 @@ public class ForceOpDialog extends JDialog
 	
 	private void updatePasswordsLabel()
 	{
-		lPasswords.setText("密码: " + numPW);
+		lPasswords.setText("Passwords: " + numPW);
 		lPasswords.setSize(lPasswords.getPreferredSize());
 	}
 	
@@ -298,7 +298,7 @@ public class ForceOpDialog extends JDialog
 		
 		String timeString = getTimeString(timeMS);
 		
-		lTime.setText("剩余时间: " + timeString);
+		lTime.setText("Estimated time: " + timeString);
 		lTime.setSize(lTime.getPreferredSize());
 	}
 	
@@ -319,7 +319,7 @@ public class ForceOpDialog extends JDialog
 	
 	private void updateAttemptsLabel()
 	{
-		lAttempts.setText("尝试: " + (lastPW + 1) + "/" + numPW);
+		lAttempts.setText("Attempts: " + (lastPW + 1) + "/" + numPW);
 		lAttempts.setSize(lAttempts.getPreferredSize());
 	}
 	
@@ -329,6 +329,6 @@ public class ForceOpDialog extends JDialog
 		
 		int delay = (int)spDelay.getValue();
 		boolean waitForMsg = !cbDontWait.isSelected();
-		System.out.println("开始 " + delay + " " + waitForMsg);
+		System.out.println("start " + delay + " " + waitForMsg);
 	}
 }

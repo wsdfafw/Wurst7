@@ -26,7 +26,10 @@ public final class SettingsCmd extends Command
 {
 	public SettingsCmd()
 	{
-		super("settings", "让你制作一个保存所有设置的档案.", ".settings load-profile <文件>", ".settings save-profile <文件>", ".settings list-profiles [<页码>]", "档案保存在 '.minecraft/wurst/settings'.");
+		super("settings", "Allows you to make profiles of your settings.",
+			".settings load-profile <file>", ".settings save-profile <file>",
+			".settings list-profiles [<page>]",
+			"Profiles are saved in '.minecraft/wurst/settings'.");
 	}
 	
 	@Override
@@ -64,22 +67,22 @@ public final class SettingsCmd extends Command
 		try
 		{
 			WURST.loadSettingsProfile(name);
-			ChatUtils.message("已加载设置: " + name);
+			ChatUtils.message("Settings loaded: " + name);
 			
 		}catch(NoSuchFileException e)
 		{
-			throw new CmdError("档案 '" + name + "' 并不存在.");
+			throw new CmdError("Profile '" + name + "' doesn't exist.");
 			
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
 			throw new CmdError(
-				"档案 '" + name + "' 已损坏: " + e.getMessage());
+				"Profile '" + name + "' is corrupted: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("无法载入档案: " + e.getMessage());
+			throw new CmdError("Couldn't load profile: " + e.getMessage());
 		}
 	}
 	
@@ -93,12 +96,12 @@ public final class SettingsCmd extends Command
 		try
 		{
 			WURST.saveSettingsProfile(name);
-			ChatUtils.message("设置已保存为: " + name);
+			ChatUtils.message("Settings saved: " + name);
 			
 		}catch(IOException | JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError("无法保存档案: " + e.getMessage());
+			throw new CmdError("Couldn't save profile: " + e.getMessage());
 		}
 	}
 	
@@ -122,9 +125,9 @@ public final class SettingsCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("无效页码: " + page);
+			throw new CmdSyntaxError("Invalid page: " + page);
 		
-		String total = "合计: " + files.size() + " 档案";
+		String total = "Total: " + files.size() + " profile";
 		total += files.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
@@ -132,7 +135,7 @@ public final class SettingsCmd extends Command
 		int end = Math.min(page * 8, files.size());
 		
 		ChatUtils
-			.message("设置档案的列表 (页码 " + page + "/" + pages + ")");
+			.message("Settings profile list (page " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}
@@ -143,7 +146,7 @@ public final class SettingsCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[1]))
-			throw new CmdSyntaxError("不是一个数字: " + args[1]);
+			throw new CmdSyntaxError("Not a number: " + args[1]);
 		
 		return Integer.parseInt(args[1]);
 	}

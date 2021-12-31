@@ -19,7 +19,7 @@ public final class ParkourHack extends Hack implements UpdateListener
 {
 	public ParkourHack()
 	{
-		super("跑酷");
+		super("Parkour");
 		
 		setCategory(Category.MOVEMENT);
 	}

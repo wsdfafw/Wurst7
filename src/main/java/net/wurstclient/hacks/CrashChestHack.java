@@ -22,7 +22,7 @@ public final class CrashChestHack extends Hack
 {
 	public CrashChestHack()
 	{
-		super("崩服箱");
+		super("CrashChest");
 		
 		setCategory(Category.ITEMS);
 	}
@@ -32,7 +32,7 @@ public final class CrashChestHack extends Hack
 	{
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("仅限创造模式.");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}

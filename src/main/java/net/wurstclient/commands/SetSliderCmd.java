@@ -24,7 +24,10 @@ public final class SetSliderCmd extends Command
 	public SetSliderCmd()
 	{
 		super("setslider",
-			"改变一个 slider 设置的功能. 可以让你\n移动 sliders 通过快捷键.", ".setslider <功能> <设置> <数值>", ".setslider <功能> <设置> (more(更多)|less(更少))");
+			"Changes a slider setting of a feature. Allows you to\n"
+				+ "move sliders through keybinds.",
+			".setslider <feature> <setting> <value>",
+			".setslider <feature> <setting> (more|less)");
 	}
 	
 	@Override
@@ -44,7 +47,7 @@ public final class SetSliderCmd extends Command
 	{
 		if(!(setting instanceof SliderSetting))
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 不是一个 slider 设置.");
+				+ " is not a slider setting.");
 		
 		return (SliderSetting)setting;
 	}
