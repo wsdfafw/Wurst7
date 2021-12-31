@@ -26,8 +26,8 @@ jobs:
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "exp"
+        automatic_release_tag: "English"
         prerelease: true
         title: "wurst Automatic build versions"
         files: |
-          build/libs/Wurst-Client-*-sources.jar
+          build/libs/*.jar
