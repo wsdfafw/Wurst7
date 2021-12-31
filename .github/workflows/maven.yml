@@ -2,7 +2,7 @@ name: Automatic build/issue
 
 on:
   push:
-    branches: [ master ]
+    branches: [ English ]
   pull_request:
   workflow_dispatch:
 
