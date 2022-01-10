@@ -32,3 +32,35 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/Wurst-Client-*-sources.jar
+          
+  releaseDraft:
+    name: 发行草案
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+      # 查看当前存储库
+      - name: 获取来源
+        uses: actions/checkout@v2.4.0
+
+      # 通过使用curl请求删除带有草案标志的可用版本的旧版本草案。
+      - name: 删除旧的发行草案
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/{owner}/{repo}/releases \
+            --jq '.[] | select(.draft == true) | select(.target_commitish=="${{ needs.build.outputs.target }}") | .id' \
+            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
+      # 创建新的发布草案--不公开可见，需要人工接受
+      - name: 创建释放草案
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v${{ needs.build.outputs.version }} \
+            --draft \
+            --title "v${{ needs.build.outputs.version }}" \
+            --notes "$(cat << 'EOM'
+          ${{ needs.build.outputs.changelog }}
+          EOM
+          )"
