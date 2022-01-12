@@ -29,7 +29,6 @@ import net.minecraft.text.LiteralText;
 import net.wurstclient.settings.BlockListSetting;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.ListWidget;
-import net.wurstclient.util.MathUtils;
 
 public final class EditBlockListScreen extends Screen
 {
@@ -136,14 +135,19 @@ public final class EditBlockListScreen extends Screen
 		switch(keyCode)
 		{
 			case GLFW.GLFW_KEY_ENTER:
-			addButton.onPress();
+			if(addButton.active)
+				addButton.onPress();
 			break;
+			
 			case GLFW.GLFW_KEY_DELETE:
-			removeButton.onPress();
+			if(!blockNameField.isFocused())
+				removeButton.onPress();
 			break;
+			
 			case GLFW.GLFW_KEY_ESCAPE:
 			doneButton.onPress();
 			break;
+			
 			default:
 			break;
 		}
@@ -157,12 +161,7 @@ public final class EditBlockListScreen extends Screen
 		blockNameField.tick();
 		
 		String nameOrId = blockNameField.getText();
-		if(MathUtils.isInteger(nameOrId))
-			blockToAdd =
-				Block.getStateFromRawId(Integer.parseInt(nameOrId)).getBlock();
-		else
-			blockToAdd = BlockUtils.getBlockFromName(nameOrId);
-		
+		blockToAdd = BlockUtils.getBlockFromNameOrID(nameOrId);
 		addButton.active = blockToAdd != null;
 		
 		removeButton.active =
