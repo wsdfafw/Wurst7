@@ -19,4 +19,6 @@ public final class AntiBlindHack extends Hack
 		super("防盲");
 		setCategory(Category.RENDER);
 	}
+	
+	// See BackgroundRendererMixin
 }

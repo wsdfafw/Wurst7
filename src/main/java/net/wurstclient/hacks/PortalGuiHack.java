@@ -19,4 +19,6 @@ public final class PortalGuiHack extends Hack
 		super("传送门GUI");
 		setCategory(Category.OTHER);
 	}
+	
+	// See ClientPlayerEntityMixin.beforeUpdateNausea()
 }

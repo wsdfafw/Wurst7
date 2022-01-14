@@ -20,4 +20,6 @@ public final class NoBackgroundHack extends Hack
 		super("无黑背景");
 		setCategory(Category.RENDER);
 	}
+	
+	// See ScreenMixin.onRenderBackground()
 }

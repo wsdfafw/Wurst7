@@ -21,4 +21,6 @@ public final class AutoReconnectHack extends Hack
 		super("自动重连");
 		setCategory(Category.OTHER);
 	}
+	
+	// See DisconnectedScreenMixin
 }

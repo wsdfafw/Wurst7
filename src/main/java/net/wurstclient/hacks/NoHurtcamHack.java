@@ -19,4 +19,6 @@ public final class NoHurtcamHack extends Hack
 		super("反摇摆阳");
 		setCategory(Category.RENDER);
 	}
+	
+	// See GameRendererMixin.onBobViewWhenHurt()
 }

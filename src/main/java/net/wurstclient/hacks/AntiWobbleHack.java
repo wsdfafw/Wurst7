@@ -20,4 +20,6 @@ public final class AntiWobbleHack extends Hack
 		super("反恶心");
 		setCategory(Category.RENDER);
 	}
+	
+	// See GameRendererMixin.wurstNauseaLerp()
 }

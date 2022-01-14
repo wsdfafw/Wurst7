@@ -19,4 +19,6 @@ public final class NoPumpkinHack extends Hack
 		super("反南瓜");
 		setCategory(Category.RENDER);
 	}
+	
+	// See IngameHudMixin.onRenderOverlay()
 }

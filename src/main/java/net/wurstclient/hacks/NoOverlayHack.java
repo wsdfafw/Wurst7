@@ -19,4 +19,7 @@ public final class NoOverlayHack extends Hack
 		super("防液糊脸");
 		setCategory(Category.RENDER);
 	}
+	
+	// See CameraMixin.onGetSubmersionType() and
+	// InGameOverlayRendererMixin.onRenderUnderwaterOverlay()
 }

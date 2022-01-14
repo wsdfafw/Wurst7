@@ -18,11 +18,11 @@ import net.wurstclient.settings.SliderSetting;
 public final class AutoStealHack extends Hack
 {
 	private final SliderSetting delay = new SliderSetting("延迟",
-		"移动物品堆之间的延迟.\n对于NoCheat+服务器，应该至少是70ms.",
+		"移动物品堆之间的延迟.\n对于NoCheat+服务器，应该至少是70ms",
 		100, 0, 500, 10, v -> (int)v + "ms");
 	
 	private final CheckboxSetting buttons =
-		new CheckboxSetting("Steal/Store buttons", false);
+		new CheckboxSetting("Steal/Store buttons", true);
 	
 	public AutoStealHack()
 	{
@@ -41,4 +41,6 @@ public final class AutoStealHack extends Hack
 	{
 		return delay.getValueI();
 	}
+	
+	// See ContainerScreen54Mixin and ShulkerBoxScreenMixin
 }
