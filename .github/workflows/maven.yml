@@ -30,4 +30,4 @@ jobs:
         prerelease: true
         title: "wurst Automatic build versions"
         files: |
-          build/libs/Wurst-Client-*-sources.jar
+          build/libs/*
