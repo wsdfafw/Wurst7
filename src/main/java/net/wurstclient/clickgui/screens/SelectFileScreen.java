@@ -41,7 +41,7 @@ public final class SelectFileScreen extends Screen
 	}
 	
 	@Override
-	public boolean isPauseScreen()
+	public boolean shouldPause()
 	{
 		return false;
 	}
@@ -89,8 +89,8 @@ public final class SelectFileScreen extends Screen
 		LiteralText title = new LiteralText("重设目录");
 		
 		LiteralText message = new LiteralText(
-			"这将会清空 '" + setting.getFolder().getFileName()
-				+ "'目录并重新生成默认的数值.\n你确定还要继续这样做吗?");
+			"这将会清空'" + setting.getFolder().getFileName()
+				+ "目录并重新生成默认的数值.\n你确定还要继续这样做吗?");
 		
 		client.setScreen(new ConfirmScreen(this::confirmReset, title, message));
 	}

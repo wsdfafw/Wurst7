@@ -51,7 +51,7 @@ public final class EditBlockListScreen extends Screen
 	}
 	
 	@Override
-	public boolean isPauseScreen()
+	public boolean shouldPause()
 	{
 		return false;
 	}
@@ -87,7 +87,7 @@ public final class EditBlockListScreen extends Screen
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				new LiteralText("完成"), b -> client.setScreen(prevScreen)));
+				new LiteralText("已完成"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
@@ -300,7 +300,7 @@ public final class EditBlockListScreen extends Screen
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				matrixStack.pop();
 				
-				return "\u00a7o未知方块\u00a7r";
+				return "\u00a7未知方块\u00a7r";
 				
 			}
 			MatrixStack modelViewStack = RenderSystem.getModelViewStack();

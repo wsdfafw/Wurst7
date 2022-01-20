@@ -54,7 +54,7 @@ public final class EditSliderScreen extends Screen
 		setInitialFocus(valueField);
 		valueField.setTextFieldFocused(true);
 		
-		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("Done"),
+		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("完成"),
 			b -> done());
 		addDrawableChild(doneButton);
 	}
@@ -105,7 +105,7 @@ public final class EditSliderScreen extends Screen
 	}
 	
 	@Override
-	public boolean isPauseScreen()
+	public boolean shouldPause()
 	{
 		return false;
 	}

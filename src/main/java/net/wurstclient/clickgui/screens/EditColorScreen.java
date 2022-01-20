@@ -122,7 +122,7 @@ public final class EditColorScreen extends Screen
 		hexValueField.setSelectionEnd(6);
 		
 		doneButton = new ButtonWidget(fieldsX, height - 30, 200, 20,
-			new LiteralText("Done"), b -> done());
+			new LiteralText("完成"), b -> done());
 		addDrawableChild(doneButton);
 	}
 	
@@ -294,7 +294,7 @@ public final class EditColorScreen extends Screen
 	}
 	
 	@Override
-	public boolean isPauseScreen()
+	public boolean shouldPause()
 	{
 		return false;
 	}
