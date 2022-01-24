@@ -1,20 +1,20 @@
 # Wurst Client汉化 v7
-## ⚠ We Are Looking For Translators ⚠
+## ⚠ 我们正在寻找翻译人员 ⚠
 
-### Current Status of Translations
+### 翻译现状
 
-|Language|Status|
+|Language|地位|
 |--------|--------|
-|Chinese (Simplified/Mainland)|146/146 done|
+|Chinese (简体/大陆)|146/146 done|
 |Chinese (Traditional/Taiwan)|In progress, check [#549](https://github.com/Wurst-Imperium/Wurst7/pull/549).|
-|French (France)|There are 3 pending submissions ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) with different translations and I don't know which one to merge. If you speak French, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker.|
-|German (Germany)|46/146 done. I'll probably do the rest myself since I can speak it natively.|
-|Italian (Italy)|146/146 done|
-|Japanese (Japan)|137/146 done|
-|Polish (Poland)|Pending, needs reviews, check [#553](https://github.com/Wurst-Imperium/Wurst7/pull/553).|
-|Portugese (Brazil)|Pending, needs reviews, check [#528](https://github.com/Wurst-Imperium/Wurst7/pull/528).|
-|Russian (Russia)|137/146 done|
-|Turkish (Turkey)|There are 2 pending submissions ([#511](https://github.com/Wurst-Imperium/Wurst7/pull/511), [#512](https://github.com/Wurst-Imperium/Wurst7/pull/512)) with different translations and I don't know which one to merge. If you speak Turkish, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker. |
+|French (法国)|There are 3 pending submissions ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) with different translations and I don't know which one to merge. If you speak French, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker.|
+|German (德国)|46/146 done. I'll probably do the rest myself since I can speak it natively.|
+|Italian (意大利)|146/146 done|
+|Japanese (日本)|137/146 done|
+|Polish (波兰)|Pending, needs reviews, check [#553](https://github.com/Wurst-Imperium/Wurst7/pull/553).|
+|Portugese (巴西)|Pending, needs reviews, check [#528](https://github.com/Wurst-Imperium/Wurst7/pull/528).|
+|Russian (俄罗斯)|137/146 done|
+|Turkish (土耳其)|There are 2 pending submissions ([#511](https://github.com/Wurst-Imperium/Wurst7/pull/511), [#512](https://github.com/Wurst-Imperium/Wurst7/pull/512)) with different translations and I don't know which one to merge. If you speak Turkish, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker. |
 |Ukrainian (Ukraine)|137/146 done|
 
 If you speak both English and some other language, please help us by translating Wurst or reviewing existing translations. The translation files are located in `src/main/resources/assets/wurst/lang` and work the same as in other Minecraft mods.
