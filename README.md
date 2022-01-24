@@ -7,7 +7,7 @@
 |--------|--------|
 |Chinese (简体/大陆)|146/146 完成|
 |Chinese (Traditional/Taiwan)|正在进行中,请检查 [#549](https://github.com/Wurst-Imperium/Wurst7/pull/549).|
-|French (法国)|目前有3份待提交的文件 ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) with different translations and I don't know which one to merge. If you speak French, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker.|
+|French (法国)|目前有3份待提交的文件 ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) 有不同的翻译,我不知道该合并哪一个.如果你会说法语,,请检查这些提交的文件是否有任何语法错误,并让我知道哪一个对讲母语的人来说听起来最好.|
 |German (德国)|46/146 完成. 我可能会自己做其余的事情,因为我可以说母语.|
 |Italian (意大利)|146/146 完成|
 |Japanese (日本)|137/146 完成|
