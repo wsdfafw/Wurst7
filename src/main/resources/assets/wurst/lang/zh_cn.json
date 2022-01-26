@@ -14,6 +14,7 @@
   "description.wurst.hack.autoeat": "当必要的时候将会自动进食。",
   "description.wurst.hack.autofarm": "自动收获与种植农作物。\n有效作物为小麦、胡萝卜、马铃薯、甜菜根、南瓜、西瓜、仙人掌、甘蔗、海带、竹子、 地狱疣和可可豆。",
   "description.wurst.hack.autofish": "当你在钓鱼的时候，自动钓鱼同时使用你最好的鱼竿，如果有更好的鱼竿将会自动使用。",
+  "description.wurst.hack.automlg": "自动落地水，或落地细雪。\n\n§l注意：§r 当前实现并未考虑反作弊。",
   "description.wurst.hack.automine": "自动挖掘你眼前所指的方块。",
   "description.wurst.hack.autopotion": "当你的生命值过低时候，自动扔一瓶喷溅型瞬间恢复。",
   "description.wurst.hack.autoreconnect": "当你被服务器踢出时候，自动重连。",
