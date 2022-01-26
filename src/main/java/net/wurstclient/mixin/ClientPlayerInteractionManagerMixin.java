@@ -123,6 +123,12 @@ public abstract class ClientPlayerInteractionManagerMixin
 	}
 	
 	@Override
+	public void windowClick_SWAP(int slot, int swapWith)
+	{
+		clickSlot(0, slot, swapWith, SlotActionType.SWAP, client.player);
+	}
+	
+	@Override
 	public void windowClick_THROW(int slot)
 	{
 		clickSlot(0, slot, 1, SlotActionType.THROW, client.player);
