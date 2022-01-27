@@ -5,17 +5,17 @@
 
 |Language|地位|
 |--------|--------|
-|Chinese (简体/大陆)|146/146 完成|
-|Chinese (Traditional/Taiwan)|正在进行中,请检查 [#549](https://github.com/Wurst-Imperium/Wurst7/pull/549).|
-|French (法国)|目前有3份待提交的文件 ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) 有不同的翻译,我不知道该合并哪一个.如果你会说法语,,请检查这些提交的文件是否有任何语法错误,并让我知道哪一个对讲母语的人来说听起来最好.|
-|German (德国)|46/146 完成. 我可能会自己做其余的事情,因为我可以说母语.|
-|Italian (意大利)|146/146 完成|
-|Japanese (日本)|137/146 完成|
-|Polish (波兰)|待定,需要审查,检查 [#553](https://github.com/Wurst-Imperium/Wurst7/pull/553).|
-|Portugese (巴西)|待定,需要审查,检查 [#528](https://github.com/Wurst-Imperium/Wurst7/pull/528).|
-|Russian (俄罗斯)|137/146 完成|
-|Turkish (土耳其)|目前有2份待提交的文件 ([#511](https://github.com/Wurst-Imperium/Wurst7/pull/511), [#512](https://github.com/Wurst-Imperium/Wurst7/pull/512)) 有不同的翻译,我不知道该合并哪一个.如果你会说土耳其语,请检查这些提交的文件是否有任何语法错误,并让我知道哪一个对讲母语的人来说听起来最好. |
-|Ukrainian (乌克兰)|137/146 完成|
+|Chinese (Simplified/Mainland)|146/146 done|
+|Chinese (Traditional/Taiwan)|In progress, check [#549](https://github.com/Wurst-Imperium/Wurst7/pull/549).|
+|French (France)|There are 3 pending submissions ([#515](https://github.com/Wurst-Imperium/Wurst7/pull/515), [#531](https://github.com/Wurst-Imperium/Wurst7/pull/531), [#552](https://github.com/Wurst-Imperium/Wurst7/pull/552)) with different translations and I don't know which one to merge. If you speak French, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker.|
+|German (Germany)|46/146 done. I'll probably do the rest myself since I can speak it natively.|
+|Italian (Italy)|146/146 done|
+|Japanese (Japan)|137/146 done|
+|Polish (Poland)|146/146 done|
+|Portugese (Brazil)|Pending, needs reviews, check [#528](https://github.com/Wurst-Imperium/Wurst7/pull/528).|
+|Russian (Russia)|137/146 done|
+|Turkish (Turkey)|There are 2 pending submissions ([#511](https://github.com/Wurst-Imperium/Wurst7/pull/511), [#512](https://github.com/Wurst-Imperium/Wurst7/pull/512)) with different translations and I don't know which one to merge. If you speak Turkish, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker. |
+|Ukrainian (Ukraine)|137/146 done|
 
 如果你会说英语和其他语言,请帮助我们翻译Wurst或审查现有翻译.翻译文件位于`src/main/resources/assets/wurst/lang`中,与其他Minecraft mods的工作方式相同.
 
