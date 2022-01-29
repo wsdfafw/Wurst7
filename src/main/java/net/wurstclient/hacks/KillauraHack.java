@@ -65,7 +65,7 @@ public final class KillauraHack extends Hack
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
 		"§l[距离]§r:距离最近的实体\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
 		Priority.values(), Priority.ANGLE);
-	
+	public final SliderSetting fov = new SliderSetting("视场", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
 		"排除玩家", "", true);
 	
@@ -125,8 +125,10 @@ public final class KillauraHack extends Hack
 	{
 		super("杀戮光环");
 		setCategory(Category.COMBAT);
+		
 		addSetting(range);
 		addSetting(priority);
+		addSetting(fov);
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -193,6 +195,10 @@ public final class KillauraHack extends Hack
 				.filter(e -> e != player)
 				.filter(e -> !(e instanceof FakePlayerEntity))
 				.filter(e -> !WURST.getFriends().contains(e.getEntityName()));
+		
+		if(fov.getValue() < 360.0)
+			stream = stream.filter(e -> RotationUtils.getAngleToLookVec(
+				e.getBoundingBox().getCenter()) <= fov.getValue() / 2.0);
 		
 		if(filterPlayers.isChecked())
 			stream = stream.filter(e -> !(e instanceof PlayerEntity));

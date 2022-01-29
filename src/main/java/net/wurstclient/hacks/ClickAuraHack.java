@@ -52,7 +52,8 @@ public final class ClickAuraHack extends Hack
 {
 	private final SliderSetting range = new SliderSetting("范围", 5.0, 1.0, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
     private final EnumSetting<Priority> priority = new EnumSetting("优先级", "决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体.", (Enum[])Priority.values(), (Enum)Priority.ANGLE);
-    private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会攻击其他玩家.", false);
+    public final SliderSetting fov = new SliderSetting("视场", 360, 30, 360, 10, ValueDisplay.DEGREES);
+	private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会攻击其他玩家.", false);
     private final CheckboxSetting filterSleeping = new CheckboxSetting("排除正在睡觉", "不会攻击正在睡觉的玩家.", false);
     private final SliderSetting filterFlying = new SliderSetting("排除飞行中", "不会攻击在飞行中玩家或\n远离地板一定距离的玩家.", 0.0, 0.0, 2.0, 0.05, v -> v == 0.0 ? "关" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
     private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不会攻击僵尸,苦力怕,诸如此类.", false);
@@ -75,6 +76,7 @@ public final class ClickAuraHack extends Hack
 		setCategory(Category.COMBAT);
 		addSetting(range);
 		addSetting(priority);
+		addSetting(fov);
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -154,6 +156,10 @@ public final class ClickAuraHack extends Hack
 				.filter(e -> e != player)
 				.filter(e -> !(e instanceof FakePlayerEntity))
 				.filter(e -> !WURST.getFriends().contains(e.getEntityName()));
+		
+		if(fov.getValue() < 360.0)
+			stream = stream.filter(e -> RotationUtils.getAngleToLookVec(
+				e.getBoundingBox().getCenter()) <= fov.getValue() / 2.0);
 		
 		if(filterPlayers.isChecked())
 			stream = stream.filter(e -> !(e instanceof PlayerEntity));
