@@ -66,10 +66,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	
 	private ArrayList<String> oreNames;
 	private final String warning;
-	
-	private final String renderName =
-		Math.random() < 0.01 ? "X-Wurst" : getName();
-	
+
 	public XRayHack()
 	{
 		super("透视");
@@ -80,12 +77,9 @@ public final class XRayHack extends Hack implements UpdateListener,
 			.map(ModContainer::getMetadata).map(ModMetadata::getId)
 			.collect(Collectors.toList());
 		
-		Pattern sodium = Pattern.compile("sodium.*");
 		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
 		
-		if(mods.stream().anyMatch(sodium.asPredicate()))
-			warning = "钠已安装.X-射线无法正常工作!";
-		else if(mods.stream().anyMatch(optifine.asPredicate()))
+		if(mods.stream().anyMatch(optifine.asPredicate()))
 			warning = "OptiFine 已安装.X-射线无法正常工作!";
 		else
 			warning = null;
