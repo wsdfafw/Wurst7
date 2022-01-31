@@ -63,9 +63,12 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:repeating_command_block", "minecraft:spawner",
 		"minecraft:tnt", "minecraft:torch", "minecraft:trapped_chest",
 		"minecraft:water");
-	
+
 	private ArrayList<String> oreNames;
 	private final String warning;
+
+	private final String renderName =
+		Math.random() < 0.01 ? "X-Wurst" : getName();
 
 	public XRayHack()
 	{
