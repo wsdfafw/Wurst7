@@ -519,9 +519,9 @@ public class PathFinder
 	public ArrayList<PathPos> formatPath()
 	{
 		if(!done && !failed)
-			throw new IllegalStateException("找不到路径!");
+			throw new IllegalStateException("未找到路径!");
 		if(!path.isEmpty())
-			throw new IllegalStateException("路径已格式化!");
+			throw new IllegalStateException("路径已经格式化!");
 		
 		// get last position
 		PathPos pos;
