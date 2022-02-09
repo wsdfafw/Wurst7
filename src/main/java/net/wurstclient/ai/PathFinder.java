@@ -191,7 +191,7 @@ public class PathFinder
 		}
 		
 		// up
-		if(pos.getY() < 256 && canGoThrough(up.up())
+		if(pos.getY() < WurstClient.MC.world.getTopY() && canGoThrough(up.up())
 			&& (flying || onGround || canClimbUpAt(pos))
 			&& (flying || canClimbUpAt(pos) || goal.equals(up)
 				|| canSafelyStandOn(north) || canSafelyStandOn(east)
@@ -201,8 +201,9 @@ public class PathFinder
 			neighbors.add(new PathPos(up, onGround));
 		
 		// down
-		if(pos.getY() > 0 && canGoThrough(down) && canGoAbove(down.down())
-			&& (flying || canFallBelow(pos)) && (divingAllowed
+		if(pos.getY() > WurstClient.MC.world.getBottomY() && canGoThrough(down)
+			&& canGoAbove(down.down()) && (flying || canFallBelow(pos))
+			&& (divingAllowed
 				|| BlockUtils.getState(pos).getMaterial() != Material.WATER))
 			neighbors.add(new PathPos(down));
 		
@@ -518,9 +519,9 @@ public class PathFinder
 	public ArrayList<PathPos> formatPath()
 	{
 		if(!done && !failed)
-			throw new IllegalStateException("未找到路径!");
+			throw new IllegalStateException("找不到路径!");
 		if(!path.isEmpty())
-			throw new IllegalStateException("路径已经格式化!");
+			throw new IllegalStateException("路径已格式化!");
 		
 		// get last position
 		PathPos pos;
