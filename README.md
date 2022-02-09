@@ -1,9 +1,10 @@
-# Wurst Client汉化 v7
-## ⚠ 我们正在寻找翻译人员 ⚠
+# Wurst Client v7
 
-### 翻译现状
+## ⚠ We Are Looking For Translators ⚠
 
-|Language|地位|
+### Current Status of Translations
+
+|Language|Status|
 |--------|--------|
 |Chinese (Simplified/Mainland)|147/147 done|
 |Chinese (Traditional/Taiwan)|147/147 done|
@@ -18,36 +19,35 @@
 |Turkish (Turkey)|There are 2 pending submissions ([#511](https://github.com/Wurst-Imperium/Wurst7/pull/511), [#512](https://github.com/Wurst-Imperium/Wurst7/pull/512)) with different translations and I don't know which one to merge. If you speak Turkish, please check these submissions for any grammatical errors and let me know which one sounds best to a native speaker. |
 |Ukrainian (Ukraine)|137/147 done|
 
-如果你会说英语和其他语言,请帮助我们翻译Wurst或审查现有翻译.翻译文件位于`src/main/resources/assets/wurst/lang`中,与其他Minecraft mods的工作方式相同.
+If you speak both English and some other language, please help us by translating Wurst or reviewing existing translations. The translation files are located [here](https://github.com/Wurst-Imperium/Wurst7/tree/master/src/main/resources/assets/wurst/lang) and work the same as in other Minecraft mods.
 
-目前,只有黑客描述可以被翻译.其他描述和工具提示将在未来成为可翻译的.
+Names of features (hacks/commands/etc.) should always be kept in English. This ensures that everyone can use the same commands, keybinds, etc. regardless of their language setting. It also makes it easier to communicate with someone who uses Wurst in a different language.
 
-关于翻译的讨论,请参见这里的[问题#404](https://github.com/Wurst-Imperium/Wurst7/issues/404)或我们RocketChat服务器上的[#wurst-translations](https://chat.wurstimperium.net/channel/wurst-translations).
+For discussion about translations, see [Issue #404](https://github.com/Wurst-Imperium/Wurst7/issues/404) here or [#wurst-translations](https://chat.wurstimperium.net/channel/wurst-translations) on our RocketChat server.
 
-关于翻译的讨论见[问题#404](https://github.com/Wurst-Imperium/Wurst7/issues/404).
-## 下载
+## Downloads (for users)
 
 https://www.wurstclient.net/download/
 
-## 设置（针对开发人员）（使用Windows 10和Eclipse）
+## Setup (for developers) (using Windows 10 & Eclipse)
 
-要求: [JDK 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot)
+Requirements: [JDK 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot)
 
-1. 在PowerShell中运行这两个命令:
+1. Run these two commands in PowerShell:
 
 ```
 ./gradlew.bat genSources
 ./gradlew.bat eclipse
 ```
 
-2. 在Eclipse中，进入 `Import...` > `Existing Projects into Workspace`，选择这个项目。.
+2. In Eclipse, go to `Import...` > `Existing Projects into Workspace` and select this project.
 
-## 许可证
+## License
 
 This code is licensed under the GNU General Public License v3. **You can only use this code in open-source clients that you release under the same license! Using it in closed-source/proprietary clients is not allowed!**
 
-## 关于拉动请求的说明
+## Note about Pull Requests
 
-如果你正在贡献多个不相关的功能，请为每个功能创建一个单独的拉动请求。把所有东西都挤到一个巨大的拉动请求中，会使我们很难添加你的功能，因为我们必须一个一个地测试、验证和添加它们。
+If you are contributing multiple unrelated features, please create a separate pull request for each feature. Squeezing everything into one giant pull request makes it very difficult for us to add your features, as we have to test, validate and add them one by one.
 
-谢谢你的理解--并再次感谢你花时间做出的贡献!
+Thank you for your understanding - and thanks again for taking the time to contribute!!
