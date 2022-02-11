@@ -131,7 +131,7 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredText(matrixStack, tr, "Wurst选择,作者id:watermelon_GG,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
+		drawCenteredText(matrixStack, tr, "Wurst选择,作者原来id:watermelon_GG,新id:wateTina,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
 			0xffffff);
 		
 		drawCenteredText(matrixStack, tr, "设置选项", middleX - 104, y2,
