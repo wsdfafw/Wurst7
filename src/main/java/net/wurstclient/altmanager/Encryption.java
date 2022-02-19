@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -35,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.wurstclient.util.json.JsonException;
@@ -49,8 +51,10 @@ public final class Encryption
 	private final Cipher encryptCipher;
 	private final Cipher decryptCipher;
 	
-	public Encryption(Path encFolder)
+	public Encryption(Path encFolder) throws IOException
 	{
+		createEncryptionFolder(encFolder);
+		
 		KeyPair rsaKeyPair =
 			getRsaKeyPair(encFolder.resolve("wurst_rsa_public.txt"),
 				encFolder.resolve("wurst_rsa_private.txt"));
@@ -71,8 +75,28 @@ public final class Encryption
 		}catch(GeneralSecurityException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建AES密码"));
+				CrashReport.create(e, "Creating AES ciphers"));
 		}
+	}
+	
+	private Path createEncryptionFolder(Path encFolder) throws IOException
+	{
+		Files.createDirectories(encFolder);
+		if(Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS)
+			Files.setAttribute(encFolder, "dos:hidden", true);
+		
+		Path readme = encFolder.resolve("READ ME I AM VERY IMPORTANT.txt");
+		String readmeText = "DO NOT SHARE THESE FILES WITH ANYONE!\r\n"
+			+ "They are encryption keys that protect your alt list file from being read by someone else.\r\n"
+			+ "If someone is asking you to send these files, they are 100% trying to scam you.\r\n"
+			+ "\r\n"
+			+ "DO NOT EDIT, RENAME OR DELETE THESE FILES! (unless you know what you're doing)\r\n"
+			+ "If you do, Wurst's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
+			+ "In other words, YOUR ALT LIST WILL BE DELETED.";
+		Files.write(readme, readmeText.getBytes("UTF-8"),
+			StandardOpenOption.CREATE);
+		
+		return encFolder;
 	}
 	
 	public byte[] decrypt(byte[] bytes)
@@ -83,7 +107,7 @@ public final class Encryption
 			
 		}catch(IllegalArgumentException | GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "解密字节"));
+			throw new CrashException(CrashReport.create(e, "Decrypting bytes"));
 		}
 	}
 	
@@ -141,7 +165,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "加密字节"));
+			throw new CrashException(CrashReport.create(e, "Encrypting bytes"));
 		}
 	}
 	
@@ -182,7 +206,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | ReflectiveOperationException
 			| IOException e)
 		{
-			System.err.println("无法加载RSA密钥对!");
+			System.err.println("Couldn't load RSA keypair!");
 			e.printStackTrace();
 			
 			return createRsaKeys(publicFile, privateFile);
@@ -200,7 +224,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			System.err.println("无法加载AES密钥!");
+			System.err.println("Couldn't load AES key!");
 			e.printStackTrace();
 			
 			return createAesKey(path, pair);
@@ -211,7 +235,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成RSA密码.");
+			System.out.println("Generating RSA keypair.");
 			
 			// generate keypair
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -247,7 +271,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | IOException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建RSA密钥对"));
+				CrashReport.create(e, "Creating RSA keypair"));
 		}
 	}
 	
@@ -255,7 +279,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成AES密钥.");
+			System.out.println("Generating AES key.");
 			
 			// generate key
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -271,7 +295,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建AES密钥"));
+			throw new CrashException(CrashReport.create(e, "Creating AES key"));
 		}
 	}
 	
