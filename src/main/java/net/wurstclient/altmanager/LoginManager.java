@@ -43,33 +43,33 @@ public final class LoginManager
 		}catch(AuthenticationUnavailableException e)
 		{
 			throw new LoginException(
-				"\u00a74\u00a7lCannot contact authentication server!", e);
+				"\u00a74\u00a7l无法联系认证服务器!", e);
 			
 		}catch(AuthenticationException e)
 		{
 			e.printStackTrace();
 			
-			if(e.getMessage().contains("Invalid username or password."))
+			if(e.getMessage().contains("用户名或密码无效."))
 				throw new LoginException(
-					"\u00a74\u00a7lWrong password! (or shadowbanned)", e);
+					"\u00a74\u00a7l密码错误！ （或阴影禁止）", e);
 			
-			if(e.getMessage().toLowerCase().contains("account migrated"))
+			if(e.getMessage().toLowerCase().contains("帐号已迁移"))
 				throw new LoginException(
-					"\u00a74\u00a7lAccount migrated to Mojang account.", e);
+					"\u00a74\u00a7l账户迁移到 Mojang 账户.", e);
 			
 			if(e.getMessage().toLowerCase().contains("migrated"))
 				throw new LoginException(
-					"\u00a74\u00a7lAccount migrated to Microsoft account.", e);
+					"\u00a74\u00a7l帐户迁移到 Microsoft 帐户.", e);
 			
 			throw new LoginException(
-				"\u00a74\u00a7lCannot contact authentication server!", e);
+				"\u00a74\u00a7l无法联系认证服务器!", e);
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
 			
 			throw new LoginException(
-				"\u00a74\u00a7lWrong password! (or shadowbanned)", e);
+				"\u00a74\u00a7l密码错误！ （或阴影禁止）", e);
 		}
 	}
 	
