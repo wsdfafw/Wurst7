@@ -106,7 +106,7 @@ public final class NukerLegitHack extends Hack
 		EVENTS.remove(RenderListener.class, this);
 		
 		// resets
-		MC.options.keyAttack.setPressed(false);
+		MC.options.attackKey.setPressed(false);
 		currentBlock = null;
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
@@ -164,7 +164,7 @@ public final class NukerLegitHack extends Hack
 		
 		// reset if no block was found
 		if(currentBlock == null)
-			MC.options.keyAttack.setPressed(false);
+			MC.options.attackKey.setPressed(false);
 	}
 	
 	private ArrayList<BlockPos> getValidBlocks(double range,
@@ -221,15 +221,15 @@ public final class NukerLegitHack extends Hack
 				
 			// if attack key is down but nothing happens, release it for one
 			// tick
-			if(MC.options.keyAttack.isPressed()
+			if(MC.options.attackKey.isPressed()
 				&& !MC.interactionManager.isBreakingBlock())
 			{
-				MC.options.keyAttack.setPressed(false);
+				MC.options.attackKey.setPressed(false);
 				return true;
 			}
 			
 			// damage block
-			MC.options.keyAttack.setPressed(true);
+			MC.options.attackKey.setPressed(true);
 			
 			return true;
 		}
