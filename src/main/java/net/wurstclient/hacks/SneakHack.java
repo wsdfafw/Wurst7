@@ -71,7 +71,7 @@ public final class SneakHack extends Hack
 	@Override
 	public void onPreMotion()
 	{
-		KeyBinding sneakKey = MC.options.keySneak;
+		KeyBinding sneakKey = MC.options.sneakKey;
 		
 		switch(mode.getSelected())
 		{
