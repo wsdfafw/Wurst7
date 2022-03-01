@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -80,12 +80,9 @@ public final class XRayHack extends Hack implements UpdateListener,
 			.map(ModContainer::getMetadata).map(ModMetadata::getId)
 			.collect(Collectors.toList());
 		
-		Pattern sodium = Pattern.compile("sodium.*");
 		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
 		
-		if(mods.stream().anyMatch(sodium.asPredicate()))
-			warning = "钠已安装.X-射线无法正常工作!";
-		else if(mods.stream().anyMatch(optifine.asPredicate()))
+		if(mods.stream().anyMatch(optifine.asPredicate()))
 			warning = "OptiFine 已安装.X-射线无法正常工作!";
 		else
 			warning = null;

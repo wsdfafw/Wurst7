@@ -1,13 +1,5 @@
-# Wurst Client汉化 v7
-## ⚠ We Are Looking For Translators ⚠
+# Wurst Client v7
 
-如果你会说英语和其他语言，请通过翻译Wurst来帮助我们.翻译文件位于`src/main/resources/assets/wurst/lang`中，其工作原理与其他Minecraft mods相同.
-
-目前，只有黑客描述可以被翻译.其他描述和工具提示将在未来成为可翻译的.
-
-特技的名称（黑客/命令/等等）应始终保持英文.这可以确保每个人都能使用相同的命令、键盘等，而不管他们的语言设置如何.这也使得与使用Wurst的人用不同的语言进行交流更加容易.
-
-关于翻译的讨论见[问题#404](https://github.com/Wurst-Imperium/Wurst7/issues/404).
 ## Downloads (for users)
 
 https://www.wurstclient.net/download/
