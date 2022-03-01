@@ -150,7 +150,7 @@ public final class BowAimbotHack extends Hack
 		}
 		
 		// check if using bow
-		if(item instanceof BowItem && !MC.options.keyUse.isPressed()
+		if(item instanceof BowItem && !MC.options.useKey.isPressed()
 			&& !player.isUsingItem())
 		{
 			target = null;
@@ -385,13 +385,13 @@ public final class BowAimbotHack extends Hack
 	
 	private enum Priority
 	{
-		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
+		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
 		
-		ANGLE("角度",
+		ANGLE("Angle",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
 		
-		HEALTH("血量", e -> e instanceof LivingEntity
+		HEALTH("Health", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
 		
 		private final String name;

@@ -215,15 +215,15 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 							noKeybindsSet = false;
 						text +=
 							"\n" + keybind.getKey().replace("key.keyboard.", "")
-								+ ": " + "切换 " + feature.getName();
+								+ ": " + "Toggle " + feature.getName();
 						existingKeybinds.put(keybind.getKey(),
 							new PossibleKeybind(command,
-								"切换 " + feature.getName()));
+								"Toggle " + feature.getName()));
 					}
 				}
 			}
 			if(noKeybindsSet)
-				text += "\n无";
+				text += "\nNone";
 			else
 			{
 				// remove keybind button
@@ -533,7 +533,7 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 	}
 	
 	@Override
-	public void onClose()
+	public void close()
 	{
 		window.close();
 		WurstClient.INSTANCE.getGui().handleMouseClick(Integer.MIN_VALUE,

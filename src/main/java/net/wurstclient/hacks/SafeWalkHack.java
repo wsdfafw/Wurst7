@@ -20,7 +20,7 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class SafeWalkHack extends Hack
 {
 	private final CheckboxSetting sneak =
-		new CheckboxSetting("在边缘潜行", "可以在边缘的时候可视你潜行动作", false);
+		new CheckboxSetting("在边缘潜行", "可以在边缘的时候可视你潜行动作.", false);
 	
 	private boolean sneaking;
 	
@@ -69,7 +69,7 @@ public final class SafeWalkHack extends Hack
 	
 	private void setSneaking(boolean sneaking)
 	{
-		IKeyBinding sneakKey = (IKeyBinding)MC.options.keySneak;
+		IKeyBinding sneakKey = (IKeyBinding)MC.options.sneakKey;
 		
 		if(sneaking)
 			((KeyBinding)sneakKey).setPressed(true);

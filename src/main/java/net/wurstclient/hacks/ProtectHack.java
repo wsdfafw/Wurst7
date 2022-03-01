@@ -51,7 +51,7 @@ import net.wurstclient.util.FakePlayerEntity;
 public final class ProtectHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final CheckboxSetting useAi = new CheckboxSetting("使用 AI (试验性的)", false);
+private final CheckboxSetting useAi = new CheckboxSetting("使用 AI (试验性的)", false);
     private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会攻击其他玩家.", false);
     private final CheckboxSetting filterSleeping = new CheckboxSetting("排除正在睡觉的", "不会攻击正在睡觉的玩家.", false);
     private final SliderSetting filterFlying = new SliderSetting("排除飞行中", "不会攻击在飞行中玩家或\n远离地板一定距离的玩家.", 0.0, 0.0, 2.0, 0.05, v -> v == 0.0 ? "关" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
@@ -106,8 +106,8 @@ public final class ProtectHack extends Hack
 	public String getRenderName()
 	{
 		if(friend != null)
-			return "保护中 " + friend.getName().getString();
-		return "保护";
+			return "Protecting " + friend.getName().getString();
+		return "Protect";
 	}
 	
 	@Override
@@ -163,7 +163,7 @@ public final class ProtectHack extends Hack
 		
 		if(friend != null)
 		{
-			MC.options.keyForward.setPressed(false);
+			MC.options.forwardKey.setPressed(false);
 			friend = null;
 		}
 	}
@@ -314,19 +314,19 @@ public final class ProtectHack extends Hack
 						MC.player.getX(), target.getY(), MC.player.getZ()))
 			{
 				if(MC.player.getY() > target.getY() + 1D)
-					MC.options.keySneak.setPressed(true);
+					MC.options.sneakKey.setPressed(true);
 				else if(MC.player.getY() < target.getY() - 1D)
-					MC.options.keyJump.setPressed(true);
+					MC.options.jumpKey.setPressed(true);
 			}else
 			{
-				MC.options.keySneak.setPressed(false);
-				MC.options.keyJump.setPressed(false);
+				MC.options.sneakKey.setPressed(false);
+				MC.options.jumpKey.setPressed(false);
 			}
 			
 			// follow target
 			WURST.getRotationFaker()
 				.faceVectorClient(target.getBoundingBox().getCenter());
-			MC.options.keyForward.setPressed(MC.player.distanceTo(
+			MC.options.forwardKey.setPressed(MC.player.distanceTo(
 				target) > (target == friend ? distanceF : distanceE));
 		}
 		

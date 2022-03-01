@@ -19,7 +19,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"miley cyrus", "twerk", "wrecking ball"})
 public final class MileyCyrusHack extends Hack implements UpdateListener
 {
-	private final SliderSetting twerkSpeed = new SliderSetting("蹲起速度", "我看起来就像疯了一样....", 5.0, 1.0, 10.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
+	private final SliderSetting twerkSpeed = new SliderSetting("蹲起速度", "我看起来就像疯了一样...", 5, 1, 10, 1,
+		ValueDisplay.INTEGER);
 	
 	private int timer;
 	
@@ -42,7 +43,7 @@ public final class MileyCyrusHack extends Hack implements UpdateListener
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		
-		KeyBinding sneak = MC.options.keySneak;
+		KeyBinding sneak = MC.options.sneakKey;
 		sneak.setPressed(((IKeyBinding)sneak).isActallyPressed());
 	}
 	
@@ -53,7 +54,7 @@ public final class MileyCyrusHack extends Hack implements UpdateListener
 		if(timer < 10 - twerkSpeed.getValueI())
 			return;
 		
-		MC.options.keySneak.setPressed(!MC.options.keySneak.isPressed());
+		MC.options.sneakKey.setPressed(!MC.options.sneakKey.isPressed());
 		timer = -1;
 	}
 }
