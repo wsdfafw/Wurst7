@@ -71,8 +71,8 @@ public final class MojangAlt extends Alt
 		
 		if(name == null || name.isEmpty())
 			throw new RuntimeException(
-				"Login returned " + (name == null ? "null" : "empty")
-					+ " username. This shouldn't be possible!");
+				"登录返回 " + (name == null ? "null" : "empty")
+					+ " 用户名。这应该是不可能的!");
 		
 		return name;
 	}
@@ -81,9 +81,9 @@ public final class MojangAlt extends Alt
 	public void exportAsJson(JsonObject json)
 	{
 		JsonObject jsonAlt = new JsonObject();
-		jsonAlt.addProperty("password", password);
-		jsonAlt.addProperty("name", name);
-		jsonAlt.addProperty("starred", isFavorite());
+		jsonAlt.addProperty("密码", password);
+		jsonAlt.addProperty("名字", name);
+		jsonAlt.addProperty("加星标", isFavorite());
 		json.add(email, jsonAlt);
 	}
 	

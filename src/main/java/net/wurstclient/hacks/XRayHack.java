@@ -37,7 +37,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	SetOpaqueCubeListener, GetAmbientOcclusionLightLevelListener,
 	ShouldDrawSideListener, TesselateBlockListener, RenderBlockEntityListener
 {
-	private final BlockListSetting ores = new BlockListSetting("Ores", "",
+	private final BlockListSetting ores = new BlockListSetting("矿石", "",
 		"minecraft:ancient_debris", "minecraft:anvil", "minecraft:beacon",
 		"minecraft:bone_block", "minecraft:bookshelf",
 		"minecraft:brewing_stand", "minecraft:chain_command_block",
@@ -63,16 +63,16 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:repeating_command_block", "minecraft:spawner",
 		"minecraft:tnt", "minecraft:torch", "minecraft:trapped_chest",
 		"minecraft:water");
-	
+
 	private ArrayList<String> oreNames;
 	private final String warning;
-	
+
 	private final String renderName =
 		Math.random() < 0.01 ? "X-Wurst" : getName();
-	
+
 	public XRayHack()
 	{
-		super("X-Ray");
+		super("透视");
 		setCategory(Category.RENDER);
 		addSetting(ores);
 		
@@ -83,7 +83,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
 		
 		if(mods.stream().anyMatch(optifine.asPredicate()))
-			warning = "OptiFine is installed. X-Ray will not work properly!";
+			warning = "OptiFine 已安装.X-射线无法正常工作!";
 		else
 			warning = null;
 	}

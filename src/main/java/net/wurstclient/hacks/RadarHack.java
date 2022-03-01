@@ -33,7 +33,7 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
 
-@SearchTags({"MiniMap", "mini map"})
+@SearchTags({"MiniMap", "mini map","Radar"})
 public final class RadarHack extends Hack implements UpdateListener
 {
 	private final Window window;

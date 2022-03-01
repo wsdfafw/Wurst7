@@ -44,7 +44,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			System.out.println("无法创建“.Wurst 加密”文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;
@@ -61,7 +61,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't load " + path.getFileName());
+			System.out.println("无法载入 " + path.getFileName());
 			e.printStackTrace();
 			
 			renameCorrupted();
@@ -77,12 +77,12 @@ public final class AltsFile
 			Path newPath =
 				path.resolveSibling("!CORRUPTED_" + path.getFileName());
 			Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-			System.out.println("Renamed to " + newPath.getFileName());
+			System.out.println("重命名至 " + newPath.getFileName());
 			
 		}catch(IOException e)
 		{
 			System.out.println(
-				"Couldn't rename corrupted file " + path.getFileName());
+				"无法重命名损坏的文件 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}
@@ -121,8 +121,8 @@ public final class AltsFile
 	
 	private static Alt loadAlt(String nameOrEmail, JsonObject jsonAlt)
 	{
-		String password = JsonUtils.getAsString(jsonAlt.get("password"), "");
-		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("starred"), false);
+		String password = JsonUtils.getAsString(jsonAlt.get("密码"), "");
+		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("加星标"), false);
 		
 		if(password.isEmpty())
 			return new CrackedAlt(nameOrEmail, starred);
@@ -143,7 +143,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			System.out.println("无法创建“.Wurst 加密”文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;
@@ -157,7 +157,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't save " + path.getFileName());
+			System.out.println("无法保存 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}
