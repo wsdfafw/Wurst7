@@ -62,9 +62,9 @@ public final class NoClipHack extends Hack implements UpdateListener,
 		float speed = 0.2F;
 		player.airStrafingSpeed = speed;
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			player.addVelocity(0, speed, 0);
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			player.addVelocity(0, -speed, 0);
 	}
 	

@@ -39,7 +39,7 @@ import net.wurstclient.settings.EnumSetting;
 public final class AutoEatHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting eatWhileWalking = new CheckboxSetting(
-		"行走时", "会让你速度变慢.", false);
+		"行走时", "会让你速度变慢", false);
 	
 	private final EnumSetting<FoodPriority> foodPriority =
 		new EnumSetting<>("优先级", FoodPriority.values(),
@@ -52,7 +52,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private final CheckboxSetting allowPoison =
 		new CheckboxSetting("允许中毒效果",
-			"",
+			"Poisoned food applies damage over time.\n" + "Not recommended.",
 			false);
 	
 	private final CheckboxSetting allowChorus =
@@ -64,7 +64,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	public AutoEatHack()
 	{
-		super("AutoEat");
+		super("自动进食");
 		setCategory(Category.ITEMS);
 		addSetting(eatWhileWalking);
 		addSetting(foodPriority);
@@ -110,7 +110,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		MC.player.getInventory().selectedSlot = bestSlot;
 		
 		// eat food
-		MC.options.useKey.setPressed(true);
+		MC.options.keyUse.setPressed(true);
 		IMC.getInteractionManager().rightClickItem();
 	}
 	
@@ -216,7 +216,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		if(!isEating())
 			return;
 		
-		MC.options.useKey.setPressed(false);
+		MC.options.keyUse.setPressed(false);
 		
 		MC.player.getInventory().selectedSlot = oldSlot;
 		oldSlot = -1;
