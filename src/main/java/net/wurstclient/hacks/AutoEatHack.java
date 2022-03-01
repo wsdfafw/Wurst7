@@ -39,7 +39,7 @@ import net.wurstclient.settings.EnumSetting;
 public final class AutoEatHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting eatWhileWalking = new CheckboxSetting(
-		"行走时", "会让你速度变慢", false);
+		"行走时", "会让你速度变慢.", false);
 	
 	private final EnumSetting<FoodPriority> foodPriority =
 		new EnumSetting<>("优先级", FoodPriority.values(),
@@ -52,7 +52,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private final CheckboxSetting allowPoison =
 		new CheckboxSetting("允许中毒效果",
-			"Poisoned food applies damage over time.\n" + "Not recommended.",
+			"",
 			false);
 	
 	private final CheckboxSetting allowChorus =
@@ -64,7 +64,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	public AutoEatHack()
 	{
-		super("自动进食");
+		super("AutoEat");
 		setCategory(Category.ITEMS);
 		addSetting(eatWhileWalking);
 		addSetting(foodPriority);
