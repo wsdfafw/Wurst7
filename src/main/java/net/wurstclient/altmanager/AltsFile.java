@@ -24,17 +24,32 @@ import net.wurstclient.util.json.WsonObject;
 public final class AltsFile
 {
 	private final Path path;
+	private final Path encFolder;
 	private boolean disableSaving;
-	private final Encryption encryption;
+	private Encryption encryption;
+	private IOException folderException;
 	
 	public AltsFile(Path path, Path encFolder)
 	{
 		this.path = path;
-		encryption = new Encryption(encFolder);
+		this.encFolder = encFolder;
 	}
 	
 	public void load(AltManager altManager)
 	{
+		try
+		{
+			if(encryption == null)
+				encryption = new Encryption(encFolder);
+			
+		}catch(IOException e)
+		{
+			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			e.printStackTrace();
+			folderException = e;
+			return;
+		}
+		
 		try
 		{
 			WsonObject wson = encryption.parseFileToObject(path);
@@ -46,7 +61,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法载入 " + path.getFileName());
+			System.out.println("Couldn't load " + path.getFileName());
 			e.printStackTrace();
 			
 			renameCorrupted();
@@ -62,13 +77,13 @@ public final class AltsFile
 			Path newPath =
 				path.resolveSibling("!CORRUPTED_" + path.getFileName());
 			Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-			System.out.println("重命名至 " + newPath.getFileName());
+			System.out.println("Renamed to " + newPath.getFileName());
 			
-		}catch(IOException e2)
+		}catch(IOException e)
 		{
 			System.out.println(
-				"无法重命名当前的文件 " + path.getFileName());
-			e2.printStackTrace();
+				"Couldn't rename corrupted file " + path.getFileName());
+			e.printStackTrace();
 		}
 	}
 	
@@ -93,28 +108,46 @@ public final class AltsFile
 		
 		for(Entry<String, JsonObject> e : wson.getAllJsonObjects().entrySet())
 		{
-			String email = e.getKey();
-			JsonObject jsonAlt = e.getValue();
+			String nameOrEmail = e.getKey();
+			if(nameOrEmail.isEmpty())
+				continue;
 			
-			alts.add(loadAlt(email, jsonAlt));
+			JsonObject jsonAlt = e.getValue();
+			alts.add(loadAlt(nameOrEmail, jsonAlt));
 		}
 		
 		return alts;
 	}
 	
-	private static Alt loadAlt(String email, JsonObject jsonAlt)
+	private static Alt loadAlt(String nameOrEmail, JsonObject jsonAlt)
 	{
-		String password = JsonUtils.getAsString(jsonAlt.get("密码"), "");
-		String name = JsonUtils.getAsString(jsonAlt.get("名字"), "");
+		String password = JsonUtils.getAsString(jsonAlt.get("password"), "");
 		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("starred"), false);
 		
-		return new Alt(email, password, name, starred);
+		if(password.isEmpty())
+			return new CrackedAlt(nameOrEmail, starred);
+		
+		String name = JsonUtils.getAsString(jsonAlt.get("name"), "");
+		return new MojangAlt(nameOrEmail, password, name, starred);
 	}
 	
 	public void save(AltManager alts)
 	{
 		if(disableSaving)
 			return;
+		
+		try
+		{
+			if(encryption == null)
+				encryption = new Encryption(encFolder);
+			
+		}catch(IOException e)
+		{
+			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			e.printStackTrace();
+			folderException = e;
+			return;
+		}
 		
 		JsonObject json = createJson(alts);
 		
@@ -124,7 +157,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法保存 " + path.getFileName());
+			System.out.println("Couldn't save " + path.getFileName());
 			e.printStackTrace();
 		}
 	}
@@ -134,16 +167,13 @@ public final class AltsFile
 		JsonObject json = new JsonObject();
 		
 		for(Alt alt : alts.getList())
-		{
-			JsonObject jsonAlt = new JsonObject();
-			
-			jsonAlt.addProperty("密码", alt.getPassword());
-			jsonAlt.addProperty("名字", alt.getName());
-			jsonAlt.addProperty("starred", alt.isStarred());
-			
-			json.add(alt.getEmail(), jsonAlt);
-		}
+			alt.exportAsJson(json);
 		
 		return json;
+	}
+	
+	public IOException getFolderException()
+	{
+		return folderException;
 	}
 }

@@ -9,8 +9,8 @@ package net.wurstclient.commands;
 
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.StringHelper;
-import net.wurstclient.altmanager.Alt;
 import net.wurstclient.altmanager.AltManager;
+import net.wurstclient.altmanager.CrackedAlt;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
@@ -20,7 +20,8 @@ public final class AddAltCmd extends Command
 {
 	public AddAltCmd()
 	{
-		super("addalt", "增加一个玩家到你的账户管理中(就生成一个盗版账户)", ".addalt <player>", "增加服务器内所有账户请输入: .addalt all");
+		super("addalt", "Adds a player to your alt list.", ".addalt <player>",
+			"Add all players on the server: .addalt all");
 	}
 	
 	@Override
@@ -48,8 +49,8 @@ public final class AddAltCmd extends Command
 		if(name.equalsIgnoreCase("Alexander01998"))
 			return;
 		
-		WURST.getAltManager().add(new Alt(name, null, null));
-		ChatUtils.message("添加了 1 账户.");
+		WURST.getAltManager().add(new CrackedAlt(name));
+		ChatUtils.message("Added 1 alt.");
 	}
 	
 	private void addAll()
@@ -70,10 +71,10 @@ public final class AddAltCmd extends Command
 				|| name.equalsIgnoreCase("Alexander01998"))
 				continue;
 			
-			altManager.add(new Alt(name, null, null));
+			altManager.add(new CrackedAlt(name));
 			alts++;
 		}
 		
-		ChatUtils.message("添加了 " + alts + (alts == 1 ? " 账户." : " 账户."));
+		ChatUtils.message("Added " + alts + (alts == 1 ? " alt." : " alts."));
 	}
 }

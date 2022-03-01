@@ -50,11 +50,11 @@ import net.wurstclient.altmanager.NameGenerator;
 public abstract class AltEditorScreen extends Screen
 {
 	private final Path skinFolder =
-		WurstClient.INSTANCE.getWurstFolder().resolve("皮肤");
+		WurstClient.INSTANCE.getWurstFolder().resolve("skins");
 	
 	protected final Screen prevScreen;
 	
-	private TextFieldWidget emailBox;
+	private TextFieldWidget nameOrEmailBox;
 	private TextFieldWidget passwordBox;
 	
 	private ButtonWidget doneButton;
@@ -78,27 +78,27 @@ public abstract class AltEditorScreen extends Screen
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200, 20,
-				new LiteralText("取消"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Cancel"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12,
-			200, 20, new LiteralText("随机名称"),
-			b -> emailBox.setText(NameGenerator.generateName())));
+			200, 20, new LiteralText("Random Name"),
+			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
 		
 		addDrawableChild(stealSkinButton =
 			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
-				128, 20, new LiteralText("盗取皮肤"),
-				b -> message = stealSkin(getEmail())));
+				128, 20, new LiteralText("Steal Skin"),
+				b -> message = stealSkin(getNameOrEmail())));
 		
 		addDrawableChild(
 			new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128, 20,
-				new LiteralText("打开皮肤文件夹"), b -> openSkinFolder()));
+				new LiteralText("Open Skin Folder"), b -> openSkinFolder()));
 		
-		emailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60, 200,
-			20, new LiteralText(""));
-		emailBox.setMaxLength(48);
-		emailBox.setTextFieldFocused(true);
-		emailBox.setText(getDefaultEmail());
-		addSelectableChild(emailBox);
+		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
+			200, 20, new LiteralText(""));
+		nameOrEmailBox.setMaxLength(48);
+		nameOrEmailBox.setTextFieldFocused(true);
+		nameOrEmailBox.setText(getDefaultNameOrEmail());
+		addSelectableChild(nameOrEmailBox);
 		
 		passwordBox = new TextFieldWidget(textRenderer, width / 2 - 100, 100,
 			200, 20, new LiteralText(""));
@@ -112,7 +112,7 @@ public abstract class AltEditorScreen extends Screen
 		passwordBox.setMaxLength(256);
 		addSelectableChild(passwordBox);
 		
-		setInitialFocus(emailBox);
+		setInitialFocus(nameOrEmailBox);
 	}
 	
 	private void openSkinFolder()
@@ -130,36 +130,43 @@ public abstract class AltEditorScreen extends Screen
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			message = "\u00a74\u00a7l无法创建皮肤文件夹.";
+			message = "\u00a74\u00a7lSkin folder could not be created.";
 		}
 	}
 	
 	@Override
 	public final void tick()
 	{
-		emailBox.tick();
+		nameOrEmailBox.tick();
 		passwordBox.tick();
 		
-		String email = emailBox.getText().trim();
-		boolean alex = email.equalsIgnoreCase("Alexander01998");
+		String nameOrEmail = nameOrEmailBox.getText().trim();
+		boolean alex = nameOrEmail.equalsIgnoreCase("Alexander01998");
 		
-		doneButton.active =
-			!email.isEmpty() && !(alex && passwordBox.getText().isEmpty());
+		doneButton.active = !nameOrEmail.isEmpty()
+			&& !(alex && passwordBox.getText().isEmpty());
 		
 		stealSkinButton.active = !alex;
 	}
 	
-	protected final String getEmail()
+	/**
+	 * @return the user-entered name or email. Cannot be empty when pressing the
+	 *         done button. Cannot be null.
+	 */
+	protected final String getNameOrEmail()
 	{
-		return emailBox.getText();
+		return nameOrEmailBox.getText();
 	}
 	
+	/**
+	 * @return the user-entered password. Can be empty. Cannot be null.
+	 */
 	protected final String getPassword()
 	{
 		return passwordBox.getText();
 	}
 	
-	protected String getDefaultEmail()
+	protected String getDefaultNameOrEmail()
 	{
 		return client.getSession().getUsername();
 	}
@@ -192,17 +199,17 @@ public abstract class AltEditorScreen extends Screen
 				Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
 			}
 			
-			return "\u00a7a\u00a7l皮肤已被保存为 " + name + ".png";
+			return "\u00a7a\u00a7lSaved skin as " + name + ".png";
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7l皮肤无法保存.";
+			return "\u00a74\u00a7lSkin could not be saved.";
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7l玩家不存在.";
+			return "\u00a74\u00a7lPlayer does not exist.";
 		}
 	}
 	
@@ -320,10 +327,10 @@ public abstract class AltEditorScreen extends Screen
 	@Override
 	public boolean mouseClicked(double x, double y, int button)
 	{
-		emailBox.mouseClicked(x, y, button);
+		nameOrEmailBox.mouseClicked(x, y, button);
 		passwordBox.mouseClicked(x, y, button);
 		
-		if(emailBox.isFocused() || passwordBox.isFocused())
+		if(nameOrEmailBox.isFocused() || passwordBox.isFocused())
 			message = "";
 		
 		return super.mouseClicked(x, y, button);
@@ -340,24 +347,24 @@ public abstract class AltEditorScreen extends Screen
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// skin preview
-		AltRenderer.drawAltBack(matrixStack, emailBox.getText(),
+		AltRenderer.drawAltBack(matrixStack, nameOrEmailBox.getText(),
 			(width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
-		AltRenderer.drawAltBody(matrixStack, emailBox.getText(),
+		AltRenderer.drawAltBody(matrixStack, nameOrEmailBox.getText(),
 			width - (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
 		
 		// text
 		drawStringWithShadow(matrixStack, textRenderer,
-			"名字 (给盗版账户用), 或者", width / 2 - 100, 37, 10526880);
+			"Name (for cracked alts), or", width / 2 - 100, 37, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"邮箱 (给正版用户用)", width / 2 - 100, 47, 10526880);
+			"E-Mail (for premium alts)", width / 2 - 100, 47, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"密码（对于已被破解的代理，请留空）。", width / 2 - 100, 87,
+			"Password (leave blank for cracked alts)", width / 2 - 100, 87,
 			10526880);
 		drawCenteredText(matrixStack, textRenderer, message, width / 2, 142,
 			16777215);
 		
 		// text boxes
-		emailBox.render(matrixStack, mouseX, mouseY, partialTicks);
+		nameOrEmailBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		passwordBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
 		// red flash for errors
