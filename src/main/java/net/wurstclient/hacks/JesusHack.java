@@ -61,7 +61,7 @@ public final class JesusHack extends Hack
 	public void onUpdate()
 	{
 		// check if sneaking
-		if(MC.options.keySneak.isPressed())
+		if(MC.options.sneakKey.isPressed())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -179,6 +179,6 @@ public final class JesusHack extends Hack
 	public boolean shouldBeSolid()
 	{
 		return isEnabled() && MC.player != null && MC.player.fallDistance <= 3
-			&& !MC.options.keySneak.isPressed() && !MC.player.isTouchingWater();
+			&& !MC.options.sneakKey.isPressed() && !MC.player.isTouchingWater();
 	}
 }
