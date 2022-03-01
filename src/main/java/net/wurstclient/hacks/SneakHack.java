@@ -58,7 +58,7 @@ public final class SneakHack extends Hack
 		switch(mode.getSelected())
 		{
 			case LEGIT:
-			IKeyBinding sneakKey = (IKeyBinding)MC.options.keySneak;
+			IKeyBinding sneakKey = (IKeyBinding)MC.options.sneakKey;
 			((KeyBinding)sneakKey).setPressed(sneakKey.isActallyPressed());
 			break;
 			
