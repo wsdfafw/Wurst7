@@ -101,7 +101,8 @@ public final class SliderComponent extends Component
 			setTooltip();
 		else if(hSlider && !dragging)
 			GUI.setTooltip(
-				"\u00a7e[ctrl]\u00a7r+\u00a7e[左键]\u00a7r 精确的输入");
+				"\u00a7e[ctrl]\u00a7r+\u00a7e[left-click]\u00a7r for precise input\n"
+					+ "\u00a7e[right-click]\u00a7r to reset");
 		
 		if(renderAsDisabled)
 		{
@@ -154,11 +155,11 @@ public final class SliderComponent extends Component
 		
 		if(setting.isLocked())
 		{
-			tooltip += "\n\n这个滑块被锁定 ";
+			tooltip += "\n\nThis slider is locked to ";
 			tooltip += setting.getValueString() + ".";
 			
 		}else if(setting.isDisabled())
-			tooltip += "\n\n这个滑块是关闭的.";
+			tooltip += "\n\nThis slider is disabled.";
 		
 		GUI.setTooltip(tooltip);
 	}

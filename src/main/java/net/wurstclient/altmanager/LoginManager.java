@@ -11,6 +11,7 @@ import java.net.Proxy;
 import java.util.Optional;
 
 import com.mojang.authlib.Agent;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
@@ -34,48 +35,56 @@ public final class LoginManager
 		try
 		{
 			auth.logIn();
-			WurstClient.IMC
-				.setSession(new Session(auth.getSelectedProfile().getName(),
-					auth.getSelectedProfile().getId().toString(),
-					auth.getAuthenticatedToken(), Optional.empty(),
-					Optional.empty(), Session.AccountType.MOJANG));
+			
+			GameProfile profile = auth.getSelectedProfile();
+			String username = profile.getName();
+			String uuid = profile.getId().toString();
+			String accessToken = auth.getAuthenticatedToken();
+			
+			Session session = new Session(username, uuid, accessToken,
+				Optional.empty(), Optional.empty(), Session.AccountType.MOJANG);
+			
+			WurstClient.IMC.setSession(session);
 			
 		}catch(AuthenticationUnavailableException e)
 		{
 			throw new LoginException(
-				"\u00a74\u00a7l无法联系认证服务器!", e);
+				"\u00a74\u00a7lCannot contact authentication server!", e);
 			
 		}catch(AuthenticationException e)
 		{
 			e.printStackTrace();
+			String msg = e.getMessage().toLowerCase();
 			
-			if(e.getMessage().contains("用户名或密码无效."))
+			if(msg.contains("invalid username or password."))
 				throw new LoginException(
-					"\u00a74\u00a7l密码错误！ （或阴影禁止）", e);
+					"\u00a74\u00a7lWrong password! (or shadowbanned)", e);
 			
-			if(e.getMessage().toLowerCase().contains("帐号已迁移"))
+			if(msg.contains("account migrated"))
 				throw new LoginException(
-					"\u00a74\u00a7l账户迁移到 Mojang 账户.", e);
+					"\u00a74\u00a7lAccount migrated to Mojang account.", e);
 			
-			if(e.getMessage().toLowerCase().contains("migrated"))
+			if(msg.contains("migrated"))
 				throw new LoginException(
-					"\u00a74\u00a7l帐户迁移到 Microsoft 帐户.", e);
+					"\u00a74\u00a7lAccount migrated to Microsoft account.", e);
 			
 			throw new LoginException(
-				"\u00a74\u00a7l无法联系认证服务器!", e);
+				"\u00a74\u00a7lCannot contact authentication server!", e);
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
 			
 			throw new LoginException(
-				"\u00a74\u00a7l密码错误！ （或阴影禁止）", e);
+				"\u00a74\u00a7lWrong password! (or shadowbanned)", e);
 		}
 	}
 	
 	public static void changeCrackedName(String newName)
 	{
-		WurstClient.IMC.setSession(new Session(newName, "", "",
-			Optional.empty(), Optional.empty(), Session.AccountType.MOJANG));
+		Session session = new Session(newName, "", "", Optional.empty(),
+			Optional.empty(), Session.AccountType.MOJANG);
+		
+		WurstClient.IMC.setSession(session);
 	}
 }
