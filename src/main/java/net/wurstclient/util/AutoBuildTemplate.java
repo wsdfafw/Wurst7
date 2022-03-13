@@ -11,13 +11,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 
-import com.google.gson.JsonObject;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.wurstclient.settings.FileSetting;
 import net.wurstclient.util.json.JsonException;
 import net.wurstclient.util.json.JsonUtils;
+import net.wurstclient.util.json.WsonObject;
 
 public final class AutoBuildTemplate
 {
@@ -36,19 +35,21 @@ public final class AutoBuildTemplate
 	public static AutoBuildTemplate load(Path path)
 		throws IOException, JsonException
 	{
-		JsonObject json = JsonUtils.parseFileToObject(path).toJsonObject();
+		WsonObject json = JsonUtils.parseFileToObject(path);
 		int[][] blocks =
-			JsonUtils.GSON.fromJson(json.get("blocks"), int[][].class);
+			JsonUtils.GSON.fromJson(json.getElement("blocks"), int[][].class);
 		
 		if(blocks == null)
-			throw new JsonException("模板不存在方块!");
+			throw new JsonException("Template has no blocks!");
 		
 		for(int i = 0; i < blocks.length; i++)
 		{
 			int length = blocks[i].length;
 			
 			if(length < 3)
-				throw new JsonException("实体方块[" + i + "] 没有 X, Y 和 Z 的设置. 只找到 " + length + " 值");
+				throw new JsonException("Entry blocks[" + i
+					+ "] doesn't have X, Y and Z offset. Only found " + length
+					+ " values");
 		}
 		
 		return new AutoBuildTemplate(path, blocks);
