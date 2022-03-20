@@ -360,8 +360,11 @@ public abstract class AltEditorScreen extends Screen
 		drawStringWithShadow(matrixStack, textRenderer,
 			"密码（对于已被破解的代理，请留空）。", width / 2 - 100, 87,
 			10526880);
-		drawCenteredText(matrixStack, textRenderer, message, width / 2, 142,
-			16777215);
+		
+		String[] lines = message.split("\n");
+		for(int i = 0; i < lines.length; i++)
+			drawCenteredText(matrixStack, textRenderer, lines[i], width / 2,
+				142 + 10 * i, 16777215);
 		
 		// text boxes
 		nameOrEmailBox.render(matrixStack, mouseX, mouseY, partialTicks);

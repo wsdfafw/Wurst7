@@ -36,6 +36,7 @@ public final class HackList implements UpdateListener
 	public final AntiSpamHack antiSpamHack = new AntiSpamHack();
 	public final AntiWaterPushHack antiWaterPushHack = new AntiWaterPushHack();
 	public final AntiWobbleHack antiWobbleHack = new AntiWobbleHack();
+	public final ArrowDmgHack arrowDmgHack = new ArrowDmgHack();
 	public final AutoArmorHack autoArmorHack = new AutoArmorHack();
 	public final AutoBuildHack autoBuildHack = new AutoBuildHack();
 	public final AutoDropHack autoDropHack = new AutoDropHack();
@@ -161,7 +162,6 @@ public final class HackList implements UpdateListener
 	public final TiredHack tiredHack = new TiredHack();
 	public final TooManyHaxHack tooManyHaxHack = new TooManyHaxHack();
 	public final TpAuraHack tpAuraHack = new TpAuraHack();
-	public final TpsDisplayHack tpsDisplayHack = new TpsDisplayHack();
 	public final TrajectoriesHack trajectoriesHack = new TrajectoriesHack();
 	public final TreeBotHack treeBotHack = new TreeBotHack();
 	public final TriggerBotHack triggerBotHack = new TriggerBotHack();
