@@ -102,7 +102,7 @@ public enum MicrosoftLoginManager
 	private static MinecraftProfile getAccount(String email, String password)
 		throws LoginException
 	{
-		System.out.println("Logging in with Microsoft...");
+		System.out.println("使用 Microsoft 登录...");
 		long startTime = System.nanoTime();
 		
 		try
@@ -118,14 +118,14 @@ public enum MicrosoftLoginManager
 			
 			MinecraftProfile mcProfile = getMinecraftProfile(mcAccessToken);
 			
-			System.out.println("Login successful after "
+			System.out.println("登录成功后 "
 				+ (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			return mcProfile;
 			
 		}catch(LoginException e)
 		{
-			System.out.println("Login failed after "
+			System.out.println("登录后失败 "
 				+ (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			e.printStackTrace();
@@ -143,22 +143,22 @@ public enum MicrosoftLoginManager
 		{
 			URLConnection connection = LOGIN_URL.openConnection();
 			
-			System.out.println("Getting login cookie...");
+			System.out.println("获取登录cookie...");
 			cookie = connection.getHeaderField("set-cookie");
 			
-			System.out.println("Downloading login page...");
+			System.out.println("下载登录页面...");
 			loginWebpage = downloadData(connection);
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 		}
 		
-		System.out.println("Getting PPFT and urlPost...");
+		System.out.println("获取 PPFT 和 urlPost...");
 		
 		Matcher matcher = PPFT_REGEX.matcher(loginWebpage);
 		if(!matcher.find())
-			throw new LoginException("sFTTag / PPFT regex failed.");
+			throw new LoginException("sFTTag / PPFT 正则表达式失败.");
 		
 		String ppft = matcher.group(1);
 		
@@ -209,7 +209,7 @@ public enum MicrosoftLoginManager
 			int responseCode = connection.getResponseCode();
 			if(responseCode >= 500 && responseCode <= 599)
 				throw new LoginException(
-					"Servers are down (code " + responseCode + ").");
+					"服务器已关闭 (code " + responseCode + ").");
 			
 			if(responseCode != 200)
 				throw new LoginException(
@@ -221,13 +221,13 @@ public enum MicrosoftLoginManager
 			Matcher matcher = AUTHCODE_REGEX.matcher(decodedUrl);
 			if(!matcher.find())
 				throw new LoginException(
-					"Didn't get authCode. (Wrong email/password?)");
+					"没有得到 authCode。 （错误的电子邮件/密码？）");
 			
 			return matcher.group(1);
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 		}
 	}
 	
@@ -256,7 +256,7 @@ public enum MicrosoftLoginManager
 			
 			connection.setDoOutput(true);
 			
-			System.out.println("Getting Microsoft access token...");
+			System.out.println("获取 Microsoft 访问令牌...");
 			
 			try(OutputStream out = connection.getOutputStream())
 			{
@@ -268,7 +268,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 			
 		}catch(JsonException e)
 		{
@@ -300,7 +300,7 @@ public enum MicrosoftLoginManager
 			
 			connection.setDoOutput(true);
 			
-			System.out.println("Getting X-Box Live token...");
+			System.out.println("获取 Xbox Live 令牌...");
 			
 			try(OutputStream out = connection.getOutputStream())
 			{
@@ -317,11 +317,11 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 			
 		}catch(JsonException e)
 		{
-			throw new LoginException("Server sent invalid JSON.", e);
+			throw new LoginException("服务器发送了无效的 JSON.", e);
 		}
 	}
 	
@@ -362,7 +362,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 			
 		}catch(JsonException e)
 		{
@@ -400,7 +400,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 			
 		}catch(JsonException e)
 		{
@@ -432,7 +432,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("Connection failed: " + e, e);
+			throw new LoginException("连接失败: " + e, e);
 			
 		}catch(JsonException e)
 		{
