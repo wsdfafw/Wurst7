@@ -101,7 +101,8 @@ public final class SliderComponent extends Component
 			setTooltip();
 		else if(hSlider && !dragging)
 			GUI.setTooltip(
-				"\u00a7e[ctrl]\u00a7r+\u00a7e[左键]\u00a7r 精确的输入");
+				"\u00a7e[ctrl]\u00a7r+\u00a7e[左键单击]\u00a7r for precise input\n"
+					+ "\u00a7e[右键点击]\u00a7r to reset");
 		
 		if(renderAsDisabled)
 		{
