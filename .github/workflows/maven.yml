@@ -2,7 +2,7 @@ name: Automatic build/issue
 
 on:
   push:
-    branches: [ 1.17.1 ]
+    branches: [ 1.17.11 ]
   pull_request:
   workflow_dispatch:
 
