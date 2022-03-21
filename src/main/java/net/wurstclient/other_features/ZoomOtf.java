@@ -34,7 +34,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public ZoomOtf()
 	{
-		super("Zoom", "允许您放大.\n转到 Wurst Options -> Zoom 更改此键绑定.");super("Zoom", "允许您放大.\n转到 Wurst Options -> Zoom 更改此键绑定.");super("Zoom", "允许您放大.\n转到 Wurst Options -> Zoom 更改此键绑定.");
+		super("Zoom", "允许您放大.\n转到 Wurst Options -> Zoom 更改此键绑定.");
 		addSetting(level);
 		addSetting(scroll);
 		EVENTS.add(MouseScrollListener.class, this);
