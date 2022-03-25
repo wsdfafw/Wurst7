@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7204;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.network.SequencedPacketCreator;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -146,7 +146,7 @@ public abstract class ClientPlayerInteractionManagerMixin
 	public void sendPlayerActionC2SPacket(Action action, BlockPos blockPos,
 		Direction direction)
 	{
-		method_41931(client.world,
+		sendSequencedPacket(client.world,
 			i -> new PlayerActionC2SPacket(action, blockPos, direction, i));
 	}
 	
@@ -154,7 +154,7 @@ public abstract class ClientPlayerInteractionManagerMixin
 	public void sendPlayerInteractBlockPacket(Hand hand,
 		BlockHitResult blockHitResult)
 	{
-		method_41931(client.world,
+		sendSequencedPacket(client.world,
 			i -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, i));
 	}
 	
@@ -165,7 +165,8 @@ public abstract class ClientPlayerInteractionManagerMixin
 	}
 	
 	@Shadow
-	private void method_41931(ClientWorld clientWorld, class_7204 arg)
+	private void sendSequencedPacket(ClientWorld world,
+		SequencedPacketCreator packetCreator)
 	{
 		
 	}

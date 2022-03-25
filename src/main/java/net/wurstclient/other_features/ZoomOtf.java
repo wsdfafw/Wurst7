@@ -7,10 +7,9 @@
  */
 package net.wurstclient.other_features;
 
-import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
 import net.wurstclient.DontBlock;
 import net.wurstclient.SearchTags;
-import net.wurstclient.WurstClient;
 import net.wurstclient.events.MouseScrollListener;
 import net.wurstclient.other_feature.OtherFeature;
 import net.wurstclient.settings.CheckboxSetting;
@@ -22,11 +21,12 @@ import net.wurstclient.util.MathUtils;
 @DontBlock
 public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 {
-	private final SliderSetting level = new SliderSetting("放大等级", 3, 1,
+	private final SliderSetting level = new SliderSetting("Zoom level", 3, 1,
 		50, 0.1, v -> ValueDisplay.DECIMAL.getValueString(v) + "x");
 	
 	private final CheckboxSetting scroll = new CheckboxSetting(
-		"使用鼠标滚轮", "如果启用,您可以在缩放时使用鼠标滚轮进一步放大.",
+		"Use mouse wheel", "If enabled, you can use the mouse wheel\n"
+			+ "while zooming to zoom in even further.",
 		true);
 	
 	private Double currentLevel;
@@ -34,7 +34,9 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public ZoomOtf()
 	{
-		super("Zoom", "允许您放大.\n转到 Wurst Options -> Zoom 更改此键绑定.");
+		super("Zoom", "Allows you to zoom in.\n"
+			+ "By default, the zoom is activated by pressing the \u00a7lV\u00a7r key.\n"
+			+ "Go to Wurst Options -> Zoom to change this keybind.");
 		addSetting(level);
 		addSetting(scroll);
 		EVENTS.add(MouseScrollListener.class, this);
@@ -42,7 +44,8 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public double changeFovBasedOnZoom(double fov)
 	{
-		GameOptions gameOptions = WurstClient.MC.options;
+		SimpleOption<Double> mouseSensitivitySetting =
+			MC.options.method_42495();
 		
 		if(currentLevel == null)
 			currentLevel = level.getValue();
@@ -53,7 +56,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 			
 			if(defaultMouseSensitivity != null)
 			{
-				gameOptions.mouseSensitivity = defaultMouseSensitivity;
+				mouseSensitivitySetting.setValue(defaultMouseSensitivity);
 				defaultMouseSensitivity = null;
 			}
 			
@@ -61,13 +64,13 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 		}
 		
 		if(defaultMouseSensitivity == null)
-			defaultMouseSensitivity = gameOptions.mouseSensitivity;
+			defaultMouseSensitivity = mouseSensitivitySetting.getValue();
 			
 		// Adjust mouse sensitivity in relation to zoom level.
 		// 1.0 / currentLevel is a value between 0.02 (50x zoom)
 		// and 1 (no zoom).
-		gameOptions.mouseSensitivity =
-			defaultMouseSensitivity * (1.0 / currentLevel);
+		mouseSensitivitySetting
+			.setValue(defaultMouseSensitivity * (1.0 / currentLevel));
 		
 		return fov / currentLevel;
 	}
