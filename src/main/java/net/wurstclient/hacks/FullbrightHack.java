@@ -50,7 +50,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			@Override
 			public void onUpdate()
 			{
-				double gamma = MC.options.method_42473().getValue();
+				double gamma = MC.options.getGamma().getValue();
 				System.out.println("Brightness started at " + gamma);
 				
 				if(gamma > 1)
@@ -89,7 +89,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	{
 		wasGammaChanged = true;
 		
-		SimpleOption<Double> gammaOption = MC.options.method_42473();
+		SimpleOption<Double> gammaOption = MC.options.getGamma();
 		@SuppressWarnings("unchecked")
 		ISimpleOption<Double> gammaOption2 =
 			(ISimpleOption<Double>)(Object)gammaOption;
@@ -109,7 +109,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	
 	private void resetGamma(double target)
 	{
-		SimpleOption<Double> gammaOption = MC.options.method_42473();
+		SimpleOption<Double> gammaOption = MC.options.getGamma();
 		@SuppressWarnings("unchecked")
 		ISimpleOption<Double> gammaOption2 =
 			(ISimpleOption<Double>)(Object)gammaOption;
