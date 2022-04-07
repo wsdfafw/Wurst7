@@ -8,6 +8,7 @@
 package net.wurstclient.other_features;
 
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
 import net.wurstclient.DontBlock;
 import net.wurstclient.SearchTags;
 import net.wurstclient.WurstClient;
@@ -30,7 +31,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 		true);
 	
 	private Double currentLevel;
-	private Double defaultMouseSensitivity;
+	private SimpleOption<Double> defaultMouseSensitivity;
 	
 	public ZoomOtf()
 	{
@@ -61,7 +62,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 		}
 		
 		if(defaultMouseSensitivity == null)
-			defaultMouseSensitivity = gameOptions.mouseSensitivity;
+			defaultMouseSensitivity = gameOptions.getMouseSensitivity();
 			
 		// Adjust mouse sensitivity in relation to zoom level.
 		// (fov / currentLevel) / fov is a value between 0.02 (50x zoom)
