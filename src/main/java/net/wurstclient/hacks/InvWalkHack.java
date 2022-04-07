@@ -27,11 +27,11 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class InvWalkHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting allowClickGUI =
-		new CheckboxSetting("Allow ClickGUI",
+		new CheckboxSetting("允许 ClickGUI",
 			"description.wurst.setting.invwalk.allow_clickgui", true);
 	
 	private final CheckboxSetting allowOther =
-		new CheckboxSetting("Allow other screens",
+		new CheckboxSetting("允许其他屏幕",
 			"description.wurst.setting.invwalk.allow_other", true);
 	
 	public InvWalkHack()
