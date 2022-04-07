@@ -60,6 +60,7 @@ public final class KillauraLegitHack extends Hack
 	private final SliderSetting range = new SliderSetting("范围", 4.25, 1.0, 4.25, 0.05, SliderSetting.ValueDisplay.DECIMAL);
     private final EnumSetting<Priority> priority = new EnumSetting("优先级", "决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体.", (Enum[])Priority.values(), (Enum)Priority.ANGLE);
     public final SliderSetting fov = new SliderSetting("视场", 360, 30, 360, 10, ValueDisplay.DEGREES);
+	private final CheckboxSetting damageIndicator = new CheckboxSetting("损坏指示器", "在目标内渲染一个与其剩余生命值成反比的彩色框.", true);
 	private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会攻击其他玩家.", false);
     private final CheckboxSetting filterSleeping = new CheckboxSetting("排除正在睡觉", "正在睡觉的 不会攻击正在睡觉的玩家.", true);
     private final SliderSetting filterFlying = new SliderSetting("排除飞行中", "不会攻击在飞行中玩家或\n远离地板一定距离的玩家.", 0.5, 0.0, 2.0, 0.05, v -> v == 0.0 ? "关" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
@@ -85,6 +86,7 @@ public final class KillauraLegitHack extends Hack
 		addSetting(range);
 		addSetting(priority);
 		addSetting(fov);
+		addSetting(damageIndicator);
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -271,7 +273,7 @@ public final class KillauraLegitHack extends Hack
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
-		if(target == null)
+		if(target == null || !damageIndicator.isChecked())
 			return;
 		
 		// GL settings
