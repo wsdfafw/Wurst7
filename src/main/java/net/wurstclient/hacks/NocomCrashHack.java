@@ -94,7 +94,7 @@ public final class NocomCrashHack extends Hack
 		BlockHitResult blockHitResult =
 			new BlockHitResult(pos, Direction.DOWN, new BlockPos(pos), false);
 		
-		return new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult);
+		return new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult, 0);
 	}
 	
 	private Vec3d pickRandomPos()

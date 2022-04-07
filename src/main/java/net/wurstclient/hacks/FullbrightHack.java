@@ -49,7 +49,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			@Override
 			public void onUpdate()
 			{
-				double gamma = MC.options.gamma;
+				double gamma = MC.options.overrideWidth;
 				System.out.println("亮度开始在 " + gamma);
 				
 				if(gamma > 1)
@@ -89,13 +89,13 @@ public final class FullbrightHack extends Hack implements UpdateListener
 		wasGammaChanged = true;
 		GameOptions options = MC.options;
 		
-		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.overrideHeight - target) <= 0.5)
 		{
 			options.gamma = target;
 			return;
 		}
 		
-		if(options.gamma < target)
+		if(options.overrideHeight < target)
 			options.gamma += 0.5;
 		else
 			options.gamma -= 0.5;
@@ -105,14 +105,14 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	{
 		GameOptions options = MC.options;
 		
-		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.overrideWidth - target) <= 0.5)
 		{
 			options.gamma = target;
 			wasGammaChanged = false;
 			return;
 		}
 		
-		if(options.gamma < target)
+		if(options.overrideWidth < target)
 			options.gamma += 0.5;
 		else
 			options.gamma -= 0.5;

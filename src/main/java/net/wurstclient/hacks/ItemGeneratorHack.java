@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.world.gen.random.AbstractRandom;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -68,7 +69,7 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 			// but if so it will just retry.
 			Optional<RegistryEntry<Item>> optional = Optional.empty();
 			while(optional.isEmpty())
-				optional = Registry.ITEM.getRandom(random);
+				optional = Registry.ITEM.getRandom((AbstractRandom) random);
 			
 			Item item = optional.get().value();
 			ItemStack stack = new ItemStack(item, stackSize.getValueI());

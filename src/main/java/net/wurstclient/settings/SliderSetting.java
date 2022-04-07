@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+import net.minecraft.client.option.SimpleOption;
 import net.wurstclient.WurstClient;
 import net.wurstclient.clickgui.Component;
 import net.wurstclient.clickgui.components.SliderComponent;
@@ -83,12 +84,12 @@ public class SliderSetting extends Setting implements SliderLock
 		return display.getValueString(getValue());
 	}
 	
-	public final void setValue(double value)
+	public final void setValue(double value2)
 	{
 		if(disabled || isLocked())
 			return;
 		
-		setValueIgnoreLock(value);
+		setValueIgnoreLock(value2);
 	}
 	
 	private void setValueIgnoreLock(double value)
@@ -266,4 +267,7 @@ public class SliderSetting extends Setting implements SliderLock
 		
 		public String getValueString(double value);
 	}
+
+    public void setValue(SimpleOption<Double> gamma) {
+    }
 }

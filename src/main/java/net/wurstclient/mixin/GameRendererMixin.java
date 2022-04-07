@@ -76,7 +76,7 @@ public abstract class GameRendererMixin
 	private double getFov(GameOptions options)
 	{
 		return WurstClient.INSTANCE.getOtfs().zoomOtf
-			.changeFovBasedOnZoom(options.fov);
+			.changeFovBasedOnZoom(options.getFov());
 	}
 	
 	@Inject(at = {@At(value = "INVOKE",
