@@ -125,16 +125,11 @@ public final class XRayHack extends Hack implements UpdateListener,
 		if(!WURST.getHax().fullbrightHack.isEnabled())
 			MC.options.gamma = 0.5F;
 	}
-	public XRayHack(String name, ArrayList<String> oreNames, String warning) {
-		super(name);
-		this.oreNames = oreNames;
-		this.warning = warning;
-	}
-
+	
 	@Override
 	public void onUpdate()
 	{
-		MC.options.glDebugVerbosity = 16;
+		MC.options.gamma = 16;
 	}
 	
 	@Override
