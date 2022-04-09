@@ -70,7 +70,7 @@ public final class KillauraHack extends Hack
 		new SliderSetting("视场", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"损坏指示器", "在目标内渲染一个与其剩余生命值成反比的彩色框.",
+		"损坏指示器","在目标内渲染一个彩色框，与其剩余生命值成反比.",
 		true);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
