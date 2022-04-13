@@ -65,7 +65,15 @@ public final class KillauraHack extends Hack
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
 		"§l[距离]§r:距离最近的实体\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
 		Priority.values(), Priority.ANGLE);
-	public final SliderSetting fov = new SliderSetting("视场", 360, 30, 360, 10, ValueDisplay.DEGREES);
+	
+	public final SliderSetting fov =
+		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
+	
+	private final CheckboxSetting damageIndicator = new CheckboxSetting(
+		"损坏指示器",
+		"在目标内渲染一个彩色框，与其剩余生命值成反比.",
+		true);
+	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
 		"排除玩家", "", true);
 	
@@ -129,6 +137,7 @@ public final class KillauraHack extends Hack
 		addSetting(range);
 		addSetting(priority);
 		addSetting(fov);
+		addSetting(damageIndicator);
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -289,7 +298,7 @@ public final class KillauraHack extends Hack
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
-		if(renderTarget == null)
+		if(renderTarget == null || !damageIndicator.isChecked())
 			return;
 		
 		// GL settings
