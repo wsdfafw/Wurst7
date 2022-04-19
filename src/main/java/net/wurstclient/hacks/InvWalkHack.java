@@ -38,13 +38,13 @@ public final class InvWalkHack extends Hack implements UpdateListener
 			"description.wurst.setting.invwalk.allow_other", true);
 	
 	private final CheckboxSetting allowSneak =
-		new CheckboxSetting("Allow sneak key", true);
+		new CheckboxSetting("允许潜行", true);
 	
 	private final CheckboxSetting allowSprint =
-		new CheckboxSetting("Allow sprint key", true);
+		new CheckboxSetting("允许冲刺", true);
 	
 	private final CheckboxSetting allowJump =
-		new CheckboxSetting("Allow jump key", true);
+		new CheckboxSetting("允许跳", true);
 	
 	public InvWalkHack()
 	{
