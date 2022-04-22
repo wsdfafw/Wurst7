@@ -55,10 +55,10 @@ public final class AutoFarmHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting replant =
-		new CheckboxSetting("补种", true);
+		new CheckboxSetting("Replant", true);
 	
 	private final HashMap<BlockPos, Item> plants = new HashMap<>();
 	
@@ -75,7 +75,7 @@ public final class AutoFarmHack extends Hack
 	
 	public AutoFarmHack()
 	{
-		super("自动农场");
+		super("AutoFarm");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -397,12 +397,12 @@ public final class AutoFarmHack extends Hack
 		
 		for(int i = 0; i < sides.length; i++)
 		{
-			// 检查邻居是否可以被右键点击
+			// check if neighbor can be right clicked
 			BlockPos neighbor = pos.offset(sides[i]);
 			if(!BlockUtils.canBeClicked(neighbor))
 				continue;
 			
-			// 检查视线
+			// check line of sight
 			BlockState neighborState = BlockUtils.getState(neighbor);
 			VoxelShape neighborShape =
 				neighborState.getOutlineShape(MC.world, neighbor);
@@ -510,7 +510,8 @@ public final class AutoFarmHack extends Hack
 		if(WurstClient.MC.getBlockEntityRenderDispatcher().camera == null)
 			return;
 		
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;

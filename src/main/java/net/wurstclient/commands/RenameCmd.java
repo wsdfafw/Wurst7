@@ -8,7 +8,7 @@
 package net.wurstclient.commands;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -43,7 +43,7 @@ public final class RenameCmd extends Command
 		if(item == null)
 			throw new CmdError("你手上没有物品.");
 		
-		item.setCustomName(new LiteralText(message));
+		item.setCustomName(Text.literal(message));
 		ChatUtils.message("Renamed item to \"" + message + "\u00a7r\".");
 	}
 }
