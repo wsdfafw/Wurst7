@@ -12,7 +12,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.other_features.ZoomOtf;
 import net.wurstclient.settings.CheckboxSetting;
@@ -26,7 +26,7 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 	
 	public ZoomManagerScreen(Screen par1GuiScreen)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		prevScreen = par1GuiScreen;
 	}
 	
@@ -41,27 +41,26 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				new LiteralText("返回"), b -> client.setScreen(prevScreen)));
+				Text.literal("返回"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(
 			keyButton = new ButtonWidget(width / 2 - 79, height / 4 + 24 - 16,
-				158, 20, new LiteralText("放大按键: " + zoomKeyName),
+				158, 20, Text.literal("放大按键: " + zoomKeyName),
 				b -> client.setScreen(new PressAKeyScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 79, height / 4 + 72 - 16,
-			50, 20, new LiteralText("更多"), b -> level.increaseValue()));
+			50, 20, Text.literal("更多"), b -> level.increaseValue()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 25, height / 4 + 72 - 16,
-			50, 20, new LiteralText("更少"), b -> level.decreaseValue()));
+			50, 20, Text.literal("更少"), b -> level.decreaseValue()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 29, height / 4 + 72 - 16,
-			50, 20, new LiteralText("默认"),
+			50, 20, Text.literal("默认"),
 			b -> level.setValue(level.getDefaultValue())));
 		
 		addDrawableChild(scrollButton =
 			new ButtonWidget(width / 2 - 79, height / 4 + 96 - 16, 158, 20,
-				new LiteralText(
-					"使用鼠标滚轮: " + onOrOff(scroll.isChecked())),
+				Text.literal("使用鼠标滚轮: " + onOrOff(scroll.isChecked())),
 				b -> toggleScroll()));
 	}
 	
@@ -72,7 +71,7 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		
 		scroll.setChecked(!scroll.isChecked());
 		scrollButton.setMessage(
-			new LiteralText("使用鼠标滚轮: " + onOrOff(scroll.isChecked())));
+			Text.literal("使用鼠标滚轮: " + onOrOff(scroll.isChecked())));
 	}
 	
 	private String onOrOff(boolean on)
@@ -104,6 +103,6 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 			.setBoundKey(InputUtil.fromTranslationKey(key));
 		client.options.write();
 		KeyBinding.updateKeysByCode();
-		keyButton.setMessage(new LiteralText("Zoom键: " + key));
+		keyButton.setMessage(Text.literal("Zoom键: " + key));
 	}
 }

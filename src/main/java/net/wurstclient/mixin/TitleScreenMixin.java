@@ -18,7 +18,6 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.altmanager.screens.AltManagerScreen;
@@ -56,14 +55,14 @@ public abstract class TitleScreenMixin extends Screen
 		}
 		
 		if(realmsButton == null)
-			throw new IllegalStateException("找不到领域按钮!");
+			throw new IllegalStateException("Couldn't find realms button!");
 		
 		// make Realms button smaller
 		realmsButton.setWidth(98);
 		
 		// add AltManager button
 		addDrawableChild(altsButton = new ButtonWidget(width / 2 + 2,
-			realmsButton.y, 98, 20, new LiteralText("账户管理器"),
+			realmsButton.y, 98, 20, Text.literal("Alt Manager"),
 			b -> client.setScreen(new AltManagerScreen(this,
 				WurstClient.INSTANCE.getAltManager()))));
 	}

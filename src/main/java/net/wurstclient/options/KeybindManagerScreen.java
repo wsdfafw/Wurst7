@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.keybinds.Keybind;
 import net.wurstclient.keybinds.KeybindList;
@@ -32,7 +32,7 @@ public final class KeybindManagerScreen extends Screen
 	
 	public KeybindManagerScreen(Screen prevScreen)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -42,32 +42,32 @@ public final class KeybindManagerScreen extends Screen
 		listGui = new ListGui(client, width, height, 36, height - 56, 30);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 102,
-			height - 52, 100, 20, new LiteralText("添加"),
+			height - 52, 100, 20, Text.literal("添加"),
 			b -> client.setScreen(new KeybindEditorScreen(this))));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 + 2,
-			height - 52, 100, 20, new LiteralText("编辑"), b -> edit()));
+			height - 52, 100, 20, Text.literal("编辑"), b -> edit()));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 - 102,
-			height - 28, 100, 20, new LiteralText("移除"), b -> remove()));
+			height - 28, 100, 20, Text.literal("移除"), b -> remove()));
 		
 		addDrawableChild(
 			backButton = new ButtonWidget(width / 2 + 2, height - 28, 100, 20,
-				new LiteralText("返回"), b -> client.setScreen(prevScreen)));
+				Text.literal("返回"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(
-			new ButtonWidget(8, 8, 100, 20, new LiteralText("重置键绑定"),
+			new ButtonWidget(8, 8, 100, 20, Text.literal("重置键绑定"),
 				b -> client.setScreen(new ConfirmScreen(confirmed -> {
 					if(confirmed)
 						WurstClient.INSTANCE.getKeybinds()
 							.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
 					client.setScreen(this);
-				}, new LiteralText(
-					"您确定要重置您的按键绑定吗?"),
-					new LiteralText("这不能被撤消!")))));
+				}, Text
+					.literal("您确定要重置您的按键绑定吗?"),
+					Text.literal("这不能被撤消!")))));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			new LiteralText("档案..."),
+			Text.literal("档案..."),
 			b -> client.setScreen(new KeybindProfilesScreen(this))));
 	}
 	

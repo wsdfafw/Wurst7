@@ -41,11 +41,9 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.WurstClient;
@@ -78,7 +76,7 @@ public final class AltManagerScreen extends Screen
 	
 	public AltManagerScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(new LiteralText("Alt Manager"));
+		super(Text.literal("Alt Manager"));
 		this.prevScreen = prevScreen;
 		this.altManager = altManager;
 	}
@@ -91,11 +89,11 @@ public final class AltManagerScreen extends Screen
 		Exception folderException = altManager.getFolderException();
 		if(folderException != null && shouldAsk)
 		{
-			TranslatableText title =
-				new TranslatableText("gui.wurst.altmanager.folder_error.title");
-			TranslatableText message = new TranslatableText(
+			Text title =
+				Text.translatable("gui.wurst.altmanager.folder_error.title");
+			Text message = Text.translatable(
 				"gui.wurst.altmanager.folder_error.message", folderException);
-			TranslatableText buttonText = new TranslatableText("gui.done");
+			Text buttonText = Text.translatable("gui.done");
 			
 			// This just sets shouldAsk to false and closes the message.
 			Runnable action = () -> confirmGenerate(false);
@@ -106,10 +104,9 @@ public final class AltManagerScreen extends Screen
 			
 		}else if(altManager.getList().isEmpty() && shouldAsk)
 		{
-			TranslatableText title =
-				new TranslatableText("gui.wurst.altmanager.empty.title");
-			TranslatableText message =
-				new TranslatableText("gui.wurst.altmanager.empty.message");
+			Text title = Text.translatable("gui.wurst.altmanager.empty.title");
+			Text message =
+				Text.translatable("gui.wurst.altmanager.empty.message");
 			BooleanConsumer callback = this::confirmGenerate;
 			
 			ConfirmScreen screen = new ConfirmScreen(callback, title, message);
@@ -117,35 +114,34 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		addDrawableChild(useButton = new ButtonWidget(width / 2 - 154,
-			height - 52, 100, 20, new LiteralText("登录"), b -> pressLogin()));
+			height - 52, 100, 20, Text.literal("登录"), b -> pressLogin()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 50, height - 52, 100, 20,
-			new LiteralText("直接登录"),
+			Text.literal("直接登录"),
 			b -> client.setScreen(new DirectLoginScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 54, height - 52, 100, 20,
-			new LiteralText("添加"),
+			Text.literal("添加"),
 			b -> client.setScreen(new AddAltScreen(this, altManager))));
 		
 		addDrawableChild(
 			starButton = new ButtonWidget(width / 2 - 154, height - 28, 75, 20,
-				new LiteralText("最喜欢的"), b -> pressFavorite()));
+				Text.literal("最喜欢的"), b -> pressFavorite()));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 - 76,
-			height - 28, 74, 20, new LiteralText("编辑"), b -> pressEdit()));
+			height - 28, 74, 20, Text.literal("编辑"), b -> pressEdit()));
 		
-		addDrawableChild(
-			deleteButton = new ButtonWidget(width / 2 + 2, height - 28, 74, 20,
-				new LiteralText("删除"), b -> pressDelete()));
+		addDrawableChild(deleteButton = new ButtonWidget(width / 2 + 2,
+			height - 28, 74, 20, Text.literal("删除"), b -> pressDelete()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 80, height - 28, 75, 20,
-			new LiteralText("取消"), b -> client.setScreen(prevScreen)));
+			Text.literal("取消"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(importButton = new ButtonWidget(8, 8, 50, 20,
-			new LiteralText("进口"), b -> pressImportAlts()));
+			Text.literal("进口"), b -> pressImportAlts()));
 		
 		addDrawableChild(exportButton = new ButtonWidget(58, 8, 50, 20,
-			new LiteralText("出口"), b -> pressExportAlts()));
+			Text.literal("出口"), b -> pressExportAlts()));
 	}
 	
 	@Override
@@ -251,15 +247,14 @@ public final class AltManagerScreen extends Screen
 		if(alt == null)
 			return;
 		
-		LiteralText text =
-			new LiteralText("您确定要删除此 alt?");
+		Text text = Text.literal("您确定要删除此 alt?");
 		
 		String altName = alt.getDisplayName();
-		LiteralText message = new LiteralText(
+		Text message = Text.literal(
 			"\"" + altName + "\" 将永远失去！ （很长时间！）");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
-			message, new LiteralText("删除"), new LiteralText("取消"));
+			message, Text.literal("删除"), Text.literal("取消"));
 		client.setScreen(screen);
 	}
 	
@@ -558,7 +553,7 @@ public final class AltManagerScreen extends Screen
 		
 		// add to tooltip
 		for(String line : wrapped.split("\n"))
-			tooltip.add(new LiteralText(line));
+			tooltip.add(Text.literal(line));
 	}
 	
 	public static final class ListGui extends ListWidget

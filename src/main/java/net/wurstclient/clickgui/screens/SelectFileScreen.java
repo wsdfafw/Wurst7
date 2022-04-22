@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.wurstclient.settings.FileSetting;
 import net.wurstclient.util.ListWidget;
@@ -35,7 +35,7 @@ public final class SelectFileScreen extends Screen
 	
 	public SelectFileScreen(Screen prevScreen, FileSetting blockList)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		setting = blockList;
 	}
@@ -52,14 +52,14 @@ public final class SelectFileScreen extends Screen
 		listGui = new ListGui(client, this, setting.listFiles());
 		
 		addDrawableChild(new ButtonWidget(8, 8, 100, 20,
-			new LiteralText("打开文件夹"), b -> openFolder()));
+			Text.literal("打开文件夹"), b -> openFolder()));
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			new LiteralText("重置为默认值"), b -> askToConfirmReset()));
+			Text.literal("重置为默认值"), b -> askToConfirmReset()));
 		
 		doneButton = addDrawableChild(new ButtonWidget(width / 2 - 102,
-			height - 48, 100, 20, new LiteralText("完成"), b -> done()));
+			height - 48, 100, 20, Text.literal("完成"), b -> done()));
 		addDrawableChild(new ButtonWidget(width / 2 + 2, height - 48, 100, 20,
-			new LiteralText("取消"), b -> openPrevScreen()));
+			Text.literal("取消"), b -> openPrevScreen()));
 	}
 	
 	private void openFolder()
@@ -86,11 +86,11 @@ public final class SelectFileScreen extends Screen
 	
 	private void askToConfirmReset()
 	{
-		LiteralText title = new LiteralText("重设目录");
+		Text title = Text.literal("重设目录");
 		
-		LiteralText message = new LiteralText(
-			"这将会清空'" + setting.getFolder().getFileName()
-				+ "目录并重新生成默认的数值.\n你确定还要继续这样做吗?");
+		Text message = Text
+			.literal("这将会清空 '" + setting.getFolder().getFileName()
+				+ "'目录并重新生成默认的数值.\n你确定还要继续这样做吗?");
 		
 		client.setScreen(new ConfirmScreen(this::confirmReset, title, message));
 	}
@@ -173,7 +173,7 @@ public final class SelectFileScreen extends Screen
 		
 		if(doneButton.isHovered() && !doneButton.active)
 			renderTooltip(matrixStack,
-				Arrays.asList(new LiteralText("你必须先选择一个文件.")),
+				Arrays.asList(Text.literal("你必须先选择一个文件.")),
 				mouseX, mouseY);
 	}
 	

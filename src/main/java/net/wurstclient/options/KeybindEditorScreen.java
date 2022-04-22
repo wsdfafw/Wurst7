@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 
 public final class KeybindEditorScreen extends Screen
@@ -27,7 +27,7 @@ public final class KeybindEditorScreen extends Screen
 	
 	public KeybindEditorScreen(Screen prevScreen)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		
 		key = "无";
@@ -37,7 +37,7 @@ public final class KeybindEditorScreen extends Screen
 	
 	public KeybindEditorScreen(Screen prevScreen, String key, String commands)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		
 		this.key = key;
@@ -49,17 +49,17 @@ public final class KeybindEditorScreen extends Screen
 	public void init()
 	{
 		addDrawableChild(new ButtonWidget(width / 2 - 100, 60, 200, 20,
-			new LiteralText("换键"),
+			Text.literal("换键"),
 			b -> client.setScreen(new PressAKeyScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 72, 200,
-			20, new LiteralText("保存"), b -> save()));
+			20, Text.literal("保存"), b -> save()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96, 200,
-			20, new LiteralText("取消"), b -> client.setScreen(prevScreen)));
+			20, Text.literal("取消"), b -> client.setScreen(prevScreen)));
 		
 		commandField = new TextFieldWidget(textRenderer, width / 2 - 100, 100,
-			200, 20, new LiteralText(""));
+			200, 20, Text.literal(""));
 		commandField.setMaxLength(65536);
 		addSelectableChild(commandField);
 		setInitialFocus(commandField);
