@@ -41,9 +41,18 @@ import net.wurstclient.util.RotationUtils;
 public final class ItemEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final EnumSetting<Style> style = new EnumSetting("风格", (Enum[])Style.values(), (Enum)Style.BOXES);
-    private final EnumSetting<BoxSize> boxSize = new EnumSetting("框框大小", "§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.", (Enum[])BoxSize.values(), (Enum)BoxSize.FANCY);
-    private final ColorSetting color = new ColorSetting("颜色", "物品将会以这种颜色高亮.", Color.YELLOW);
+	private final EnumSetting<Style> style =
+		new EnumSetting<>("Style", Style.values(), Style.BOXES);
+	
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact\n"
+			+ "hitbox of each item.\n"
+			+ "\u00a7lFancy\u00a7r mode shows larger boxes\n"
+			+ "that look better.",
+		BoxSize.values(), BoxSize.FANCY);
+	
+	private final ColorSetting color = new ColorSetting("Color",
+		"Items will be highlighted in this color.", Color.YELLOW);
 	
 	private final ArrayList<ItemEntity> items = new ArrayList<>();
 	
@@ -183,7 +192,6 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 			bufferBuilder.vertex(matrix, (float)end.x - regionX, (float)end.y,
 				(float)end.z - regionZ).next();
 		}
-		bufferBuilder.end();
 		tessellator.draw();
 	}
 	

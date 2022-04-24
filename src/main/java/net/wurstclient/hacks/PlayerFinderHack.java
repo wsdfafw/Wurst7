@@ -42,7 +42,7 @@ public final class PlayerFinderHack extends Hack
 	
 	public PlayerFinderHack()
 	{
-		super("雷声漏洞");
+		super("PlayerFinder");
 		setCategory(Category.RENDER);
 	}
 	
@@ -125,7 +125,6 @@ public final class PlayerFinderHack extends Hack
 		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
 			.next();
 		
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// block box

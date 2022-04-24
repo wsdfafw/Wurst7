@@ -125,22 +125,22 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 		// }));
 		
 		// type
-		text = "类型: ";
+		text = "Type: ";
 		if(feature instanceof Hack)
 			text += "Hack";
 		else if(feature instanceof Command)
-			text += "指令";
+			text += "Command";
 		else
-			text += "其他功能";
+			text += "Other Feature";
 		
 		// category
 		if(feature.getCategory() != null)
-			text += ", 分类: " + feature.getCategory().getName();
+			text += ", Category: " + feature.getCategory().getName();
 		
 		// description
 		String description = feature.getWrappedDescription(300);
 		if(!description.isEmpty())
-			text += "\n\n描述:\n" + description;
+			text += "\n\nDescription:\n" + description;
 		
 		// area
 		Rectangle area = new Rectangle(middleX - 154, 60, 308, height - 103);
@@ -149,7 +149,7 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 		Collection<Setting> settings = feature.getSettings().values();
 		if(!settings.isEmpty())
 		{
-			text += "\n\n设置:";
+			text += "\n\nSettings:";
 			windowComponentY = getStringHeight(text) + 2;
 			
 			for(int i = 0; i < Math.ceil(window.getInnerHeight() / 9.0); i++)
@@ -214,15 +214,15 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 							noKeybindsSet = false;
 						text +=
 							"\n" + keybind.getKey().replace("key.keyboard.", "")
-								+ ": " + "切换 " + feature.getName();
+								+ ": " + "Toggle " + feature.getName();
 						existingKeybinds.put(keybind.getKey(),
 							new PossibleKeybind(command,
-								"切换 " + feature.getName()));
+								"Toggle " + feature.getName()));
 					}
 				}
 			}
 			if(noKeybindsSet)
-				text += "\n无";
+				text += "\nNone";
 			else
 			{
 				// remove keybind button
@@ -388,7 +388,6 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 			bufferBuilder.vertex(matrix, x5, y2, 0).next();
 			bufferBuilder.vertex(matrix, x2, y2, 0).next();
 			bufferBuilder.vertex(matrix, x2, y3, 0).next();
-			bufferBuilder.end();
 			tessellator.draw();
 			
 			setColorToBackground();
@@ -426,7 +425,6 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 			bufferBuilder.vertex(matrix, xc2, yc1, 0).next();
 			bufferBuilder.vertex(matrix, xc2, yc2, 0).next();
 			
-			bufferBuilder.end();
 			tessellator.draw();
 		}
 		

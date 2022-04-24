@@ -90,7 +90,7 @@ public final class FileComponent extends Component
 			gui.setTooltip(setting.getWrappedDescription(200));
 		else if(hBox)
 		{
-			String tooltip = "\u00a7e[左键单击]\u00a7r 选择文件";
+			String tooltip = "\u00a7e[left-click]\u00a7r to select file";
 			gui.setTooltip(tooltip);
 		}
 		
@@ -103,7 +103,6 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// box
@@ -115,7 +114,6 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
@@ -125,7 +123,6 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// setting name

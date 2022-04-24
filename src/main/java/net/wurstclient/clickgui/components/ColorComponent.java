@@ -73,11 +73,11 @@ public final class ColorComponent extends Component
 				GUI.setTooltip(setting.getWrappedDescription(200));
 			else
 			{
-				String tooltip = "\u00a7c红:\u00a7r" + setting.getRed();
-				tooltip += " \u00a7a绿:\u00a7r" + setting.getGreen();
-				tooltip += " \u00a79蓝:\u00a7r" + setting.getBlue();
-				tooltip += "\n\n\u00a7e[左键点击]\u00a7r to edit";
-				tooltip += "\n\u00a7e[右键点击]\u00a7r to reset";
+				String tooltip = "\u00a7cR:\u00a7r" + setting.getRed();
+				tooltip += " \u00a7aG:\u00a7r" + setting.getGreen();
+				tooltip += " \u00a79B:\u00a7r" + setting.getBlue();
+				tooltip += "\n\n\u00a7e[left-click]\u00a7r to edit";
+				tooltip += "\n\u00a7e[right-click]\u00a7r to reset";
 				GUI.setTooltip(tooltip);
 			}
 		
@@ -117,7 +117,6 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y1, 0).next();
-		bufferBuilder.end();
 		
 		tessellator.draw();
 	}
@@ -142,7 +141,6 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
@@ -154,8 +152,6 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.end();
-		
 		tessellator.draw();
 	}
 	

@@ -48,7 +48,7 @@ import net.wurstclient.altmanager.NameGenerator;
 public abstract class AltEditorScreen extends Screen
 {
 	private final Path skinFolder =
-		WurstClient.INSTANCE.getWurstFolder().resolve("皮肤");
+		WurstClient.INSTANCE.getWurstFolder().resolve("skins");
 	
 	protected final Screen prevScreen;
 	
@@ -76,20 +76,20 @@ public abstract class AltEditorScreen extends Screen
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200, 20,
-				Text.literal("取消"), b -> client.setScreen(prevScreen)));
+				Text.literal("Cancel"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12,
-			200, 20, Text.literal("随机名称"),
+			200, 20, Text.literal("Random Name"),
 			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
 		
 		addDrawableChild(stealSkinButton =
 			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
-				128, 20, Text.literal("盗取皮肤"),
+				128, 20, Text.literal("Steal Skin"),
 				b -> message = stealSkin(getNameOrEmail())));
 		
 		addDrawableChild(
 			new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128, 20,
-				Text.literal("打开皮肤文件夹"), b -> openSkinFolder()));
+				Text.literal("Open Skin Folder"), b -> openSkinFolder()));
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
 			200, 20, Text.literal(""));
@@ -128,7 +128,7 @@ public abstract class AltEditorScreen extends Screen
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			message = "\u00a74\u00a7l无法创建皮肤文件夹.";
+			message = "\u00a74\u00a7lSkin folder could not be created.";
 		}
 	}
 	
@@ -197,17 +197,17 @@ public abstract class AltEditorScreen extends Screen
 				Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
 			}
 			
-			return "\u00a7a\u00a7l皮肤已被保存为 " + name + ".png";
+			return "\u00a7a\u00a7lSaved skin as " + name + ".png";
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7l皮肤无法保存.";
+			return "\u00a74\u00a7lSkin could not be saved.";
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7l玩家不存在.";
+			return "\u00a74\u00a7lPlayer does not exist.";
 		}
 	}
 	
@@ -353,11 +353,11 @@ public abstract class AltEditorScreen extends Screen
 		
 		// text
 		drawStringWithShadow(matrixStack, textRenderer,
-			"名字 (给盗版账户用), 或者", width / 2 - 100, 37, 10526880);
+			"Name (for cracked alts), or", width / 2 - 100, 37, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"邮箱 (给正版用户用)", width / 2 - 100, 47, 10526880);
+			"E-Mail (for premium alts)", width / 2 - 100, 47, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"密码（对于已被破解的代理，请留空）。", width / 2 - 100, 87,
+			"Password (leave blank for cracked alts)", width / 2 - 100, 87,
 			10526880);
 		
 		String[] lines = message.split("\n");
@@ -383,7 +383,6 @@ public abstract class AltEditorScreen extends Screen
 			bufferBuilder.vertex(matrix, width, 0, 0).next();
 			bufferBuilder.vertex(matrix, width, height, 0).next();
 			bufferBuilder.vertex(matrix, 0, height, 0).next();
-			bufferBuilder.end();
 			tessellator.draw();
 			
 			GL11.glEnable(GL11.GL_CULL_FACE);

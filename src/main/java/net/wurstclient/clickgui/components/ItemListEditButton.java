@@ -33,7 +33,7 @@ public final class ItemListEditButton extends Component
 		this.setting = setting;
 		
 		TextRenderer fr = WurstClient.MC.textRenderer;
-		buttonWidth = fr.getWidth("编辑...");
+		buttonWidth = fr.getWidth("Edit...");
 		
 		setWidth(getDefaultWidth());
 		setHeight(getDefaultHeight());
@@ -94,7 +94,6 @@ public final class ItemListEditButton extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// box
@@ -106,7 +105,6 @@ public final class ItemListEditButton extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
@@ -116,7 +114,6 @@ public final class ItemListEditButton extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// setting name
@@ -124,7 +121,7 @@ public final class ItemListEditButton extends Component
 		TextRenderer fr = WurstClient.MC.textRenderer;
 		String text = setting.getName() + ": " + setting.getItemNames().size();
 		fr.draw(matrixStack, text, x1, y1 + 2, txtColor);
-		fr.draw(matrixStack, "编辑...", x3 + 2, y1 + 2, txtColor);
+		fr.draw(matrixStack, "Edit...", x3 + 2, y1 + 2, txtColor);
 	}
 	
 	@Override

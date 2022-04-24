@@ -48,15 +48,20 @@ public final class FreecamHack extends Hack
 	IsPlayerInWaterListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting tracer = new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
-    private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
+	private final SliderSetting speed =
+		new SliderSetting("Speed", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting tracer = new CheckboxSetting("Tracer",
+		"Draws a line to your character's actual position.", false);
+	
+	private final ColorSetting color =
+		new ColorSetting("Tracer color", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
 	
 	public FreecamHack()
 	{
-		super("灵魂出窍");
+		super("Freecam");
 		setCategory(Category.RENDER);
 		addSetting(speed);
 		addSetting(tracer);
@@ -207,7 +212,6 @@ public final class FreecamHack extends Hack
 			.next();
 		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
 			.next();
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		matrixStack.pop();

@@ -231,7 +231,6 @@ public final class TabGui implements KeyPressListener
 			bufferBuilder.vertex(matrix, x2, y2, 0).next();
 			bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		}
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// outline positions
@@ -252,7 +251,6 @@ public final class TabGui implements KeyPressListener
 			bufferBuilder.vertex(matrix, xi1, yi2, 0).next();
 			bufferBuilder.vertex(matrix, xi1, yi1, 0).next();
 		}
-		bufferBuilder.end();
 		tessellator.draw();
 		
 		// shadow positions
@@ -300,7 +298,6 @@ public final class TabGui implements KeyPressListener
 		bufferBuilder.vertex(matrix, x2, y2, 0)
 			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
 		
-		bufferBuilder.end();
 		tessellator.draw();
 	}
 	
@@ -365,7 +362,7 @@ public final class TabGui implements KeyPressListener
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 			{
 				ChatUtils
-					.error(feature.getName() + " 被 TooManyHax 功能所屏蔽.");
+					.error(feature.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			
