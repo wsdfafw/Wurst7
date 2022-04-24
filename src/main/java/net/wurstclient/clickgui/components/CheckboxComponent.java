@@ -100,7 +100,7 @@ public final class CheckboxComponent extends Component
 		
 		if(setting.isLocked())
 		{
-			tooltip += "\n\nThis checkbox is locked to ";
+			tooltip += "\n\n这个 checkbox 被锁定到 ";
 			tooltip += setting.isChecked() + ".";
 		}
 		

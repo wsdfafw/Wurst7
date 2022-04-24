@@ -436,7 +436,7 @@ public final class TunnellerHack extends Hack
 					updateCyanBuffer();
 				else
 				{
-					ChatUtils.message("Tunnel completed.");
+					ChatUtils.message("隧道完工.");
 					setEnabled(false);
 				}
 				
@@ -552,7 +552,7 @@ public final class TunnellerHack extends Hack
 			if(!equipSolidBlock(pos))
 			{
 				ChatUtils.error(
-					"Found a hole in the tunnel's floor but don't have any blocks to fill it with.");
+					"在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
 				setEnabled(false);
 				return;
 			}
@@ -645,7 +645,7 @@ public final class TunnellerHack extends Hack
 			if(liquids.isEmpty())
 				return false;
 			
-			ChatUtils.error("The tunnel is flooded, cannot continue.");
+			ChatUtils.error("隧道被淹,无法继续.");
 			
 			if(vertexBuffers[3] != null)
 				vertexBuffers[3].close();
@@ -778,7 +778,7 @@ public final class TunnellerHack extends Hack
 		{
 			if(!equipTorch())
 			{
-				ChatUtils.error("Out of torches.");
+				ChatUtils.error("火把用完了");
 				setEnabled(false);
 				return;
 			}
