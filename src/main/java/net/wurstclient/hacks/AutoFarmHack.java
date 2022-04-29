@@ -19,6 +19,7 @@ import net.minecraft.block.*;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder.class_7433;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -209,7 +210,7 @@ public final class AutoFarmHack extends Hack
 		{
 			RenderSystem.setShaderColor(0, 1, 0, 0.5F);
 			greenBuffer.bind();
-			greenBuffer.setShader(viewMatrix, projMatrix, shader);
+			greenBuffer.draw(viewMatrix, projMatrix, shader);
 			VertexBuffer.unbind();
 		}
 		
@@ -217,7 +218,7 @@ public final class AutoFarmHack extends Hack
 		{
 			RenderSystem.setShaderColor(0, 1, 1, 0.5F);
 			cyanBuffer.bind();
-			cyanBuffer.setShader(viewMatrix, projMatrix, shader);
+			cyanBuffer.draw(viewMatrix, projMatrix, shader);
 			VertexBuffer.unbind();
 		}
 		
@@ -225,7 +226,7 @@ public final class AutoFarmHack extends Hack
 		{
 			RenderSystem.setShaderColor(1, 0, 0, 0.5F);
 			redBuffer.bind();
-			redBuffer.setShader(viewMatrix, projMatrix, shader);
+			redBuffer.draw(viewMatrix, projMatrix, shader);
 			VertexBuffer.unbind();
 		}
 		
@@ -541,9 +542,9 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
+		class_7433 buffer = bufferBuilder.end();
 		greenBuffer.bind();
-		greenBuffer.upload(bufferBuilder);
+		greenBuffer.upload(buffer);
 		VertexBuffer.unbind();
 		
 		if(cyanBuffer != null)
@@ -562,9 +563,9 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawNode(renderNode, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
+		buffer = bufferBuilder.end();
 		cyanBuffer.bind();
-		cyanBuffer.upload(bufferBuilder);
+		cyanBuffer.upload(buffer);
 		VertexBuffer.unbind();
 		
 		if(redBuffer != null)
@@ -581,9 +582,9 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
+		buffer = bufferBuilder.end();
 		redBuffer.bind();
-		redBuffer.upload(bufferBuilder);
+		redBuffer.upload(buffer);
 		VertexBuffer.unbind();
 	}
 	

@@ -18,6 +18,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder.class_7433;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -43,7 +44,7 @@ public final class BaseFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final BlockListSetting naturalBlocks = new BlockListSetting(
-		"天然块状物",
+		"Natural Blocks",
 		"These blocks will be considered\n" + "part of natural generation.\n\n"
 			+ "They will NOT be highlighted\n" + "as player bases.",
 		"minecraft:acacia_leaves", "minecraft:acacia_log", "minecraft:air",
@@ -87,7 +88,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("颜色", "手动设置的方块将会\n以这种颜色高亮.", Color.RED);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Man-made blocks will be\n" + "highlighted in this color.", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	
@@ -103,8 +105,7 @@ public final class BaseFinderHack extends Hack
 	
 	public BaseFinderHack()
 	{
-		super("高亮基地");
-		
+		super("BaseFinder");
 		setCategory(Category.RENDER);
 		addSetting(naturalBlocks);
 		addSetting(color);
@@ -176,7 +177,7 @@ public final class BaseFinderHack extends Hack
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
 			vertexBuffer.bind();
-			vertexBuffer.setShader(viewMatrix, projMatrix, shader);
+			vertexBuffer.draw(viewMatrix, projMatrix, shader);
 			VertexBuffer.unbind();
 		}
 		
@@ -218,10 +219,10 @@ public final class BaseFinderHack extends Hack
 					.vertex(vertex[0] - regionX, vertex[1], vertex[2] - regionZ)
 					.next();
 			
-			bufferBuilder.end();
+			class_7433 buffer = bufferBuilder.end();
 			
 			vertexBuffer.bind();
-			vertexBuffer.upload(bufferBuilder);
+			vertexBuffer.upload(buffer);
 			VertexBuffer.unbind();
 			
 			oldRegionX = regionX;
@@ -271,7 +272,7 @@ public final class BaseFinderHack extends Hack
 				ChatUtils
 					.warning("BaseFinder found \u00a7lA LOT\u00a7r of blocks.");
 				ChatUtils.message(
-					"为了防止滞后，它将只显示前10000个块。.");
+					"To prevent lag, it will only show the first 10000 blocks.");
 			}
 			
 			// reset timer

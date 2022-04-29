@@ -7,6 +7,9 @@
  */
 package net.wurstclient.hacks;
 
+import java.time.Instant;
+
+import net.minecraft.network.encryption.NetworkEncryptionUtils.class_7425;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -22,12 +25,13 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("生命值",
-		"当您的生命值≤给定值时离开服务器",
+	private final SliderSetting health = new SliderSetting("Health",
+		"Leaves the server when your health\n"
+			+ "reaches this value or falls below it.",
 		4, 0.5, 9.5, 0.5,
 		v -> ValueDisplay.DECIMAL.getValueString(v) + " hearts");
 	
-	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
+	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
 		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"
 			+ "Bypasses NoCheat+ but not CombatLog.\n\n"
 			+ "\u00a7lChars\u00a7r mode sends a special chat message that\n"
@@ -44,7 +48,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	
 	public AutoLeaveHack()
 	{
-		super("自动退出");
+		super("AutoLeave");
 		
 		setCategory(Category.COMBAT);
 		addSetting(health);
@@ -93,8 +97,12 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 			break;
 			
 			case CHARS:
-			MC.player.networkHandler
-				.sendPacket(new ChatMessageC2SPacket("\u00a7"));
+			Instant instant = Instant.now();
+			String message = "\u00a7";
+			class_7425 signature =
+				IMC.getPlayer().signChatMessage(instant, message);
+			MC.player.networkHandler.sendPacket(
+				new ChatMessageC2SPacket(instant, message, signature));
 			break;
 			
 			case TELEPORT:
@@ -121,7 +129,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		
 		TELEPORT("TP"),
 		
-		SELFHURT("自我伤害");
+		SELFHURT("SelfHurt");
 		
 		private final String name;
 		

@@ -56,8 +56,8 @@ import net.wurstclient.util.RotationUtils;
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"TreeBot 可以达到多远来打破块", 4.5, 1, 6, 0.05,
+	private final SliderSetting range = new SliderSetting("Range",
+		"How far TreeBot will reach to break blocks.", 4.5, 1, 6, 0.05,
 		ValueDisplay.DECIMAL);
 	
 	private TreeFinder treeFinder;
@@ -71,7 +71,7 @@ public final class TreeBotHack extends Hack
 	
 	public TreeBotHack()
 	{
-		super("砍树机器人");
+		super("TreeBot");
 		setCategory(Category.BLOCKS);
 		addSetting(range);
 	}
@@ -80,13 +80,13 @@ public final class TreeBotHack extends Hack
 	public String getRenderName()
 	{
 		if(treeFinder != null && !treeFinder.isDone() && !treeFinder.isFailed())
-			return getName() + " [搜索]";
+			return getName() + " [Searching]";
 		
 		if(processor != null && !processor.isDone())
-			return getName() + " [前进中]";
+			return getName() + " [Going]";
 		
 		if(tree != null && !tree.getLogs().isEmpty())
-			return getName() + " [砍树中]";
+			return getName() + " [Chopping]";
 		
 		return getName();
 	}
@@ -325,7 +325,7 @@ public final class TreeBotHack extends Hack
 		Shader shader = RenderSystem.getShader();
 		
 		tree.getVertexBuffer().bind();
-		tree.getVertexBuffer().setShader(viewMatrix, projMatrix, shader);
+		tree.getVertexBuffer().draw(viewMatrix, projMatrix, shader);
 		VertexBuffer.unbind();
 		
 		matrixStack.pop();

@@ -26,6 +26,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder.class_7433;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -66,9 +67,9 @@ public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
-		"隧道尺寸", TunnelSize.values(), TunnelSize.SIZE_3X3);
+		"Tunnel size", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
-	private final SliderSetting limit = new SliderSetting("限制",
+	private final SliderSetting limit = new SliderSetting("Limit",
 		"Automatically stops once the tunnel\n"
 			+ "has reached the given length.\n\n" + "0 = no limit",
 		0, 0, 1000, 1,
@@ -76,7 +77,7 @@ public final class TunnellerHack extends Hack
 	
 	private final CheckboxSetting torches =
 		new CheckboxSetting(
-			"放火把?", "Places just enough torches\n"
+			"Place torches", "Places just enough torches\n"
 				+ "to prevent mobs from\n" + "spawning inside the tunnel.",
 			false);
 	
@@ -96,7 +97,7 @@ public final class TunnellerHack extends Hack
 	
 	public TunnellerHack()
 	{
-		super("隧道挖掘");
+		super("Tunneller");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(size);
@@ -225,7 +226,7 @@ public final class TunnellerHack extends Hack
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
 			buffer.bind();
-			buffer.setShader(viewMatrix, projMatrix, shader);
+			buffer.draw(viewMatrix, projMatrix, shader);
 			VertexBuffer.unbind();
 		}
 		
@@ -292,9 +293,9 @@ public final class TunnellerHack extends Hack
 			.multiply(Math.max(0.5, length)).add(offset);
 		RenderUtils.drawArrow(arrowStart, arrowEnd, bufferBuilder);
 		
-		bufferBuilder.end();
+		class_7433 buffer = bufferBuilder.end();
 		vertexBuffers[0].bind();
-		vertexBuffers[0].upload(bufferBuilder);
+		vertexBuffers[0].upload(buffer);
 		VertexBuffer.unbind();
 	}
 	
@@ -420,9 +421,9 @@ public final class TunnellerHack extends Hack
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			}
 			
-			bufferBuilder.end();
+			class_7433 buffer = bufferBuilder.end();
 			vertexBuffers[1].bind();
-			vertexBuffers[1].upload(bufferBuilder);
+			vertexBuffers[1].upload(buffer);
 			VertexBuffer.unbind();
 			
 			if(currentBlock == null)
@@ -436,7 +437,7 @@ public final class TunnellerHack extends Hack
 					updateCyanBuffer();
 				else
 				{
-					ChatUtils.message("隧道完工.");
+					ChatUtils.message("Tunnel completed.");
 					setEnabled(false);
 				}
 				
@@ -521,9 +522,9 @@ public final class TunnellerHack extends Hack
 			for(BlockPos pos : blocks)
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			
-			bufferBuilder.end();
+			class_7433 buffer = bufferBuilder.end();
 			vertexBuffers[2].bind();
-			vertexBuffers[2].upload(bufferBuilder);
+			vertexBuffers[2].upload(buffer);
 			VertexBuffer.unbind();
 			
 			return !blocks.isEmpty();
@@ -552,7 +553,7 @@ public final class TunnellerHack extends Hack
 			if(!equipSolidBlock(pos))
 			{
 				ChatUtils.error(
-					"在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
+					"Found a hole in the tunnel's floor but don't have any blocks to fill it with.");
 				setEnabled(false);
 				return;
 			}
@@ -645,7 +646,7 @@ public final class TunnellerHack extends Hack
 			if(liquids.isEmpty())
 				return false;
 			
-			ChatUtils.error("隧道被淹,无法继续.");
+			ChatUtils.error("The tunnel is flooded, cannot continue.");
 			
 			if(vertexBuffers[3] != null)
 				vertexBuffers[3].close();
@@ -667,10 +668,10 @@ public final class TunnellerHack extends Hack
 			for(BlockPos pos : liquids)
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			
-			bufferBuilder.end();
+			class_7433 buffer = bufferBuilder.end();
 			
 			vertexBuffers[3].bind();
-			vertexBuffers[3].upload(bufferBuilder);
+			vertexBuffers[3].upload(buffer);
 			VertexBuffer.unbind();
 			return true;
 		}
@@ -778,7 +779,7 @@ public final class TunnellerHack extends Hack
 		{
 			if(!equipTorch())
 			{
-				ChatUtils.error("火把用完了");
+				ChatUtils.error("Out of torches.");
 				setEnabled(false);
 				return;
 			}
