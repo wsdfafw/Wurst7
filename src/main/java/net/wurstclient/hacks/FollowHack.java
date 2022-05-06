@@ -59,22 +59,60 @@ public final class FollowHack extends Hack
 	private PathProcessor processor;
 	private int ticksProcessing;
 	
-	private final SliderSetting distance = new SliderSetting("距离", "要多接近目标.", 1.0, 1.0, 12.0, 0.5, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting useAi = new CheckboxSetting("使用AI (实验性的)", false);
-    private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会跟随玩家.", false);
-    private final CheckboxSetting filterSleeping = new CheckboxSetting("排除正在睡觉", "不会跟随正在睡觉的玩家.", false);
-    private final SliderSetting filterFlying = new SliderSetting("排除飞行中", "不会跟随在飞行中玩家或\n远离地板一定距离的玩家.", 0.0, 0.0, 2.0, 0.05, v -> v == 0.0 ? "关" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
-    private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不会跟随僵尸,苦力怕,诸如此类.", true);
-    private final CheckboxSetting filterPigmen = new CheckboxSetting("排除猪人", "不会跟随僵尸猪人.", true);
-    private final CheckboxSetting filterEndermen = new CheckboxSetting("排除末影人", "不会跟随末影人.", true);
-    private final CheckboxSetting filterAnimals = new CheckboxSetting("排除动物", "不会跟随牛,猪,诸如此类.", true);
-    private final CheckboxSetting filterBabies = new CheckboxSetting("排除婴儿", "不会跟随小猪仔,\n小村民, 诸如此类.", true);
-    private final CheckboxSetting filterPets = new CheckboxSetting("排除宠物", "不会跟随以驯服的狼,\n已驯服的马, 诸如此类.", true);
-    private final CheckboxSetting filterTraders = new CheckboxSetting("排除商人", "不会跟随村民 , 流浪商人, 诸如此类.", true);
-    private final CheckboxSetting filterGolems = new CheckboxSetting("排除傀儡们", "不会跟随铁傀儡,\n雪傀儡 和 潜影盒.", true);
-    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不会跟随隐形的实体.", false);
-    private final CheckboxSetting filterStands = new CheckboxSetting("排除盔甲架", "不会跟随盔甲架.", true);
-    private final CheckboxSetting filterCarts = new CheckboxSetting("排除矿车", "不会跟随矿车.", true);
+	private final SliderSetting distance =
+		new SliderSetting("Distance", "How closely to follow the target.", 1, 1,
+			12, 0.5, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting useAi =
+		new CheckboxSetting("Use AI (experimental)", false);
+	
+	private final CheckboxSetting filterPlayers = new CheckboxSetting(
+		"Filter players", "Won't follow other players.", false);
+	
+	private final CheckboxSetting filterSleeping = new CheckboxSetting(
+		"Filter sleeping", "Won't follow sleeping players.", false);
+	
+	private final SliderSetting filterFlying =
+		new SliderSetting("Filter flying",
+			"Won't follow players that\n" + "are at least the given\n"
+				+ "distance above ground.",
+			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
+	
+	private final CheckboxSetting filterMonsters = new CheckboxSetting(
+		"Filter monsters", "Won't follow zombies, creepers, etc.", true);
+	
+	private final CheckboxSetting filterPigmen = new CheckboxSetting(
+		"Filter pigmen", "Won't follow zombie pigmen.", true);
+	
+	private final CheckboxSetting filterEndermen =
+		new CheckboxSetting("Filter endermen", "Won't follow endermen.", true);
+	
+	private final CheckboxSetting filterAnimals = new CheckboxSetting(
+		"Filter animals", "Won't follow pigs, cows, etc.", true);
+	
+	private final CheckboxSetting filterBabies =
+		new CheckboxSetting("Filter babies",
+			"Won't follow baby pigs,\n" + "baby villagers, etc.", true);
+	
+	private final CheckboxSetting filterPets =
+		new CheckboxSetting("Filter pets",
+			"Won't follow tamed wolves,\n" + "tamed horses, etc.", true);
+	
+	private final CheckboxSetting filterTraders =
+		new CheckboxSetting("Filter traders",
+			"Won't follow villagers, wandering traders, etc.", true);
+	
+	private final CheckboxSetting filterGolems =
+		new CheckboxSetting("Filter golems",
+			"Won't follow iron golems,\n" + "snow golems and shulkers.", true);
+	
+	private final CheckboxSetting filterInvisible = new CheckboxSetting(
+		"Filter invisible", "Won't follow invisible entities.", false);
+	private final CheckboxSetting filterStands = new CheckboxSetting(
+		"Filter armor stands", "Won't follow armor stands.", true);
+	
+	private final CheckboxSetting filterCarts = new CheckboxSetting(
+		"Filter minecarts", "Won't follow minecarts.", true);
 	
 	public FollowHack()
 	{

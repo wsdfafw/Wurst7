@@ -25,13 +25,20 @@ import net.wurstclient.util.BlockUtils;
 
 public final class GlideHack extends Hack implements UpdateListener
 {
-	private final SliderSetting fallSpeed = new SliderSetting("掉落速度", 0.125, 0.005, 0.25, 0.005, SliderSetting.ValueDisplay.DECIMAL);
-    private final SliderSetting moveSpeed = new SliderSetting("移动速度", "水平移动系数.", 1.2, 1.0, 5.0, 0.05, SliderSetting.ValueDisplay.PERCENTAGE);
-    private final SliderSetting minHeight = new SliderSetting("最少高度", "因太接近这个高度地面\n不会进行滑翔操作.", 0.0, 0.0, 2.0, 0.01, v -> v == 0.0 ? "关闭" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
-
+	private final SliderSetting fallSpeed = new SliderSetting("Fall speed",
+		0.125, 0.005, 0.25, 0.005, ValueDisplay.DECIMAL);
+	
+	private final SliderSetting moveSpeed =
+		new SliderSetting("Move speed", "Horizontal movement factor.", 1.2, 1,
+			5, 0.05, ValueDisplay.PERCENTAGE);
+	
+	private final SliderSetting minHeight = new SliderSetting("Min height",
+		"Won't glide when you are\n" + "too close to the ground.", 0, 0, 2,
+		0.01, ValueDisplay.DECIMAL.withLabel(0, "disabled"));
+	
 	public GlideHack()
 	{
-		super("缓降");
+		super("Glide");
 		
 		setCategory(Category.MOVEMENT);
 		addSetting(fallSpeed);
