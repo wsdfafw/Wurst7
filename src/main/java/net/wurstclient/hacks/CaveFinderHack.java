@@ -8,7 +8,6 @@
 package net.wurstclient.hacks;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -71,10 +70,22 @@ import net.wurstclient.util.RotationUtils;
 public final class CaveFinderHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final EnumSetting<Area> area = new EnumSetting("区域", "将会以玩家附近的区域寻找.\n越高的数值需要越好的电脑.", (Enum[])Area.values(), (Enum)Area.D11);
-    private final SliderSetting limit = new SliderSetting("限制", "最大方块所显示的限制.\n越高数值需要越好的电脑.", 5.0, 3.0, 6.0, 1.0, v -> new DecimalFormat("##,###,###").format(Math.pow(10.0, v)));
-    private final ColorSetting color = new ColorSetting("颜色", "洞穴将会被高亮以\n这种颜色.", Color.RED);
-    private final SliderSetting opacity = new SliderSetting("不透明度", "高亮需要被设置透明度的数值.\n0 = 呼吸动画", 0.0, 0.0, 1.0, 0.01, v -> v == 0.0 ? "呼吸" : SliderSetting.ValueDisplay.PERCENTAGE.getValueString(v));
+	private final EnumSetting<Area> area = new EnumSetting<>("Area",
+		"The area around the player to search in.\n"
+			+ "Higher values require a faster computer.",
+		Area.values(), Area.D11);
+	
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"The maximum number of blocks to display.\n"
+			+ "Higher values require a faster computer.",
+		5, 3, 6, 1, ValueDisplay.LOGARITHMIC);
+	
+	private final ColorSetting color = new ColorSetting("Color",
+		"Caves will be highlighted\n" + "in this color.", Color.RED);
+	
+	private final SliderSetting opacity = new SliderSetting("Opacity",
+		"How opaque the highlights should be.\n" + "0 = breathing animation", 0,
+		0, 1, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "breathing"));
 	
 	private int prevLimit;
 	private boolean notify;
@@ -93,7 +104,7 @@ public final class CaveFinderHack extends Hack
 	
 	public CaveFinderHack()
 	{
-		super("高亮矿洞");
+		super("CaveFinder");
 		setCategory(Category.RENDER);
 		addSetting(area);
 		addSetting(limit);
@@ -421,8 +432,9 @@ public final class CaveFinderHack extends Hack
 			notify = true;
 		else if(notify)
 		{
-			ChatUtils.warning("洞穴寻找器 找到 §l大量§r 的方块! 为防止游戏崩溃,这将只会显示最近的§6"
-				+ limit.getValueString() + "\u00a7r 结果.");
+			ChatUtils.warning("CaveFinder found \u00a7lA LOT\u00a7r of blocks!"
+				+ " To prevent lag, it will only show the closest \u00a76"
+				+ limit.getValueString() + "\u00a7r results.");
 			notify = false;
 		}
 		

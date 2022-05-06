@@ -53,12 +53,6 @@ public final class EditItemListScreen extends Screen
 	}
 	
 	@Override
-	public boolean shouldPause()
-	{
-		return false;
-	}
-	
-	@Override
 	public void init()
 	{
 		listGui = new ListGui(client, this, itemList.getItemNames());
@@ -69,27 +63,27 @@ public final class EditItemListScreen extends Screen
 		itemNameField.setMaxLength(256);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, Text.literal("添加"), b -> {
+			height - 56, 30, 20, Text.literal("Add"), b -> {
 				itemList.add(itemToAdd);
 				itemNameField.setText("");
 			}));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, Text.literal("删除选定"),
+			height - 56, 100, 20, Text.literal("Remove Selected"),
 			b -> itemList.remove(listGui.selected)));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("重置为默认值"),
+			Text.literal("Reset to Defaults"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					itemList.resetToDefaults();
 				client.setScreen(EditItemListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?")))));
+			}, Text.literal("Reset to Defaults"),
+				Text.literal("Are you sure?")))));
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				Text.literal("完成"), b -> client.setScreen(prevScreen)));
+				Text.literal("Done"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
@@ -214,6 +208,18 @@ public final class EditItemListScreen extends Screen
 		
 		listGui.renderIconAndGetName(matrixStack, new ItemStack(itemToAdd),
 			width / 2 - 164, height - 52, false);
+	}
+	
+	@Override
+	public boolean shouldPause()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean shouldCloseOnEsc()
+	{
+		return false;
 	}
 	
 	private static class ListGui extends ListWidget

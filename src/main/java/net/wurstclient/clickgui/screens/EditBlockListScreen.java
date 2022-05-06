@@ -51,12 +51,6 @@ public final class EditBlockListScreen extends Screen
 	}
 	
 	@Override
-	public boolean shouldPause()
-	{
-		return false;
-	}
-	
-	@Override
 	public void init()
 	{
 		listGui = new ListGui(client, this, blockList.getBlockNames());
@@ -67,27 +61,27 @@ public final class EditBlockListScreen extends Screen
 		blockNameField.setMaxLength(256);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, Text.literal("添加"), b -> {
+			height - 56, 30, 20, Text.literal("Add"), b -> {
 				blockList.add(blockToAdd);
 				blockNameField.setText("");
 			}));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, Text.literal("删除选定"),
+			height - 56, 100, 20, Text.literal("Remove Selected"),
 			b -> blockList.remove(listGui.selected)));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("重置为默认值"),
+			Text.literal("Reset to Defaults"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					blockList.resetToDefaults();
 				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?")))));
+			}, Text.literal("Reset to Defaults"),
+				Text.literal("Are you sure?")))));
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				Text.literal("已完成"), b -> client.setScreen(prevScreen)));
+				Text.literal("Done"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
@@ -209,6 +203,18 @@ public final class EditBlockListScreen extends Screen
 			width / 2 - 164, height - 52, false);
 	}
 	
+	@Override
+	public boolean shouldPause()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean shouldCloseOnEsc()
+	{
+		return false;
+	}
+	
 	private static class ListGui extends ListWidget
 	{
 		private final MinecraftClient mc;
@@ -300,7 +306,7 @@ public final class EditBlockListScreen extends Screen
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				matrixStack.pop();
 				
-				return "\u00a7未知方块\u00a7r";
+				return "\u00a7ounknown block\u00a7r";
 				
 			}
 			MatrixStack modelViewStack = RenderSystem.getModelViewStack();

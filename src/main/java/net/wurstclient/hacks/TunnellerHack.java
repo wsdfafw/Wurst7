@@ -57,6 +57,7 @@ import net.wurstclient.hack.HackList;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.RenderUtils;
@@ -67,17 +68,17 @@ public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
-		"隧道尺寸", TunnelSize.values(), TunnelSize.SIZE_3X3);
+		"Tunnel size", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
-	private final SliderSetting limit = new SliderSetting("限制",
+	private final SliderSetting limit = new SliderSetting("Limit",
 		"Automatically stops once the tunnel\n"
 			+ "has reached the given length.\n\n" + "0 = no limit",
-		0, 0, 1000, 1,
-		v -> v == 0 ? "disabled" : v == 1 ? "1 block" : (int)v + " blocks");
+		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" blocks")
+			.withLabel(1, "1 block").withLabel(0, "disabled"));
 	
 	private final CheckboxSetting torches =
 		new CheckboxSetting(
-			"放火把?", "Places just enough torches\n"
+			"Place torches", "Places just enough torches\n"
 				+ "to prevent mobs from\n" + "spawning inside the tunnel.",
 			false);
 	
@@ -97,7 +98,7 @@ public final class TunnellerHack extends Hack
 	
 	public TunnellerHack()
 	{
-		super("隧道挖掘");
+		super("Tunneller");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(size);
@@ -437,7 +438,7 @@ public final class TunnellerHack extends Hack
 					updateCyanBuffer();
 				else
 				{
-					ChatUtils.message("隧道完工.");
+					ChatUtils.message("Tunnel completed.");
 					setEnabled(false);
 				}
 				
@@ -553,7 +554,7 @@ public final class TunnellerHack extends Hack
 			if(!equipSolidBlock(pos))
 			{
 				ChatUtils.error(
-					"在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
+					"Found a hole in the tunnel's floor but don't have any blocks to fill it with.");
 				setEnabled(false);
 				return;
 			}
@@ -646,7 +647,7 @@ public final class TunnellerHack extends Hack
 			if(liquids.isEmpty())
 				return false;
 			
-			ChatUtils.error("隧道被淹,无法继续.");
+			ChatUtils.error("The tunnel is flooded, cannot continue.");
 			
 			if(vertexBuffers[3] != null)
 				vertexBuffers[3].close();
@@ -779,7 +780,7 @@ public final class TunnellerHack extends Hack
 		{
 			if(!equipTorch())
 			{
-				ChatUtils.error("火把用完了");
+				ChatUtils.error("Out of torches.");
 				setEnabled(false);
 				return;
 			}
