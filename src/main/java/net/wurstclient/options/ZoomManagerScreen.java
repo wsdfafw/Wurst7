@@ -41,27 +41,27 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				new LiteralText("Back"), b -> client.setScreen(prevScreen)));
+				new LiteralText("返回"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(
 			keyButton = new ButtonWidget(width / 2 - 79, height / 4 + 24 - 16,
-				158, 20, new LiteralText("Zoom Key: " + zoomKeyName),
+				158, 20, new LiteralText("放大按键: " + zoomKeyName),
 				b -> client.setScreen(new PressAKeyScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 79, height / 4 + 72 - 16,
-			50, 20, new LiteralText("More"), b -> level.increaseValue()));
+			50, 20, new LiteralText("更多"), b -> level.increaseValue()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 25, height / 4 + 72 - 16,
-			50, 20, new LiteralText("Less"), b -> level.decreaseValue()));
+			50, 20, new LiteralText("更少"), b -> level.decreaseValue()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 29, height / 4 + 72 - 16,
-			50, 20, new LiteralText("Default"),
+			50, 20, new LiteralText("默认"),
 			b -> level.setValue(level.getDefaultValue())));
 		
 		addDrawableChild(scrollButton =
 			new ButtonWidget(width / 2 - 79, height / 4 + 96 - 16, 158, 20,
 				new LiteralText(
-					"Use Mouse Wheel: " + onOrOff(scroll.isChecked())),
+					"使用鼠标滚轮: " + onOrOff(scroll.isChecked())),
 				b -> toggleScroll()));
 	}
 	
@@ -72,16 +72,16 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		
 		scroll.setChecked(!scroll.isChecked());
 		scrollButton.setMessage(
-			new LiteralText("Use Mouse Wheel: " + onOrOff(scroll.isChecked())));
+			new LiteralText("使用鼠标滚轮: " + onOrOff(scroll.isChecked())));
 	}
 	
 	private String onOrOff(boolean on)
 	{
-		return on ? "ON" : "OFF";
+		return on ? "开" : "关";
 	}
 	
 	@Override
-	public void onClose()
+	public void close()
 	{
 		client.setScreen(prevScreen);
 	}
@@ -94,10 +94,10 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		SliderSetting level = zoom.getLevelSetting();
 		
 		renderBackground(matrixStack);
-		drawCenteredText(matrixStack, textRenderer, "Zoom Manager", width / 2,
+		drawCenteredText(matrixStack, textRenderer, "Zoom管理器", width / 2,
 			40, 0xffffff);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Zoom Level: " + level.getValueString(), width / 2 - 75,
+			"Zoom等级: " + level.getValueString(), width / 2 - 75,
 			height / 4 + 44, 0xcccccc);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -110,6 +110,6 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 			.setBoundKey(InputUtil.fromTranslationKey(key));
 		client.options.write();
 		KeyBinding.updateKeysByCode();
-		keyButton.setMessage(new LiteralText("Zoom Key: " + key));
+		keyButton.setMessage(new LiteralText("Zoom键: " + key));
 	}
 }

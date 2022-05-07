@@ -87,9 +87,9 @@ public final class MojangAlt extends Alt
 	public void exportAsJson(JsonObject json)
 	{
 		JsonObject jsonAlt = new JsonObject();
-		jsonAlt.addProperty("密码", password);
-		jsonAlt.addProperty("名字", name);
-		jsonAlt.addProperty("加星标", isFavorite());
+		jsonAlt.addProperty("password", password);
+		jsonAlt.addProperty("name", name);
+		jsonAlt.addProperty("starred", isFavorite());
 		json.add(email, jsonAlt);
 	}
 	

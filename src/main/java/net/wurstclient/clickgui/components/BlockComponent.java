@@ -100,8 +100,8 @@ public final class BlockComponent extends Component
 			tooltip += "\n\u00a76ID:\u00a7r " + setting.getBlockName();
 			tooltip += "\n\u00a76方块 #:\u00a7r "
 				+ Block.getRawIdFromState(setting.getBlock().getDefaultState());
-			tooltip += "\n\n\u00a7e[左键单击]\u00a7r to edit";
-			tooltip += "\n\u00a7e[右键点击]\u00a7r to reset";
+			tooltip += "\n\n\u00a7e[左键]\u00a7r 编辑";
+			tooltip += "\n\u00a7e[右键]\u00a7r 重置";
 			gui.setTooltip(tooltip);
 		}
 		

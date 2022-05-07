@@ -57,13 +57,13 @@ import net.wurstclient.util.FakePlayerEntity;
 public final class FightBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
+	private final SliderSetting range = new SliderSetting("范围",
 		"Attack range (like Killaura)", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting distance = new SliderSetting("Distance",
+	private final SliderSetting distance = new SliderSetting("距离",
 		"How closely to follow the target.\n"
 			+ "This should be set to a lower value than Range.",
 		3, 1, 6, 0.05, ValueDisplay.DECIMAL);
@@ -127,7 +127,7 @@ public final class FightBotHack extends Hack
 	
 	public FightBotHack()
 	{
-		super("FightBot");
+		super("战斗机器人");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);

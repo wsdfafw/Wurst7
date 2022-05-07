@@ -28,7 +28,7 @@ public final class AntiSpamHack extends Hack implements ChatInputListener
 {
 	public AntiSpamHack()
 	{
-		super("反垃圾邮件");
+		super("反刷屏");
 		setCategory(Category.CHAT);
 	}
 	

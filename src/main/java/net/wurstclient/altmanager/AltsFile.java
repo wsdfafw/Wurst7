@@ -44,7 +44,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("无法创建“.Wurst 加密”文件夹.");
+			System.out.println("无法创建 '.Wurst encryption' 文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;
@@ -77,7 +77,7 @@ public final class AltsFile
 			Path newPath =
 				path.resolveSibling("!CORRUPTED_" + path.getFileName());
 			Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-			System.out.println("重命名至 " + newPath.getFileName());
+			System.out.println("重命名到 " + newPath.getFileName());
 			
 		}catch(IOException e)
 		{
@@ -121,8 +121,8 @@ public final class AltsFile
 	
 	private static Alt loadAlt(String nameOrEmail, JsonObject jsonAlt)
 	{
-		String password = JsonUtils.getAsString(jsonAlt.get("密码"), "");
-		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("加星标"), false);
+		String password = JsonUtils.getAsString(jsonAlt.get("password"), "");
+		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("starred"), false);
 		
 		if(password.isEmpty())
 			return new CrackedAlt(nameOrEmail, starred);
@@ -143,7 +143,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("无法创建“.Wurst 加密”文件夹.");
+			System.out.println("无法创建 '.Wurst encryption' 文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;

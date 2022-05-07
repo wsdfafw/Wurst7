@@ -84,7 +84,7 @@ public class PathFinder
 	public void think()
 	{
 		if(done)
-			throw new IllegalStateException("路径已经找到!");
+			throw new IllegalStateException("路径已经找到了!");
 		
 		int i = 0;
 		for(; i < thinkSpeed && !checkFailed(); i++)
@@ -617,7 +617,7 @@ public class PathFinder
 	public boolean isPathStillValid(int index)
 	{
 		if(path.isEmpty())
-			throw new IllegalStateException("路径未格式化!");
+			throw new IllegalStateException("路径没有被格式化!");
 		
 		// check player abilities
 		if(invulnerable != WurstClient.MC.player.getAbilities().creativeMode

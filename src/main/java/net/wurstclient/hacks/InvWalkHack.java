@@ -30,25 +30,25 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class InvWalkHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting allowClickGUI =
-		new CheckboxSetting("Allow ClickGUI",
+		new CheckboxSetting("允许 ClickGUI",
 			"description.wurst.setting.invwalk.allow_clickgui", true);
 	
 	private final CheckboxSetting allowOther =
-		new CheckboxSetting("Allow other screens",
+		new CheckboxSetting("允许其他屏幕",
 			"description.wurst.setting.invwalk.allow_other", true);
 	
 	private final CheckboxSetting allowSneak =
-		new CheckboxSetting("Allow sneak key", true);
+		new CheckboxSetting("允许潜行", true);
 	
 	private final CheckboxSetting allowSprint =
-		new CheckboxSetting("Allow sprint key", true);
+		new CheckboxSetting("允许冲刺", true);
 	
 	private final CheckboxSetting allowJump =
-		new CheckboxSetting("Allow jump key", true);
+		new CheckboxSetting("允许跳", true);
 	
 	public InvWalkHack()
 	{
-		super("InvWalk");
+		super("背包行走");
 		setCategory(Category.MOVEMENT);
 		addSetting(allowClickGUI);
 		addSetting(allowOther);
@@ -80,17 +80,17 @@ public final class InvWalkHack extends Hack implements UpdateListener
 			return;
 		
 		ArrayList<KeyBinding> keys =
-			new ArrayList<>(Arrays.asList(MC.options.keyForward,
-				MC.options.keyBack, MC.options.keyLeft, MC.options.keyRight));
+			new ArrayList<>(Arrays.asList(MC.options.forwardKey,
+				MC.options.backKey, MC.options.leftKey, MC.options.rightKey));
 		
 		if(allowSneak.isChecked())
-			keys.add(MC.options.keySneak);
+			keys.add(MC.options.sneakKey);
 		
 		if(allowSprint.isChecked())
-			keys.add(MC.options.keySprint);
+			keys.add(MC.options.sprintKey);
 		
 		if(allowJump.isChecked())
-			keys.add(MC.options.keyJump);
+			keys.add(MC.options.jumpKey);
 		
 		for(KeyBinding key : keys)
 			key.setPressed(((IKeyBinding)key).isActallyPressed());

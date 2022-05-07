@@ -114,7 +114,7 @@ public final class ClickAuraHack extends Hack
 	
 	public ClickAuraHack()
 	{
-		super("ClickAura");
+		super("点击光环");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);

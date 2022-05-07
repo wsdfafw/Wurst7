@@ -130,7 +130,7 @@ public abstract class AltEditorScreen extends Screen
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			message = "\u00a74\u00a7l无法创建皮肤文件夹.";
+			message = "§4§l皮肤文件夹无法被创建.";
 		}
 	}
 	
@@ -354,11 +354,11 @@ public abstract class AltEditorScreen extends Screen
 		
 		// text
 		drawStringWithShadow(matrixStack, textRenderer,
-			"名字 (给盗版账户用), 或者", width / 2 - 100, 37, 10526880);
+			"名字 (盗版账户), 或者", width / 2 - 100, 37, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"邮箱 (给正版用户用)", width / 2 - 100, 47, 10526880);
+			"邮箱 (正版账户)", width / 2 - 100, 47, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"密码（对于已被破解的代理，请留空）。", width / 2 - 100, 87,
+			"密码 (如果是盗版请留空)", width / 2 - 100, 87,
 			10526880);
 		
 		String[] lines = message.split("\n");
