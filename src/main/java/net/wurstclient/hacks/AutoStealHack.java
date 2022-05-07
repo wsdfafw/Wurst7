@@ -23,7 +23,7 @@ public final class AutoStealHack extends Hack
 		100, 0, 500, 10, ValueDisplay.INTEGER.withSuffix("ms"));
 	
 	private final CheckboxSetting buttons =
-		new CheckboxSetting("Steal/Store buttons", true);
+		new CheckboxSetting("盗取/存放 按钮", true);
 	
 	public AutoStealHack()
 	{

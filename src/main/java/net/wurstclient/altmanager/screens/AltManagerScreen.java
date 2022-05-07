@@ -78,7 +78,7 @@ public final class AltManagerScreen extends Screen
 	
 	public AltManagerScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(new LiteralText("Alt Manager"));
+		super(new LiteralText("账户列表"));
 		this.prevScreen = prevScreen;
 		this.altManager = altManager;
 	}
@@ -129,7 +129,7 @@ public final class AltManagerScreen extends Screen
 		
 		addDrawableChild(
 			starButton = new ButtonWidget(width / 2 - 154, height - 28, 75, 20,
-				new LiteralText("最喜欢的"), b -> pressFavorite()));
+				new LiteralText("喜爱"), b -> pressFavorite()));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 - 76,
 			height - 28, 74, 20, new LiteralText("编辑"), b -> pressEdit()));
@@ -142,10 +142,10 @@ public final class AltManagerScreen extends Screen
 			new LiteralText("取消"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(importButton = new ButtonWidget(8, 8, 50, 20,
-			new LiteralText("进口"), b -> pressImportAlts()));
+			new LiteralText("导入"), b -> pressImportAlts()));
 		
 		addDrawableChild(exportButton = new ButtonWidget(58, 8, 50, 20,
-			new LiteralText("出口"), b -> pressExportAlts()));
+			new LiteralText("导出"), b -> pressExportAlts()));
 	}
 	
 	@Override
@@ -252,7 +252,7 @@ public final class AltManagerScreen extends Screen
 			return;
 		
 		LiteralText text =
-			new LiteralText("您确定要删除此 alt?");
+			new LiteralText("你确定你想要移除这个账户?");
 		
 		String altName = alt.getDisplayName();
 		LiteralText message = new LiteralText(
@@ -348,7 +348,7 @@ public final class AltManagerScreen extends Screen
 			String response = bf.readLine();
 			
 			if(response == null)
-				throw new IOException("文件选择器没有响应");
+				throw new IOException("文件夹选择器暂无回应");
 			
 			try
 			{
@@ -357,7 +357,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"来自文件选择器的响应不是有效路径");
+					"文件选择器回应的路径是无效的");
 			}
 		}
 	}
@@ -675,15 +675,15 @@ public final class AltManagerScreen extends Screen
 		
 		public String getBottomText(Alt alt)
 		{
-			String text = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
+			String text = alt.isCracked() ? "§8盗版" : "§2正版";
 			
 			if(alt.isFavorite())
-				text += "\u00a7r, \u00a7efavorite";
+				text += "\u00a7r, \u00a7e喜爱的";
 			
 			if(failedLogins.contains(alt))
-				text += "\u00a7r, \u00a7cwrong password?";
+				text += "\u00a7r, \u00a7c错误密码?";
 			else if(alt.isUncheckedPremium())
-				text += "\u00a7r, \u00a7cunchecked";
+				text += "\u00a7r, \u00a7c未检查";
 			
 			return text;
 		}

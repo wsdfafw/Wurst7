@@ -36,7 +36,7 @@ public final class NocomCrashHack extends Hack
 	
 	public NocomCrashHack()
 	{
-		super("NocomCrash");
+		super("无受伤镜头");
 		setCategory(Category.OTHER);
 		addSetting(packets);
 	}

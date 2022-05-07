@@ -30,7 +30,7 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	
 	public AutoTotemHack()
 	{
-		super("自动不死图腾");
+		super("自动使用图腾");
 		setCategory(Category.COMBAT);
 		addSetting(showCounter);
 	}
@@ -44,10 +44,10 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 		switch(totems)
 		{
 			case 1:
-			return getName() + " [1 totem]";
+			return getName() + " [1 个图腾]";
 			
 			default:
-			return getName() + " [" + totems + " totems]";
+			return getName() + " [" + totems + " 图腾]";
 		}
 	}
 	

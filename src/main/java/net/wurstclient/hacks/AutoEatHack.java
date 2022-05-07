@@ -50,21 +50,21 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		"瞄准饥饿", "description.wurst.setting.autoeat.target_hunger", 10,
 		0, 10, 0.5, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting minHunger = new SliderSetting("我的饥饿",
+	private final SliderSetting minHunger = new SliderSetting("最低饥饿值",
 		"description.wurst.setting.autoeat.min_hunger", 6.5, 0, 10, 0.5,
 		ValueDisplay.DECIMAL);
 	
 	private final SliderSetting injuredHunger = new SliderSetting(
-		"受伤的饥饿", "description.wurst.setting.autoeat.injured_hunger",
+		"受伤进食", "description.wurst.setting.autoeat.injured_hunger",
 		10, 0, 10, 0.5, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting injuryThreshold =
-		new SliderSetting("伤害阈值",
+		new SliderSetting("受伤阈值",
 			"description.wurst.setting.autoeat.injury_threshold", 1.5, 0.5, 10,
 			0.5, ValueDisplay.DECIMAL);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"从", "description.wurst.setting.autoeat.take_items_from",
+		"从哪里拿物品", "description.wurst.setting.autoeat.take_items_from",
 		TakeItemsFrom.values(), TakeItemsFrom.HOTBAR);
 	
 	private final CheckboxSetting allowOffhand =
@@ -347,11 +347,11 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HANDS("主手", 0),
+		HANDS("手持", 0),
 		
 		HOTBAR("快捷栏", 9),
 		
-		INVENTORY("库存", 36);
+		INVENTORY("物品栏", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

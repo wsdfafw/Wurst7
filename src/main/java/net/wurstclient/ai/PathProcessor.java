@@ -33,7 +33,7 @@ public abstract class PathProcessor
 	public PathProcessor(ArrayList<PathPos> path)
 	{
 		if(path.isEmpty())
-			throw new IllegalStateException("没有路!");
+			throw new IllegalStateException("There is no path!");
 		
 		this.path = path;
 	}

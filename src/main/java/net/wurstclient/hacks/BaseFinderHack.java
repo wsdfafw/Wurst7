@@ -43,9 +43,8 @@ public final class BaseFinderHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final BlockListSetting naturalBlocks = new BlockListSetting(
-		"天然块状物",
-		"These blocks will be considered\n" + "part of natural generation.\n\n"
-			+ "They will NOT be highlighted\n" + "as player bases.",
+		"自然方块",
+		"这些方块会被认为成\n自然生产的一部分.\n\n他们不会被高亮\n作为玩家的基地.",
 		"minecraft:acacia_leaves", "minecraft:acacia_log", "minecraft:air",
 		"minecraft:allium", "minecraft:amethyst_block",
 		"minecraft:amethyst_cluster", "minecraft:andesite",
@@ -103,7 +102,7 @@ public final class BaseFinderHack extends Hack
 	
 	public BaseFinderHack()
 	{
-		super("高亮基地");
+		super("基地寻找");
 		
 		setCategory(Category.RENDER);
 		addSetting(naturalBlocks);
@@ -264,9 +263,9 @@ public final class BaseFinderHack extends Hack
 			if(messageTimer <= 0)
 			{
 				ChatUtils
-					.warning("BaseFinder found \u00a7lA LOT\u00a7r of blocks.");
+					.warning("基地寻找找到 §l大量§r 的方块.");
 				ChatUtils.message(
-					"为了防止滞后，它将只显示前10000个块。.");
+					"为了防止大量卡顿, 这将会优先显示高亮前 10000 方块.");
 			}
 			
 			// reset timer

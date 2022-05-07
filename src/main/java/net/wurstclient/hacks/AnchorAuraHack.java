@@ -161,7 +161,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	{
 		if(MC.world.getDimension().isRespawnAnchorWorking())
 		{
-			ChatUtils.error("Respawn anchors don't explode in this dimension.");
+			ChatUtils.error("重生锚并不会在这一个维度爆炸.");
 			setEnabled(false);
 		}
 		
@@ -537,15 +537,15 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum FaceBlocks
 	{
-		OFF("Off", v -> {}),
+		OFF("关", v -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器方",
 			v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("Client-side",
+		CLIENT("客户端方",
 			v -> WURST.getRotationFaker().faceVectorClient(v)),
 		
-		SPAM("Packet spam", v -> {
+		SPAM("包刷屏", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);
 			PlayerMoveC2SPacket.LookAndOnGround packet =
 				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
@@ -576,9 +576,9 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("Hotbar", 9),
+		HOTBAR("快捷栏", 9),
 		
-		INVENTORY("Inventory", 36);
+		INVENTORY("背包", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

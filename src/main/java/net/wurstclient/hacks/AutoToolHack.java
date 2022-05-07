@@ -27,7 +27,7 @@ import net.wurstclient.util.BlockUtils;
 public final class AutoToolHack extends Hack
 	implements BlockBreakingProgressListener, UpdateListener
 {
-	private final CheckboxSetting useSwords = new CheckboxSetting("使用刀剑",
+	private final CheckboxSetting useSwords = new CheckboxSetting("使用剑",
 		"用剑折断树叶、蜘蛛网等", false);
 	
 	private final CheckboxSetting useHands =

@@ -55,12 +55,12 @@ public final class AutoFishHack extends Hack
 		"在这个范围之外咬钩的鱼将被忽略\n如果范围内没有发现鱼,请扩大你的给定范围\n如果能检测到其他玩家钓到鱼,请缩小给定范围",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private CheckboxSetting debugDraw = new CheckboxSetting("调试",
-		"显示哪里有鱼咬钩,哪里将会有鱼咬钩\n对优化您的“有效范围”设置很有用",
+	private CheckboxSetting debugDraw = new CheckboxSetting("Debug画面",
+		"显示一个当前所检测的框框\n一般用来调试你所设置的检测\n'有效范围'的设计是否合理",
 		false);
 	
-	private final ColorSetting ddColor = new ColorSetting("DD color",
-		"调试画的颜色，如果启用的话", Color.RED);
+	private final ColorSetting ddColor = new ColorSetting("DD 颜色",
+		"Debug画面的颜色,如果是开启的话", Color.RED);
 	
 	private int bestRodValue;
 	private int bestRodSlot;
@@ -76,7 +76,7 @@ public final class AutoFishHack extends Hack
 	
 	public AutoFishHack()
 	{
-		super("自动钓竿");
+		super("自动钓鱼");
 		
 		setCategory(Category.OTHER);
 		addSetting(validRange);
@@ -131,7 +131,7 @@ public final class AutoFishHack extends Hack
 		
 		if(bestRodSlot == -1)
 		{
-			ChatUtils.message("鱼竿用完了");
+			ChatUtils.message("钓鱼的鱼竿已经被用完了");
 			setEnabled(false);
 			return;
 		}

@@ -69,12 +69,12 @@ import net.wurstclient.util.RotationUtils;
 public final class CaveFinderHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final EnumSetting<Area> area = new EnumSetting<>("Area",
+	private final EnumSetting<Area> area = new EnumSetting<>("区域",
 		"The area around the player to search in.\n"
 			+ "Higher values require a faster computer.",
 		Area.values(), Area.D11);
 	
-	private final SliderSetting limit = new SliderSetting("Limit",
+	private final SliderSetting limit = new SliderSetting("限制",
 		"The maximum number of blocks to display.\n"
 			+ "Higher values require a faster computer.",
 		5, 3, 6, 1, ValueDisplay.LOGARITHMIC);
@@ -82,7 +82,7 @@ public final class CaveFinderHack extends Hack
 	private final ColorSetting color = new ColorSetting("Color",
 		"Caves will be highlighted\n" + "in this color.", Color.RED);
 	
-	private final SliderSetting opacity = new SliderSetting("Opacity",
+	private final SliderSetting opacity = new SliderSetting("不透明度",
 		"How opaque the highlights should be.\n" + "0 = breathing animation", 0,
 		0, 1, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "breathing"));
 	
@@ -103,7 +103,7 @@ public final class CaveFinderHack extends Hack
 	
 	public CaveFinderHack()
 	{
-		super("CaveFinder");
+		super("洞穴寻找器");
 		setCategory(Category.RENDER);
 		addSetting(area);
 		addSetting(limit);

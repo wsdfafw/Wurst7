@@ -102,7 +102,7 @@ public enum MicrosoftLoginManager
 	private static MinecraftProfile getAccount(String email, String password)
 		throws LoginException
 	{
-		System.out.println("使用 Microsoft 登录...");
+		System.out.println("正在登录至微软账户...");
 		long startTime = System.nanoTime();
 		
 		try
@@ -118,14 +118,14 @@ public enum MicrosoftLoginManager
 			
 			MinecraftProfile mcProfile = getMinecraftProfile(mcAccessToken);
 			
-			System.out.println("登录成功后 "
+			System.out.println("登录成功，耗时"
 				+ (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			return mcProfile;
 			
 		}catch(LoginException e)
 		{
-			System.out.println("登录后失败 "
+			System.out.println("登录失败，耗时 "
 				+ (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			e.printStackTrace();
@@ -143,7 +143,7 @@ public enum MicrosoftLoginManager
 		{
 			URLConnection connection = LOGIN_URL.openConnection();
 			
-			System.out.println("获取登录cookie...");
+			System.out.println("获取登录cookie中...");
 			cookie = connection.getHeaderField("set-cookie");
 			
 			System.out.println("下载登录页面...");
@@ -151,7 +151,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(IOException e)
 		{
-			throw new LoginException("连接失败: " + e, e);
+			throw new LoginException("登录失败: " + e, e);
 		}
 		
 		System.out.println("获取 PPFT 和 urlPost...");
@@ -199,7 +199,7 @@ public enum MicrosoftLoginManager
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			
-			System.out.println("Getting authorization code...");
+			System.out.println("获取登录账户令牌中...");
 			
 			try(OutputStream out = connection.getOutputStream())
 			{
@@ -209,11 +209,11 @@ public enum MicrosoftLoginManager
 			int responseCode = connection.getResponseCode();
 			if(responseCode >= 500 && responseCode <= 599)
 				throw new LoginException(
-					"服务器已关闭 (code " + responseCode + ").");
+					"验证服务器出现问题 (代码 " + responseCode + ").");
 			
 			if(responseCode != 200)
 				throw new LoginException(
-					"Got code " + responseCode + " from urlPost.");
+					"获得令牌 " + responseCode + "从 urlPost.");
 			
 			String decodedUrl = URLDecoder.decode(
 				connection.getURL().toString(), StandardCharsets.UTF_8.name());
@@ -221,7 +221,7 @@ public enum MicrosoftLoginManager
 			Matcher matcher = AUTHCODE_REGEX.matcher(decodedUrl);
 			if(!matcher.find())
 				throw new LoginException(
-					"没有得到 authCode。 （错误的电子邮件/密码？）");
+					"并没有获得登录令牌. (错误的邮箱/密码?)");
 			
 			return matcher.group(1);
 			
@@ -272,7 +272,7 @@ public enum MicrosoftLoginManager
 			
 		}catch(JsonException e)
 		{
-			throw new LoginException("Server sent invalid JSON.", e);
+			throw new LoginException("服务器发送了无效的JSON.", e);
 		}
 	}
 	

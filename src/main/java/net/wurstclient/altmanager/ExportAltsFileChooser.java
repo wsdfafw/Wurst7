@@ -37,7 +37,7 @@ public final class ExportAltsFileChooser extends JFileChooser
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		
 		FileNameExtensionFilter txtFilter =
-			new FileNameExtensionFilter("TXT 文件 (username:password)", "txt");
+			new FileNameExtensionFilter("TXT 文件 (用户名:密码)", "txt");
 		fileChooser.addChoosableFileFilter(txtFilter);
 		
 		FileNameExtensionFilter jsonFilter =

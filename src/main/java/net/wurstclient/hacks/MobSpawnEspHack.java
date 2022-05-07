@@ -56,20 +56,20 @@ public final class MobSpawnEspHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
 	private final EnumSetting<DrawDistance> drawDistance = new EnumSetting<>(
-		"Draw distance", DrawDistance.values(), DrawDistance.D9);
+		"绘制距离", DrawDistance.values(), DrawDistance.D9);
 	
 	private final SliderSetting loadingSpeed = new SliderSetting(
-		"Loading speed", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
+		"载入速度", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
 	
 	private final CheckboxSetting depthTest =
-		new CheckboxSetting("Depth test", true);
+		new CheckboxSetting("深度测试", true);
 	
 	private final HashMap<Chunk, ChunkScanner> scanners = new HashMap<>();
 	private ExecutorService pool;
 	
 	public MobSpawnEspHack()
 	{
-		super("MobSpawnESP");
+		super("生物生成透视");
 		setCategory(Category.RENDER);
 		addSetting(drawDistance);
 		addSetting(loadingSpeed);

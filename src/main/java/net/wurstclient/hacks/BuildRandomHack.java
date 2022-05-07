@@ -50,7 +50,7 @@ public final class BuildRandomHack extends Hack
 	
 	public BuildRandomHack()
 	{
-		super("随机放方块");
+		super("随机建造");
 		setCategory(Category.BLOCKS);
 		addSetting(mode);
 		addSetting(checkItem);
