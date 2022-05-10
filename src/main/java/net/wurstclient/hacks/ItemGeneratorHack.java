@@ -7,14 +7,12 @@
  */
 package net.wurstclient.hacks;
 
-import java.util.Optional;
 import java.util.Random;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -26,14 +24,19 @@ import net.wurstclient.util.ChatUtils;
 @SearchTags({"item generator", "drop infinite"})
 public final class ItemGeneratorHack extends Hack implements UpdateListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", "§4§l警告:§r 更高的速度意味着会无响应或\n生成大量的垃圾文件并使你的游戏崩溃!", 1.0, 1.0, 36.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
-    private final SliderSetting stackSize = new SliderSetting("物品堆栈", "生成一个物品要有多少要堆在一起.\n似乎不会影响性能.", 1.0, 1.0, 64.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
+	private final SliderSetting speed = new SliderSetting("速度",
+		"§4§l警告:§r 更高的速度意味着会无响应或\n生成大量的垃圾文件并使你的游戏崩溃!",
+		1, 1, 36, 1, ValueDisplay.INTEGER);
+	
+	private final SliderSetting stackSize = new SliderSetting("物品堆栈",
+		"生成一个物品要有多少要堆在一起.\n似乎不会影响性能.",
+		1, 1, 64, 1, ValueDisplay.INTEGER);
 	
 	private final Random random = new Random();
 	
 	public ItemGeneratorHack()
 	{
-		super("造垃圾");
+		super("ItemGenerator");
 		
 		setCategory(Category.ITEMS);
 		addSetting(speed);
@@ -47,7 +50,7 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 		
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("仅限创造模式");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 		}
 	}
@@ -64,13 +67,7 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 		int stacks = speed.getValueI();
 		for(int i = 9; i < 9 + stacks; i++)
 		{
-			// Not sure if it's possible to get an empty optional here,
-			// but if so it will just retry.
-			Optional<RegistryEntry<Item>> optional = Optional.empty();
-			while(optional.isEmpty())
-				optional = Registry.ITEM.getRandom(random);
-			
-			Item item = optional.get().value();
+			Item item = Registry.ITEM.getRandom(random);
 			ItemStack stack = new ItemStack(item, stackSize.getValueI());
 			
 			CreativeInventoryActionC2SPacket packet =
