@@ -534,9 +534,9 @@ public final class AltManagerScreen extends Screen
 			addTooltip(tooltip, "window");
 			
 			if(client.options.fullscreen)
-				addTooltip(tooltip, "全屏");
+				addTooltip(tooltip, "fullscreen");
 			else
-				addTooltip(tooltip, "窗口冻结");
+				addTooltip(tooltip, "window_freeze");
 			
 			renderTooltip(matrixStack, tooltip, mouseX, mouseY);
 			break;
@@ -562,7 +562,7 @@ public final class AltManagerScreen extends Screen
 	}
 	
 	@Override
-	public void close()
+	public void onClose()
 	{
 		client.setScreen(prevScreen);
 	}
@@ -666,7 +666,7 @@ public final class AltManagerScreen extends Screen
 			
 			// name / email
 			client.textRenderer.draw(matrixStack,
-				"名字: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
+				"Name: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
 			
 			String bottomText = getBottomText(alt);
 			client.textRenderer.draw(matrixStack, bottomText, x + 31, y + 15,

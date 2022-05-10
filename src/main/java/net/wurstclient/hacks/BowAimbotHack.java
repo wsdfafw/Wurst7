@@ -187,7 +187,7 @@ public final class BowAimbotHack extends Hack
 		}
 		
 		// check if using bow
-		if(item instanceof BowItem && !MC.options.useKey.isPressed()
+		if(item instanceof BowItem && !MC.options.keyUse.isPressed()
 			&& !player.isUsingItem())
 		{
 			target = null;
