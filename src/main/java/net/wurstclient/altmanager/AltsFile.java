@@ -121,8 +121,8 @@ public final class AltsFile
 	
 	private static Alt loadAlt(String nameOrEmail, JsonObject jsonAlt)
 	{
-		String password = JsonUtils.getAsString(jsonAlt.get("password"), "");
-		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("starred"), false);
+		String password = JsonUtils.getAsString(jsonAlt.get("密码"), "");
+		boolean starred = JsonUtils.getAsBoolean(jsonAlt.get("加星标"), false);
 		
 		if(password.isEmpty())
 			return new CrackedAlt(nameOrEmail, starred);

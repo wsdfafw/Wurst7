@@ -166,7 +166,7 @@ public final class ClickAuraHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		if(!MC.options.keyAttack.isPressed())
+		if(!MC.options.attackKey.isPressed())
 			return;
 		
 		speed.updateTimer();

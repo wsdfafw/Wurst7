@@ -23,7 +23,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
 	private final SliderSetting health = new SliderSetting("生命值",
-		"自动离开服务器当你的\n生命低于这个数值的时候.",
+		"自动离开服务器当你的\n生命低于这个数值的时候",
 		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 生命值"));
 	
 	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",

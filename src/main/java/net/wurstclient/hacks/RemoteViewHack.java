@@ -98,7 +98,7 @@ public final class RemoteViewHack extends Hack
 	
 	public RemoteViewHack()
 	{
-		super("远程观看");
+		super("RemoteView");
 		setCategory(Category.RENDER);
 		
 		addSetting(filterPlayers);
