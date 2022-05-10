@@ -23,7 +23,7 @@ import net.wurstclient.util.MathUtils;
 public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 {
 	private final SliderSetting level = new SliderSetting("放大等级", 3, 1,
-		50, 0.1, v -> ValueDisplay.DECIMAL.getValueString(v) + "x");
+		50, 0.1, ValueDisplay.DECIMAL.withSuffix("x"));
 	
 	private final CheckboxSetting scroll = new CheckboxSetting(
 		"使用鼠标滚轮", "如果启用,您可以在缩放时使用鼠标滚轮进一步放大.",

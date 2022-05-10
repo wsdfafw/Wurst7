@@ -46,19 +46,50 @@ import net.wurstclient.util.FakePlayerEntity;
 public final class RemoteViewHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
-	private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会观看其他玩家.", false);
-    private final CheckboxSetting filterSleeping = new CheckboxSetting("排除正在睡觉的", "不会观看正在睡觉的玩家.", false);
-    private final SliderSetting filterFlying = new SliderSetting("排除飞行中", "不会观看在飞行中玩家或\n远离地板一定距离的玩家.", 0.0, 0.0, 2.0, 0.05, v -> v == 0.0 ? "关" : SliderSetting.ValueDisplay.DECIMAL.getValueString(v));
-    private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不会观看僵尸,苦力怕,诸如此类.", true);
-    private final CheckboxSetting filterPigmen = new CheckboxSetting("排除猪人", "不会观看僵尸猪人.", true);
-    private final CheckboxSetting filterEndermen = new CheckboxSetting("排除末影人", "不会观看末影人.", true);
-    private final CheckboxSetting filterAnimals = new CheckboxSetting("排除动物", "不会观看牛,猪,诸如此类.", true);
-    private final CheckboxSetting filterBabies = new CheckboxSetting("排除婴儿", "不会观看小猪仔 小村民, 诸如此类.", true);
-    private final CheckboxSetting filterPets = new CheckboxSetting("排除宠物", "不会观看已驯服的狼 已驯服的马, 诸如此类.", true);
-    private final CheckboxSetting filterTraders = new CheckboxSetting("排除商人", "不会观看村民 , 流浪商人, 诸如此类.", true);
-    private final CheckboxSetting filterGolems = new CheckboxSetting("排除傀儡们", "不会观看铁傀儡 雪傀儡 和 潜影盒.", true);
-    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不会观看隐形的实体.", false);
-    private final CheckboxSetting filterStands = new CheckboxSetting("排除盔甲架", "不会观看盔甲架.", true);
+	private final CheckboxSetting filterPlayers = new CheckboxSetting(
+		"排除玩家", "不会观看其他玩家.", false);
+	
+	private final CheckboxSetting filterSleeping = new CheckboxSetting(
+		"排除正在睡觉的", "不会观看正在睡觉的玩家.", false);
+	
+	private final SliderSetting filterFlying =
+		new SliderSetting("排除飞行中",
+			"Won't view players that\n" + "are at least the given\n"
+				+ "distance above ground.",
+			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
+	
+	private final CheckboxSetting filterMonsters = new CheckboxSetting(
+		"排除怪物", "不会观看僵尸,苦力怕,诸如此类.", true);
+	
+	private final CheckboxSetting filterPigmen =
+		new CheckboxSetting("排除猪人", "不会观看僵尸猪人.", true);
+	
+	private final CheckboxSetting filterEndermen =
+		new CheckboxSetting("排除末影人", "不会观看末影人.", true);
+	
+	private final CheckboxSetting filterAnimals = new CheckboxSetting(
+		"排除动物", "不会观看牛,猪,诸如此类.", true);
+	
+	private final CheckboxSetting filterBabies =
+		new CheckboxSetting("排除婴儿", 
+			"不会观看小猪仔 小村民, 诸如此类.", true);
+	
+	private final CheckboxSetting filterPets =
+		new CheckboxSetting("排除宠物", 
+			"不会观看已驯服的狼 已驯服的马, 诸如此类.", true);
+	
+	private final CheckboxSetting filterTraders =
+		new CheckboxSetting("排除商人", 
+			"不会观看村民 , 流浪商人, 诸如此类.", true);
+	
+	private final CheckboxSetting filterGolems =
+		new CheckboxSetting("排除傀儡们", 
+			"不会观看铁傀儡 雪傀儡 和 潜影盒.", true);
+	
+	private final CheckboxSetting filterInvisible = new CheckboxSetting(
+		"排除隐身", "不会观看隐形的实体.", false);
+	private final CheckboxSetting filterStands = new CheckboxSetting(
+		"排除盔甲架", "不会观看盔甲架.", true);
 	
 	private Entity entity = null;
 	private boolean wasInvisible;

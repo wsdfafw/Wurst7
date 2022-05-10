@@ -38,6 +38,7 @@ import net.wurstclient.SearchTags;
 import net.wurstclient.WurstClient;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
@@ -48,13 +49,16 @@ import net.wurstclient.util.RotationUtils;
 @SearchTags({"TpAura", "tp aura", "EnderAura", "Ender-Aura", "ender aura"})
 public final class TpAuraHack extends Hack implements UpdateListener
 {
-	private Random random = new Random();
+	private final Random random = new Random();
 	
 	private final SliderSetting range =
 		new SliderSetting("范围", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
+	private final AttackSpeedSliderSetting speed =
+		new AttackSpeedSliderSetting();
+	
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"§l[距离]§r:距离最近的实体\r\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
+		"§l[距离]§r:距离最近的实体\r\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体.",
 		Priority.values(), Priority.ANGLE);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
@@ -63,9 +67,9 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		"排除睡眠", "", true);
 	private final SliderSetting filterFlying =
 		new SliderSetting("排除飞行",
-			"",
-			0, 0, 2, 0.05,
-			v -> v == 0 ? "off" : ValueDisplay.DECIMAL.getValueString(v));
+			"Won't attack players that\n" + "are at least the given\n"
+				+ "distance above ground.",
+			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
 		"排除怪物", "", false);
@@ -107,6 +111,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);
+		addSetting(speed);
 		addSetting(priority);
 		
 		addSetting(filterPlayers);
@@ -139,6 +144,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		WURST.getHax().protectHack.setEnabled(false);
 		WURST.getHax().triggerBotHack.setEnabled(false);
 		
+		speed.resetTimer();
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
@@ -151,6 +157,10 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
+		speed.updateTimer();
+		if(!speed.isTimeToAttack())
+			return;
+		
 		ClientPlayerEntity player = MC.player;
 		
 		// set entity
@@ -252,6 +262,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(player, entity);
 		player.swingHand(Hand.MAIN_HAND);
+		speed.resetTimer();
 	}
 	
 	private enum Priority

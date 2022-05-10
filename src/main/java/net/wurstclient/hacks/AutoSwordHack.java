@@ -23,13 +23,21 @@ import net.wurstclient.mixinterface.ISwordItem;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({"auto sword"})
 public final class AutoSwordHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Priority> priority = new EnumSetting("优先级", (Enum[])Priority.values(), (Enum)Priority.SPEED);
-    private final CheckboxSetting switchBack = new CheckboxSetting("切换回来", "自动切换回上一个你所持的物品\n在 §l释放时间§r 后.", true);
-    private final SliderSetting releaseTime = new SliderSetting("释放时间", "时间直到 自动切剑 将会切换回武器的\n上一个物品的时间.\n\n只会在 §l切换回来§r 的作用开启情况下.", 10.0, 1.0, 200.0, 1.0, v -> (int)v + " ticks");
+	private final EnumSetting<Priority> priority =
+		new EnumSetting<>("优先级", Priority.values(), Priority.SPEED);
+	
+	private final CheckboxSetting switchBack = new CheckboxSetting(
+		"切换回来", "自动切换回上一个你所持的物品\n在 §l释放时间§r 后.",
+		true);
+	
+	private final SliderSetting releaseTime = new SliderSetting("释放时间",
+		"时间直到 自动切剑 将会切换回武器的\n上一个物品的时间.\n\n只会在 §l切换回来§r 的作用开启情况下.",
+		10, 1, 200, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
 	
 	private int oldSlot;
 	private int timer;

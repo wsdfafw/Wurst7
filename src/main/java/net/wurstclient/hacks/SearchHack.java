@@ -7,7 +7,6 @@
  */
 package net.wurstclient.hacks;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,6 +54,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.BlockSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockVertexCompiler;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.ChunkSearcher;
@@ -65,9 +65,16 @@ import net.wurstclient.util.RotationUtils;
 public final class SearchHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final BlockSetting block = new BlockSetting("方块", "你所需要寻找类型的方块.", "minecraft:diamond_ore", false);
-    private final EnumSetting<Area> area = new EnumSetting("区域", "寻找玩家所在的区域.\n更高的数值需要更高配的电脑.", (Enum[])Area.values(), (Enum)Area.D11);
-    private final SliderSetting limit = new SliderSetting("限制", "最多的显示方块所限制.\n更高的数值需要更高配的电脑.", 4.0, 3.0, 6.0, 1.0, v -> new DecimalFormat("##,###,###").format(Math.pow(10.0, v)));
+	private final BlockSetting block = new BlockSetting("方块",
+		"你所需要寻找类型的方块.", "minecraft:diamond_ore", false);
+	
+	private final EnumSetting<Area> area = new EnumSetting<>("区域",
+		"寻找玩家所在的区域.\n更高的数值需要更高配的电脑.",
+		Area.values(), Area.D11);
+	
+	private final SliderSetting limit = new SliderSetting("限制",
+		"最多的显示方块所限制.\n更高的数值需要更高配的电脑.",
+		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
 	

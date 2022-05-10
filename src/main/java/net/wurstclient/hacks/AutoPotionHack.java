@@ -26,9 +26,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoPotionHack extends Hack implements UpdateListener
 {
 	private final SliderSetting health = new SliderSetting("生命值",
-		"当你的生命值达到或低于此值时,投掷药水",
-		6, 0.5, 9.5, 0.5,
-		v -> ValueDisplay.DECIMAL.getValueString(v) + " hearts");
+		"当你的生命值达到或低于此值时,投掷药水.",
+		6, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 生命值"));
 	
 	private int timer;
 	

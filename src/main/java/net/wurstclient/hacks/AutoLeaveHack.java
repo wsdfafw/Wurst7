@@ -23,9 +23,8 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
 	private final SliderSetting health = new SliderSetting("生命值",
-		"当您的生命值≤给定值时离开服务器",
-		4, 0.5, 9.5, 0.5,
-		v -> ValueDisplay.DECIMAL.getValueString(v) + " hearts");
+		"当您的生命值≤给定值时离开服务器.",
+		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 生命值"));
 	
 	public final EnumSetting<Mode> mode = new EnumSetting<>("模式",
 		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"

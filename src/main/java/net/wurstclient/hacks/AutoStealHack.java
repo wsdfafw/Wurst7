@@ -12,6 +12,7 @@ import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({"auto steal", "ChestStealer", "chest stealer",
 	"steal store buttons", "Steal/Store buttons"})
@@ -19,7 +20,7 @@ public final class AutoStealHack extends Hack
 {
 	private final SliderSetting delay = new SliderSetting("延迟",
 		"移动物品堆之间的延迟.\n对于NoCheat+服务器，应该至少是70ms.",
-		100, 0, 500, 10, v -> (int)v + "ms");
+		100, 0, 500, 10, ValueDisplay.INTEGER.withSuffix("ms"));
 	
 	private final CheckboxSetting buttons =
 		new CheckboxSetting("Steal/Store buttons", false);

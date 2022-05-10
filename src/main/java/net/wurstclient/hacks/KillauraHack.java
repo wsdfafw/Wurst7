@@ -45,6 +45,7 @@ import net.wurstclient.events.PostMotionListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
@@ -62,11 +63,14 @@ public final class KillauraHack extends Hack
 		"",
 		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
+	private final AttackSpeedSliderSetting speed =
+		new AttackSpeedSliderSetting();
+	
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"§l[距离]§r:距离最近的实体\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
+		"§l[距离]§r:距离最近的实体\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体.",
 		Priority.values(), Priority.ANGLE);
 	
-	public final SliderSetting fov =
+	private final SliderSetting fov =
 		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting damageIndicator = new CheckboxSetting(
@@ -82,11 +86,13 @@ public final class KillauraHack extends Hack
 			"",
 			true);
 	
-	private final SliderSetting filterFlying = new SliderSetting(
-		"排除飞行",
-		"",
-		0, 0, 2, 0.05,
-		v -> v == 0 ? "off" : ValueDisplay.DECIMAL.getValueString(v));
+	private final SliderSetting filterFlying =
+		new SliderSetting("排除飞行",
+			"Won't attack players that are at least\n"
+				+ "the given distance above ground.\n\n"
+				+ "Useful for servers that place a flying\n"
+				+ "player behind you to try and detect\n" + "your Killaura.",
+			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
 		"排除怪物", "", false);
@@ -135,6 +141,7 @@ public final class KillauraHack extends Hack
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);
+		addSetting(speed);
 		addSetting(priority);
 		addSetting(fov);
 		addSetting(damageIndicator);
@@ -168,6 +175,7 @@ public final class KillauraHack extends Hack
 		WURST.getHax().triggerBotHack.setEnabled(false);
 		WURST.getHax().tpAuraHack.setEnabled(false);
 		
+		speed.resetTimer();
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PostMotionListener.class, this);
 		EVENTS.add(RenderListener.class, this);
@@ -187,11 +195,12 @@ public final class KillauraHack extends Hack
 	@Override
 	public void onUpdate()
 	{
+		speed.updateTimer();
+		if(!speed.isTimeToAttack())
+			return;
+		
 		ClientPlayerEntity player = MC.player;
 		ClientWorld world = MC.world;
-		
-		if(player.getAttackCooldownProgress(0) < 1)
-			return;
 		
 		double rangeSq = Math.pow(range.getValue(), 2);
 		Stream<Entity> stream =
@@ -293,6 +302,7 @@ public final class KillauraHack extends Hack
 		player.swingHand(Hand.MAIN_HAND);
 		
 		target = null;
+		speed.resetTimer();
 	}
 	
 	@Override

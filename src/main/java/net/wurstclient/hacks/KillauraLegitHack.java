@@ -45,6 +45,7 @@ import net.wurstclient.Category;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
@@ -60,10 +61,14 @@ public final class KillauraLegitHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级", "决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体.",
+	private final AttackSpeedSliderSetting speed =
+		new AttackSpeedSliderSetting();
+	
+	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
+		"决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体.",
 		Priority.values(), Priority.ANGLE);
 	
-	public final SliderSetting fov =
+	private final SliderSetting fov =
 		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting damageIndicator = new CheckboxSetting(
@@ -76,9 +81,10 @@ public final class KillauraLegitHack extends Hack
 	private final CheckboxSetting filterSleeping = new CheckboxSetting(
 		"排除正在睡觉", "正在睡觉的 不会攻击正在睡觉的玩家.", true);
 	private final SliderSetting filterFlying =
-		new SliderSetting("排除飞行中", "不会攻击在飞行中玩家或\n远离地板一定距离的玩家.",
-			0.5, 0, 2, 0.05,
-			v -> v == 0 ? "off" : ValueDisplay.DECIMAL.getValueString(v));
+		new SliderSetting("排除飞行中",
+			"Won't attack players that\n" + "are at least the given\n"
+				+ "distance above ground.",
+			0.5, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
 		"排除怪物", "不会攻击僵尸,苦力怕,诸如此类.", false);
@@ -116,10 +122,13 @@ public final class KillauraLegitHack extends Hack
 	{
 		super("杀戮光环-");
 		setCategory(Category.COMBAT);
+		
 		addSetting(range);
+		addSetting(speed);
 		addSetting(priority);
 		addSetting(fov);
 		addSetting(damageIndicator);
+		
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -150,6 +159,7 @@ public final class KillauraLegitHack extends Hack
 		WURST.getHax().triggerBotHack.setEnabled(false);
 		WURST.getHax().tpAuraHack.setEnabled(false);
 		
+		speed.resetTimer();
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
 	}
@@ -165,11 +175,12 @@ public final class KillauraLegitHack extends Hack
 	@Override
 	public void onUpdate()
 	{
+		speed.updateTimer();
+		if(!speed.isTimeToAttack())
+			return;
+		
 		ClientPlayerEntity player = MC.player;
 		ClientWorld world = MC.world;
-		
-		if(player.getAttackCooldownProgress(0) < 1)
-			return;
 		
 		double rangeSq = Math.pow(range.getValue(), 2);
 		Stream<Entity> stream =
@@ -262,6 +273,7 @@ public final class KillauraLegitHack extends Hack
 		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(player, target);
 		player.swingHand(Hand.MAIN_HAND);
+		speed.resetTimer();
 	}
 	
 	private boolean faceEntityClient(Entity entity)
