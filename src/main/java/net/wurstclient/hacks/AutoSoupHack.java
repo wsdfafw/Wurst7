@@ -31,7 +31,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoSoupHack extends Hack implements UpdateListener
 {
 	private final SliderSetting health = new SliderSetting("生命范围",
-		"自动喝下一个汤\n当你的生命值抵达这个数值或更低",
+		"自动喝下一个汤\n当你的生命值抵达这个数值或更低.",
 		6.5, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL);
 	
 	private int oldSlot = -1;
@@ -104,7 +104,7 @@ public final class AutoSoupHack extends Hack implements UpdateListener
 			MC.player.getInventory().selectedSlot = soupInHotbar;
 			
 			// eat soup
-			MC.options.useKey.setPressed(true);
+			MC.options.keyUse.setPressed(true);
 			IMC.getInteractionManager().rightClickItem();
 			
 			return;
@@ -179,7 +179,7 @@ public final class AutoSoupHack extends Hack implements UpdateListener
 			return;
 		
 		// stop eating
-		MC.options.useKey.setPressed(false);
+		MC.options.keyUse.setPressed(false);
 		
 		// reset slot
 		MC.player.getInventory().selectedSlot = oldSlot;

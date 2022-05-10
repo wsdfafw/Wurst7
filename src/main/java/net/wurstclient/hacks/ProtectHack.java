@@ -205,7 +205,7 @@ public final class ProtectHack extends Hack
 		
 		if(friend != null)
 		{
-			MC.options.forwardKey.setPressed(false);
+			MC.options.keyForward.setPressed(false);
 			friend = null;
 		}
 	}
@@ -358,19 +358,19 @@ public final class ProtectHack extends Hack
 						MC.player.getX(), target.getY(), MC.player.getZ()))
 			{
 				if(MC.player.getY() > target.getY() + 1D)
-					MC.options.sneakKey.setPressed(true);
+					MC.options.keySneak.setPressed(true);
 				else if(MC.player.getY() < target.getY() - 1D)
-					MC.options.jumpKey.setPressed(true);
+					MC.options.keyJump.setPressed(true);
 			}else
 			{
-				MC.options.sneakKey.setPressed(false);
-				MC.options.jumpKey.setPressed(false);
+				MC.options.keySneak.setPressed(false);
+				MC.options.keyJump.setPressed(false);
 			}
 			
 			// follow target
 			WURST.getRotationFaker()
 				.faceVectorClient(target.getBoundingBox().getCenter());
-			MC.options.forwardKey.setPressed(MC.player.distanceTo(
+			MC.options.keyForward.setPressed(MC.player.distanceTo(
 				target) > (target == friend ? distanceF : distanceE));
 		}
 		

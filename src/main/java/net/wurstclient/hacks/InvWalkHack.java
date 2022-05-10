@@ -80,17 +80,17 @@ public final class InvWalkHack extends Hack implements UpdateListener
 			return;
 		
 		ArrayList<KeyBinding> keys =
-			new ArrayList<>(Arrays.asList(MC.options.forwardKey,
-				MC.options.backKey, MC.options.leftKey, MC.options.rightKey));
+			new ArrayList<>(Arrays.asList(MC.options.keyForward,
+				MC.options.keyBack, MC.options.keyLeft, MC.options.keyRight));
 		
 		if(allowSneak.isChecked())
-			keys.add(MC.options.sneakKey);
+			keys.add(MC.options.keySneak);
 		
 		if(allowSprint.isChecked())
-			keys.add(MC.options.sprintKey);
+			keys.add(MC.options.keySprint);
 		
 		if(allowJump.isChecked())
-			keys.add(MC.options.jumpKey);
+			keys.add(MC.options.keyJump);
 		
 		for(KeyBinding key : keys)
 			key.setPressed(((IKeyBinding)key).isActallyPressed());

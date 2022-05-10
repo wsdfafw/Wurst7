@@ -195,7 +195,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		}
 		
 		// eat food
-		MC.options.useKey.setPressed(true);
+		MC.options.keyUse.setPressed(true);
 		IMC.getInteractionManager().rightClickItem();
 	}
 	
@@ -284,7 +284,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private void stopEating()
 	{
-		MC.options.useKey.setPressed(false);
+		MC.options.keyUse.setPressed(false);
 		MC.player.getInventory().selectedSlot = oldSlot;
 		oldSlot = -1;
 	}

@@ -177,8 +177,8 @@ public final class TunnellerHack extends Hack
 			return;
 		
 		GameOptions gs = MC.options;
-		KeyBinding[] bindings = {gs.forwardKey, gs.backKey, gs.leftKey,
-			gs.rightKey, gs.jumpKey, gs.sneakKey};
+		KeyBinding[] bindings = {gs.keyForward, gs.keyBack, gs.keyLeft,
+			gs.keyRight, gs.keyJump, gs.keySneak};
 		for(KeyBinding binding : bindings)
 			binding.setPressed(false);
 		
@@ -474,7 +474,7 @@ public final class TunnellerHack extends Hack
 			Vec3d vec = Vec3d.ofCenter(base);
 			WURST.getRotationFaker().faceVectorClientIgnorePitch(vec);
 			
-			MC.options.forwardKey.setPressed(true);
+			MC.options.keyForward.setPressed(true);
 		}
 	}
 	
@@ -528,7 +528,7 @@ public final class TunnellerHack extends Hack
 		@Override
 		public void run()
 		{
-			MC.options.sneakKey.setPressed(true);
+			MC.options.keySneak.setPressed(true);
 			Vec3d velocity = MC.player.getVelocity();
 			MC.player.setVelocity(0, velocity.y, 0);
 			
@@ -665,7 +665,7 @@ public final class TunnellerHack extends Hack
 		public void run()
 		{
 			BlockPos player = new BlockPos(MC.player.getPos());
-			KeyBinding forward = MC.options.forwardKey;
+			KeyBinding forward = MC.options.keyForward;
 			
 			Vec3d diffVec = Vec3d.of(player.subtract(start));
 			Vec3d dirVec = Vec3d.of(direction.getVector());
@@ -769,7 +769,7 @@ public final class TunnellerHack extends Hack
 				return;
 			}
 			
-			MC.options.sneakKey.setPressed(true);
+			MC.options.keySneak.setPressed(true);
 			placeBlockSimple(nextTorch);
 		}
 		

@@ -49,9 +49,14 @@ public final class FreecamHack extends Hack
 	IsPlayerInWaterListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting tracer = new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
-    private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
+	private final SliderSetting speed =
+		new SliderSetting("速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting tracer = new CheckboxSetting("轨迹",
+		"在你角色实际的位置描写一个框和一条轨迹出来.", false);
+	
+	private final ColorSetting color =
+		new ColorSetting("轨迹颜色", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
 	
@@ -79,8 +84,8 @@ public final class FreecamHack extends Hack
 		fakePlayer = new FakePlayerEntity();
 		
 		GameOptions gs = MC.options;
-		KeyBinding[] bindings = {gs.forwardKey, gs.backKey, gs.leftKey,
-			gs.rightKey, gs.jumpKey, gs.sneakKey};
+		KeyBinding[] bindings = {gs.keyForward, gs.keyBack, gs.keyLeft,
+			gs.keyRight, gs.keyJump, gs.keySneak};
 		
 		for(KeyBinding binding : bindings)
 			binding.setPressed(((IKeyBinding)binding).isActallyPressed());
@@ -117,10 +122,10 @@ public final class FreecamHack extends Hack
 		player.airStrafingSpeed = speed.getValueF();
 		Vec3d velocity = player.getVelocity();
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			player.setVelocity(velocity.add(0, speed.getValue(), 0));
 		
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			player.setVelocity(velocity.subtract(0, speed.getValue(), 0));
 	}
 	
