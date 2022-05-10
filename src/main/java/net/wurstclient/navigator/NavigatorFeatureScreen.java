@@ -533,7 +533,7 @@ public final class NavigatorFeatureScreen extends NavigatorScreen
 	}
 	
 	@Override
-	public void close()
+	public void onClose()
 	{
 		window.close();
 		WurstClient.INSTANCE.getGui().handleMouseClick(Integer.MIN_VALUE,

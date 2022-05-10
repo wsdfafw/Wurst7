@@ -44,7 +44,7 @@ public class WurstOptionsScreen extends Screen
 	{
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				new LiteralText("返回"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Back"), b -> client.setScreen(prevScreen)));
 		
 		addSettingButtons();
 		addManagerButtons();
@@ -70,7 +70,7 @@ public class WurstOptionsScreen extends Screen
 		
 		new WurstOptionsButton(-154, 48,
 			() -> "统计用户: " + (analytics.isEnabled() ? "开启" : "关闭"),
-			"统计有多少人在使用Wurst哪个版本最受欢迎.\n我们使用这个数据来决定何时停止\n支持旧的Minecraft版本.\n我们使用一个随机ID将用户分开\n这样这个数据就永远无法链接到您的Minecraft帐户.\n随机ID为′每3天改变一次，以确保额外确信您保持匿名.",
+			"统计有多少人在使用Wurst哪个版本最受欢迎.\n我们使用这个数据来决定何时停止\n支持旧的Minecraft版本.\n我们使用一个随机ID将用户分开\n这样这个数据就永远无法链接到您的Minecraft帐户.\n随机ID为′每3天改变一次，以确保额外确信您保持匿名",
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
@@ -98,7 +98,7 @@ public class WurstOptionsScreen extends Screen
 			b -> xRayHack.openBlockListEditor(this));
 		
 		new WurstOptionsButton(-50, 72, () -> "放大功能",
-		    "Zoom Manager允许您更改缩放键，它会放大多远等",
+			"Zoom Manager允许您更改缩放键，它会放大多远等",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
 	}
 	
@@ -110,12 +110,12 @@ public class WurstOptionsScreen extends Screen
 			"WurstClient.net", b -> os.open("https://www.wurstclient.net/"));
 		
 		new WurstOptionsButton(54, 48, () -> "捐款 求捐款",
-			"qq/微信/支付宝/支付",
-			b -> os.open("https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
+			"Wiki.WurstClient.net",
+			b -> os.open("https://wiki.wurstclient.net/"));	
 	}
 	
 	@Override
-	public void close()
+	public void onClose()
 	{
 		client.setScreen(prevScreen);
 	}

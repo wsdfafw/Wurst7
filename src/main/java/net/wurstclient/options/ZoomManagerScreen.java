@@ -81,7 +81,7 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 	}
 	
 	@Override
-	public void close()
+	public void onClose()
 	{
 		client.setScreen(prevScreen);
 	}
@@ -110,6 +110,6 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 			.setBoundKey(InputUtil.fromTranslationKey(key));
 		client.options.write();
 		KeyBinding.updateKeysByCode();
-		keyButton.setMessage(new LiteralText("Zoom键: " + key));
+		keyButton.setMessage(new LiteralText("Zoom Key: " + key));
 	}
 }
