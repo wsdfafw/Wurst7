@@ -60,8 +60,11 @@ public final class ExcavatorHack extends Hack
 	private ExcavatorPathFinder pathFinder;
 	private PathProcessor processor;
 	
-	private final SliderSetting range = new SliderSetting("范围", 5.0, 2.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Mode> mode = new EnumSetting("模式", (Enum[])Mode.values(), (Enum)Mode.FAST);
+	private final SliderSetting range =
+		new SliderSetting("范围", 5, 2, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("模式", Mode.values(), Mode.FAST);
 	
 	public ExcavatorHack()
 	{
@@ -399,7 +402,7 @@ public final class ExcavatorHack extends Hack
 			posLookingAt = ((BlockHitResult)MC.crosshairTarget).getBlockPos();
 			
 			// offset if sneaking
-			if(MC.options.sneakKey.isPressed())
+			if(MC.options.keySneak.isPressed())
 				posLookingAt = posLookingAt
 					.offset(((BlockHitResult)MC.crosshairTarget).getSide());
 			
@@ -407,7 +410,7 @@ public final class ExcavatorHack extends Hack
 			posLookingAt = null;
 		
 		// set selected position
-		if(posLookingAt != null && MC.options.useKey.isPressed())
+		if(posLookingAt != null && MC.options.keyUse.isPressed())
 			step.pos = posLookingAt;
 	}
 	

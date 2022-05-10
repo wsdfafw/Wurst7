@@ -31,7 +31,8 @@ public final class JesusHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
 	private final CheckboxSetting bypass =
-		new CheckboxSetting("绕反作弊", "绕反作弊但你的移速动作会下降", false);
+		new CheckboxSetting("绕反作弊", 
+			"绕反作弊但你的移速动作会下降.", false);
 	
 	private int tickTimer = 10;
 	private int packetTimer = 0;
@@ -61,7 +62,7 @@ public final class JesusHack extends Hack
 	public void onUpdate()
 	{
 		// check if sneaking
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -179,6 +180,6 @@ public final class JesusHack extends Hack
 	public boolean shouldBeSolid()
 	{
 		return isEnabled() && MC.player != null && MC.player.fallDistance <= 3
-			&& !MC.options.sneakKey.isPressed() && !MC.player.isTouchingWater();
+			&& !MC.options.keySneak.isPressed() && !MC.player.isTouchingWater();
 	}
 }

@@ -40,10 +40,10 @@ public final class ParkourHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
-		if(!MC.player.isOnGround() || MC.options.jumpKey.isPressed())
+		if(!MC.player.isOnGround() || MC.options.keyJump.isPressed())
 			return;
 		
-		if(MC.player.isSneaking() || MC.options.sneakKey.isPressed())
+		if(MC.player.isSneaking() || MC.options.keySneak.isPressed())
 			return;
 		
 		Box box = MC.player.getBoundingBox();

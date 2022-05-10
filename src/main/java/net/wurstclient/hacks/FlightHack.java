@@ -59,10 +59,10 @@ public final class FlightHack extends Hack
 		player.setVelocity(0, 0, 0);
 		Vec3d velocity = player.getVelocity();
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			player.setVelocity(velocity.add(0, speed.getValue(), 0));
 		
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			player.setVelocity(velocity.subtract(0, speed.getValue(), 0));
 	}
 	
