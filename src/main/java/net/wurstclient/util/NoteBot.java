@@ -11,8 +11,10 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.io.FilenameUtils;
 
@@ -104,8 +106,24 @@ public class NoteBot {
         }
     }
     private static void play(SoundEvent sound, float pitch) {
-        Vec3d vec = MC.player == null ? Vec3d.ZERO : MC.player.getPos();
-        MC.getSoundManager().play(new PositionedSoundInstance(sound, SoundCategory.RECORDS, 3.0F, pitch, vec.x, vec.y, vec.z));
+        if (MC.player == null || MC.world == null) {
+            Vec3d vec = Vec3d.ZERO;
+            MC.getSoundManager().play(new PositionedSoundInstance(sound, SoundCategory.RECORDS, 3.0F, pitch, vec.x, vec.y, vec.z));
+        }
+        else {
+            Vec3d pos = MC.player.getPos();
+            float yaw = MC.player.getYaw();
+            double dx = MathHelper.sin(-yaw * ((float) Math.PI / 180)) * 2.0D;
+            double dz = MathHelper.cos(yaw * ((float) Math.PI / 180)) * 2.0D;
+            Vec3d[] vex = new Vec3d[]{
+                new Vec3d(pos.x + dx + dz, pos.y, pos.z + dz - dx),
+                new Vec3d(pos.x + dx, pos.y, pos.z + dz),
+                new Vec3d(pos.x + dx - dz, pos.y, pos.z + dz + dx)
+            };
+            Vec3d vec = vex[(int) Math.floor(Math.random() * vex.length)];
+            MC.getSoundManager().play(new PositionedSoundInstance(sound, SoundCategory.RECORDS, 3.0F, pitch, vec.x, vec.y, vec.z));
+            MC.world.addParticle(ParticleTypes.NOTE, vec.x, vec.y + 1.2, vec.z, (double)pitch / 24.0, 0.0, 0.0);
+        }
     }
     
     public static Multimap<Integer, Note> toAllHarp(Multimap<Integer, Note> notes, Instrument instrument) {
