@@ -28,7 +28,7 @@ public final class WurstUpdater implements UpdateListener
 	{
 		if(thread == null)
 		{
-			thread = new Thread(this::checkForUpdates, "Wurst更新器");
+			thread = new Thread(this::checkForUpdates, "WurstUpdater");
 			thread.start();
 			return;
 		}
@@ -68,15 +68,15 @@ public final class WurstUpdater implements UpdateListener
 			}
 			
 			if(latestVersion == null)
-				throw new NullPointerException("最新版本并不存在!");
+				throw new NullPointerException("Latest version is missing!");
 			
-			System.out.println("[更新] 当前版本: " + currentVersion);
-			System.out.println("[更新] 最新版本: " + latestVersion);
+			System.out.println("[Updater] Current version: " + currentVersion);
+			System.out.println("[Updater] Latest version: " + latestVersion);
 			outdated = currentVersion.shouldUpdateTo(latestVersion);
 			
 		}catch(Exception e)
 		{
-			System.err.println("[更新程序] 发生错误!");
+			System.err.println("[Updater] An error occurred!");
 			e.printStackTrace();
 		}
 		
@@ -98,10 +98,8 @@ public final class WurstUpdater implements UpdateListener
 	
 	private void showLink(String text, String url)
 	{
-		component = Text.literal(text);
-		
 		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-		component.getStyle().withClickEvent(event);
+		component = Text.literal(text).styled(s -> s.withClickEvent(event));
 	}
 	
 	private boolean containsCompatibleAsset(WsonArray wsonArray)
