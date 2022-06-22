@@ -50,21 +50,16 @@ import net.wurstclient.util.RenderUtils;
 public final class AutoFishHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final SliderSetting validRange = new SliderSetting("Valid range",
-		"Any bites that occur outside of this range\n" + "will be ignored.\n\n"
-			+ "Increase your range if bites are not being\n"
-			+ "detected, decrease it if other people's\n"
-			+ "bites are being detected as yours.",
+	private final SliderSetting validRange = new SliderSetting("有效范围",
+		"在这个范围之外咬钩的鱼将被忽略\n如果范围内没有发现鱼,请扩大你的给定范围\n如果能检测到其他玩家钓到鱼,请缩小给定范围",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private CheckboxSetting debugDraw = new CheckboxSetting("Debug draw",
-		"Shows where bites are occurring and where\n"
-			+ "they will be detected. Useful for optimizing\n"
-			+ "your 'Valid range' setting.",
+	private CheckboxSetting debugDraw = new CheckboxSetting("Debug画面",
+		"显示一个当前所检测的框框\n一般用来调试你所设置的检测\n'有效范围'的设计是否合理",
 		false);
 	
-	private final ColorSetting ddColor = new ColorSetting("DD color",
-		"Color of the debug draw, if enabled.", Color.RED);
+	private final ColorSetting ddColor = new ColorSetting("DD 颜色",
+		"Debug画面的颜色,如果是开启的话", Color.RED);
 	
 	private int bestRodValue;
 	private int bestRodSlot;
@@ -80,7 +75,7 @@ public final class AutoFishHack extends Hack
 	
 	public AutoFishHack()
 	{
-		super("AutoFish");
+		super("自动钓鱼");
 		
 		setCategory(Category.OTHER);
 		addSetting(validRange);
@@ -135,7 +130,7 @@ public final class AutoFishHack extends Hack
 		
 		if(bestRodSlot == -1)
 		{
-			ChatUtils.message("AutoFish has run out of fishing rods.");
+			ChatUtils.message("钓鱼的鱼竿已经被用完了");
 			setEnabled(false);
 			return;
 		}
@@ -278,12 +273,12 @@ public final class AutoFishHack extends Hack
 		boolean isOpenWater = isInOpenWater(bobber);
 		if(!isOpenWater && wasOpenWater)
 		{
-			ChatUtils.warning("You are currently fishing in shallow water.");
+			ChatUtils.warning("您目前正在浅水区钓鱼");
 			ChatUtils.message(
-				"You can't get any treasure items while fishing like this.");
+				"像这样钓鱼时无法获得任何宝物");
 			
 			if(!WURST.getHax().openWaterEspHack.isEnabled())
-				ChatUtils.message("Use OpenWaterESP to find open water.");
+				ChatUtils.message("使用 OpenWaterESP 查找开放水域");
 		}
 		
 		// catch fish
