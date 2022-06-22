@@ -10,7 +10,6 @@ package net.wurstclient.clickgui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -58,7 +57,8 @@ public final class TpsComponent extends Component
 				&& mouseY < getParent().getHeight() - 13 - scroll;
 
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 
 		// tooltip
@@ -74,12 +74,14 @@ public final class TpsComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
 		// text
 		float tps = hack.getServerTps();
-		fr.draw(matrixStack, String.format("TPS: %.1f", tps), x1, y1, tps > 19.0 ? gui.getTxtColor() : Color.RED.getRGB());
 		float lastTickSecond = hack.getLastServerTickMs() / 1000.0f;
+		if (lastTickSecond < 6.0)
+			fr.draw(matrixStack, String.format("TPS: %.2g", tps), x1, y1, tps > 19.0 ? gui.getTxtColor() : Color.RED.getRGB());
+		else
+			fr.draw(matrixStack, String.format("TPS: < %.2g", 20.0f / lastTickSecond), x1, y1, Color.RED.getRGB());
 		fr.draw(matrixStack, String.format("Last Tick: %.1fs", lastTickSecond), x1, y1+fr.fontHeight, lastTickSecond < 2.0 ? gui.getTxtColor() : Color.RED.getRGB());
 		fr.draw(matrixStack, String.format("Ping: %dms", hack.getLatencyMs()), x1, y1+fr.fontHeight*2, gui.getTxtColor());
 	}
