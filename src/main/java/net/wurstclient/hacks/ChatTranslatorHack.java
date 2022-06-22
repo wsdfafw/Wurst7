@@ -27,14 +27,14 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 		new GoogleTranslate();
 	
 	private final EnumSetting<FromLanguage> langFrom = new EnumSetting<>(
-		"Translate from", FromLanguage.values(), FromLanguage.AUTO_DETECT);
+		"讲语言", FromLanguage.values(), FromLanguage.AUTO_DETECT);
 	
 	private final EnumSetting<ToLanguage> langTo = new EnumSetting<>(
-		"Translate to", ToLanguage.values(), ToLanguage.ENGLISH);
+		"翻译成", ToLanguage.values(), ToLanguage.ENGLISH);
 	
 	public ChatTranslatorHack()
 	{
-		super("ChatTranslator");
+		super("聊天翻译");
 		setCategory(Category.CHAT);
 		
 		addSetting(langFrom);

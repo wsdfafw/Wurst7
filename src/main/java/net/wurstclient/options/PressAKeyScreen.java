@@ -23,7 +23,7 @@ public class PressAKeyScreen extends Screen
 		super(Text.literal(""));
 		
 		if(!(prevScreen instanceof Screen))
-			throw new IllegalArgumentException("prevScreen is not a screen");
+			throw new IllegalArgumentException("上一个屏幕不是一个屏幕");
 		
 		this.prevScreen = prevScreen;
 	}
@@ -54,7 +54,7 @@ public class PressAKeyScreen extends Screen
 		float partialTicks)
 	{
 		renderBackground(matrixStack);
-		drawCenteredText(matrixStack, textRenderer, "Press a key", width / 2,
+		drawCenteredText(matrixStack, textRenderer, "按一个键位", width / 2,
 			height / 4 + 48, 16777215);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}

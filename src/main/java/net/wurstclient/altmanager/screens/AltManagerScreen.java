@@ -75,7 +75,7 @@ public final class AltManagerScreen extends Screen
 	
 	public AltManagerScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(Text.literal("Alt Manager"));
+		super(Text.literal("账户列表"));
 		this.prevScreen = prevScreen;
 		this.altManager = altManager;
 	}
@@ -116,31 +116,31 @@ public final class AltManagerScreen extends Screen
 			height - 52, 100, 20, Text.literal("Login"), b -> pressLogin()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 50, height - 52, 100, 20,
-			Text.literal("Direct Login"),
+			Text.literal("直接登录"),
 			b -> client.setScreen(new DirectLoginScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 54, height - 52, 100, 20,
-			Text.literal("Add"),
+			Text.literal("添加"),
 			b -> client.setScreen(new AddAltScreen(this, altManager))));
 		
 		addDrawableChild(
 			starButton = new ButtonWidget(width / 2 - 154, height - 28, 75, 20,
-				Text.literal("Favorite"), b -> pressFavorite()));
+				Text.literal("喜爱"), b -> pressFavorite()));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 - 76,
-			height - 28, 74, 20, Text.literal("Edit"), b -> pressEdit()));
+			height - 28, 74, 20, Text.literal("编辑"), b -> pressEdit()));
 		
 		addDrawableChild(deleteButton = new ButtonWidget(width / 2 + 2,
-			height - 28, 74, 20, Text.literal("Delete"), b -> pressDelete()));
+			height - 28, 74, 20, Text.literal("删除"), b -> pressDelete()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 80, height - 28, 75, 20,
-			Text.literal("Cancel"), b -> client.setScreen(prevScreen)));
+			Text.literal("取消"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(importButton = new ButtonWidget(8, 8, 50, 20,
-			Text.literal("Import"), b -> pressImportAlts()));
+			Text.literal("导入"), b -> pressImportAlts()));
 		
 		addDrawableChild(exportButton = new ButtonWidget(58, 8, 50, 20,
-			Text.literal("Export"), b -> pressExportAlts()));
+			Text.literal("导出"), b -> pressExportAlts()));
 	}
 	
 	@Override
@@ -246,14 +246,14 @@ public final class AltManagerScreen extends Screen
 		if(alt == null)
 			return;
 		
-		Text text = Text.literal("Are you sure you want to remove this alt?");
+		Text text = Text.literal("你确定你想要移除这个账户?");
 		
 		String altName = alt.getDisplayName();
 		Text message = Text.literal(
-			"\"" + altName + "\" will be lost forever! (A long time!)");
+			"\"" + altName + "\" 将永远失去！ （很长时间！）");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
-			message, Text.literal("Delete"), Text.literal("Cancel"));
+			message, Text.literal("删除"), Text.literal("取消"));
 		client.setScreen(screen);
 	}
 	
@@ -342,7 +342,7 @@ public final class AltManagerScreen extends Screen
 			String response = bf.readLine();
 			
 			if(response == null)
-				throw new IOException("No reponse from FileChooser");
+				throw new IOException("文件夹选择器暂无回应");
 			
 			try
 			{
@@ -351,7 +351,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"Reponse from FileChooser is not a valid path");
+					"文件选择器回应的路径是无效的");
 			}
 		}
 	}
@@ -426,13 +426,13 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		// title text
-		drawCenteredText(matrixStack, textRenderer, "Alt Manager", width / 2, 4,
+		drawCenteredText(matrixStack, textRenderer, "账户管理", width / 2, 4,
 			16777215);
 		drawCenteredText(matrixStack, textRenderer,
-			"Alts: " + altManager.getList().size(), width / 2, 14, 10526880);
+			"账户: " + altManager.getList().size(), width / 2, 14, 10526880);
 		drawCenteredText(
-			matrixStack, textRenderer, "premium: " + altManager.getNumPremium()
-				+ ", cracked: " + altManager.getNumCracked(),
+			matrixStack, textRenderer, "正版: " + altManager.getNumPremium()
+				+ ", 盗版: " + altManager.getNumCracked(),
 			width / 2, 24, 10526880);
 		
 		// red flash for errors
@@ -660,7 +660,7 @@ public final class AltManagerScreen extends Screen
 			
 			// name / email
 			client.textRenderer.draw(matrixStack,
-				"Name: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
+				"名字: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
 			
 			String bottomText = getBottomText(alt);
 			client.textRenderer.draw(matrixStack, bottomText, x + 31, y + 15,
@@ -669,15 +669,15 @@ public final class AltManagerScreen extends Screen
 		
 		public String getBottomText(Alt alt)
 		{
-			String text = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
+			String text = alt.isCracked() ? "§8盗版" : "§2正版";
 			
 			if(alt.isFavorite())
-				text += "\u00a7r, \u00a7efavorite";
+				text += "\u00a7r, \u00a7e喜爱的";
 			
 			if(failedLogins.contains(alt))
-				text += "\u00a7r, \u00a7cwrong password?";
+				text += "\u00a7r, \u00a7c错误密码?";
 			else if(alt.isUncheckedPremium())
-				text += "\u00a7r, \u00a7cunchecked";
+				text += "\u00a7r, \u00a7c未检查";
 			
 			return text;
 		}

@@ -42,7 +42,7 @@ public final class KillPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
 			return;
 		}

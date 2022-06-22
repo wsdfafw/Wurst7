@@ -30,12 +30,12 @@ public final class NocomCrashHack extends Hack
 	private final Random random = new Random();
 	
 	private final SliderSetting packets =
-		new SliderSetting("Packets", "The number of packets to send.", 500, 1,
+		new SliderSetting("数据包", "要发送的数据包数.", 500, 1,
 			1000, 1, ValueDisplay.INTEGER);
 	
 	public NocomCrashHack()
 	{
-		super("NocomCrash");
+		super("无受伤镜头");
 		setCategory(Category.OTHER);
 		addSetting(packets);
 	}
@@ -46,19 +46,19 @@ public final class NocomCrashHack extends Hack
 		String seconds = NumberFormat.getNumberInstance(Locale.ENGLISH)
 			.format(packets.getValueI() / 100.0);
 		ChatUtils.message(
-			"Sending packets. Will take approximately " + seconds + "s.");
+			"发送数据包。 大约需要" + seconds + "s.");
 		
 		Thread thread = new Thread(() -> {
 			
 			try
 			{
 				sendPackets(packets.getValueI());
-				ChatUtils.message("Done sending, server should start to lag");
+				ChatUtils.message("完成发送，服务器应该开始滞后");
 				
 			}catch(Exception e)
 			{
 				e.printStackTrace();
-				ChatUtils.error("Failed to crash, caught "
+				ChatUtils.error("撞车失败，被抓 "
 					+ e.getClass().getSimpleName() + ".");
 			}
 			setEnabled(false);

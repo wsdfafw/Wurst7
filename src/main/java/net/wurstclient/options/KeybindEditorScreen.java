@@ -30,7 +30,7 @@ public final class KeybindEditorScreen extends Screen
 		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		
-		key = "NONE";
+		key = "无";
 		oldKey = null;
 		oldCommands = null;
 	}
@@ -49,14 +49,14 @@ public final class KeybindEditorScreen extends Screen
 	public void init()
 	{
 		addDrawableChild(new ButtonWidget(width / 2 - 100, 60, 200, 20,
-			Text.literal("Change Key"),
+			Text.literal("换键"),
 			b -> client.setScreen(new PressAKeyScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 72, 200,
-			20, Text.literal("Save"), b -> save()));
+			20, Text.literal("保存"), b -> save()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96, 200,
-			20, Text.literal("Cancel"), b -> client.setScreen(prevScreen)));
+			20, Text.literal("取消"), b -> client.setScreen(prevScreen)));
 		
 		commandField = new TextFieldWidget(textRenderer, width / 2 - 100, 100,
 			200, 20, Text.literal(""));
@@ -98,14 +98,14 @@ public final class KeybindEditorScreen extends Screen
 		renderBackground(matrixStack);
 		
 		drawCenteredText(matrixStack, textRenderer,
-			(oldKey != null ? "Edit" : "Add") + " Keybind", width / 2, 20,
+			(oldKey != null ? "编辑" : "添加") + " Keybind", width / 2, 20,
 			0xffffff);
 		
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Key: " + key.replace("key.keyboard.", ""), width / 2 - 100, 47,
+			"键位: " + key.replace("key.keyboard.", ""), width / 2 - 100, 47,
 			0xa0a0a0);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Commands (separated by ';')", width / 2 - 100, 87, 0xa0a0a0);
+			"指令 (隔开方式 ';')", width / 2 - 100, 87, 0xa0a0a0);
 		
 		commandField.render(matrixStack, mouseX, mouseY, partialTicks);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);

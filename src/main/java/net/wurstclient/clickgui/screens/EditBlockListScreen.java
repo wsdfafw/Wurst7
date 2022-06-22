@@ -61,27 +61,27 @@ public final class EditBlockListScreen extends Screen
 		blockNameField.setMaxLength(256);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, Text.literal("Add"), b -> {
+			height - 56, 30, 20, Text.literal("添加"), b -> {
 				blockList.add(blockToAdd);
 				blockNameField.setText("");
 			}));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, Text.literal("Remove Selected"),
+			height - 56, 100, 20, Text.literal("删除选定"),
 			b -> blockList.remove(listGui.selected)));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("Reset to Defaults"),
+			Text.literal("重置为默认值"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					blockList.resetToDefaults();
 				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("Reset to Defaults"),
-				Text.literal("Are you sure?")))));
+			}, Text.literal("重置为默认值"),
+				Text.literal("你确定吗?")))));
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				Text.literal("Done"), b -> client.setScreen(prevScreen)));
+				Text.literal("已完成"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
@@ -306,7 +306,7 @@ public final class EditBlockListScreen extends Screen
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				matrixStack.pop();
 				
-				return "\u00a7ounknown block\u00a7r";
+				return "\u00a7未知方块\u00a7r";
 				
 			}
 			MatrixStack modelViewStack = RenderSystem.getModelViewStack();

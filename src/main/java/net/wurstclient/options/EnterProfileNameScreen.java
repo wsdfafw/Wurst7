@@ -50,7 +50,7 @@ public final class EnterProfileNameScreen extends Screen
 		setInitialFocus(valueField);
 		valueField.setTextFieldFocused(true);
 		
-		doneButton = new ButtonWidget(x1, y2, 200, 20, Text.literal("Done"),
+		doneButton = new ButtonWidget(x1, y2, 200, 20, Text.literal("完成"),
 			b -> done());
 		addDrawableChild(doneButton);
 	}
@@ -93,7 +93,7 @@ public final class EnterProfileNameScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		drawCenteredText(matrixStack, client.textRenderer,
-			"Name your new profile", width / 2, 20, 0xFFFFFF);
+			"命名你的新档案", width / 2, 20, 0xFFFFFF);
 		
 		valueField.render(matrixStack, mouseX, mouseY, partialTicks);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);

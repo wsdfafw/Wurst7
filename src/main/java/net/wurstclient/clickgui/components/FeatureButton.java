@@ -70,7 +70,7 @@ public final class FeatureButton extends Component
 			WurstClient.INSTANCE.getHax().tooManyHaxHack;
 		if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 		{
-			ChatUtils.error(feature.getName() + " is blocked by TooManyHax.");
+			ChatUtils.error(feature.getName() + " 被 太多外挂功能 所屏蔽.");
 			return;
 		}
 		

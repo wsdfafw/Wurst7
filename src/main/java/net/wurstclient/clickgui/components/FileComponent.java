@@ -90,7 +90,7 @@ public final class FileComponent extends Component
 			gui.setTooltip(setting.getWrappedDescription(200));
 		else if(hBox)
 		{
-			String tooltip = "\u00a7e[left-click]\u00a7r to select file";
+			String tooltip = "\u00a7e[左键]\u00a7r 选择文件";
 			gui.setTooltip(tooltip);
 		}
 		

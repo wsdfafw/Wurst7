@@ -20,7 +20,7 @@ public final class HealthTagsHack extends Hack
 {
 	public HealthTagsHack()
 	{
-		super("HealthTags");
+		super("血量标签");
 		setCategory(Category.RENDER);
 	}
 	
