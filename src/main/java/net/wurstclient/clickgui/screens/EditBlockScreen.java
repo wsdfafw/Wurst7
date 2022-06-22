@@ -21,7 +21,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.settings.BlockSetting;
 import net.wurstclient.util.BlockUtils;
@@ -36,7 +36,7 @@ public final class EditBlockScreen extends Screen
 	
 	public EditBlockScreen(Screen prevScreen, BlockSetting setting)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		this.setting = setting;
 	}
@@ -51,8 +51,7 @@ public final class EditBlockScreen extends Screen
 		TextRenderer tr = client.textRenderer;
 		String valueString = setting.getBlockName();
 		
-		blockField =
-			new TextFieldWidget(tr, x1, y1, 178, 18, new LiteralText(""));
+		blockField = new TextFieldWidget(tr, x1, y1, 178, 18, Text.literal(""));
 		blockField.setText(valueString);
 		blockField.setSelectionStart(0);
 		blockField.setMaxLength(256);
@@ -61,7 +60,7 @@ public final class EditBlockScreen extends Screen
 		setInitialFocus(blockField);
 		blockField.setTextFieldFocused(true);
 		
-		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("完成"),
+		doneButton = new ButtonWidget(x1, y2, 200, 20, Text.literal("Done"),
 			b -> done());
 		addDrawableChild(doneButton);
 	}
@@ -119,7 +118,7 @@ public final class EditBlockScreen extends Screen
 		boolean lblAbove =
 			!blockField.getText().isEmpty() || blockField.isFocused();
 		String lblText =
-			lblAbove ? "方块ID或数字:" : "方块ID或数字";
+			lblAbove ? "Block ID or number:" : "block ID or number";
 		int lblX = lblAbove ? 50 : 68;
 		int lblY = lblAbove ? -66 : -50;
 		int lblColor = lblAbove ? 0xF0F0F0 : 0x808080;

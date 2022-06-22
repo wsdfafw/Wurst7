@@ -16,7 +16,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -40,11 +39,11 @@ import net.wurstclient.util.RotationUtils;
 public final class TrajectoriesHack extends Hack implements RenderListener
 {
 	private final ColorSetting color =
-		new ColorSetting("颜色", "Color of the trajectory.", Color.GREEN);
+		new ColorSetting("Color", "Color of the trajectory.", Color.GREEN);
 	
 	public TrajectoriesHack()
 	{
-		super("预测轨迹");
+		super("Trajectories");
 		setCategory(Category.RENDER);
 		addSetting(color);
 	}
@@ -96,7 +95,8 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 		Vec3d camPos)
 	{
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
@@ -110,8 +110,7 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 					(float)(point.y - camPos.y), (float)(point.z - camPos.z))
 				.next();
 		
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
 	}
 	
 	private void drawEndOfLine(MatrixStack matrixStack, Vec3d end, Vec3d camPos)

@@ -9,6 +9,7 @@ package net.wurstclient.hacks;
 
 import java.util.stream.Stream;
 
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -20,9 +21,9 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -95,7 +96,7 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	
 	public TriggerBotHack()
 	{
-		super("目标攻击机器人");
+		super("TriggerBot");
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);
@@ -146,6 +147,10 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 	{
 		speed.updateTimer();
 		if(!speed.isTimeToAttack())
+			return;
+		
+		// don't attack when a container/inventory screen is open
+		if(MC.currentScreen instanceof HandledScreen)
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -221,8 +226,8 @@ public final class TriggerBotHack extends Hack implements UpdateListener
 			stream = stream
 				.filter(e -> !(e instanceof TameableEntity
 					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof HorseBaseEntity
-					&& ((HorseBaseEntity)e).isTame()));
+				.filter(e -> !(e instanceof AbstractHorseEntity
+					&& ((AbstractHorseEntity)e).isTame()));
 		
 		if(filterTraders.isChecked())
 			stream = stream.filter(e -> !(e instanceof MerchantEntity));

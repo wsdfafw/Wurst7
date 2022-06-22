@@ -11,7 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
@@ -32,7 +32,7 @@ public final class CrashChestHack extends Hack
 	{
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("仅限创造模式.");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}
@@ -52,7 +52,7 @@ public final class CrashChestHack extends Hack
 			nbtList.add(new NbtList());
 		nbtCompound.put("www.wurstclient.net", nbtList);
 		stack.setNbt(nbtCompound);
-		stack.setCustomName(new LiteralText("Copy Me"));
+		stack.setCustomName(Text.literal("Copy Me"));
 		
 		// give item
 		MC.player.getInventory().armor.set(0, stack);

@@ -23,9 +23,9 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -41,6 +41,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
@@ -52,67 +53,75 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	private final Random random = new Random();
 	
 	private final SliderSetting range =
-		new SliderSetting("范围", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("Range", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"§l[距离]§r:距离最近的实体\r\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
+		"Determines which entity will be attacked first.\n"
+			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
+			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires\n"
+			+ "the least head movement.\n"
+			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
 		Priority.values(), Priority.ANGLE);
 	
+	private final PauseAttackOnContainersSetting pauseOnContainers =
+		new PauseAttackOnContainersSetting(true);
+	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
-		"排除玩家", "", true);
+		"Filter players", "Won't attack other players.", false);
 	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"排除睡眠", "", true);
+		"Filter sleeping", "Won't attack sleeping players.", false);
 	private final SliderSetting filterFlying =
-		new SliderSetting("排除飞行",
+		new SliderSetting("Filter flying",
 			"Won't attack players that\n" + "are at least the given\n"
 				+ "distance above ground.",
 			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
-		"排除怪物", "", false);
+		"Filter monsters", "Won't attack zombies, creepers, etc.", false);
 	private final CheckboxSetting filterPigmen = new CheckboxSetting(
-		"排除猪人", "不会攻击僵尸猪人.", false);
+		"Filter pigmen", "Won't attack zombie pigmen.", false);
 	private final CheckboxSetting filterEndermen =
-		new CheckboxSetting("排除末影人", "不会攻击末影人.", false);
+		new CheckboxSetting("Filter endermen", "Won't attack endermen.", false);
 	
 	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"排除动物", "不会攻击猪、牛等", false);
+		"Filter animals", "Won't attack pigs, cows, etc.", false);
 	private final CheckboxSetting filterBabies =
-		new CheckboxSetting("排除婴儿",
-			"不会攻击小猪、小村民等.", false);
+		new CheckboxSetting("Filter babies",
+			"Won't attack baby pigs,\n" + "baby villagers, etc.", false);
 	private final CheckboxSetting filterPets =
-		new CheckboxSetting("排除宠物",
-			"不会攻击驯服的狼、驯服的马等", true);
+		new CheckboxSetting("Filter pets",
+			"Won't attack tamed wolves,\n" + "tamed horses, etc.", false);
 	
 	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("排除交易者",
-			"不会攻击村民、流浪商人等.", true);
+		new CheckboxSetting("Filter traders",
+			"Won't attack villagers, wandering traders, etc.", false);
 	
 	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("排除魔物",
-			"不会攻击铁傀儡、雪傀儡和潜影贝。", true);
+		new CheckboxSetting("Filter golems",
+			"Won't attack iron golems,\n" + "snow golems and shulkers.", false);
 	
 	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐形", "不会攻击隐形实体.", true);
+		"Filter invisible", "Won't attack invisible entities.", false);
 	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"排除已命名", "不会攻击带有名称标签的实体.", true);
+		"Filter named", "Won't attack name-tagged entities.", false);
 	
 	private final CheckboxSetting filterStands = new CheckboxSetting(
-		"排除盔甲架", "不会攻击盔甲架.", true);
+		"Filter armor stands", "Won't attack armor stands.", false);
 	private final CheckboxSetting filterCrystals = new CheckboxSetting(
-		"排除末晶", "不会攻击末影水晶.", true);
+		"Filter end crystals", "Won't attack end crystals.", false);
 	
 	public TpAuraHack()
 	{
-		super("传送光环");
+		super("TP-Aura");
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);
 		addSetting(speed);
 		addSetting(priority);
+		addSetting(pauseOnContainers);
 		
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
@@ -159,6 +168,9 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	{
 		speed.updateTimer();
 		if(!speed.isTimeToAttack())
+			return;
+		
+		if(pauseOnContainers.shouldPause())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -216,8 +228,8 @@ public final class TpAuraHack extends Hack implements UpdateListener
 			stream = stream
 				.filter(e -> !(e instanceof TameableEntity
 					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof HorseBaseEntity
-					&& ((HorseBaseEntity)e).isTame()));
+				.filter(e -> !(e instanceof AbstractHorseEntity
+					&& ((AbstractHorseEntity)e).isTame()));
 		
 		if(filterTraders.isChecked())
 			stream = stream.filter(e -> !(e instanceof MerchantEntity));

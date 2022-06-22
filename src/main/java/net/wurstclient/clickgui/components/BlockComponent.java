@@ -16,7 +16,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -88,7 +87,8 @@ public final class BlockComponent extends Component
 		ItemStack stack = new ItemStack(setting.getBlock());
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// tooltip
@@ -96,12 +96,12 @@ public final class BlockComponent extends Component
 			gui.setTooltip(setting.getWrappedDescription(200));
 		else if(hBlock)
 		{
-			String tooltip = "\u00a76名字:\u00a7r " + getBlockName(stack);
+			String tooltip = "\u00a76Name:\u00a7r " + getBlockName(stack);
 			tooltip += "\n\u00a76ID:\u00a7r " + setting.getBlockName();
-			tooltip += "\n\u00a76方块 #:\u00a7r "
+			tooltip += "\n\u00a76Block #:\u00a7r "
 				+ Block.getRawIdFromState(setting.getBlock().getDefaultState());
-			tooltip += "\n\n\u00a7e[左键]\u00a7r 编辑";
-			tooltip += "\n\u00a7e[右键]\u00a7r 重置";
+			tooltip += "\n\n\u00a7e[left-click]\u00a7r to edit";
+			tooltip += "\n\u00a7e[right-click]\u00a7r to reset";
 			gui.setTooltip(tooltip);
 		}
 		
@@ -114,8 +114,7 @@ public final class BlockComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
 		
 		// setting name
 		RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -190,7 +189,7 @@ public final class BlockComponent extends Component
 	private String getBlockName(ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return "\u00a7o未知方块\u00a7r";
+			return "\u00a7ounknown block\u00a7r";
 		return stack.getName().getString();
 	}
 }
