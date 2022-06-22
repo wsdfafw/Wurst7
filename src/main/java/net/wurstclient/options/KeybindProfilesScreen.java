@@ -178,7 +178,7 @@ public final class KeybindProfilesScreen extends Screen
 		
 		if(loadButton.isHovered() && !loadButton.active)
 			renderTooltip(matrixStack,
-				Arrays.asList(new LiteralText("您必须先选择一个文件.")),
+				Arrays.asList(Text.literal("您必须先选择一个文件.")),
 				mouseX, mouseY);
 	}
 	
