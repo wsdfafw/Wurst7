@@ -24,11 +24,12 @@ public final class VanillaSpoofOtf extends OtherFeature
 	implements ConnectionPacketOutputListener
 {
 	private final CheckboxSetting spoof =
-		new CheckboxSetting("原版伪装", false);
+		new CheckboxSetting("Spoof Vanilla", false);
 	
 	public VanillaSpoofOtf()
 	{
-		super("原版伪装", "绕过反-Fabric插件假装自己是原版客户端.");
+		super("VanillaSpoof", "Bypasses anti-Fabric plugins by\n"
+			+ "pretending to be a vanilla client.");
 		addSetting(spoof);
 		
 		EVENTS.add(ConnectionPacketOutputListener.class, this);
@@ -69,7 +70,7 @@ public final class VanillaSpoofOtf extends OtherFeature
 	@Override
 	public String getPrimaryAction()
 	{
-		return isEnabled() ? "禁用" : "启用";
+		return isEnabled() ? "Disable" : "Enable";
 	}
 	
 	@Override

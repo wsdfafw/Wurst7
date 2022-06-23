@@ -23,6 +23,6 @@ public final class XrayCmd extends Command
 	public void call(String[] args) throws CmdException
 	{
 		WURST.getCmdProcessor()
-			.process("阻止列表 X 射线矿石 " + String.join(" ", args));
+			.process("blocklist X-Ray Ores " + String.join(" ", args));
 	}
 }

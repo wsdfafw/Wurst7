@@ -8,6 +8,7 @@
 package net.wurstclient.hacks;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -20,7 +21,7 @@ public final class HealthTagsHack extends Hack
 {
 	public HealthTagsHack()
 	{
-		super("血量标签");
+		super("HealthTags");
 		setCategory(Category.RENDER);
 	}
 	
@@ -31,7 +32,7 @@ public final class HealthTagsHack extends Hack
 		
 		int health = (int)entity.getHealth();
 		
-		MutableText formattedHealth = Text.literal(" ")
+		MutableText formattedHealth = new LiteralText(" ")
 			.append(Integer.toString(health)).formatted(getColor(health));
 		return ((MutableText)nametag).append(formattedHealth);
 	}

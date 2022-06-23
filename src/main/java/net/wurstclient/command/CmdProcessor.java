@@ -50,7 +50,7 @@ public final class CmdProcessor implements ChatOutputListener
 				WurstClient.INSTANCE.getHax().tooManyHaxHack;
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(cmd))
 			{
-				ChatUtils.error(cmd.getName() + " 已经被 TooManyHax 功能所屏蔽.");
+				ChatUtils.error(cmd.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			
@@ -88,9 +88,9 @@ public final class CmdProcessor implements ChatOutputListener
 			
 		}catch(Throwable e)
 		{
-			CrashReport report = CrashReport.create(e, "运行 Wurst 命令");
-			CrashReportSection section = report.addElement("影响的命令");
-			section.add("命令输入", () -> input);
+			CrashReport report = CrashReport.create(e, "Running Wurst command");
+			CrashReportSection section = report.addElement("Affected command");
+			section.add("Command input", () -> input);
 			throw new CrashException(report);
 		}
 	}
@@ -107,20 +107,20 @@ public final class CmdProcessor implements ChatOutputListener
 		public void printToChat()
 		{
 			String cmdName = input.split(" ")[0];
-			ChatUtils.error("未知的命令: ." + cmdName);
+			ChatUtils.error("Unknown command: ." + cmdName);
 			
 			StringBuilder helpMsg = new StringBuilder();
 			
 			if(input.startsWith("/"))
 			{
-				helpMsg.append("使用格式 \".say " + input + "\"");
-				helpMsg.append(" 作为一条聊天发出.");
+				helpMsg.append("Use \".say " + input + "\"");
+				helpMsg.append(" to send it as a chat command.");
 				
 			}else
 			{
-				helpMsg.append("输入 \".help\" 获得一堆命令或者 ");
+				helpMsg.append("Type \".help\" for a list of commands or ");
 				helpMsg.append("\".say ." + input + "\"");
-				helpMsg.append(" 作为一条聊天发出.");
+				helpMsg.append(" to send it as a chat message.");
 			}
 			
 			ChatUtils.message(helpMsg.toString());

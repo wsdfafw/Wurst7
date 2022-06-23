@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -61,8 +62,7 @@ public final class RadarComponent extends Component
 			&& mouseY < getParent().getHeight() - 13 - scroll;
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// tooltip
@@ -78,7 +78,8 @@ public final class RadarComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		float middleX = (x1 + x2) / 2.0F;
 		float middleY = (y1 + y2) / 2.0F;
@@ -108,7 +109,8 @@ public final class RadarComponent extends Component
 		bufferBuilder.vertex(matrix, xa2, ya2, 0).next();
 		bufferBuilder.vertex(matrix, xa1, ya3, 0).next();
 		bufferBuilder.vertex(matrix, xa3, ya2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// outline
 		RenderSystem.setShaderColor(0.0625F, 0.0625F, 0.0625F, 0.5F);
@@ -119,7 +121,8 @@ public final class RadarComponent extends Component
 		bufferBuilder.vertex(matrix, xa1, ya3, 0).next();
 		bufferBuilder.vertex(matrix, xa3, ya2, 0).next();
 		bufferBuilder.vertex(matrix, xa1, ya1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		matrixStack.pop();
 		matrix = matrixStack.peek().getPositionMatrix();
@@ -186,7 +189,8 @@ public final class RadarComponent extends Component
 					middleY + (float)renderY + 0.5F, 0)
 				.color(red, green, blue, alpha).next();
 		}
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -73,11 +74,11 @@ public final class ColorComponent extends Component
 				GUI.setTooltip(setting.getWrappedDescription(200));
 			else
 			{
-				String tooltip = "\u00a7c红:\u00a7r" + setting.getRed();
-				tooltip += " \u00a7a绿:\u00a7r" + setting.getGreen();
-				tooltip += " \u00a79蓝:\u00a7r" + setting.getBlue();
-				tooltip += "\n\n\u00a7e[左键]\u00a7r 编辑";
-				tooltip += "\n\u00a7e[右键]\u00a7r 重置";
+				String tooltip = "\u00a7cR:\u00a7r" + setting.getRed();
+				tooltip += " \u00a7aG:\u00a7r" + setting.getGreen();
+				tooltip += " \u00a79B:\u00a7r" + setting.getBlue();
+				tooltip += "\n\n\u00a7e[left-click]\u00a7r to edit";
+				tooltip += "\n\u00a7e[right-click]\u00a7r to reset";
 				GUI.setTooltip(tooltip);
 			}
 		
@@ -105,8 +106,7 @@ public final class ColorComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
 			opacity);
@@ -117,8 +117,9 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y1, 0).next();
+		bufferBuilder.end();
 		
-		tessellator.draw();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawBox(MatrixStack matrixStack, int x1, int x2, int y2,
@@ -129,8 +130,7 @@ public final class ColorComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		RenderSystem.setShaderColor(color[0], color[1], color[2],
 			hovering ? 1F : opacity);
@@ -141,7 +141,8 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		
@@ -152,7 +153,9 @@ public final class ColorComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y3, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawNameAndValue(MatrixStack matrixStack, int x1, int x2,

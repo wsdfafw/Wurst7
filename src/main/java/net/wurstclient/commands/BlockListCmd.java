@@ -34,12 +34,13 @@ public final class BlockListCmd extends Command
 	public BlockListCmd()
 	{
 		super("blocklist",
-			"更改功能的阻止列表设置. 允许您通过键绑定更改这些设置.",
+			"Changes a BlockList setting of a feature. Allows you\n"
+				+ "to change these settings through keybinds.",
 			".blocklist <feature> <setting> add <block>",
 			".blocklist <feature> <setting> remove <block>",
 			".blocklist <feature> <setting> list [<page>]",
 			".blocklist <feature> <setting> reset",
-			"例子: .blocklist Nuker MultiID_List add gravel");
+			"Example: .blocklist Nuker MultiID_List add gravel");
 	}
 	
 	@Override
@@ -86,14 +87,14 @@ public final class BlockListCmd extends Command
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\" 不是一个有效的块.");
+				"\"" + inputBlockName + "\" is not a valid block.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
 			Collections.binarySearch(setting.getBlockNames(), blockName);
 		if(index >= 0)
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 已经包含 " + blockName);
+				+ " already contains " + blockName);
 		
 		setting.add(block);
 	}
@@ -108,14 +109,14 @@ public final class BlockListCmd extends Command
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\" 不是一个有效的块.");
+				"\"" + inputBlockName + "\" is not a valid block.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
 			Collections.binarySearch(setting.getBlockNames(), blockName);
 		if(index < 0)
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 不含 " + blockName);
+				+ " does not contain " + blockName);
 		
 		setting.remove(index);
 	}
@@ -132,9 +133,9 @@ public final class BlockListCmd extends Command
 		pages = Math.max(pages, 1);
 		
 		if(page > pages || page < 1)
-			throw new CmdSyntaxError("无效页数: " + page);
+			throw new CmdSyntaxError("Invalid page: " + page);
 		
-		String total = "总计：" + blocks.size() + " 块";
+		String total = "Total: " + blocks.size() + " block";
 		total += blocks.size() != 1 ? "s" : "";
 		ChatUtils.message(total);
 		
@@ -142,7 +143,7 @@ public final class BlockListCmd extends Command
 		int end = Math.min(page * 8, blocks.size());
 		
 		ChatUtils.message(feature.getName() + " " + setting.getName()
-			+ " (页 " + page + "/" + pages + ")");
+			+ " (page " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(blocks.get(i).toString());
 	}
@@ -153,7 +154,7 @@ public final class BlockListCmd extends Command
 			return 1;
 		
 		if(!MathUtils.isInteger(args[3]))
-			throw new CmdSyntaxError("不是数字: " + args[3]);
+			throw new CmdSyntaxError("Not a number: " + args[3]);
 		
 		return Integer.parseInt(args[3]);
 	}
@@ -163,7 +164,7 @@ public final class BlockListCmd extends Command
 	{
 		if(!(setting instanceof BlockListSetting))
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 不是 BlockList 设置.");
+				+ " is not a BlockList setting.");
 		
 		return (BlockListSetting)setting;
 	}

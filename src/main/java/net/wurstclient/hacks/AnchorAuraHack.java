@@ -58,74 +58,109 @@ import net.wurstclient.util.RotationUtils.Rotation;
 @SearchTags({"anchor aura", "CrystalAura", "crystal aura"})
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
+	private final SliderSetting range = new SliderSetting("Range",
 		"Determines how far AnchorAura will reach\n"
 			+ "to place, charge and detonate anchors.",
 		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting autoPlace =
-		new CheckboxSetting("自动放置的锚",
-			"",
+		new CheckboxSetting("Auto-place anchors",
+			"When enabled, AnchorAura will automatically\n"
+				+ "place anchors near valid entities.\n"
+				+ "When disabled, AnchorAura will only charge\n"
+				+ "and detonate manually placed anchors.",
 			true);
 	
 	private final EnumSetting<FaceBlocks> faceBlocks =
-		new EnumSetting<>("面锚",
-			"",
+		new EnumSetting<>("Face anchors",
+			"Whether or not AnchorAura should face\n"
+				+ "the correct direction when placing and\n"
+				+ "right-clicking respawn anchors.\n\n"
+				+ "Slower but can help with anti-cheat\n" + "plugins.",
 			FaceBlocks.values(), FaceBlocks.OFF);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"检查视线",
-		"",
+		"Check line of sight",
+		"Ensures that you don't reach through\n"
+			+ "blocks when placing or right-clicking\n" + "respawn anchors.\n\n"
+			+ "Slower but can help with anti-cheat\n" + "plugins.",
 		false);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("从下列物品中提取",
+		new EnumSetting<>("Take items from",
 			"Where to look for respawn anchors\n" + "and glowstone.",
 			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final CheckboxSetting filterPlayers =
-		new CheckboxSetting("排除玩家",
-			"",
+		new CheckboxSetting("Filter players",
+			"Won't target other players\n" + "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			false);
 	
 	private final CheckboxSetting filterMonsters =
-		new CheckboxSetting("排除怪物",
-			"",
+		new CheckboxSetting("Filter monsters",
+			"Won't target zombies, creepers, etc.\n"
+				+ "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			true);
 	
 	private final CheckboxSetting filterAnimals =
-		new CheckboxSetting("排除动物",
-			"",
+		new CheckboxSetting("Filter animals",
+			"Won't target pigs, cows, etc.\n" + "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			true);
 	
 	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("排除交易者",
-			"",
+		new CheckboxSetting("Filter traders",
+			"Won't target villagers, wandering traders, etc.\n"
+				+ "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			true);
 	
 	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("排除魔像",
-			"",
+		new CheckboxSetting("Filter golems",
+			"Won't target iron golems,\n" + "snow golems and shulkers.\n"
+				+ "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			true);
 	
 	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐形",
-		"",
+		"Filter invisible",
+		"Won't target invisible entities\n" + "when auto-placing anchors.\n\n"
+			+ "They can still take damage if\n"
+			+ "they get too close to a valid\n"
+			+ "target or an existing anchor.",
 		false);
 	
 	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"排除命名",
-		"",
+		"Filter named",
+		"Won't target name-tagged entities\n" + "when auto-placing anchors.\n\n"
+			+ "They can still take damage if\n"
+			+ "they get too close to a valid\n"
+			+ "target or an existing anchor.",
 		false);
 	
 	private final CheckboxSetting filterStands =
-		new CheckboxSetting("排除装甲架",
-			"",
+		new CheckboxSetting("Filter armor stands",
+			"Won't target armor stands.\n" + "when auto-placing anchors.\n\n"
+				+ "They can still take damage if\n"
+				+ "they get too close to a valid\n"
+				+ "target or an existing anchor.",
 			true);
 	
 	public AnchorAuraHack()
 	{
-		super("重生锚光环");
+		super("AnchorAura");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);
@@ -159,11 +194,9 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
-		// It says respawnAnchorWorks() but actually
-		// returns true if respawn anchors DON'T work
-		if(MC.world.getDimension().respawnAnchorWorks())
+		if(MC.world.getDimension().isRespawnAnchorWorking())
 		{
-			ChatUtils.error("重生锚并不会在这一个维度爆炸.");
+			ChatUtils.error("Respawn anchors don't explode in this dimension.");
 			setEnabled(false);
 		}
 		
@@ -539,15 +572,15 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum FaceBlocks
 	{
-		OFF("关", v -> {}),
+		OFF("Off", v -> {}),
 		
-		SERVER("服务器方",
+		SERVER("Server-side",
 			v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("客户端方",
+		CLIENT("Client-side",
 			v -> WURST.getRotationFaker().faceVectorClient(v)),
 		
-		SPAM("包刷屏", v -> {
+		SPAM("Packet spam", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);
 			PlayerMoveC2SPacket.LookAndOnGround packet =
 				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
@@ -578,9 +611,9 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("快捷栏", 9),
+		HOTBAR("Hotbar", 9),
 		
-		INVENTORY("背包", 36);
+		INVENTORY("Inventory", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

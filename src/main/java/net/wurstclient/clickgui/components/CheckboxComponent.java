@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -100,7 +101,7 @@ public final class CheckboxComponent extends Component
 		
 		if(setting.isLocked())
 		{
-			tooltip += "\n\n这个 复选框 被锁定在 ";
+			tooltip += "\n\nThis checkbox is locked to ";
 			tooltip += setting.isChecked() + ".";
 		}
 		
@@ -114,8 +115,7 @@ public final class CheckboxComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
 			opacity);
@@ -125,7 +125,8 @@ public final class CheckboxComponent extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawBox(MatrixStack matrixStack, int x1, int x3, int y1,
@@ -136,8 +137,7 @@ public final class CheckboxComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
 			hovering ? opacity * 1.5F : opacity);
@@ -147,7 +147,8 @@ public final class CheckboxComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
@@ -157,15 +158,15 @@ public final class CheckboxComponent extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
 		bufferBuilder.vertex(matrix, x1, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawCheck(MatrixStack matrixStack, int x1, int y1,
 		boolean hovering)
 	{
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		float xc1 = x1 + 2.5F;
 		float xc2 = x1 + 3.5F;
@@ -193,7 +194,8 @@ public final class CheckboxComponent extends Component
 		bufferBuilder.vertex(matrix, xc5, yc2, 0).next();
 		bufferBuilder.vertex(matrix, xc3, yc5, 0).next();
 		bufferBuilder.vertex(matrix, xc3, yc4, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// outline
 		RenderSystem.setShaderColor(0.0625F, 0.0625F, 0.0625F, 0.5F);
@@ -206,7 +208,8 @@ public final class CheckboxComponent extends Component
 		bufferBuilder.vertex(matrix, xc3, yc5, 0).next();
 		bufferBuilder.vertex(matrix, xc1, yc4, 0).next();
 		bufferBuilder.vertex(matrix, xc2, yc3, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawName(MatrixStack matrixStack, int x3, int y1)

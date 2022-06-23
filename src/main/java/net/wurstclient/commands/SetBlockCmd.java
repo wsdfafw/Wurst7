@@ -29,10 +29,11 @@ public final class SetBlockCmd extends Command
 	public SetBlockCmd()
 	{
 		super("setblock",
-			"更改功能的块设置. 允许您通过键绑定更改这些设置.",
+			"Changes a block setting of a feature. Allows you\n"
+				+ "to change these settings through keybinds.",
 			".setblock <feature> <setting> <block>",
 			".setblock <feature> <setting> reset",
-			"例子: .setblock Nuker ID dirt");
+			"Example: .setblock Nuker ID dirt");
 	}
 	
 	@Override
@@ -52,7 +53,7 @@ public final class SetBlockCmd extends Command
 	{
 		if(!(setting instanceof BlockSetting))
 			throw new CmdError(feature.getName() + " " + setting.getName()
-				+ " 不是块设置.");
+				+ " is not a block setting.");
 		
 		return (BlockSetting)setting;
 	}
@@ -60,7 +61,7 @@ public final class SetBlockCmd extends Command
 	private void setBlock(BlockSetting setting, String value)
 		throws CmdSyntaxError
 	{
-		if(value.toLowerCase().equals("重启"))
+		if(value.toLowerCase().equals("reset"))
 		{
 			setting.resetToDefault();
 			return;
@@ -68,7 +69,7 @@ public final class SetBlockCmd extends Command
 		
 		Block block = getBlockFromNameOrID(value);
 		if(block == null)
-			throw new CmdSyntaxError("\"" + value + "\" 不是有效块.");
+			throw new CmdSyntaxError("\"" + value + "\" is not a valid block.");
 		
 		setting.setBlock(block);
 	}

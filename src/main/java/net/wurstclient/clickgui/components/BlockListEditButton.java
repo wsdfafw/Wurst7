@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -35,7 +36,7 @@ public final class BlockListEditButton extends Component
 		this.setting = setting;
 		
 		TextRenderer fr = WurstClient.MC.textRenderer;
-		buttonWidth = fr.getWidth("编辑.");
+		buttonWidth = fr.getWidth("Edit...");
 		
 		setWidth(getDefaultWidth());
 		setHeight(getDefaultHeight());
@@ -79,8 +80,7 @@ public final class BlockListEditButton extends Component
 		boolean hBox = hovering && mouseX >= x3;
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// tooltip
@@ -96,7 +96,8 @@ public final class BlockListEditButton extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// box
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
@@ -107,7 +108,8 @@ public final class BlockListEditButton extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
 			VertexFormats.POSITION);
@@ -116,14 +118,15 @@ public final class BlockListEditButton extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// setting name
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		TextRenderer fr = WurstClient.MC.textRenderer;
 		String text = setting.getName() + ": " + setting.getBlockNames().size();
 		fr.draw(matrixStack, text, x1, y1 + 2, txtColor);
-		fr.draw(matrixStack, "编辑...", x3 + 2, y1 + 2, txtColor);
+		fr.draw(matrixStack, "Edit...", x3 + 2, y1 + 2, txtColor);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 	

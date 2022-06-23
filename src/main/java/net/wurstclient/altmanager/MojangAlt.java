@@ -77,8 +77,8 @@ public final class MojangAlt extends Alt
 		
 		if(name == null || name.isEmpty())
 			throw new RuntimeException(
-				"登录返回 " + (name == null ? "null" : "empty")
-					+ " 用户名。这应该是不可能的!");
+				"Login returned " + (name == null ? "null" : "empty")
+					+ " username. This shouldn't be possible!");
 		
 		return name;
 	}

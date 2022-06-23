@@ -7,6 +7,7 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.wurstclient.Category;
@@ -21,17 +22,29 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"auto quit"})
 public final class AutoLeaveHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("生命值",
-		"自动离开服务器当你的\n生命低于这个数值的时候.",
-		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" 生命值"));
+	private final SliderSetting health = new SliderSetting("Health",
+		"Leaves the server when your health\n"
+			+ "reaches this value or falls below it.",
+		4, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL.withSuffix(" hearts"));
 	
 	public final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"§l退出§r 模式就和离开服务器一样.\n绕过反作弊检测但无战斗记录.\n\n§l字符§r 模式则发送一些特殊的符号到聊天栏\n导致服务器会将你踢出.\n绕过反作弊和一些版本的战斗记录.\n\n§lTP§r 模式将传送你到一个无效的区域,\n导致服务器将你踢出.\n绕过战斗记录, 但不绕反作弊.\n\n§l自伤§r 模式发送一个攻击包到\n其他玩家但你即是目标也是攻击者\n这会导致将你踢出.\n绕过战斗日志和反作弊",
+		"\u00a7lQuit\u00a7r mode just quits the game normally.\n"
+			+ "Bypasses NoCheat+ but not CombatLog.\n\n"
+			+ "\u00a7lChars\u00a7r mode sends a special chat message that\n"
+			+ "causes the server to kick you.\n"
+			+ "Bypasses NoCheat+ and some versions of CombatLog.\n\n"
+			+ "\u00a7lTP\u00a7r mode teleports you to an invalid location,\n"
+			+ "causing the server to kick you.\n"
+			+ "Bypasses CombatLog, but not NoCheat+.\n\n"
+			+ "\u00a7lSelfHurt\u00a7r mode sends the packet for attacking\n"
+			+ "another player, but with yourself as both the attacker\n"
+			+ "and the target. This causes the server to kick you.\n"
+			+ "Bypasses both CombatLog and NoCheat+.",
 		Mode.values(), Mode.QUIT);
 	
 	public AutoLeaveHack()
 	{
-		super("自动离开");
+		super("AutoLeave");
 		
 		setCategory(Category.COMBAT);
 		addSetting(health);
@@ -80,7 +93,8 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 			break;
 			
 			case CHARS:
-			IMC.getPlayer().sendChatMessageBypass("\u00a7");
+			MC.player.networkHandler
+				.sendPacket(new ChatMessageC2SPacket("\u00a7"));
 			break;
 			
 			case TELEPORT:

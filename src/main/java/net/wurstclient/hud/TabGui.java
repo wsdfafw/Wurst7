@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -214,8 +215,7 @@ public final class TabGui implements KeyPressListener
 		float opacity = gui.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// color
@@ -231,7 +231,8 @@ public final class TabGui implements KeyPressListener
 			bufferBuilder.vertex(matrix, x2, y2, 0).next();
 			bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		}
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// outline positions
 		float xi1 = x1 - 0.1F;
@@ -251,7 +252,8 @@ public final class TabGui implements KeyPressListener
 			bufferBuilder.vertex(matrix, xi1, yi2, 0).next();
 			bufferBuilder.vertex(matrix, xi1, yi1, 0).next();
 		}
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// shadow positions
 		xi1 -= 0.9;
@@ -298,7 +300,8 @@ public final class TabGui implements KeyPressListener
 		bufferBuilder.vertex(matrix, x2, y2, 0)
 			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private static final class Tab
@@ -362,7 +365,7 @@ public final class TabGui implements KeyPressListener
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 			{
 				ChatUtils
-					.error(feature.getName() + " 被 TooManyHax 功能所屏蔽.");
+					.error(feature.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			

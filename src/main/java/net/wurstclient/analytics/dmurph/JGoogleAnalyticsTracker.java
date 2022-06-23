@@ -103,7 +103,7 @@ public class JGoogleAnalyticsTracker
 	private static Logger logger =
 		Logger.getLogger(JGoogleAnalyticsTracker.class.getName());
 	private static final ThreadGroup asyncThreadGroup =
-		new ThreadGroup("异步谷歌分析线程");
+		new ThreadGroup("Async Google Analytics Threads");
 	private static long asyncThreadsRunning = 0;
 	private static Proxy proxy = Proxy.NO_PROXY;
 	private static LinkedList<String> fifo = new LinkedList<>();
@@ -340,7 +340,7 @@ public class JGoogleAnalyticsTracker
 	{
 		if(argPageURL == null)
 			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+				"Page URL cannot be null, Google will not track the data.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -370,7 +370,7 @@ public class JGoogleAnalyticsTracker
 	{
 		if(argPageURL == null)
 			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+				"Page URL cannot be null, Google will not track the data.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -401,7 +401,7 @@ public class JGoogleAnalyticsTracker
 	{
 		if(argPageURL == null)
 			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+				"Page URL cannot be null, Google will not track the data.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -473,13 +473,13 @@ public class JGoogleAnalyticsTracker
 		if(!enabled)
 		{
 			logger.log(Level.CONFIG,
-				"忽略跟踪请求，启用为false");
+				"Ignoring tracking request, enabled is false");
 			return;
 		}
 		if(argData == null)
-			throw new NullPointerException("数据不能为空");
+			throw new NullPointerException("Data cannot be null");
 		if(builder == null)
-			throw new NullPointerException("类未初始化");
+			throw new NullPointerException("Class was not initialized");
 		final String url = builder.buildURL(argData);
 		final String userAgent = configData.getUserAgent();
 		
@@ -522,7 +522,7 @@ public class JGoogleAnalyticsTracker
 			}
 			if(!backgroundThreadMayRun)
 				logger.log(Level.SEVERE,
-					"一个跟踪请求被添加到队列中，但是后台线程没有运行.",
+					"A tracker request has been added to the queue but the background thread isn't running.",
 					url);
 			break;
 		}

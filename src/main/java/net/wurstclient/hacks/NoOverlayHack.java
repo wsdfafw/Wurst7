@@ -16,7 +16,7 @@ public final class NoOverlayHack extends Hack
 {
 	public NoOverlayHack()
 	{
-		super("防液糊脸");
+		super("NoOverlay");
 		setCategory(Category.RENDER);
 	}
 	

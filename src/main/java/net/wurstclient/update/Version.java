@@ -30,7 +30,7 @@ public final class Version implements Comparable<Version>
 			return;
 		}
 		
-		int indexOfPre = version.indexOf("预览");
+		int indexOfPre = version.indexOf("pre");
 		
 		String[] parts;
 		if(indexOfPre == -1)
@@ -114,7 +114,7 @@ public final class Version implements Comparable<Version>
 	public String toString()
 	{
 		if(isInvalid())
-			return "(无效版本)";
+			return "(invalid version)";
 		
 		String s = major + "." + minor;
 		
@@ -122,7 +122,7 @@ public final class Version implements Comparable<Version>
 			s += "." + patch;
 		
 		if(isPreRelease())
-			s += "预览" + preRelease;
+			s += "pre" + preRelease;
 		
 		return s;
 	}
@@ -142,7 +142,7 @@ public final class Version implements Comparable<Version>
 		String version = major + "-" + minor;
 		
 		if(isPreRelease())
-			version += "预览" + preRelease;
+			version += "pre" + preRelease;
 		
 		return "https://www.wurstclient.net/updates/wurst-" + version + "/";
 	}

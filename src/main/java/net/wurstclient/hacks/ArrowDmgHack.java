@@ -25,17 +25,17 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"arrow dmg", "ArrowDamage", "arrow damage"})
 public final class ArrowDmgHack extends Hack implements StopUsingItemListener
 {
-	private final SliderSetting packets = new SliderSetting("网络包",
+	private final SliderSetting packets = new SliderSetting("Packets",
 		"description.wurst.setting.arrowdmg.packets", 200, 2, 2000, 2,
 		ValueDisplay.INTEGER);
 	
 	private final CheckboxSetting yeetTridents =
-		new CheckboxSetting("三叉戟远抛(yeet)模式",
+		new CheckboxSetting("Trident yeet mode",
 			"description.wurst.setting.arrowdmg.trident_yeet_mode", false);
 	
 	public ArrowDmgHack()
 	{
-		super("箭矢伤害");
+		super("ArrowDMG");
 		setCategory(Category.COMBAT);
 		addSetting(packets);
 		addSetting(yeetTridents);

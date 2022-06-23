@@ -25,8 +25,9 @@ import net.wurstclient.util.FakePlayerEntity;
 public final class BlinkHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
-	private final SliderSetting limit = new SliderSetting("限制",
-		"自动重开 Blink 这个功能\n当所给予的包裹\n以及抵达限制.\n\n0 = 无限制",
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"Automatically restarts Blink once\n" + "the given number of packets\n"
+			+ "have been suspended.\n\n" + "0 = no limit",
 		0, 0, 500, 1, ValueDisplay.INTEGER.withLabel(0, "disabled"));
 	
 	private final ArrayDeque<PlayerMoveC2SPacket> packets = new ArrayDeque<>();

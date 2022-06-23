@@ -29,7 +29,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -65,15 +64,17 @@ import net.wurstclient.util.RotationUtils;
 public final class SearchHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final BlockSetting block = new BlockSetting("方块",
-		"你所需要寻找类型的方块", "minecraft:diamond_ore", false);
+	private final BlockSetting block = new BlockSetting("Block",
+		"The type of block to search for.", "minecraft:diamond_ore", false);
 	
-	private final EnumSetting<SearchArea> area = new EnumSetting<>("区域",
-		"寻找玩家所在的区域.\n更高的数值需要更高配的电脑.",
+	private final EnumSetting<SearchArea> area = new EnumSetting<>("Area",
+		"The area around the player to search in.\n"
+			+ "Higher values require a faster computer.",
 		SearchArea.values(), SearchArea.D11);
 	
-	private final SliderSetting limit = new SliderSetting("限制",
-		"最多的显示方块所限制.\n更高的数值需要更高配的电脑.",
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"The maximum number of blocks to display.\n"
+			+ "Higher values require a faster computer.",
 		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
@@ -92,7 +93,7 @@ public final class SearchHack extends Hack
 	
 	public SearchHack()
 	{
-		super("搜寻");
+		super("Search");
 		setCategory(Category.RENDER);
 		addSetting(block);
 		addSetting(area);
@@ -233,9 +234,7 @@ public final class SearchHack extends Hack
 			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
-			vertexBuffer.bind();
-			vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			vertexBuffer.setShader(viewMatrix, projMatrix, shader);
 		}
 		
 		matrixStack.pop();
@@ -429,19 +428,15 @@ public final class SearchHack extends Hack
 		
 		vertexBuffer = new VertexBuffer();
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
 			VertexFormats.POSITION);
 		
 		for(int[] vertex : vertices)
 			bufferBuilder.vertex(vertex[0], vertex[1], vertex[2]).next();
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		vertexBuffer.upload(bufferBuilder);
 		
 		bufferUpToDate = true;
 	}

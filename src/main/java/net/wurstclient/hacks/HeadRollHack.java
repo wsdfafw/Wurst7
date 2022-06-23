@@ -19,7 +19,7 @@ public final class HeadRollHack extends Hack implements UpdateListener
 {
 	public HeadRollHack()
 	{
-		super("疯狂点头");
+		super("HeadRoll");
 		setCategory(Category.FUN);
 	}
 	

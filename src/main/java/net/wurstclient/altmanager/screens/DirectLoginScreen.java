@@ -9,7 +9,7 @@ package net.wurstclient.altmanager.screens;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.altmanager.LoginException;
 import net.wurstclient.altmanager.LoginManager;
 import net.wurstclient.altmanager.MicrosoftLoginManager;
@@ -18,7 +18,7 @@ public final class DirectLoginScreen extends AltEditorScreen
 {
 	public DirectLoginScreen(Screen prevScreen)
 	{
-		super(prevScreen, Text.literal("Direct Login"));
+		super(prevScreen, new LiteralText("Direct Login"));
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public final class DirectLoginScreen extends AltEditorScreen
 					
 				}catch(LoginException e2)
 				{
-					message = "\u00a7c\u00a7l微软:\u00a7c "
+					message = "\u00a7c\u00a7lMicrosoft:\u00a7c "
 						+ e.getMessage() + "\n\u00a7c\u00a7lMojang:\u00a7c "
 						+ e2.getMessage();
 					

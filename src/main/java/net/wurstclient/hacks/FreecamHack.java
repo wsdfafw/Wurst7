@@ -17,6 +17,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -48,15 +49,20 @@ public final class FreecamHack extends Hack
 	IsPlayerInWaterListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting tracer = new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
-    private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
+	private final SliderSetting speed =
+		new SliderSetting("Speed", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting tracer = new CheckboxSetting("Tracer",
+		"Draws a line to your character's actual position.", false);
+	
+	private final ColorSetting color =
+		new ColorSetting("Tracer color", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
 	
 	public FreecamHack()
 	{
-		super("灵魂出窍");
+		super("Freecam");
 		setCategory(Category.RENDER);
 		addSetting(speed);
 		addSetting(tracer);
@@ -196,8 +202,7 @@ public final class FreecamHack extends Hack
 		Vec3d end = fakePlayer.getBoundingBox().getCenter();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
@@ -207,7 +212,8 @@ public final class FreecamHack extends Hack
 			.next();
 		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
 			.next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		matrixStack.pop();
 		

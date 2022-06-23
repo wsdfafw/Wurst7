@@ -75,7 +75,7 @@ public final class Encryption
 		}catch(GeneralSecurityException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建AES密码"));
+				CrashReport.create(e, "Creating AES ciphers"));
 		}
 	}
 	
@@ -85,8 +85,14 @@ public final class Encryption
 		if(Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS)
 			Files.setAttribute(encFolder, "dos:hidden", true);
 		
-		Path readme = encFolder.resolve("我真的很重要请读我.txt");
-		String readmeText = "不要将该文件夹内所有文件分享给任何人!\r\n这里拥有加密的钥匙以防止其他人能够读取你的账户信息.\r\n如果有人找你要求你提供这个文件夹，千万不要给100%是向骗取你的账户.\r\n\r\n不要编辑，重命名，删除这些文件! (除非你知道你再做什么)\r\n如果你做了，则Wurst账户管理器将无法再次识别你所添加的账户，就会变成空白一片.\r\n换句话说，你的账户列表会被清空.";
+		Path readme = encFolder.resolve("READ ME I AM VERY IMPORTANT.txt");
+		String readmeText = "DO NOT SHARE THESE FILES WITH ANYONE!\r\n"
+			+ "They are encryption keys that protect your alt list file from being read by someone else.\r\n"
+			+ "If someone is asking you to send these files, they are 100% trying to scam you.\r\n"
+			+ "\r\n"
+			+ "DO NOT EDIT, RENAME OR DELETE THESE FILES! (unless you know what you're doing)\r\n"
+			+ "If you do, Wurst's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
+			+ "In other words, YOUR ALT LIST WILL BE DELETED.";
 		Files.write(readme, readmeText.getBytes("UTF-8"),
 			StandardOpenOption.CREATE);
 		
@@ -101,7 +107,7 @@ public final class Encryption
 			
 		}catch(IllegalArgumentException | GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "解密字节"));
+			throw new CrashException(CrashReport.create(e, "Decrypting bytes"));
 		}
 	}
 	
@@ -159,7 +165,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "加密字节"));
+			throw new CrashException(CrashReport.create(e, "Encrypting bytes"));
 		}
 	}
 	
@@ -200,7 +206,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | ReflectiveOperationException
 			| IOException e)
 		{
-			System.err.println("无法加载RSA密钥对!");
+			System.err.println("Couldn't load RSA keypair!");
 			e.printStackTrace();
 			
 			return createRsaKeys(publicFile, privateFile);
@@ -218,7 +224,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			System.err.println("无法加载AES密钥!");
+			System.err.println("Couldn't load AES key!");
 			e.printStackTrace();
 			
 			return createAesKey(path, pair);
@@ -229,7 +235,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成RSA密码.");
+			System.out.println("Generating RSA keypair.");
 			
 			// generate keypair
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -265,7 +271,7 @@ public final class Encryption
 		}catch(GeneralSecurityException | IOException e)
 		{
 			throw new CrashException(
-				CrashReport.create(e, "创建RSA密钥对"));
+				CrashReport.create(e, "Creating RSA keypair"));
 		}
 	}
 	
@@ -273,7 +279,7 @@ public final class Encryption
 	{
 		try
 		{
-			System.out.println("生成AES密钥.");
+			System.out.println("Generating AES key.");
 			
 			// generate key
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
@@ -289,7 +295,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException | IOException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建AES密钥"));
+			throw new CrashException(CrashReport.create(e, "Creating AES key"));
 		}
 	}
 	

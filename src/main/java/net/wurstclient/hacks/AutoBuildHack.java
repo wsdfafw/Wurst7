@@ -49,26 +49,34 @@ import net.wurstclient.util.json.JsonException;
 public final class AutoBuildHack extends Hack
 	implements UpdateListener, RightClickListener, RenderListener
 {
-	private final FileSetting templateSetting = new FileSetting("模板",
-		"决定要去建什么.\n\n模板是一个 JSON 文件. 感受自由的去\n添加或编辑你想要的模板,你也可以删除\n默认的模板.\n\n如果你搞得一团糟,你只需要点击\n'重设默认值'按钮或者\n删除文件夹.",
+	private final FileSetting templateSetting = new FileSetting("Template",
+		"Determines what to build.\n\n"
+			+ "Templates are just JSON files. Feel free to\n"
+			+ "add your own or to edit / delete the\n"
+			+ "default templates.\n\n" + "If you mess up, simply press the\n"
+			+ "'Reset to Defaults' button or\n" + "delete the folder.",
 		"autobuild", DefaultAutoBuildTemplates::createFiles);
 	
-	private final SliderSetting range = new SliderSetting("范围",
-		"放方块的时候多少格才放.\n推荐数值:\n6.0 是原版\n4.25 是为了绕过反作弊",
+	private final SliderSetting range = new SliderSetting("Range",
+		"How far to reach when placing blocks.\n" + "Recommended values:\n"
+			+ "6.0 for vanilla\n" + "4.25 for NoCheat+",
 		6, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("检查视线",
-			"确保你不会隔墙建造\n这一般对于有反作弊的服务器来说\n但会导致放慢建造速度.",
+		new CheckboxSetting("Check line of sight",
+			"Makes sure that you don't reach through walls\n"
+				+ "when placing blocks. Can help with AntiCheat\n"
+				+ "plugins but slows down building.",
 			false);
 	
-	private final CheckboxSetting instaBuild = new CheckboxSetting("瞬间构建",
-		"瞬间建完一个模板的建筑 (小于或等于 64 方块).\n为了更好的效果,你最好靠近你正在放方块的附近",
+	private final CheckboxSetting instaBuild = new CheckboxSetting("InstaBuild",
+		"Builds small templates (<= 64 blocks) instantly.\n"
+			+ "For best results, stand close to the block you're placing.",
 		true);
 	
 	private final CheckboxSetting fastPlace = new CheckboxSetting(
-		"永远快速放置",
-		"设置'快速放置'为开启,\n尽管是关闭着的", true);
+		"Always FastPlace",
+		"Builds as if FastPlace was enabled,\n" + "even if it's not.", true);
 	
 	private Status status = Status.NO_TEMPLATE;
 	private AutoBuildTemplate template;
@@ -76,7 +84,7 @@ public final class AutoBuildHack extends Hack
 	
 	public AutoBuildHack()
 	{
-		super("自动构建");
+		super("AutoBuild");
 		setCategory(Category.BLOCKS);
 		addSetting(templateSetting);
 		addSetting(range);
@@ -96,7 +104,7 @@ public final class AutoBuildHack extends Hack
 			break;
 			
 			case LOADING:
-			name += " [载入中...]";
+			name += " [Loading...]";
 			break;
 			
 			case IDLE:
@@ -173,7 +181,7 @@ public final class AutoBuildHack extends Hack
 		}catch(IOException | JsonException e)
 		{
 			Path fileName = path.getFileName();
-			ChatUtils.error("无法加载模板 '" + fileName + "'.");
+			ChatUtils.error("Couldn't load template '" + fileName + "'.");
 			
 			String simpleClassName = e.getClass().getSimpleName();
 			String message = e.getMessage();

@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.WurstClient;
 import net.wurstclient.keybinds.Keybind;
 import net.wurstclient.keybinds.KeybindList;
@@ -32,7 +32,7 @@ public final class KeybindManagerScreen extends Screen
 	
 	public KeybindManagerScreen(Screen prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -42,32 +42,32 @@ public final class KeybindManagerScreen extends Screen
 		listGui = new ListGui(client, width, height, 36, height - 56, 30);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 102,
-			height - 52, 100, 20, Text.literal("添加"),
+			height - 52, 100, 20, new LiteralText("Add"),
 			b -> client.setScreen(new KeybindEditorScreen(this))));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 + 2,
-			height - 52, 100, 20, Text.literal("编辑"), b -> edit()));
+			height - 52, 100, 20, new LiteralText("Edit"), b -> edit()));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 - 102,
-			height - 28, 100, 20, Text.literal("移除"), b -> remove()));
+			height - 28, 100, 20, new LiteralText("Remove"), b -> remove()));
 		
 		addDrawableChild(
 			backButton = new ButtonWidget(width / 2 + 2, height - 28, 100, 20,
-				Text.literal("返回"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Back"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(
-			new ButtonWidget(8, 8, 100, 20, Text.literal("重置键绑定"),
+			new ButtonWidget(8, 8, 100, 20, new LiteralText("Reset Keybinds"),
 				b -> client.setScreen(new ConfirmScreen(confirmed -> {
 					if(confirmed)
 						WurstClient.INSTANCE.getKeybinds()
 							.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
 					client.setScreen(this);
-				}, Text
-					.literal("您确定要重置您的按键绑定吗?"),
-					Text.literal("这不能被撤消!")))));
+				}, new LiteralText(
+					"Are you sure you want to reset your keybinds?"),
+					new LiteralText("This cannot be undone!")))));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("档案..."),
+			new LiteralText("Profiles..."),
 			b -> client.setScreen(new KeybindProfilesScreen(this))));
 	}
 	
@@ -166,10 +166,10 @@ public final class KeybindManagerScreen extends Screen
 		renderBackground(matrixStack);
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawCenteredText(matrixStack, textRenderer, "键绑定管理器",
+		drawCenteredText(matrixStack, textRenderer, "Keybind Manager",
 			width / 2, 8, 0xffffff);
 		drawCenteredText(matrixStack, textRenderer,
-			"键绑定: " + listGui.getItemCount(), width / 2, 20, 0xffffff);
+			"Keybinds: " + listGui.getItemCount(), width / 2, 20, 0xffffff);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
@@ -226,10 +226,10 @@ public final class KeybindManagerScreen extends Screen
 				WurstClient.INSTANCE.getKeybinds().getAllKeybinds().get(index);
 			
 			client.textRenderer.draw(matrixStack,
-				"按键: " + keybind.getKey().replace("key.keyboard.", ""), x + 3,
+				"Key: " + keybind.getKey().replace("key.keyboard.", ""), x + 3,
 				y + 3, 0xa0a0a0);
 			client.textRenderer.draw(matrixStack,
-				"指令: " + keybind.getCommands(), x + 3, y + 15, 0xa0a0a0);
+				"Commands: " + keybind.getCommands(), x + 3, y + 15, 0xa0a0a0);
 		}
 	}
 }

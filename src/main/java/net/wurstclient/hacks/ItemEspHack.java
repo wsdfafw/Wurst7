@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -42,20 +43,23 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("风格", Style.values(), Style.BOXES);
+		new EnumSetting<>("Style", Style.values(), Style.BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框框大小",
-		"§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact\n"
+			+ "hitbox of each item.\n"
+			+ "\u00a7lFancy\u00a7r mode shows larger boxes\n"
+			+ "that look better.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final ColorSetting color = new ColorSetting("颜色",
-		"物品将会以这种颜色高亮.", Color.YELLOW);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Items will be highlighted in this color.", Color.YELLOW);
 	
 	private final ArrayList<ItemEntity> items = new ArrayList<>();
 	
 	public ItemEspHack()
 	{
-		super("物品透视");
+		super("ItemESP");
 		setCategory(Category.RENDER);
 		
 		addSetting(style);
@@ -168,8 +172,7 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		Vec3d start =
@@ -189,7 +192,8 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 			bufferBuilder.vertex(matrix, (float)end.x - regionX, (float)end.y,
 				(float)end.z - regionZ).next();
 		}
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private enum Style

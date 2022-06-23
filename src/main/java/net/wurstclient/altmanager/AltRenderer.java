@@ -19,12 +19,11 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.world.GameMode;
-import net.wurstclient.WurstClient;
 
 public final class AltRenderer
 {
@@ -38,13 +37,12 @@ public final class AltRenderer
 		
 		if(loadedSkins.get(name) == null)
 		{
-			UUID uuid = DynamicSerializableUuid
+			UUID uuid = PlayerEntity
 				.getUuidFromProfile(new GameProfile((UUID)null, name));
 			
 			PlayerListEntry entry = new PlayerListEntry(
 				new PlayerListS2CPacket.Entry(new GameProfile(uuid, name), 0,
-					GameMode.CREATIVE, Text.literal(name), null),
-				WurstClient.MC.getServicesSignatureVerifier());
+					GameMode.CREATIVE, new LiteralText(name)));
 			
 			loadedSkins.put(name, entry.getSkinTexture());
 		}
@@ -95,7 +93,7 @@ public final class AltRenderer
 			bindSkinTexture(name);
 			
 			boolean slim = DefaultSkinHelper
-				.getModel(DynamicSerializableUuid.getOfflinePlayerUuid(name))
+				.getModel(PlayerEntity.getOfflinePlayerUuid(name))
 				.equals("slim");
 			
 			GL11.glEnable(GL11.GL_BLEND);
@@ -227,7 +225,7 @@ public final class AltRenderer
 			bindSkinTexture(name);
 			
 			boolean slim = DefaultSkinHelper
-				.getModel(DynamicSerializableUuid.getOfflinePlayerUuid(name))
+				.getModel(PlayerEntity.getOfflinePlayerUuid(name))
 				.equals("slim");
 			
 			GL11.glEnable(GL11.GL_BLEND);

@@ -91,7 +91,7 @@ public class FriendsList
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("无法载入 " + path.getFileName());
+			System.out.println("Couldn't load " + path.getFileName());
 			e.printStackTrace();
 		}
 		
@@ -106,7 +106,7 @@ public class FriendsList
 			
 		}catch(JsonException | IOException e)
 		{
-			System.out.println("无法保存 " + path.getFileName());
+			System.out.println("Couldn't save " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

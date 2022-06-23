@@ -16,12 +16,14 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"high jump"})
 public final class HighJumpHack extends Hack
 {
-	private final SliderSetting height = new SliderSetting("高度", "跳多少方块格高.\n这在较高的值时非常不准确",
+	private final SliderSetting height = new SliderSetting("Height",
+		"Jump height in blocks.\n"
+			+ "This gets very inaccurate at higher values.",
 		6, 1, 100, 1, ValueDisplay.INTEGER);
 	
 	public HighJumpHack()
 	{
-		super("跳高");
+		super("HighJump");
 		
 		setCategory(Category.MOVEMENT);
 		addSetting(height);

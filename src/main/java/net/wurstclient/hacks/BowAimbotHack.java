@@ -19,6 +19,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -34,9 +35,9 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.GolemEntity;
+import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -66,60 +67,66 @@ import net.wurstclient.util.RotationUtils;
 public final class BowAimbotHack extends Hack
 	implements UpdateListener, RenderListener, GUIRenderListener
 {
-	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先瞄准.\n§l距离§r - 攻击最近的实体先.\n§l角度§r - 攻击最后头的角度位置\n的实体优先.\n§l血量§r - 血量少的实体优先",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
+		"Determines which entity will be attacked first.\n"
+			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
+			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires\n"
+			+ "the least head movement.\n"
+			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
 		Priority.values(), Priority.ANGLE);
 	
 	private final SliderSetting predictMovement =
-		new SliderSetting("预瞄",
-			"控制弓箭自动瞄准的强度\n并自动计算落弹点,有可能提高命中率",
+		new SliderSetting("Predict movement",
+			"Controls the strength of BowAimbot's\n"
+				+ "movement prediction algorithm.",
 			0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
-		"过滤 玩家", "不会攻击其他玩家.", false);
+		"Filter players", "Won't attack other players.", false);
 	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"过滤 睡觉的", "不会攻击正在睡觉的玩家.", false);
+		"Filter sleeping", "Won't attack sleeping players.", false);
 	private final SliderSetting filterFlying =
-		new SliderSetting("过滤 飞行中", 
-			"不会攻击在飞行中玩家或\n远离地板一定距离的玩家",
+		new SliderSetting("Filter flying",
+			"Won't attack players that\n" + "are at least the given\n"
+				+ "distance above ground.",
 			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
-		"过滤 怪物", "不会攻击僵尸,苦力怕,诸如此类.", false);
+		"Filter monsters", "Won't attack zombies, creepers, etc.", false);
 	private final CheckboxSetting filterPigmen = new CheckboxSetting(
-		"过滤 猪人", "不会攻击僵尸猪人.", false);
+		"Filter pigmen", "Won't attack zombie pigmen.", false);
 	private final CheckboxSetting filterEndermen =
-		new CheckboxSetting("过滤 末影人", "不会攻击末影人.", false);
+		new CheckboxSetting("Filter endermen", "Won't attack endermen.", false);
 	
 	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"过滤 动物", "不会攻击牛,猪,诸如此类.", false);
+		"Filter animals", "Won't attack pigs, cows, etc.", false);
 	private final CheckboxSetting filterBabies =
-		new CheckboxSetting("过滤 婴儿", 
-			"不会攻击小猪仔,\n小村民, 诸如此类", false);
+		new CheckboxSetting("Filter babies",
+			"Won't attack baby pigs,\n" + "baby villagers, etc.", false);
 	private final CheckboxSetting filterPets =
-		new CheckboxSetting("过滤 宠物", 
-			"不会攻击以驯服的狼,\n已驯服的马, 诸如此类", false);
+		new CheckboxSetting("Filter pets",
+			"Won't attack tamed wolves,\n" + "tamed horses, etc.", false);
 	
 	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("过滤 商人", 
-			"不会攻击村民 , 流浪商人, 诸如此类.", false);
+		new CheckboxSetting("Filter traders",
+			"Won't attack villagers, wandering traders, etc.", false);
 	
 	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("过滤 傀儡们", 
-			"不会攻击铁傀儡,\n雪傀儡 和 潜影盒.", false);
+		new CheckboxSetting("Filter golems",
+			"Won't attack iron golems,\n" + "snow golems and shulkers.", false);
 	
 	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"过滤 隐身", "不会攻击隐形的实体.", false);
+		"Filter invisible", "Won't attack invisible entities.", false);
 	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"过滤 被命名", "不会攻击已经被命名的实体.", false);
+		"Filter named", "Won't attack name-tagged entities.", false);
 	
 	private final CheckboxSetting filterStands = new CheckboxSetting(
-		"过滤 盔甲架", "不会攻击盔甲架.", false);
+		"Filter armor stands", "Won't attack armor stands.", false);
 	private final CheckboxSetting filterCrystals = new CheckboxSetting(
-		"过滤 末影水晶", "不会攻击末影水晶.", false);
+		"Filter end crystals", "Won't attack end crystals.", false);
 	
-	private final ColorSetting color = new ColorSetting("ESP 颜色", 
-		"弓自瞄器 盒子的颜色\n指画在目标实体上的颜色.",
+	private final ColorSetting color = new ColorSetting("ESP color",
+		"Color of the box that BowAimbot\n" + "draws around the target.",
 		Color.RED);
 	
 	private static final Box TARGET_BOX =
@@ -130,7 +137,7 @@ public final class BowAimbotHack extends Hack
 	
 	public BowAimbotHack()
 	{
-		super("自瞄");
+		super("BowAimbot");
 		
 		setCategory(Category.COMBAT);
 		addSetting(priority);
@@ -296,8 +303,8 @@ public final class BowAimbotHack extends Hack
 			stream = stream
 				.filter(e -> !(e instanceof TameableEntity
 					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof AbstractHorseEntity
-					&& ((AbstractHorseEntity)e).isTame()));
+				.filter(e -> !(e instanceof HorseBaseEntity
+					&& ((HorseBaseEntity)e).isTame()));
 		
 		if(filterTraders.isChecked())
 			stream = stream.filter(e -> !(e instanceof MerchantEntity));
@@ -384,8 +391,7 @@ public final class BowAimbotHack extends Hack
 		matrixStack.push();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		String message;
 		if(velocity < 1)
@@ -407,7 +413,8 @@ public final class BowAimbotHack extends Hack
 		bufferBuilder.vertex(matrix, msgWidth + 3, 0, 0).next();
 		bufferBuilder.vertex(matrix, msgWidth + 3, 10, 0).next();
 		bufferBuilder.vertex(matrix, 0, 10, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// text
 		MC.textRenderer.draw(matrixStack, message, 2, 1, 0xffffffff);
@@ -421,13 +428,13 @@ public final class BowAimbotHack extends Hack
 	
 	private enum Priority
 	{
-		DISTANCE("距离", e -> MC.player.squaredDistanceTo(e)),
+		DISTANCE("Distance", e -> MC.player.squaredDistanceTo(e)),
 		
-		ANGLE("角度",
+		ANGLE("Angle",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
 		
-		HEALTH("血量", e -> e instanceof LivingEntity
+		HEALTH("Health", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
 		
 		private final String name;

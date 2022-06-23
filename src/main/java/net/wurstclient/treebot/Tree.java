@@ -9,11 +9,8 @@ package net.wurstclient.treebot;
 
 import java.util.ArrayList;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -48,8 +45,7 @@ public class Tree implements AutoCloseable
 		double boxMax = 15 / 16.0;
 		Box box = new Box(boxMin, boxMin, boxMin, boxMax, boxMax, boxMax);
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
 		
@@ -60,10 +56,8 @@ public class Tree implements AutoCloseable
 			RenderUtils.drawOutlinedBox(
 				box.offset(log).offset(-regionX, 0, -regionZ), bufferBuilder);
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		vertexBuffer.upload(bufferBuilder);
 	}
 	
 	@Override

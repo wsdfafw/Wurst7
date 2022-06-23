@@ -165,7 +165,7 @@ public enum BlockUtils
 			}
 			
 			if(z > max.getZ())
-				throw new IllegalStateException("流限制没有发挥作用.");
+				throw new IllegalStateException("Stream limit didn't work.");
 			
 			return new BlockPos(x, y, z);
 		});

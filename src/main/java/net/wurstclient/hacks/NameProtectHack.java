@@ -18,7 +18,7 @@ public final class NameProtectHack extends Hack
 {
 	public NameProtectHack()
 	{
-		super("名字保护器");
+		super("NameProtect");
 		setCategory(Category.RENDER);
 	}
 	
@@ -29,7 +29,7 @@ public final class NameProtectHack extends Hack
 		
 		String me = MC.getSession().getUsername();
 		if(string.contains(me))
-			return string.replace(me, "\u00a7o我自己\u00a7r");
+			return string.replace(me, "\u00a7oMe\u00a7r");
 		
 		int i = 0;
 		for(PlayerListEntry info : MC.player.networkHandler.getPlayerList())
@@ -39,7 +39,7 @@ public final class NameProtectHack extends Hack
 				info.getProfile().getName().replaceAll("\u00a7(?:\\w|\\d)", "");
 			
 			if(string.contains(name))
-				return string.replace(name, "\u00a7o玩家" + i + "\u00a7r");
+				return string.replace(name, "\u00a7oPlayer" + i + "\u00a7r");
 		}
 		
 		for(AbstractClientPlayerEntity player : MC.world.getPlayers())
@@ -48,7 +48,7 @@ public final class NameProtectHack extends Hack
 			String name = player.getName().getString();
 			
 			if(string.contains(name))
-				return string.replace(name, "\u00a7o玩家" + i + "\u00a7r");
+				return string.replace(name, "\u00a7oPlayer" + i + "\u00a7r");
 		}
 		
 		return string;
