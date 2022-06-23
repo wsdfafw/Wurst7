@@ -16,7 +16,7 @@ public final class NoPumpkinHack extends Hack
 {
 	public NoPumpkinHack()
 	{
-		super("NoPumpkin");
+		super("反南瓜");
 		setCategory(Category.RENDER);
 	}
 	

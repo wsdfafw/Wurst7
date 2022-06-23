@@ -19,6 +19,7 @@ import net.minecraft.block.*;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -55,10 +56,10 @@ public final class AutoFarmHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting replant =
-		new CheckboxSetting("Replant", true);
+		new CheckboxSetting("重种", true);
 	
 	private final HashMap<BlockPos, Item> plants = new HashMap<>();
 	
@@ -75,7 +76,7 @@ public final class AutoFarmHack extends Hack
 	
 	public AutoFarmHack()
 	{
-		super("AutoFarm");
+		super("自动农场");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -208,19 +209,25 @@ public final class AutoFarmHack extends Hack
 		if(greenBuffer != null)
 		{
 			RenderSystem.setShaderColor(0, 1, 0, 0.5F);
-			greenBuffer.setShader(viewMatrix, projMatrix, shader);
+			greenBuffer.bind();
+			greenBuffer.draw(viewMatrix, projMatrix, shader);
+			VertexBuffer.unbind();
 		}
 		
 		if(cyanBuffer != null)
 		{
 			RenderSystem.setShaderColor(0, 1, 1, 0.5F);
-			cyanBuffer.setShader(viewMatrix, projMatrix, shader);
+			cyanBuffer.bind();
+			cyanBuffer.draw(viewMatrix, projMatrix, shader);
+			VertexBuffer.unbind();
 		}
 		
 		if(redBuffer != null)
 		{
 			RenderSystem.setShaderColor(1, 0, 0, 0.5F);
-			redBuffer.setShader(viewMatrix, projMatrix, shader);
+			redBuffer.bind();
+			redBuffer.draw(viewMatrix, projMatrix, shader);
+			VertexBuffer.unbind();
 		}
 		
 		if(currentBlock != null)
@@ -397,12 +404,12 @@ public final class AutoFarmHack extends Hack
 		
 		for(int i = 0; i < sides.length; i++)
 		{
-			// check if neighbor can be right clicked
+			// 检查邻居是否可以被右键点击
 			BlockPos neighbor = pos.offset(sides[i]);
 			if(!BlockUtils.canBeClicked(neighbor))
 				continue;
 			
-			// check line of sight
+			// 检查视线
 			BlockState neighborState = BlockUtils.getState(neighbor);
 			VoxelShape neighborShape =
 				neighborState.getOutlineShape(MC.world, neighbor);
@@ -510,7 +517,8 @@ public final class AutoFarmHack extends Hack
 		if(WurstClient.MC.getBlockEntityRenderDispatcher().camera == null)
 			return;
 		
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
@@ -534,8 +542,10 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
-		greenBuffer.upload(bufferBuilder);
+		BuiltBuffer buffer = bufferBuilder.end();
+		greenBuffer.bind();
+		greenBuffer.upload(buffer);
+		VertexBuffer.unbind();
 		
 		if(cyanBuffer != null)
 			cyanBuffer.close();
@@ -553,8 +563,10 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawNode(renderNode, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
-		cyanBuffer.upload(bufferBuilder);
+		buffer = bufferBuilder.end();
+		cyanBuffer.bind();
+		cyanBuffer.upload(buffer);
+		VertexBuffer.unbind();
 		
 		if(redBuffer != null)
 			redBuffer.close();
@@ -570,8 +582,10 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		bufferBuilder.end();
-		redBuffer.upload(bufferBuilder);
+		buffer = bufferBuilder.end();
+		redBuffer.bind();
+		redBuffer.upload(buffer);
+		VertexBuffer.unbind();
 	}
 	
 	/**

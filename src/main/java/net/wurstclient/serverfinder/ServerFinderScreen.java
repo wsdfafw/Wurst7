@@ -19,7 +19,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.wurstclient.mixinterface.IMultiplayerScreen;
 import net.wurstclient.util.MathUtils;
@@ -39,7 +39,7 @@ public class ServerFinderScreen extends Screen
 	
 	public ServerFinderScreen(MultiplayerScreen prevMultiplayerMenu)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		prevScreen = prevMultiplayerMenu;
 	}
 	
@@ -48,25 +48,25 @@ public class ServerFinderScreen extends Screen
 	{
 		addDrawableChild(searchButton =
 			new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12, 200, 20,
-				new LiteralText("Search"), b -> searchOrCancel()));
+				Text.literal("搜索"), b -> searchOrCancel()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100,
-			height / 4 + 120 + 12, 200, 20, new LiteralText("Tutorial"),
+			height / 4 + 120 + 12, 200, 20, Text.literal("教程(跳转)"),
 			b -> Util.getOperatingSystem().open(
 				"https://www.wurstclient.net/wiki/Special_Features/Server_Finder/")));
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 + 12, 200, 20,
-				new LiteralText("Back"), b -> client.setScreen(prevScreen)));
+				Text.literal("返回"), b -> client.setScreen(prevScreen)));
 		
 		ipBox = new TextFieldWidget(textRenderer, width / 2 - 100,
-			height / 4 + 34, 200, 20, new LiteralText(""));
+			height / 4 + 34, 200, 20, Text.literal(""));
 		ipBox.setMaxLength(200);
 		ipBox.setTextFieldFocused(true);
 		addSelectableChild(ipBox);
 		
 		maxThreadsBox = new TextFieldWidget(textRenderer, width / 2 - 32,
-			height / 4 + 58, 26, 12, new LiteralText(""));
+			height / 4 + 58, 26, 12, Text.literal(""));
 		maxThreadsBox.setMaxLength(3);
 		maxThreadsBox.setText("128");
 		addSelectableChild(maxThreadsBox);
@@ -88,7 +88,7 @@ public class ServerFinderScreen extends Screen
 		checked = 0;
 		working = 0;
 		
-		new Thread(this::findServers, "Server Finder").start();
+		new Thread(this::findServers, "服务器寻找器").start();
 	}
 	
 	private void findServers()
@@ -153,8 +153,8 @@ public class ServerFinderScreen extends Screen
 	{
 		ipBox.tick();
 		
-		searchButton.setMessage(
-			new LiteralText(state.isRunning() ? "Cancel" : "Search"));
+		searchButton
+			.setMessage(Text.literal(state.isRunning() ? "取消" : "搜索"));
 		ipBox.active = !state.isRunning();
 		maxThreadsBox.active = !state.isRunning();
 		
@@ -184,8 +184,10 @@ public class ServerFinderScreen extends Screen
 					if(!isServerInList(pingers.get(i).getServerIP()))
 					{
 						prevScreen.getServerList()
-							.add(new ServerInfo("Grief me #" + working,
-								pingers.get(i).getServerIP(), false));
+							.add(
+								new ServerInfo("Grief me #" + working,
+									pingers.get(i).getServerIP(), false),
+								false);
 						prevScreen.getServerList().saveFile();
 						((IMultiplayerScreen)prevScreen).getServerListSelector()
 							.setSelected(null);
@@ -212,23 +214,23 @@ public class ServerFinderScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		
-		drawCenteredText(matrixStack, textRenderer, "Server Finder", width / 2,
+		drawCenteredText(matrixStack, textRenderer, "服务器查找器", width / 2,
 			20, 16777215);
 		drawCenteredText(matrixStack, textRenderer,
-			"This will search for servers with similar IPs", width / 2, 40,
+			"这会寻找类似IP的服务器", width / 2, 40,
 			10526880);
 		drawCenteredText(matrixStack, textRenderer,
-			"to the IP you type into the field below.", width / 2, 50,
+			"你在空框内所填写的IP", width / 2, 50,
 			10526880);
 		drawCenteredText(matrixStack, textRenderer,
-			"The servers it finds will be added to your server list.",
+			"如果找到了则会添加到服务器列表",
 			width / 2, 60, 10526880);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "Server address:",
+		drawStringWithShadow(matrixStack, textRenderer, "服务器地址:",
 			width / 2 - 100, height / 4 + 24, 10526880);
 		ipBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "Max. threads:",
+		drawStringWithShadow(matrixStack, textRenderer, "最大. 线程:",
 			width / 2 - 100, height / 4 + 60, 10526880);
 		maxThreadsBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
@@ -236,9 +238,9 @@ public class ServerFinderScreen extends Screen
 			height / 4 + 73, 10526880);
 		
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Checked: " + checked + " / 1792", width / 2 - 100, height / 4 + 84,
+			"已检查: " + checked + " / 1792", width / 2 - 100, height / 4 + 84,
 			10526880);
-		drawStringWithShadow(matrixStack, textRenderer, "Working: " + working,
+		drawStringWithShadow(matrixStack, textRenderer, "正在运行: " + working,
 			width / 2 - 100, height / 4 + 94, 10526880);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -254,12 +256,12 @@ public class ServerFinderScreen extends Screen
 	enum ServerFinderState
 	{
 		NOT_RUNNING(""),
-		SEARCHING("\u00a72Searching..."),
-		RESOLVING("\u00a72Resolving..."),
-		UNKNOWN_HOST("\u00a74Unknown Host!"),
-		CANCELLED("\u00a74Cancelled!"),
-		DONE("\u00a72Done!"),
-		ERROR("\u00a74An error occurred!");
+		SEARCHING("\u00a72搜索中..."),
+		RESOLVING("\u00a72解析中..."),
+		UNKNOWN_HOST("\u00a74未知域名!"),
+		CANCELLED("\u00a74取消!"),
+		DONE("\u00a72完成!"),
+		ERROR("\u00a74发生错误!");
 		
 		private final String name;
 		

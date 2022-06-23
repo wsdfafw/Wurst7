@@ -16,7 +16,7 @@ public final class AntiBlindHack extends Hack
 {
 	public AntiBlindHack()
 	{
-		super("AntiBlind");
+		super("防盲");
 		setCategory(Category.RENDER);
 	}
 	

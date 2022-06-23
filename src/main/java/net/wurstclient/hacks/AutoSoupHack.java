@@ -30,16 +30,15 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 @SearchTags({"auto soup", "AutoStew", "auto stew"})
 public final class AutoSoupHack extends Hack implements UpdateListener
 {
-	private final SliderSetting health = new SliderSetting("Health",
-		"Eats a soup when your health\n"
-			+ "reaches this value or falls below it.",
+	private final SliderSetting health = new SliderSetting("生命范围",
+		"自动喝下一个汤\n当你的生命值抵达这个数值或更低",
 		6.5, 0.5, 9.5, 0.5, ValueDisplay.DECIMAL);
 	
 	private int oldSlot = -1;
 	
 	public AutoSoupHack()
 	{
-		super("AutoSoup");
+		super("自动喝汤");
 		
 		setCategory(Category.COMBAT);
 		addSetting(health);

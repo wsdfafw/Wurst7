@@ -8,7 +8,6 @@
 package net.wurstclient.update;
 
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.events.UpdateListener;
@@ -29,7 +28,7 @@ public final class WurstUpdater implements UpdateListener
 	{
 		if(thread == null)
 		{
-			thread = new Thread(this::checkForUpdates, "WurstUpdater");
+			thread = new Thread(this::checkForUpdates, "Wurst更新器");
 			thread.start();
 			return;
 		}
@@ -69,15 +68,15 @@ public final class WurstUpdater implements UpdateListener
 			}
 			
 			if(latestVersion == null)
-				throw new NullPointerException("Latest version is missing!");
+				throw new NullPointerException("最新版本并不存在!");
 			
-			System.out.println("[Updater] Current version: " + currentVersion);
-			System.out.println("[Updater] Latest version: " + latestVersion);
+			System.out.println("[更新] 当前版本: " + currentVersion);
+			System.out.println("[更新] 最新版本: " + latestVersion);
 			outdated = currentVersion.shouldUpdateTo(latestVersion);
 			
 		}catch(Exception e)
 		{
-			System.err.println("[Updater] An error occurred!");
+			System.err.println("[更新程序] 发生错误!");
 			e.printStackTrace();
 		}
 		
@@ -93,18 +92,15 @@ public final class WurstUpdater implements UpdateListener
 		if(!outdated)
 			return;
 		
-		String text = "Wurst " + latestVersion + " is now available."
-			+ " Click \u00a7nhere\u00a7r to download the update.";
-		String url = "https://www.wurstclient.net/download/";
+		String text = "Wurst " + latestVersion + " 英文原版新版可用. 点击 §n这里§r 提醒作者更新.";
+		String url = "https://docs.qq.com/form/page/DYW1RcmFBVXNZZEdD#/fill-detail";
 		showLink(text, url);
 	}
 	
 	private void showLink(String text, String url)
 	{
-		component = new LiteralText(text);
-		
 		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-		component.getStyle().withClickEvent(event);
+		component = Text.literal(text).styled(s -> s.withClickEvent(event));
 	}
 	
 	private boolean containsCompatibleAsset(WsonArray wsonArray)

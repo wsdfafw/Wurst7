@@ -26,6 +26,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -67,9 +68,9 @@ public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
-		"Tunnel size", TunnelSize.values(), TunnelSize.SIZE_3X3);
+		"隧道尺寸", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
-	private final SliderSetting limit = new SliderSetting("Limit",
+	private final SliderSetting limit = new SliderSetting("限制",
 		"Automatically stops once the tunnel\n"
 			+ "has reached the given length.\n\n" + "0 = no limit",
 		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" blocks")
@@ -77,7 +78,7 @@ public final class TunnellerHack extends Hack
 	
 	private final CheckboxSetting torches =
 		new CheckboxSetting(
-			"Place torches", "Places just enough torches\n"
+			"放火把?", "Places just enough torches\n"
 				+ "to prevent mobs from\n" + "spawning inside the tunnel.",
 			false);
 	
@@ -97,7 +98,7 @@ public final class TunnellerHack extends Hack
 	
 	public TunnellerHack()
 	{
-		super("Tunneller");
+		super("隧道挖掘");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(size);
@@ -225,7 +226,9 @@ public final class TunnellerHack extends Hack
 			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
-			buffer.setShader(viewMatrix, projMatrix, shader);
+			buffer.bind();
+			buffer.draw(viewMatrix, projMatrix, shader);
+			VertexBuffer.unbind();
 		}
 		
 		if(currentBlock != null)
@@ -274,7 +277,8 @@ public final class TunnellerHack extends Hack
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
 		
@@ -290,8 +294,10 @@ public final class TunnellerHack extends Hack
 			.multiply(Math.max(0.5, length)).add(offset);
 		RenderUtils.drawArrow(arrowStart, arrowEnd, bufferBuilder);
 		
-		bufferBuilder.end();
-		vertexBuffers[0].upload(bufferBuilder);
+		BuiltBuffer buffer = bufferBuilder.end();
+		vertexBuffers[0].bind();
+		vertexBuffers[0].upload(buffer);
+		VertexBuffer.unbind();
 	}
 	
 	private BlockPos offset(BlockPos pos, Vec3i vec)
@@ -395,7 +401,8 @@ public final class TunnellerHack extends Hack
 			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9).offset(-regionX, 0,
 				-regionZ);
 			
-			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			Tessellator tessellator = RenderSystem.renderThreadTesselator();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 				VertexFormats.POSITION);
 			
@@ -415,8 +422,10 @@ public final class TunnellerHack extends Hack
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			}
 			
-			bufferBuilder.end();
-			vertexBuffers[1].upload(bufferBuilder);
+			BuiltBuffer buffer = bufferBuilder.end();
+			vertexBuffers[1].bind();
+			vertexBuffers[1].upload(buffer);
+			VertexBuffer.unbind();
 			
 			if(currentBlock == null)
 			{
@@ -429,7 +438,7 @@ public final class TunnellerHack extends Hack
 					updateCyanBuffer();
 				else
 				{
-					ChatUtils.message("Tunnel completed.");
+					ChatUtils.message("隧道完工.");
 					setEnabled(false);
 				}
 				
@@ -506,15 +515,18 @@ public final class TunnellerHack extends Hack
 			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9).offset(-regionX, 0,
 				-regionZ);
 			
-			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			Tessellator tessellator = RenderSystem.renderThreadTesselator();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 				VertexFormats.POSITION);
 			
 			for(BlockPos pos : blocks)
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			
-			bufferBuilder.end();
-			vertexBuffers[2].upload(bufferBuilder);
+			BuiltBuffer buffer = bufferBuilder.end();
+			vertexBuffers[2].bind();
+			vertexBuffers[2].upload(buffer);
+			VertexBuffer.unbind();
 			
 			return !blocks.isEmpty();
 		}
@@ -542,7 +554,7 @@ public final class TunnellerHack extends Hack
 			if(!equipSolidBlock(pos))
 			{
 				ChatUtils.error(
-					"Found a hole in the tunnel's floor but don't have any blocks to fill it with.");
+					"在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
 				setEnabled(false);
 				return;
 			}
@@ -635,7 +647,7 @@ public final class TunnellerHack extends Hack
 			if(liquids.isEmpty())
 				return false;
 			
-			ChatUtils.error("The tunnel is flooded, cannot continue.");
+			ChatUtils.error("隧道被淹,无法继续.");
 			
 			if(vertexBuffers[3] != null)
 				vertexBuffers[3].close();
@@ -649,15 +661,19 @@ public final class TunnellerHack extends Hack
 			Box box = new Box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9).offset(-regionX, 0,
 				-regionZ);
 			
-			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			Tessellator tessellator = RenderSystem.renderThreadTesselator();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 				VertexFormats.POSITION);
 			
 			for(BlockPos pos : liquids)
 				RenderUtils.drawOutlinedBox(box.offset(pos), bufferBuilder);
 			
-			bufferBuilder.end();
-			vertexBuffers[3].upload(bufferBuilder);
+			BuiltBuffer buffer = bufferBuilder.end();
+			
+			vertexBuffers[3].bind();
+			vertexBuffers[3].upload(buffer);
+			VertexBuffer.unbind();
 			return true;
 		}
 		
@@ -764,7 +780,7 @@ public final class TunnellerHack extends Hack
 		{
 			if(!equipTorch())
 			{
-				ChatUtils.error("Out of torches.");
+				ChatUtils.error("火把用完了");
 				setEnabled(false);
 				return;
 			}

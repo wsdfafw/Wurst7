@@ -13,7 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
@@ -29,7 +29,7 @@ public final class TrollPotionHack extends Hack
 	
 	public TrollPotionHack()
 	{
-		super("TrollPotion");
+		super("恶作剧药水");
 		setCategory(Category.ITEMS);
 		addSetting(potionType);
 	}
@@ -40,7 +40,7 @@ public final class TrollPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("Creative mode only.");
+			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
 			return;
 		}
@@ -118,7 +118,7 @@ public final class TrollPotionHack extends Hack
 			stack.setNbt(nbt);
 			
 			String name = "\u00a7f" + itemName + " of Trolling";
-			stack.setCustomName(new LiteralText(name));
+			stack.setCustomName(Text.literal(name));
 			
 			return stack;
 		}

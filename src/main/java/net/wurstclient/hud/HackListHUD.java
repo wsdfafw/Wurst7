@@ -67,7 +67,7 @@ public final class HackListHUD implements UpdateListener
 	private void drawCounter(MatrixStack matrixStack)
 	{
 		long size = activeHax.stream().filter(e -> e.hack.isEnabled()).count();
-		String s = size + " hack" + (size != 1 ? "s" : "") + " active";
+		String s = size + " hack" + (size != 1 ? "s" : "") + " 激活";
 		drawString(matrixStack, s);
 	}
 	

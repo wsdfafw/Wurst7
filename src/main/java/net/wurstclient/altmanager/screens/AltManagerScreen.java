@@ -35,17 +35,14 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.WurstClient;
@@ -78,7 +75,7 @@ public final class AltManagerScreen extends Screen
 	
 	public AltManagerScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(new LiteralText("Alt Manager"));
+		super(Text.literal("账户列表"));
 		this.prevScreen = prevScreen;
 		this.altManager = altManager;
 	}
@@ -91,11 +88,11 @@ public final class AltManagerScreen extends Screen
 		Exception folderException = altManager.getFolderException();
 		if(folderException != null && shouldAsk)
 		{
-			TranslatableText title =
-				new TranslatableText("gui.wurst.altmanager.folder_error.title");
-			TranslatableText message = new TranslatableText(
+			Text title =
+				Text.translatable("gui.wurst.altmanager.folder_error.title");
+			Text message = Text.translatable(
 				"gui.wurst.altmanager.folder_error.message", folderException);
-			TranslatableText buttonText = new TranslatableText("gui.done");
+			Text buttonText = Text.translatable("gui.done");
 			
 			// This just sets shouldAsk to false and closes the message.
 			Runnable action = () -> confirmGenerate(false);
@@ -106,10 +103,9 @@ public final class AltManagerScreen extends Screen
 			
 		}else if(altManager.getList().isEmpty() && shouldAsk)
 		{
-			TranslatableText title =
-				new TranslatableText("gui.wurst.altmanager.empty.title");
-			TranslatableText message =
-				new TranslatableText("gui.wurst.altmanager.empty.message");
+			Text title = Text.translatable("gui.wurst.altmanager.empty.title");
+			Text message =
+				Text.translatable("gui.wurst.altmanager.empty.message");
 			BooleanConsumer callback = this::confirmGenerate;
 			
 			ConfirmScreen screen = new ConfirmScreen(callback, title, message);
@@ -117,35 +113,34 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		addDrawableChild(useButton = new ButtonWidget(width / 2 - 154,
-			height - 52, 100, 20, new LiteralText("Login"), b -> pressLogin()));
+			height - 52, 100, 20, Text.literal("Login"), b -> pressLogin()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 50, height - 52, 100, 20,
-			new LiteralText("Direct Login"),
+			Text.literal("直接登录"),
 			b -> client.setScreen(new DirectLoginScreen(this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 54, height - 52, 100, 20,
-			new LiteralText("Add"),
+			Text.literal("添加"),
 			b -> client.setScreen(new AddAltScreen(this, altManager))));
 		
 		addDrawableChild(
 			starButton = new ButtonWidget(width / 2 - 154, height - 28, 75, 20,
-				new LiteralText("Favorite"), b -> pressFavorite()));
+				Text.literal("喜爱"), b -> pressFavorite()));
 		
 		addDrawableChild(editButton = new ButtonWidget(width / 2 - 76,
-			height - 28, 74, 20, new LiteralText("Edit"), b -> pressEdit()));
+			height - 28, 74, 20, Text.literal("编辑"), b -> pressEdit()));
 		
-		addDrawableChild(
-			deleteButton = new ButtonWidget(width / 2 + 2, height - 28, 74, 20,
-				new LiteralText("Delete"), b -> pressDelete()));
+		addDrawableChild(deleteButton = new ButtonWidget(width / 2 + 2,
+			height - 28, 74, 20, Text.literal("删除"), b -> pressDelete()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 80, height - 28, 75, 20,
-			new LiteralText("Cancel"), b -> client.setScreen(prevScreen)));
+			Text.literal("取消"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(importButton = new ButtonWidget(8, 8, 50, 20,
-			new LiteralText("Import"), b -> pressImportAlts()));
+			Text.literal("导入"), b -> pressImportAlts()));
 		
 		addDrawableChild(exportButton = new ButtonWidget(58, 8, 50, 20,
-			new LiteralText("Export"), b -> pressExportAlts()));
+			Text.literal("导出"), b -> pressExportAlts()));
 	}
 	
 	@Override
@@ -202,7 +197,7 @@ public final class AltManagerScreen extends Screen
 		editButton.active = altSelected;
 		deleteButton.active = altSelected;
 		
-		boolean windowMode = !client.options.fullscreen;
+		boolean windowMode = !client.options.getFullscreen().getValue();
 		importButton.active = windowMode;
 		exportButton.active = windowMode;
 	}
@@ -251,15 +246,14 @@ public final class AltManagerScreen extends Screen
 		if(alt == null)
 			return;
 		
-		LiteralText text =
-			new LiteralText("Are you sure you want to remove this alt?");
+		Text text = Text.literal("你确定你想要移除这个账户?");
 		
 		String altName = alt.getDisplayName();
-		LiteralText message = new LiteralText(
-			"\"" + altName + "\" will be lost forever! (A long time!)");
+		Text message = Text.literal(
+			"\"" + altName + "\" 将永远失去！ （很长时间！）");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
-			message, new LiteralText("Delete"), new LiteralText("Cancel"));
+			message, Text.literal("删除"), Text.literal("取消"));
 		client.setScreen(screen);
 	}
 	
@@ -348,7 +342,7 @@ public final class AltManagerScreen extends Screen
 			String response = bf.readLine();
 			
 			if(response == null)
-				throw new IOException("No reponse from FileChooser");
+				throw new IOException("文件夹选择器暂无回应");
 			
 			try
 			{
@@ -357,7 +351,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"Reponse from FileChooser is not a valid path");
+					"文件选择器回应的路径是无效的");
 			}
 		}
 	}
@@ -412,7 +406,8 @@ public final class AltManagerScreen extends Screen
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// skin preview
@@ -431,13 +426,13 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		// title text
-		drawCenteredText(matrixStack, textRenderer, "Alt Manager", width / 2, 4,
+		drawCenteredText(matrixStack, textRenderer, "账户管理", width / 2, 4,
 			16777215);
 		drawCenteredText(matrixStack, textRenderer,
-			"Alts: " + altManager.getList().size(), width / 2, 14, 10526880);
+			"账户: " + altManager.getList().size(), width / 2, 14, 10526880);
 		drawCenteredText(
-			matrixStack, textRenderer, "premium: " + altManager.getNumPremium()
-				+ ", cracked: " + altManager.getNumCracked(),
+			matrixStack, textRenderer, "正版: " + altManager.getNumPremium()
+				+ ", 盗版: " + altManager.getNumCracked(),
 			width / 2, 24, 10526880);
 		
 		// red flash for errors
@@ -455,8 +450,7 @@ public final class AltManagerScreen extends Screen
 			bufferBuilder.vertex(matrix, width, 0, 0).next();
 			bufferBuilder.vertex(matrix, width, height, 0).next();
 			bufferBuilder.vertex(matrix, 0, height, 0).next();
-			bufferBuilder.end();
-			BufferRenderer.draw(bufferBuilder);
+			tessellator.draw();
 			
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_BLEND);
@@ -533,7 +527,7 @@ public final class AltManagerScreen extends Screen
 			ArrayList<Text> tooltip = new ArrayList<>();
 			addTooltip(tooltip, "window");
 			
-			if(client.options.fullscreen)
+			if(client.options.getFullscreen().getValue())
 				addTooltip(tooltip, "fullscreen");
 			else
 				addTooltip(tooltip, "window_freeze");
@@ -558,7 +552,7 @@ public final class AltManagerScreen extends Screen
 		
 		// add to tooltip
 		for(String line : wrapped.split("\n"))
-			tooltip.add(new LiteralText(line));
+			tooltip.add(Text.literal(line));
 	}
 	
 	@Override
@@ -632,7 +626,8 @@ public final class AltManagerScreen extends Screen
 			Alt alt = list.get(id);
 			
 			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			Tessellator tessellator = RenderSystem.renderThreadTesselator();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 			RenderSystem.setShader(GameRenderer::getPositionShader);
 			
 			// green glow when logged in
@@ -653,8 +648,7 @@ public final class AltManagerScreen extends Screen
 				bufferBuilder.vertex(matrix, x - 2 + 220, y - 2, 0).next();
 				bufferBuilder.vertex(matrix, x - 2 + 220, y - 2 + 30, 0).next();
 				bufferBuilder.vertex(matrix, x - 2, y - 2 + 30, 0).next();
-				bufferBuilder.end();
-				BufferRenderer.draw(bufferBuilder);
+				tessellator.draw();
 				
 				GL11.glEnable(GL11.GL_CULL_FACE);
 				GL11.glDisable(GL11.GL_BLEND);
@@ -666,7 +660,7 @@ public final class AltManagerScreen extends Screen
 			
 			// name / email
 			client.textRenderer.draw(matrixStack,
-				"Name: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
+				"名字: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
 			
 			String bottomText = getBottomText(alt);
 			client.textRenderer.draw(matrixStack, bottomText, x + 31, y + 15,
@@ -675,15 +669,15 @@ public final class AltManagerScreen extends Screen
 		
 		public String getBottomText(Alt alt)
 		{
-			String text = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
+			String text = alt.isCracked() ? "§8盗版" : "§2正版";
 			
 			if(alt.isFavorite())
-				text += "\u00a7r, \u00a7efavorite";
+				text += "\u00a7r, \u00a7e喜爱的";
 			
 			if(failedLogins.contains(alt))
-				text += "\u00a7r, \u00a7cwrong password?";
+				text += "\u00a7r, \u00a7c错误密码?";
 			else if(alt.isUncheckedPremium())
-				text += "\u00a7r, \u00a7cunchecked";
+				text += "\u00a7r, \u00a7c未检查";
 			
 			return text;
 		}

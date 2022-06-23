@@ -9,7 +9,7 @@ package net.wurstclient.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 
@@ -22,11 +22,11 @@ public enum ChatUtils
 	public static final String WURST_PREFIX =
 		"\u00a7c[\u00a76Wurst\u00a7c]\u00a7r ";
 	private static final String WARNING_PREFIX =
-		"\u00a7c[\u00a76\u00a7lWARNING\u00a7c]\u00a7r ";
+		"\u00a7c[\u00a76\u00a7l警告\u00a7c]\u00a7r ";
 	private static final String ERROR_PREFIX =
-		"\u00a7c[\u00a74\u00a7lERROR\u00a7c]\u00a7r ";
+		"\u00a7c[\u00a74\u00a7l错误\u00a7c]\u00a7r ";
 	private static final String SYNTAX_ERROR_PREFIX =
-		"\u00a74Syntax error:\u00a7r ";
+		"\u00a74语法错误:\u00a7r ";
 	
 	private static boolean enabled = true;
 	
@@ -41,13 +41,13 @@ public enum ChatUtils
 			return;
 		
 		ChatHud chatHud = MC.inGameHud.getChatHud();
-		LiteralText prefix = new LiteralText(WURST_PREFIX);
+		MutableText prefix = Text.literal(WURST_PREFIX);
 		chatHud.addMessage(prefix.append(component));
 	}
 	
 	public static void message(String message)
 	{
-		component(new LiteralText(message));
+		component(Text.literal(message));
 	}
 	
 	public static void warning(String message)

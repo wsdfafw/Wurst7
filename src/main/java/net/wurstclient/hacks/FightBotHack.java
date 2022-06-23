@@ -25,9 +25,9 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -58,13 +58,13 @@ import net.wurstclient.util.FakePlayerEntity;
 public final class FightBotHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
+	private final SliderSetting range = new SliderSetting("范围",
 		"Attack range (like Killaura)", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting distance = new SliderSetting("Distance",
+	private final SliderSetting distance = new SliderSetting("距离",
 		"How closely to follow the target.\n"
 			+ "This should be set to a lower value than Range.",
 		3, 1, 6, 0.05, ValueDisplay.DECIMAL);
@@ -131,7 +131,7 @@ public final class FightBotHack extends Hack
 	
 	public FightBotHack()
 	{
-		super("FightBot");
+		super("战斗机器人");
 		
 		setCategory(Category.COMBAT);
 		addSetting(range);
@@ -249,8 +249,8 @@ public final class FightBotHack extends Hack
 			stream = stream
 				.filter(e -> !(e instanceof TameableEntity
 					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof HorseBaseEntity
-					&& ((HorseBaseEntity)e).isTame()));
+				.filter(e -> !(e instanceof AbstractHorseEntity
+					&& ((AbstractHorseEntity)e).isTame()));
 		
 		if(filterTraders.isChecked())
 			stream = stream.filter(e -> !(e instanceof MerchantEntity));

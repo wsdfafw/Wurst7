@@ -21,6 +21,7 @@ import net.minecraft.block.entity.*;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.vehicle.ChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
 import net.wurstclient.Category;
@@ -43,79 +44,86 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<ChestEspStyle> style =
-		new EnumSetting<>("Style", ChestEspStyle.values(), ChestEspStyle.BOXES);
+		new EnumSetting<>("风格", ChestEspStyle.values(), ChestEspStyle.BOXES);
 	
 	private final ChestEspBlockGroup basicChests = new ChestEspBlockGroup(
-		new ColorSetting("Chest color",
+		new ColorSetting("箱子颜色",
 			"Normal chests will be highlighted in this color.", Color.GREEN),
 		null);
 	
 	private final ChestEspBlockGroup trapChests = new ChestEspBlockGroup(
-		new ColorSetting("Trap chest color",
+		new ColorSetting("陷阱箱颜色",
 			"Trapped chests will be highlighted in this color.",
 			new Color(0xFF8000)),
 		new CheckboxSetting("Include trap chests", true));
 	
 	private final ChestEspBlockGroup enderChests = new ChestEspBlockGroup(
-		new ColorSetting("Ender color",
+		new ColorSetting("末影箱颜色",
 			"Ender chests will be highlighted in this color.", Color.CYAN),
 		new CheckboxSetting("Include ender chests", true));
 	
 	private final ChestEspEntityGroup chestCarts =
 		new ChestEspEntityGroup(
-			new ColorSetting("Chest cart color",
+			new ColorSetting("储物矿车颜色",
 				"Minecarts with chests will be highlighted in this color.",
 				Color.YELLOW),
 			new CheckboxSetting("Include chest carts", true));
 	
+	private final ChestEspEntityGroup chestBoats =
+		new ChestEspEntityGroup(
+			new ColorSetting("箱船颜色",
+				"Boats with chests will be highlighted in this color.",
+				Color.YELLOW),
+			new CheckboxSetting("Include chest boats", true));
+	
 	private final ChestEspBlockGroup barrels = new ChestEspBlockGroup(
-		new ColorSetting("Barrel color",
+		new ColorSetting("木桶颜色",
 			"Barrels will be highlighted in this color.", Color.GREEN),
-		new CheckboxSetting("Include barrels", true));
+		new CheckboxSetting("包括木桶", true));
 	
 	private final ChestEspBlockGroup shulkerBoxes = new ChestEspBlockGroup(
-		new ColorSetting("Shulker color",
+		new ColorSetting("潜影盒颜色",
 			"Shulker boxes will be highlighted in this color.", Color.MAGENTA),
-		new CheckboxSetting("Include shulkers", true));
+		new CheckboxSetting("包括潜影盒", true));
 	
 	private final ChestEspBlockGroup hoppers = new ChestEspBlockGroup(
-		new ColorSetting("Hopper color",
+		new ColorSetting("漏斗颜色",
 			"Hoppers will be highlighted in this color.", Color.WHITE),
-		new CheckboxSetting("Include hoppers", false));
+		new CheckboxSetting("包括漏斗", false));
 	
 	private final ChestEspEntityGroup hopperCarts =
 		new ChestEspEntityGroup(
-			new ColorSetting("Hopper cart color",
+			new ColorSetting("漏斗矿车颜色",
 				"Minecarts with hoppers will be highlighted in this color.",
 				Color.YELLOW),
-			new CheckboxSetting("Include hopper carts", false));
+			new CheckboxSetting("包括漏斗矿车", false));
 	
 	private final ChestEspBlockGroup droppers = new ChestEspBlockGroup(
-		new ColorSetting("Dropper color",
+		new ColorSetting("投掷器颜色",
 			"Droppers will be highlighted in this color.", Color.WHITE),
-		new CheckboxSetting("Include droppers", false));
+		new CheckboxSetting("包括投掷器", false));
 	
 	private final ChestEspBlockGroup dispensers = new ChestEspBlockGroup(
-		new ColorSetting("Dispenser color",
+		new ColorSetting("发射器颜色",
 			"Dispensers will be highlighted in this color.",
 			new Color(0xFF8000)),
-		new CheckboxSetting("Include dispensers", false));
+		new CheckboxSetting("包括发射器", false));
 	
 	private final ChestEspBlockGroup furnaces =
-		new ChestEspBlockGroup(new ColorSetting("Furnace color",
-			"Furnaces, smokers, and blast furnaces will be highlighted in this color.",
-			Color.RED), new CheckboxSetting("Include furnaces", false));
+		new ChestEspBlockGroup(new ColorSetting("熔炉颜色",
+			"熔炉, 烟熏炉 和 高炉 将会以这种颜色高亮.",
+			Color.RED), new CheckboxSetting("包括熔炉", false));
 	
-	private final List<ChestEspGroup> groups =
-		Arrays.asList(basicChests, trapChests, enderChests, chestCarts, barrels,
-			shulkerBoxes, hoppers, hopperCarts, droppers, dispensers, furnaces);
+	private final List<ChestEspGroup> groups = Arrays.asList(basicChests,
+		trapChests, enderChests, chestCarts, chestBoats, barrels, shulkerBoxes,
+		hoppers, hopperCarts, droppers, dispensers, furnaces);
 	
 	private final List<ChestEspEntityGroup> entityGroups =
-		Arrays.asList(chestCarts, hopperCarts);
+		Arrays.asList(chestCarts, chestBoats, hopperCarts);
 	
 	public ChestEspHack()
 	{
-		super("ChestESP");
+		super("箱子透视");
 		setCategory(Category.RENDER);
 		
 		addSetting(style);
@@ -178,6 +186,8 @@ public class ChestEspHack extends Hack implements UpdateListener,
 				chestCarts.add(entity);
 			else if(entity instanceof HopperMinecartEntity)
 				hopperCarts.add(entity);
+			else if(entity instanceof ChestBoatEntity)
+				chestBoats.add(entity);
 	}
 	
 	@Override

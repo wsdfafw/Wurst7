@@ -22,9 +22,9 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -57,60 +57,60 @@ public final class ProtectHack extends Hack
 		new AttackSpeedSliderSetting();
 	
 	private final CheckboxSetting useAi =
-		new CheckboxSetting("Use AI (experimental)", false);
+		new CheckboxSetting("使用 AI (试验性的)", false);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
-		"Filter players", "Won't attack other players.", false);
+		"排除玩家", "不会攻击其他玩家.", false);
 	
 	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"Filter sleeping", "Won't attack sleeping players.", false);
+		"排除正在睡觉的", "不会攻击正在睡觉的玩家.", false);
 	
 	private final SliderSetting filterFlying =
-		new SliderSetting("Filter flying",
+		new SliderSetting("排除飞行中",
 			"Won't attack players that\n" + "are at least the given\n"
 				+ "distance above ground.",
 			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
 	
 	private final CheckboxSetting filterMonsters = new CheckboxSetting(
-		"Filter monsters", "Won't attack zombies, creepers, etc.", false);
+		"排除怪物", "不会攻击僵尸,苦力怕,诸如此类.", false);
 	
 	private final CheckboxSetting filterPigmen = new CheckboxSetting(
-		"Filter pigmen", "Won't attack zombie pigmen.", false);
+		"排除猪人", "不会攻击僵尸猪人.", false);
 	
 	private final CheckboxSetting filterEndermen =
-		new CheckboxSetting("Filter endermen", "Won't attack endermen.", false);
+		new CheckboxSetting("排除末影人", "不会攻击末影人.", false);
 	
 	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"Filter animals", "Won't attack pigs, cows, etc.", false);
+		"排除动物", "不会攻击牛,猪,诸如此类.", false);
 	
 	private final CheckboxSetting filterBabies =
-		new CheckboxSetting("Filter babies",
-			"Won't attack baby pigs,\n" + "baby villagers, etc.", false);
+		new CheckboxSetting("排除婴儿",
+			"不会攻击小猪仔,\n小村民, 诸如此类.", false);
 	
 	private final CheckboxSetting filterPets =
-		new CheckboxSetting("Filter pets",
-			"Won't attack tamed wolves,\n" + "tamed horses, etc.", false);
+		new CheckboxSetting("排除宠物",
+			"不会攻击以驯服的狼,\n已驯服的马, 诸如此类.", false);
 	
 	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("Filter traders",
-			"Won't attack villagers, wandering traders, etc.", false);
+		new CheckboxSetting("排除商人",
+			"不会攻击村民 , 流浪商人, 诸如此类.", false);
 	
 	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("Filter golems",
-			"Won't attack iron golems,\n" + "snow golems and shulkers.", false);
+		new CheckboxSetting("排除傀儡们",
+			"不会攻击铁傀儡 雪傀儡 和 潜影盒.", false);
 	
 	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"Filter invisible", "Won't attack invisible entities.", false);
+		"排除隐身", "不会攻击隐形的实体.", false);
 	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"Filter named", "Won't attack name-tagged entities.", false);
+		"排除被命名", "不会攻击已经被命名的实体.", false);
 	
 	private final CheckboxSetting filterStands = new CheckboxSetting(
-		"Filter armor stands", "Won't attack armor stands.", false);
+		"排除盔甲架", "不会攻击盔甲架.", false);
 	private final CheckboxSetting filterCrystals = new CheckboxSetting(
-		"Filter end crystals", "Won't attack end crystals.", true);
+		"排除末影水晶", "不会攻击末影水晶.", true);
 	
 	private EntityPathFinder pathFinder;
 	private PathProcessor processor;
@@ -124,7 +124,7 @@ public final class ProtectHack extends Hack
 	
 	public ProtectHack()
 	{
-		super("Protect");
+		super("保护");
 		
 		setCategory(Category.COMBAT);
 		addSetting(speed);
@@ -152,8 +152,8 @@ public final class ProtectHack extends Hack
 	public String getRenderName()
 	{
 		if(friend != null)
-			return "Protecting " + friend.getName().getString();
-		return "Protect";
+			return "保护中 " + friend.getName().getString();
+		return "保护";
 	}
 	
 	@Override
@@ -286,8 +286,8 @@ public final class ProtectHack extends Hack
 			stream = stream
 				.filter(e -> !(e instanceof TameableEntity
 					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof HorseBaseEntity
-					&& ((HorseBaseEntity)e).isTame()));
+				.filter(e -> !(e instanceof AbstractHorseEntity
+					&& ((AbstractHorseEntity)e).isTame()));
 		
 		if(filterTraders.isChecked())
 			stream = stream.filter(e -> !(e instanceof MerchantEntity));

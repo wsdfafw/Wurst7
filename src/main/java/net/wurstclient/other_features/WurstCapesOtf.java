@@ -15,7 +15,6 @@ public final class WurstCapesOtf extends OtherFeature
 {
 	public WurstCapesOtf()
 	{
-		super("WurstCapes",
-			"Wurst has its own capes! Only Wurst users can see them.");
+		super("Wurst披风","Wurst有自己的斗篷！ 只有Wurst用户才能看到它们.");
 	}
 }

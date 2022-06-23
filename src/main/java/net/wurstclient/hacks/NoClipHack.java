@@ -23,7 +23,7 @@ public final class NoClipHack extends Hack implements UpdateListener,
 {
 	public NoClipHack()
 	{
-		super("NoClip");
+		super("穿墙");
 		setCategory(Category.MOVEMENT);
 	}
 	

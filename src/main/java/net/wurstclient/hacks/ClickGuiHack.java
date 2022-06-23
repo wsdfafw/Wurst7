@@ -24,18 +24,18 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class ClickGuiHack extends Hack
 {
 	private final ColorSetting bgColor =
-		new ColorSetting("Background", "Background color", new Color(0x404040));
+		new ColorSetting("背景", "背景颜色", new Color(0x404040));
 	
 	private final ColorSetting acColor =
-		new ColorSetting("Accent", "Accent color", new Color(0x101010));
+		new ColorSetting("边框", "边框颜色", new Color(0x101010));
 	
 	private final ColorSetting txtColor =
-		new ColorSetting("Text", "Text color", new Color(0xF0F0F0));
+		new ColorSetting("文字", "文字颜色", new Color(0xF0F0F0));
 	
-	private final SliderSetting opacity = new SliderSetting("Opacity", 0.5,
+	private final SliderSetting opacity = new SliderSetting("不透明性", 0.5,
 		0.15, 0.85, 0.01, ValueDisplay.PERCENTAGE);
 	
-	private final SliderSetting ttOpacity = new SliderSetting("Tooltip opacity",
+	private final SliderSetting ttOpacity = new SliderSetting("工具提示的不透明度",
 		0.75, 0.15, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	public ClickGuiHack()

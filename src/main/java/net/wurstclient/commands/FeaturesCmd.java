@@ -20,7 +20,7 @@ public final class FeaturesCmd extends Command
 	public FeaturesCmd()
 	{
 		super("features",
-			"Shows the number of features and some other\n" + "statistics.",
+			"展示所有功能的数字和\n统计数据.",
 			".features");
 	}
 	
@@ -32,17 +32,17 @@ public final class FeaturesCmd extends Command
 		
 		if(WurstClient.VERSION.startsWith("7.0pre"))
 			ChatUtils.warning(
-				"This is just a pre-release! It doesn't (yet) have all of the features of Wurst 7.0! See download page for details.");
+				"这只是一个预览版! 暂时还没有 Wurst 7.0 所有功能! 看下载页面以寻求更多详情.");
 		
 		int hax = WURST.getHax().countHax();
 		int cmds = WURST.getCmds().countCmds();
 		int otfs = WURST.getOtfs().countOtfs();
 		int all = hax + cmds + otfs;
 		
-		ChatUtils.message("All features: " + all);
+		ChatUtils.message("所有功能: " + all);
 		ChatUtils.message("Hacks: " + hax);
-		ChatUtils.message("Commands: " + cmds);
-		ChatUtils.message("Other features: " + otfs);
+		ChatUtils.message("指令: " + cmds);
+		ChatUtils.message("其他功能: " + otfs);
 		
 		int settings = 0;
 		for(Hack hack : WURST.getHax().getAllHax())
@@ -52,13 +52,13 @@ public final class FeaturesCmd extends Command
 		for(OtherFeature otf : WURST.getOtfs().getAllOtfs())
 			settings += otf.getSettings().size();
 		
-		ChatUtils.message("Settings: " + settings);
+		ChatUtils.message("设置: " + settings);
 	}
 	
 	@Override
 	public String getPrimaryAction()
 	{
-		return "Show Statistics";
+		return "显示统计信息";
 	}
 	
 	@Override

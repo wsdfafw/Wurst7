@@ -72,9 +72,9 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report = CrashReport.create(e, "Firing Wurst event");
-			CrashReportSection section = report.addElement("Affected event");
-			section.add("Event class", () -> event.getClass().getName());
+			CrashReport report = CrashReport.create(e, "发射Wurst事件");
+			CrashReportSection section = report.addElement("影响的事件");
+			section.add("事件类", () -> event.getClass().getName());
 			
 			throw new CrashException(report);
 		}
@@ -101,10 +101,10 @@ public final class EventManager
 			e.printStackTrace();
 			
 			CrashReport report =
-				CrashReport.create(e, "Adding Wurst event listener");
-			CrashReportSection section = report.addElement("Affected listener");
-			section.add("Listener type", () -> type.getName());
-			section.add("Listener class", () -> listener.getClass().getName());
+				CrashReport.create(e, "增加 Wurst 事件监听");
+			CrashReportSection section = report.addElement("影响的监听");
+			section.add("监听类型", () -> type.getName());
+			section.add("监听类", () -> listener.getClass().getName());
 			
 			throw new CrashException(report);
 		}
@@ -125,10 +125,10 @@ public final class EventManager
 			e.printStackTrace();
 			
 			CrashReport report =
-				CrashReport.create(e, "Removing Wurst event listener");
-			CrashReportSection section = report.addElement("Affected listener");
-			section.add("Listener type", () -> type.getName());
-			section.add("Listener class", () -> listener.getClass().getName());
+				CrashReport.create(e, "移除wurst监听事件");
+			CrashReportSection section = report.addElement("影响的监听");
+			section.add("监听类型", () -> type.getName());
+			section.add("监听类", () -> listener.getClass().getName());
 			
 			throw new CrashException(report);
 		}

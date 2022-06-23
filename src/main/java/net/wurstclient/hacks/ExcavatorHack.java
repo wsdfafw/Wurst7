@@ -21,7 +21,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -60,15 +59,12 @@ public final class ExcavatorHack extends Hack
 	private ExcavatorPathFinder pathFinder;
 	private PathProcessor processor;
 	
-	private final SliderSetting range =
-		new SliderSetting("Range", 5, 2, 6, 0.05, ValueDisplay.DECIMAL);
-	
-	private final EnumSetting<Mode> mode =
-		new EnumSetting<>("Mode", Mode.values(), Mode.FAST);
+	private final SliderSetting range = new SliderSetting("范围", 5.0, 2.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+    private final EnumSetting<Mode> mode = new EnumSetting("模式", (Enum[])Mode.values(), (Enum)Mode.FAST);
 	
 	public ExcavatorHack()
 	{
-		super("Excavator");
+		super("区域挖掘");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -335,7 +331,8 @@ public final class ExcavatorHack extends Hack
 		matrixStack.push();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		Tessellator tessellator = RenderSystem.renderThreadTesselator();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
 		String message;
 		if(step.selectPos && step.pos != null)
@@ -360,8 +357,7 @@ public final class ExcavatorHack extends Hack
 		bufferBuilder.vertex(matrix, msgWidth + 2, 0, 0).next();
 		bufferBuilder.vertex(matrix, msgWidth + 2, 10, 0).next();
 		bufferBuilder.vertex(matrix, 0, 10, 0).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
 		
 		// text
 		tr.draw(matrixStack, message, 2, 1, 0xffffffff);
@@ -600,13 +596,13 @@ public final class ExcavatorHack extends Hack
 	
 	private static enum Step
 	{
-		START_POS("Select start position.", true),
+		START_POS("选择开始的位置.", true),
 		
-		END_POS("Select end position.", true),
+		END_POS("选择结束的位置.", true),
 		
-		SCAN_AREA("Scanning area...", false),
+		SCAN_AREA("扫描区域中...", false),
 		
-		EXCAVATE("Excavating...", false);
+		EXCAVATE("挖掘中...", false);
 		
 		private static final Step[] SELECT_POSITION_STEPS =
 			{START_POS, END_POS};

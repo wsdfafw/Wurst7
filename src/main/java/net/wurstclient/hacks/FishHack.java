@@ -19,7 +19,7 @@ public final class FishHack extends Hack implements UpdateListener
 {
 	public FishHack()
 	{
-		super("Fish");
+		super("鱼");
 		setCategory(Category.MOVEMENT);
 	}
 	

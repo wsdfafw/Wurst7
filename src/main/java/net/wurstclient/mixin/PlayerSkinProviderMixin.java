@@ -133,7 +133,7 @@ public class PlayerSkinProviderMixin
 			
 		}catch(Exception e)
 		{
-			System.err.println("[Wurst] Failed to load cape for '" + name
+			System.err.println("[Wurst] 载入披风失败 '" + name
 				+ "' (" + uuid + ")");
 			
 			e.printStackTrace();
@@ -154,7 +154,7 @@ public class PlayerSkinProviderMixin
 		}catch(Exception e)
 		{
 			System.err
-				.println("[Wurst] Failed to load capes from wurstclient.net!");
+				.println("[Wurst] 无法从 wurstclient.net 载入披风!");
 			
 			e.printStackTrace();
 		}

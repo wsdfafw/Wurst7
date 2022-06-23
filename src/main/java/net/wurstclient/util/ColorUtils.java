@@ -24,11 +24,11 @@ public enum ColorUtils
 	public static Color parseHex(String s) throws JsonException
 	{
 		if(!s.startsWith("#"))
-			throw new JsonException("Missing '#' prefix.");
+			throw new JsonException("缺失 '#' 前缀.");
 		
 		if(s.length() != 7)
 			throw new JsonException(
-				"Expected String of length 7, got " + s.length() + " instead.");
+				"得到的字符串长度应该为 7, 但只是得到 " + s.length() + " 长度");
 		
 		int[] rgb = new int[3];
 		

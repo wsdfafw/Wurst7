@@ -41,28 +41,10 @@ import net.wurstclient.util.RotationUtils;
 public final class SpeedNukerHack extends Hack
 	implements LeftClickListener, UpdateListener
 {
-	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
-	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"\u00a7lNormal\u00a7r mode simply breaks everything\n" + "around you.\n"
-			+ "\u00a7lID\u00a7r mode only breaks the selected block\n"
-			+ "type. Left-click on a block to select it.\n"
-			+ "\u00a7lMultiID\u00a7r mode only breaks the block types\n"
-			+ "in your MultiID List.\n"
-			+ "\u00a7lFlat\u00a7r mode flattens the area around you,\n"
-			+ "but won't dig down.\n"
-			+ "\u00a7lSmash\u00a7r mode only breaks blocks that\n"
-			+ "can be destroyed instantly (e.g. tall grass).",
-		Mode.values(), Mode.NORMAL);
-	
-	private final BlockSetting id =
-		new BlockSetting("ID", "The type of block to break in ID mode.\n"
-			+ "air = won't break anything", "minecraft:air", true);
-	
-	private final CheckboxSetting lockId =
-		new CheckboxSetting("Lock ID", "Prevents changing the ID by clicking\n"
-			+ "on blocks or restarting Nuker.", false);
+	private final SliderSetting range = new SliderSetting("范围", 5.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+    private final EnumSetting<Mode> mode = new EnumSetting("模式", "§l普通§r 模式很简单的破坏\n你周边的东西.\n§lID§r 模式只破坏所选的方块\n类型. 左键方块选择其方块.\n§l多个ID§r 模式只破坏那些你选择\n在你 多个ID 列表.\n§l平坦§r 模式只会挖你水平上的方块,\n但不会往下挖.\n§l粉碎§r 模式只会破坏那些\n能够瞬间破坏的方块 (例.如. 高大的草).", (Enum[])Mode.values(), (Enum)Mode.NORMAL);
+    private final BlockSetting id = new BlockSetting("ID", "在ID模式,将会破坏指定ID的方块类型.\nair = 不会破坏任何东西", "minecraft:air", true);
+    private final CheckboxSetting lockId = new CheckboxSetting("锁ID", "保护且不会导致因点击其他方块\n而改变挖掘的方块,同时也不会因重启而重置.", false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
 		"MultiID List", "The types of blocks to break in MultiID mode.",
@@ -74,7 +56,7 @@ public final class SpeedNukerHack extends Hack
 	
 	public SpeedNukerHack()
 	{
-		super("SpeedNuker");
+		super("矿井+");
 		
 		setCategory(Category.BLOCKS);
 		addSetting(range);
@@ -182,24 +164,24 @@ public final class SpeedNukerHack extends Hack
 	
 	private enum Mode
 	{
-		NORMAL("Normal", n -> "SpeedNuker", (n, pos) -> true),
+		NORMAL("普通", n -> "急速挖块", (n, pos) -> true),
 		
 		ID("ID",
-			n -> "IDSpeedNuker ["
+			n -> "ID急速挖块 ["
 				+ n.id.getBlockName().replace("minecraft:", "") + "]",
 			(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
 		
-		MULTI_ID("MultiID",
-			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
+		MULTI_ID("多ID",
+			n -> "多ID挖块 [" + n.multiIdList.getBlockNames().size()
 				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
 					: " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
-		FLAT("Flat", n -> "FlatSpeedNuker",
+		FLAT("平坦", n -> "平坦型急速挖块",
 			(n, pos) -> pos.getY() >= MC.player.getY()),
 		
-		SMASH("Smash", n -> "SmashSpeedNuker",
+		SMASH("粉碎", n -> "粉碎型急速挖块",
 			(n, pos) -> BlockUtils.getHardness(pos) >= 1);
 		
 		private final String name;

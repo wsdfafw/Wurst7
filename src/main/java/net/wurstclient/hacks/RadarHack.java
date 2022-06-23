@@ -33,31 +33,23 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
 
-@SearchTags({"MiniMap", "mini map"})
+@SearchTags({"MiniMap", "mini map","Radar"})
 public final class RadarHack extends Hack implements UpdateListener
 {
 	private final Window window;
 	private final ArrayList<Entity> entities = new ArrayList<>();
 	
-	private final SliderSetting radius = new SliderSetting("Radius",
-		"Radius in blocks.", 100, 1, 100, 1, ValueDisplay.INTEGER);
-	private final CheckboxSetting rotate =
-		new CheckboxSetting("Rotate with player", true);
-	
-	private final CheckboxSetting filterPlayers = new CheckboxSetting(
-		"Filter players", "Won't show other players.", false);
-	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"Filter sleeping", "Won't show sleeping players.", false);
-	private final CheckboxSetting filterMonsters = new CheckboxSetting(
-		"Filter monsters", "Won't show zombies, creepers, etc.", false);
-	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"Filter animals", "Won't show pigs, cows, etc.", false);
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"Filter invisible", "Won't show invisible entities.", false);
+	private final SliderSetting radius = new SliderSetting("半径", "半径方块.", 100.0, 1.0, 100.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
+    private final CheckboxSetting rotate = new CheckboxSetting("跟随玩家旋转方向", true);
+    private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不显示其他玩家.", false);
+    private final CheckboxSetting filterSleeping = new CheckboxSetting("排除睡觉的", "不显示正在睡觉的.", false);
+    private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不显示僵尸,苦力怕,等.", false);
+    private final CheckboxSetting filterAnimals = new CheckboxSetting("排除动物", "不显示猪,牛,等.", false);
+    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不显示隐身的实体.", false);
 	
 	public RadarHack()
 	{
-		super("Radar");
+		super("雷达");
 		
 		setCategory(Category.RENDER);
 		addSetting(radius);
@@ -68,7 +60,7 @@ public final class RadarHack extends Hack implements UpdateListener
 		addSetting(filterAnimals);
 		addSetting(filterInvisible);
 		
-		window = new Window("Radar");
+		window = new Window("雷达");
 		window.setPinned(true);
 		window.setInvisible(true);
 		window.add(new RadarComponent(this));

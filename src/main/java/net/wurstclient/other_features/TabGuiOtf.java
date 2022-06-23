@@ -22,9 +22,8 @@ public final class TabGuiOtf extends OtherFeature
 	
 	public TabGuiOtf()
 	{
-		super("TabGUI", "Allows you to quickly toggle hacks while playing.\n"
-			+ "Use the arrow keys to navigate.\n\n"
-			+ "Change the \u00a76HackList \u00a76Position\u00a7r setting to \u00a76Right\u00a7r to prevent TabGUI from overlapping with the HackList.");
+		super("TabGUI", "允许你在游戏时快速切换黑客.使用方向键进行导航.\n\n"
+			+ "改变 \u00a76黑客名单 \u00a76位置\u00a7r setting to \u00a76Right\u00a7r 以防止TabGUI与HackList重叠.");
 		
 		addSetting(status);
 	}
@@ -36,8 +35,8 @@ public final class TabGuiOtf extends OtherFeature
 	
 	private enum Status
 	{
-		ENABLED("Enabled"),
-		DISABLED("Disabled");
+		ENABLED("启用"),
+		DISABLED("已禁用");
 		
 		private final String name;
 		

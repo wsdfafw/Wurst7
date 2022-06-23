@@ -18,7 +18,7 @@ public final class AutoReconnectHack extends Hack
 {
 	public AutoReconnectHack()
 	{
-		super("AutoReconnect");
+		super("自动重连");
 		setCategory(Category.OTHER);
 	}
 	

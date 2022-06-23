@@ -16,7 +16,7 @@ public final class NoWebHack extends Hack implements UpdateListener
 {
 	public NoWebHack()
 	{
-		super("NoWeb");
+		super("反蛛网");
 		setCategory(Category.MOVEMENT);
 	}
 	

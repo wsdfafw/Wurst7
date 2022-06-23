@@ -44,7 +44,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			System.out.println("无法创建 '.Wurst encryption' 文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;
@@ -61,7 +61,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't load " + path.getFileName());
+			System.out.println("无法载入 " + path.getFileName());
 			e.printStackTrace();
 			
 			renameCorrupted();
@@ -77,12 +77,12 @@ public final class AltsFile
 			Path newPath =
 				path.resolveSibling("!CORRUPTED_" + path.getFileName());
 			Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-			System.out.println("Renamed to " + newPath.getFileName());
+			System.out.println("重命名到 " + newPath.getFileName());
 			
 		}catch(IOException e)
 		{
 			System.out.println(
-				"Couldn't rename corrupted file " + path.getFileName());
+				"无法重命名损坏的文件 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}
@@ -143,7 +143,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println("Couldn't create '.Wurst encryption' folder.");
+			System.out.println("无法创建 '.Wurst encryption' 文件夹.");
 			e.printStackTrace();
 			folderException = e;
 			return;
@@ -157,7 +157,7 @@ public final class AltsFile
 			
 		}catch(IOException | JsonException e)
 		{
-			System.out.println("Couldn't save " + path.getFileName());
+			System.out.println("无法保存 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

@@ -91,7 +91,7 @@ public class GoogleAnalyticsV4_7_2 implements IGoogleAnalyticsURLBuilder
 		}else if(argData.getEventAction() != null
 			|| argData.getEventCategory() != null)
 			throw new IllegalArgumentException(
-				"Event tracking must have both a category and an action");
+				"事件跟踪必须同时具有类别和动作");
 		
 		if(config.getEncoding() != null)
 			sb.append("&utmcs=" + getURIString(config.getEncoding())); // encoding

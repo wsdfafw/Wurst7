@@ -16,7 +16,7 @@ public final class NoFireOverlayHack extends Hack
 {
 	public NoFireOverlayHack()
 	{
-		super("NoFireOverlay");
+		super("防火挡脸");
 		setCategory(Category.RENDER);
 	}
 	

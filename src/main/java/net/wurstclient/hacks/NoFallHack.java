@@ -14,12 +14,12 @@ import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 
-@SearchTags({"no fall"})
+@SearchTags({"no fall","NoFall"})
 public final class NoFallHack extends Hack implements UpdateListener
 {
 	public NoFallHack()
 	{
-		super("NoFall");
+		super("无摔伤");
 		setCategory(Category.MOVEMENT);
 	}
 	

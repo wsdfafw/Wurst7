@@ -116,19 +116,19 @@ public final class ColorSetting extends Setting
 	@Override
 	public Set<PossibleKeybind> getPossibleKeybinds(String featureName)
 	{
-		String description = "Set " + featureName + " " + getName() + " to ";
+		String description = "设置 " + featureName + " " + getName() + " to ";
 		String command = ".setcolor " + featureName.toLowerCase() + " "
 			+ getName().toLowerCase().replace(" ", "_") + " ";
 		
 		LinkedHashSet<PossibleKeybind> pkb = new LinkedHashSet<>();
-		addPKB(pkb, command + "#FF0000", description + "red");
-		addPKB(pkb, command + "#00FF00", description + "green");
-		addPKB(pkb, command + "#0000FF", description + "blue");
-		addPKB(pkb, command + "#FFFF00", description + "yellow");
-		addPKB(pkb, command + "#00FFFF", description + "cyan");
-		addPKB(pkb, command + "#FF00FF", description + "magenta");
-		addPKB(pkb, command + "#FFFFFF", description + "white");
-		addPKB(pkb, command + "#000000", description + "black");
+		addPKB(pkb, command + "#FF0000", description + "红色");
+		addPKB(pkb, command + "#00FF00", description + "绿色");
+		addPKB(pkb, command + "#0000FF", description + "蓝色");
+		addPKB(pkb, command + "#FFFF00", description + "黄色");
+        addPKB(pkb, command + "#00FFFF", description + "青色");
+        addPKB(pkb, command + "#FF00FF", description + "品红");
+        addPKB(pkb, command + "#FFFFFF", description + "白色");
+        addPKB(pkb, command + "#000000", description + "黑色");
 		return pkb;
 	}
 	

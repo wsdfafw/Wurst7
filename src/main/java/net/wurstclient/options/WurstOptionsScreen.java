@@ -17,7 +17,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.Util.OperatingSystem;
@@ -35,7 +34,7 @@ public class WurstOptionsScreen extends Screen
 	
 	public WurstOptionsScreen(Screen prevScreen)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -44,7 +43,7 @@ public class WurstOptionsScreen extends Screen
 	{
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				new LiteralText("Back"), b -> client.setScreen(prevScreen)));
+				Text.literal("返回"), b -> client.setScreen(prevScreen)));
 		
 		addSettingButtons();
 		addManagerButtons();
@@ -62,37 +61,26 @@ public class WurstOptionsScreen extends Screen
 			wurst.getOtfs().translationsOtf.getForceEnglish();
 		
 		new WurstOptionsButton(-154, 24,
-			() -> "Click Friends: "
-				+ (middleClickFriends.isChecked() ? "ON" : "OFF"),
+			() -> "点击朋友: "
+				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
 			middleClickFriends.getWrappedDescription(200),
 			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
-			() -> "Count Users: " + (analytics.isEnabled() ? "ON" : "OFF"),
-			"Counts how many people are using Wurst\n"
-				+ "and which versions are the most popular.\n"
-				+ "We use this data to decide when to stop\n"
-				+ "supporting old Minecraft versions.\n\n"
-				+ "We use a random ID to tell users apart\n"
-				+ "so that this data can never be linked to\n"
-				+ "your Minecraft account. The random ID is\n"
-				+ "changed every 3 days to make extra sure\n"
-				+ "that you remain anonymous.",
+			() -> "统计用户: " + (analytics.isEnabled() ? "开启" : "关闭"),
+			"统计有多少人在使用Wurst哪个版本最受欢迎.\n我们使用这个数据来决定何时停止\n支持旧的Minecraft版本.\n我们使用一个随机ID将用户分开\n这样这个数据就永远无法链接到您的Minecraft帐户.\n随机ID为′每3天改变一次，以确保额外确信您保持匿名.",
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
-			() -> "Spoof Vanilla: "
-				+ (vanillaSpoofOtf.isEnabled() ? "ON" : "OFF"),
+			() -> "原版伪装: "
+				+ (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
 			vanillaSpoofOtf.getWrappedDescription(200),
 			b -> vanillaSpoofOtf.doPrimaryAction());
 		
 		new WurstOptionsButton(-154, 96,
-			() -> "Translations: " + (!forceEnglish.isChecked() ? "ON" : "OFF"),
-			"§cThis is an experimental feature!\n"
-				+ "We don't have many translations yet. If you\n"
-				+ "speak both English and some other language,\n"
-				+ "please help us by adding more translations.",
+			() -> "翻译: " + (!forceEnglish.isChecked() ? "开启" : "关闭"),
+			"§c这还只是一个实验性的功能!\n我们目前还没太多的文本翻译. 如果你\n即会说英语也会说其他语言,\n请帮助我们翻译更多的内容",
 			b -> forceEnglish.setChecked(!forceEnglish.isChecked()));
 	}
 	
@@ -100,19 +88,16 @@ public class WurstOptionsScreen extends Screen
 	{
 		XRayHack xRayHack = WurstClient.INSTANCE.getHax().xRayHack;
 		
-		new WurstOptionsButton(-50, 24, () -> "Keybinds",
-			"Keybinds allow you to toggle any hack\n"
-				+ "or command by simply pressing a\n" + "button.",
+		new WurstOptionsButton(-50, 24, () -> "热键绑定",
+			"Keybinds允许您只需按一个按钮就可以切换任何hack或命令.",
 			b -> client.setScreen(new KeybindManagerScreen(this)));
 		
-		new WurstOptionsButton(-50, 48, () -> "X-Ray Blocks",
-			"Manager for the blocks\n" + "that X-Ray will show.",
+		new WurstOptionsButton(-50, 48, () -> "透视方块",
+			"X-Ray将要显示的块的管理器",
 			b -> xRayHack.openBlockListEditor(this));
 		
-		new WurstOptionsButton(-50, 72, () -> "Zoom",
-			"The Zoom Manager allows you to\n"
-				+ "change the zoom key, how far it\n"
-				+ "will zoom in and more.",
+		new WurstOptionsButton(-50, 72, () -> "放大功能",
+		    "Zoom Manager允许您更改缩放键，它会放大多远等",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
 	}
 	
@@ -120,22 +105,12 @@ public class WurstOptionsScreen extends Screen
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "Official Website",
+		new WurstOptionsButton(54, 24, () -> "官方网站",
 			"WurstClient.net", b -> os.open("https://www.wurstclient.net/"));
 		
-		new WurstOptionsButton(54, 48, () -> "Wurst Wiki",
-			"Wiki.WurstClient.net",
-			b -> os.open("https://wiki.wurstclient.net/"));
-		
-		new WurstOptionsButton(54, 72, () -> "Twitter", "@Wurst_Imperium",
-			b -> os.open("https://twitter.com/Wurst_Imperium"));
-		
-		new WurstOptionsButton(54, 96, () -> "Reddit", "r/WurstClient",
-			b -> os.open("https://www.reddit.com/r/WurstClient/"));
-		
-		new WurstOptionsButton(54, 120, () -> "Donate",
-			"paypal.me/WurstImperium",
-			b -> os.open("https://www.wurstclient.net/donate/"));
+		new WurstOptionsButton(54, 48, () -> "捐款 求捐款",
+			"qq/微信/支付宝/支付",
+			b -> os.open("https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
 	}
 	
 	@Override
@@ -161,13 +136,13 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredText(matrixStack, tr, "Wurst Options", middleX, y1,
+		drawCenteredText(matrixStack, tr, "Wurst选择,作者原来id:watermelon_GG,新id:wateTina,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
 			0xffffff);
 		
-		drawCenteredText(matrixStack, tr, "Settings", middleX - 104, y2,
+		drawCenteredText(matrixStack, tr, "设置选项", middleX - 104, y2,
 			0xcccccc);
-		drawCenteredText(matrixStack, tr, "Managers", middleX, y2, 0xcccccc);
-		drawCenteredText(matrixStack, tr, "Links", middleX + 104, y2, 0xcccccc);
+		drawCenteredText(matrixStack, tr, "管理", middleX, y2, 0xcccccc);
+		drawCenteredText(matrixStack, tr, "链接", middleX + 104, y2, 0xcccccc);
 	}
 	
 	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
@@ -204,7 +179,7 @@ public class WurstOptionsScreen extends Screen
 		{
 			super(WurstOptionsScreen.this.width / 2 + xOffset,
 				WurstOptionsScreen.this.height / 4 - 16 + yOffset, 100, 20,
-				new LiteralText(messageSupplier.get()), pressAction);
+				Text.literal(messageSupplier.get()), pressAction);
 			
 			this.messageSupplier = messageSupplier;
 			
@@ -214,9 +189,9 @@ public class WurstOptionsScreen extends Screen
 			{
 				String[] lines = tooltip.split("\n");
 				
-				LiteralText[] lines2 = new LiteralText[lines.length];
+				Text[] lines2 = new Text[lines.length];
 				for(int i = 0; i < lines.length; i++)
-					lines2[i] = new LiteralText(lines[i]);
+					lines2[i] = Text.literal(lines[i]);
 				
 				this.tooltip = Arrays.asList(lines2);
 			}
@@ -228,7 +203,7 @@ public class WurstOptionsScreen extends Screen
 		public void onPress()
 		{
 			super.onPress();
-			setMessage(new LiteralText(messageSupplier.get()));
+			setMessage(Text.literal(messageSupplier.get()));
 		}
 	}
 }

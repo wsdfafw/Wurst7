@@ -22,7 +22,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.mixinterface.IMultiplayerScreen;
 import net.wurstclient.mixinterface.IScreen;
@@ -41,7 +40,7 @@ public class CleanUpScreen extends Screen
 	
 	public CleanUpScreen(MultiplayerScreen prevScreen)
 	{
-		super(new LiteralText(""));
+		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -50,10 +49,10 @@ public class CleanUpScreen extends Screen
 	{
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 168 + 12,
-				() -> "Cancel", "", b -> client.setScreen(prevScreen)));
+				() -> "取消", "", b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(cleanUpButton = new CleanUpButton(width / 2 - 100,
-			height / 4 + 144 + 12, () -> "Clean Up",
+			height / 4 + 144 + 12, () -> "清理",
 			"Start the Clean Up with the settings\n" + "you specified above.\n"
 				+ "It might look like the game is not\n"
 				+ "responding for a couple of seconds.",
@@ -61,18 +60,18 @@ public class CleanUpScreen extends Screen
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 - 24 + 12,
-				() -> "Unknown Hosts: " + removeOrKeep(cleanupUnknown),
-				"Servers that clearly don't exist.",
+				() -> "未知的主机: " + removeOrKeep(cleanupUnknown),
+				"显然不存在的服务器.",
 				b -> cleanupUnknown = !cleanupUnknown));
 		
 		addDrawableChild(new CleanUpButton(width / 2 - 100, height / 4 + 0 + 12,
-			() -> "Outdated Servers: " + removeOrKeep(cleanupOutdated),
-			"Servers that run a different Minecraft\n" + "version than you.",
+			() -> "过期的版本: " + removeOrKeep(cleanupOutdated),
+			"运行不同Minecraft版本的服务器，而不是你的.",
 			b -> cleanupOutdated = !cleanupOutdated));
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 24 + 12,
-				() -> "Failed Ping: " + removeOrKeep(cleanupFailed),
+				() -> "无法ping: " + removeOrKeep(cleanupFailed),
 				"All servers that failed the last ping.\n"
 					+ "Make sure that the last ping is complete\n"
 					+ "before you do this. That means: Go back,\n"
@@ -82,21 +81,21 @@ public class CleanUpScreen extends Screen
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 48 + 12,
-				() -> "\"Grief me\" Servers: " + removeOrKeep(cleanupGriefMe),
-				"All servers where the name starts with \"Grief me\"\n"
-					+ "Useful for removing servers found by ServerFinder.",
+				() -> "\"Grief me\" 服务器: " + removeOrKeep(cleanupGriefMe),
+				"All servers where name starts with \"Grief me\"\n"
+				+ "用于移除由ServerFinder发现的服务器.",
 				b -> cleanupGriefMe = !cleanupGriefMe));
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 72 + 12,
-				() -> "\u00a7cRemove all Servers: " + yesOrNo(removeAll),
+				() -> "\u00a7c移除所有的服务器: " + yesOrNo(removeAll),
 				"This will completely clear your server\n"
 					+ "list. \u00a7cUse with caution!\u00a7r",
 				b -> removeAll = !removeAll));
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 + 96 + 12,
-				() -> "Rename all Servers: " + yesOrNo(cleanupRename),
+				() -> "重命名所有服务器: " + yesOrNo(cleanupRename),
 				"Renames your servers to \"Grief me #1\",\n"
 					+ "\"Grief me #2\", etc.",
 				b -> cleanupRename = !cleanupRename));
@@ -104,12 +103,12 @@ public class CleanUpScreen extends Screen
 	
 	private String yesOrNo(boolean b)
 	{
-		return b ? "Yes" : "No";
+		return b ? "是" : "否";
 	}
 	
 	private String removeOrKeep(boolean b)
 	{
-		return b ? "Remove" : "Keep";
+		return b ? "移除" : "保留";
 	}
 	
 	private void cleanUp()
@@ -206,10 +205,10 @@ public class CleanUpScreen extends Screen
 		float partialTicks)
 	{
 		renderBackground(matrixStack);
-		drawCenteredText(matrixStack, textRenderer, "Clean Up", width / 2, 20,
+		drawCenteredText(matrixStack, textRenderer, "清除", width / 2, 20,
 			16777215);
 		drawCenteredText(matrixStack, textRenderer,
-			"Please select the servers you want to remove:", width / 2, 36,
+			"请选择你想清除的服务器:", width / 2, 36,
 			10526880);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -247,7 +246,7 @@ public class CleanUpScreen extends Screen
 		public CleanUpButton(int x, int y, Supplier<String> messageSupplier,
 			String tooltip, PressAction pressAction)
 		{
-			super(x, y, 200, 20, new LiteralText(messageSupplier.get()),
+			super(x, y, 200, 20, Text.literal(messageSupplier.get()),
 				pressAction);
 			this.messageSupplier = messageSupplier;
 			
@@ -257,9 +256,9 @@ public class CleanUpScreen extends Screen
 			{
 				String[] lines = tooltip.split("\n");
 				
-				LiteralText[] lines2 = new LiteralText[lines.length];
+				Text[] lines2 = new Text[lines.length];
 				for(int i = 0; i < lines.length; i++)
-					lines2[i] = new LiteralText(lines[i]);
+					lines2[i] = Text.literal(lines[i]);
 				
 				this.tooltip = Arrays.asList(lines2);
 			}
@@ -269,7 +268,7 @@ public class CleanUpScreen extends Screen
 		public void onPress()
 		{
 			super.onPress();
-			setMessage(new LiteralText(messageSupplier.get()));
+			setMessage(Text.literal(messageSupplier.get()));
 		}
 	}
 }

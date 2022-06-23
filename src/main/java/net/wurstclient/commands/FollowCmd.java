@@ -23,7 +23,7 @@ public final class FollowCmd extends Command
 {
 	public FollowCmd()
 	{
-		super("follow", "Follows the given entity.", ".follow <entity>");
+		super("follow", "跟随一个给定的实体.", ".follow <实体名>");
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public final class FollowCmd extends Command
 		
 		if(entity == null)
 			throw new CmdError(
-				"Entity \"" + args[0] + "\" could not be found.");
+				"实体 \"" + args[0] + "\" 找不到.");
 		
 		followHack.setEntity(entity);
 		followHack.setEnabled(true);
