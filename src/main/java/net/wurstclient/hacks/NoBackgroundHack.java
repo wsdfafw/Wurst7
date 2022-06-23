@@ -17,7 +17,7 @@ public final class NoBackgroundHack extends Hack
 {
 	public NoBackgroundHack()
 	{
-		super("NoBackground");
+		super("无黑背景");
 		setCategory(Category.RENDER);
 	}
 	
