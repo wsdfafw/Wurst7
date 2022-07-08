@@ -31,15 +31,15 @@ public final class JesusHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
 	private final CheckboxSetting bypass =
-		new CheckboxSetting("绕反作弊", 
-			"绕反作弊但你的移速动作会下降.", false);
+		new CheckboxSetting("NoCheat+ bypass",
+			"Bypasses NoCheat+ but slows down your movement.", false);
 	
 	private int tickTimer = 10;
 	private int packetTimer = 0;
 	
 	public JesusHack()
 	{
-		super("水上漂");
+		super("Jesus");
 		setCategory(Category.MOVEMENT);
 		addSetting(bypass);
 	}
@@ -62,13 +62,13 @@ public final class JesusHack extends Hack
 	public void onUpdate()
 	{
 		// check if sneaking
-		if(MC.options.keySneak.isPressed())
+		if(MC.options.sneakKey.isPressed())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
 		
-		// move up in water
-		if(player.isTouchingWater())
+		// move up in liquid
+		if(player.isTouchingWater() || player.isInLava())
 		{
 			Vec3d velocity = player.getVelocity();
 			player.setVelocity(velocity.x, 0.11, velocity.z);
@@ -180,6 +180,7 @@ public final class JesusHack extends Hack
 	public boolean shouldBeSolid()
 	{
 		return isEnabled() && MC.player != null && MC.player.fallDistance <= 3
-			&& !MC.options.keySneak.isPressed() && !MC.player.isTouchingWater();
+			&& !MC.options.sneakKey.isPressed() && !MC.player.isTouchingWater()
+			&& !MC.player.isInLava();
 	}
 }

@@ -48,6 +48,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
@@ -76,6 +77,9 @@ public final class KillauraHack extends Hack
 	private final CheckboxSetting damageIndicator = new CheckboxSetting(
 		"伤害显示器","在目标内渲染一个彩色框，与其剩余生命值成反比.",
 		true);
+	
+	private final PauseAttackOnContainersSetting pauseOnContainers =
+		new PauseAttackOnContainersSetting(true);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
 		"排除玩家", "", true);
@@ -141,6 +145,8 @@ public final class KillauraHack extends Hack
 		addSetting(priority);
 		addSetting(fov);
 		addSetting(damageIndicator);
+		addSetting(pauseOnContainers);
+		
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
 		addSetting(filterFlying);
@@ -193,6 +199,9 @@ public final class KillauraHack extends Hack
 	{
 		speed.updateTimer();
 		if(!speed.isTimeToAttack())
+			return;
+		
+		if(pauseOnContainers.shouldPause())
 			return;
 		
 		ClientPlayerEntity player = MC.player;

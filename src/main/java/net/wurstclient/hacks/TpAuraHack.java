@@ -41,6 +41,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.AttackSpeedSliderSetting;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
@@ -60,6 +61,9 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
 		"§l[距离]§r:距离最近的实体\r\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
 		Priority.values(), Priority.ANGLE);
+	
+	private final PauseAttackOnContainersSetting pauseOnContainers =
+		new PauseAttackOnContainersSetting(true);
 	
 	private final CheckboxSetting filterPlayers = new CheckboxSetting(
 		"排除玩家", "", true);
@@ -113,6 +117,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		addSetting(range);
 		addSetting(speed);
 		addSetting(priority);
+		addSetting(pauseOnContainers);
 		
 		addSetting(filterPlayers);
 		addSetting(filterSleeping);
@@ -159,6 +164,9 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	{
 		speed.updateTimer();
 		if(!speed.isTimeToAttack())
+			return;
+		
+		if(pauseOnContainers.shouldPause())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
