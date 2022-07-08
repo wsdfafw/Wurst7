@@ -7,6 +7,8 @@
  */
 package net.wurstclient.commands;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
@@ -22,7 +24,7 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 	
 	public AnnoyCmd()
 	{
-		super("annoy", "不断重复某个玩家所说的话，使他感到厌烦.", ".annoy <player>", "要关闭请输入: .annoy");
+		super("annoy", "不断重复某个玩家所说的话，使他感到厌烦.",".annoy <player>", "要关闭请输入: .annoy");
 	}
 	
 	@Override
@@ -66,7 +68,7 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 		
 		if(target != null)
 		{
-			ChatUtils.message("不再惹恼" + target + ".");
+			ChatUtils.message("不再惹恼 " + target + ".");
 			target = null;
 		}
 		
@@ -95,7 +97,8 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 	private void repeat(String message, String prefix)
 	{
 		int beginIndex = message.indexOf(prefix) + prefix.length();
-		String repeated = message.substring(beginIndex);
+		String repeated = message.substring(beginIndex).trim();
+		repeated = StringUtils.normalizeSpace(repeated);
 		MC.player.sendChatMessage(repeated);
 	}
 }
