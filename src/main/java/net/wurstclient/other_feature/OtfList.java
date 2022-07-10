@@ -22,6 +22,7 @@ public final class OtfList
 	public final DisableOtf disableOtf = new DisableOtf();
 	public final HackListOtf hackListOtf = new HackListOtf();
 	public final LastServerOtf lastServerOtf = new LastServerOtf();
+	public final NoTelemetryOtf noTelemetryOtf = new NoTelemetryOtf();
 	public final ReconnectOtf reconnectOtf = new ReconnectOtf();
 	public final ServerFinderOtf serverFinderOtf = new ServerFinderOtf();
 	public final TabGuiOtf tabGuiOtf = new TabGuiOtf();
@@ -49,7 +50,7 @@ public final class OtfList
 			
 		}catch(Exception e)
 		{
-			String message = "初始化其他 Wurst 功能";
+			String message = "Initializing other Wurst features";
 			CrashReport report = CrashReport.create(e, message);
 			throw new CrashException(report);
 		}
