@@ -20,7 +20,7 @@ import net.minecraft.util.Identifier;
 public class NoChatReportsChannelHandler implements PlayChannelHandler
 {
 	public static final Identifier CHANNEL =
-		new Identifier("nochatreports", "sync");
+		new Identifier("诺查特报告", "同步");
 	
 	public static final NoChatReportsChannelHandler INSTANCE =
 		new NoChatReportsChannelHandler();

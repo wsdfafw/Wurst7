@@ -28,7 +28,7 @@ public final class NcrModRequiredScreen extends Screen
 	private static final List<String> DISCONNECT_REASONS = Arrays.asList(
 		// Older versions of NCR have a bug that sends the raw translation key.
 		"disconnect.nochatreports.server",
-		"You do not have No Chat Reports, and this server is configured to require it on client!");
+		"您没有无聊天报告，并且此服务器配置为在客户端需要它!");
 	
 	private final Screen prevScreen;
 	private final Text reason;
@@ -57,19 +57,19 @@ public final class NcrModRequiredScreen extends Screen
 			+ blockedOrAllowed(otfs.noChatReportsOtf.isEnabled());
 		
 		vsButtonMsg =
-			() -> "VanillaSpoof: " + onOrOff(otfs.vanillaSpoofOtf.isEnabled());
+			() -> "原版伪装: " + onOrOff(otfs.vanillaSpoofOtf.isEnabled());
 	}
 	
 	private String onOrOff(boolean on)
 	{
-		return WurstClient.INSTANCE.translate("options." + (on ? "on" : "off"))
+		return WurstClient.INSTANCE.translate("选项." + (on ? "开" : "关"))
 			.toUpperCase();
 	}
 	
 	private String blockedOrAllowed(boolean blocked)
 	{
 		return WurstClient.INSTANCE.translate(
-			"gui.wurst.generic.allcaps_" + (blocked ? "blocked" : "allowed"));
+			"gui.wurst.generic.allcaps_" + (blocked ? "封锁" : "允许"));
 	}
 	
 	@Override
@@ -95,7 +95,7 @@ public final class NcrModRequiredScreen extends Screen
 				Text.literal(vsButtonMsg.get()), b -> toggleVanillaSpoof()));
 		
 		addDrawableChild(new ButtonWidget(buttonX, reconnectY, 200, 20,
-			Text.literal("Reconnect"),
+			Text.literal("重新连接"),
 			b -> LastServerRememberer.reconnect(prevScreen)));
 		
 		addDrawableChild(new ButtonWidget(buttonX, backButtonY, 200, 20,

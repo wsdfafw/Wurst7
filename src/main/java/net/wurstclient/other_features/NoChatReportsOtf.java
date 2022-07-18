@@ -30,7 +30,7 @@ public final class NoChatReportsOtf extends OtherFeature
 	
 	public NoChatReportsOtf()
 	{
-		super("NoChatReports", "description.wurst.other_feature.nochatreports");
+		super("无聊天报告", "description.wurst.other_feature.nochatreports");
 		addSetting(disableSignatures);
 		
 		ClientLoginConnectionEvents.INIT.register(this::onLoginStart);
