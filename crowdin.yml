@@ -1,3 +1,3 @@
 files:
   - source: /src/main/resources/assets/wurst/lang/en_us
-    translation: '%file_name%'
+    translation: /src/main/resources/assets/wurst/lang/%locale%.json
