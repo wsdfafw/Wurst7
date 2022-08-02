@@ -1,7 +1,7 @@
 {
-  "description.wurst.hack.anchoraura": "Automatically places (optional), charges, and detonates respawn anchors to kill entities around you.",
-  "description.wurst.hack.antiafk": "Walks around randomly to hide you from AFK detectors.\nNeeds at least 3x3 blocks of free space.",
-  "description.wurst.hack.antiblind": "Prevents blindness and darkness effects.\nIncompatible with OptiFine.",
+  "description.wurst.hack.anchoraura": "自动放置(可选)、充电和引爆重生锚以杀死你周围的实体。",
+  "description.wurst.hack.antiafk": "随机走遍周围以躲避AFK探测器.\n至少需要3x3块空闲空间.",
+  "description.wurst.hack.antiblind": "防止失明和黑暗效果。\n与 OptiFine 不兼容。",
   "description.wurst.hack.anticactus": "Protects you from cactus damage.",
   "description.wurst.hack.antiknockback": "Prevents you from getting pushed by players and mobs.",
   "description.wurst.hack.antispam": "Blocks chat spam by adding a counter to repeated messages.",
@@ -172,12 +172,9 @@
   "gui.wurst.altmanager.empty.message": "Would you like some random alts to get started?",
   "gui.wurst.nochatreports.unsafe_server.title": "§4§lWARNING:§r Unsafe Server",
   "gui.wurst.nochatreports.unsafe_server.message": "This server requires chat signatures to be enabled, which puts your account at risk of fraudulent chat reports.\n\nYou can join this server if you un-block chat signatures and then reconnect. If you do, consider not using the chat at all. Or play on an alt account that you don't mind losing.\n\nIf this is your server, you can fix this by setting 'enforce-secure-profile' to false in server.properties. In typical Mojang fashion, this setting does the opposite of what it sounds like.",
-  "toast.wurst.nochatreports.unsafe_server.title": "Chat messages can be reported",
-  "toast.wurst.nochatreports.unsafe_server.message": "Messages sent on this server may be reported to Big Brother Mojang and might get your account banned globally",
   "gui.wurst.nochatreports.ncr_mod_server.title": "\"No Chat Reports\" Server",
-  "gui.wurst.nochatreports.ncr_mod_server.message": "This server uses the \"No Chat Reports\" mod.\n\nYou can join this server if you block chat signatures and disable VanillaSpoof.",
+  "gui.wurst.nochatreports.ncr_mod_server.message": "此服务器使用\"无聊天报告\"模组。\n\n如果您屏蔽了聊天签名并禁用了原版Spoof，您可以加入此服务器。",
   "button.wurst.nochatreports.signatures_status": "Signatures: ",
-  "description.wurst.nochatreports.message_is_reportable": "This message has a valid signature and is thus vulnerable to fraudulent chat reports.",
-  "gui.wurst.generic.allcaps_blocked": "BLOCKED",
-  "gui.wurst.generic.allcaps_allowed": "ALLOWED"
+  "gui.wurst.generic.allcaps_blocked": "关闭",
+  "gui.wurst.generic.allcaps_allowed": "允许"
 }
