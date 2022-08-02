@@ -1,3 +1,0 @@
-files:
-  - source: /src/main/resources/assets/wurst/lang/en_us
-    translation: /src/main/resources/assets/wurst/lang/%language%.json
