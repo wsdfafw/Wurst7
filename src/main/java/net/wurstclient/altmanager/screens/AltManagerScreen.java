@@ -98,7 +98,7 @@ public final class AltManagerScreen extends Screen
 			Runnable action = () -> confirmGenerate(false);
 			
 			NoticeScreen screen =
-				new NoticeScreen(action, title, message, buttonText);
+				new NoticeScreen(action, title, message, buttonText, false);
 			client.setScreen(screen);
 			
 		}else if(altManager.getList().isEmpty() && shouldAsk)
@@ -113,7 +113,7 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		addDrawableChild(useButton = new ButtonWidget(width / 2 - 154,
-			height - 52, 100, 20, Text.literal("Login"), b -> pressLogin()));
+			height - 52, 100, 20, Text.literal("登录"), b -> pressLogin()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 50, height - 52, 100, 20,
 			Text.literal("直接登录"),
@@ -246,14 +246,14 @@ public final class AltManagerScreen extends Screen
 		if(alt == null)
 			return;
 		
-		Text text = Text.literal("你确定你想要移除这个账户?");
+		Text text = Text.literal("Are you sure you want to remove this alt?");
 		
 		String altName = alt.getDisplayName();
 		Text message = Text.literal(
-			"\"" + altName + "\" 将永远失去！ （很长时间！）");
+			"\"" + altName + "\" will be lost forever! (A long time!)");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
-			message, Text.literal("删除"), Text.literal("取消"));
+			message, Text.literal("Delete"), Text.literal("Cancel"));
 		client.setScreen(screen);
 	}
 	
@@ -342,7 +342,7 @@ public final class AltManagerScreen extends Screen
 			String response = bf.readLine();
 			
 			if(response == null)
-				throw new IOException("文件夹选择器暂无回应");
+				throw new IOException("没有来自FileChooser的回应");
 			
 			try
 			{
@@ -351,7 +351,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"文件选择器回应的路径是无效的");
+					"来自FileChooser的回复不是一个有效的路径");
 			}
 		}
 	}
@@ -426,13 +426,13 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		// title text
-		drawCenteredText(matrixStack, textRenderer, "账户管理", width / 2, 4,
+		drawCenteredText(matrixStack, textRenderer, "Alt Manager", width / 2, 4,
 			16777215);
 		drawCenteredText(matrixStack, textRenderer,
-			"账户: " + altManager.getList().size(), width / 2, 14, 10526880);
+			"Alts: " + altManager.getList().size(), width / 2, 14, 10526880);
 		drawCenteredText(
-			matrixStack, textRenderer, "正版: " + altManager.getNumPremium()
-				+ ", 盗版: " + altManager.getNumCracked(),
+			matrixStack, textRenderer, "premium: " + altManager.getNumPremium()
+				+ ", cracked: " + altManager.getNumCracked(),
 			width / 2, 24, 10526880);
 		
 		// red flash for errors
@@ -660,7 +660,7 @@ public final class AltManagerScreen extends Screen
 			
 			// name / email
 			client.textRenderer.draw(matrixStack,
-				"名字: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
+				"Name: " + alt.getDisplayName(), x + 31, y + 3, 10526880);
 			
 			String bottomText = getBottomText(alt);
 			client.textRenderer.draw(matrixStack, bottomText, x + 31, y + 15,
@@ -669,15 +669,15 @@ public final class AltManagerScreen extends Screen
 		
 		public String getBottomText(Alt alt)
 		{
-			String text = alt.isCracked() ? "§8盗版" : "§2正版";
+			String text = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
 			
 			if(alt.isFavorite())
-				text += "\u00a7r, \u00a7e喜爱的";
+				text += "\u00a7r, \u00a7efavorite";
 			
 			if(failedLogins.contains(alt))
-				text += "\u00a7r, \u00a7c错误密码?";
+				text += "\u00a7r, \u00a7cwrong password?";
 			else if(alt.isUncheckedPremium())
-				text += "\u00a7r, \u00a7c未检查";
+				text += "\u00a7r, \u00a7cunchecked";
 			
 			return text;
 		}
