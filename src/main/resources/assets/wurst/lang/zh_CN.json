@@ -172,12 +172,12 @@
   "gui.wurst.altmanager.empty.message": "你希望创建一些随机的备用账户吗？",
   "gui.wurst.nochatreports.unsafe_server.title": "§4§l警告:§r 不安全的服务器",
   "gui.wurst.nochatreports.unsafe_server.message": "此服务器需要启用聊天签名，这会使您的帐户面临欺诈性聊天报告的风险。\n\n如果您取消阻止聊天签名然后重新连接，则可以加入此服务器。 如果这样做，请考虑根本不使用聊天。 或者使用您不介意丢失的 alt 帐户玩游戏。\n\n如果这是您的服务器，您可以通过在 server.properties 中将 'enforce-secure-profile' 设置为 false 来解决此问题。 在典型的 Mojang 时尚中，这种设置与听起来相反。",
-  "toast.wurst.nochatreports.unsafe_server.title": "Chat messages can be reported",
-  "toast.wurst.nochatreports.unsafe_server.message": "Messages sent on this server may be reported to Big Brother Mojang and might get your account banned globally",
+  "toast.wurst.nochatreports.unsafe_server.title": "聊天消息可以报告",
+  "toast.wurst.nochatreports.unsafe_server.message": "在这个服务器上发送的消息可能会被报告给大兄弟Mojang，您的帐户可能会被全局封禁",
   "gui.wurst.nochatreports.ncr_mod_server.title": "“无聊天报告”服务器",
   "gui.wurst.nochatreports.ncr_mod_server.message": "此服务器使用“无聊天报告”模式。\n如果您阻止聊天签名并禁用 Vanilla Spoof，您可以加入此服务器.",
   "button.wurst.nochatreports.signatures_status": "签名: ",
-  "description.wurst.nochatreports.message_is_reportable": "This message has a valid signature and is thus vulnerable to fraudulent chat reports.",
+  "description.wurst.nochatreports.message_is_reportable": "此消息有一个有效的签名，因此容易受到欺诈性聊天报告的伤害。",
   "gui.wurst.generic.allcaps_blocked": "关闭",
   "gui.wurst.generic.allcaps_allowed": "允许"
 }
