@@ -342,7 +342,7 @@ public final class AltManagerScreen extends Screen
 			String response = bf.readLine();
 			
 			if(response == null)
-				throw new IOException("No reponse from FileChooser");
+				throw new IOException("没有来自FileChooser的回应");
 			
 			try
 			{
@@ -351,7 +351,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"Reponse from FileChooser is not a valid path");
+					"来自FileChooser的回复不是一个有效的路径");
 			}
 		}
 	}

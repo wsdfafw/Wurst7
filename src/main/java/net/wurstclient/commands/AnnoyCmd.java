@@ -15,16 +15,23 @@ import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 import net.wurstclient.events.ChatInputListener;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.util.ChatUtils;
 
 public final class AnnoyCmd extends Command implements ChatInputListener
 {
+	private final CheckboxSetting rcMode = new CheckboxSetting("RC mode",
+		"远程控制模式。重新启用一个允许.annoy运行Wurst命令的错误。出于安全原因，不推荐使用，但在我们有一个适当的远程控制功能之前，这至少比没有好。",
+		false);
+	
 	private boolean enabled;
 	private String target;
 	
 	public AnnoyCmd()
 	{
-		super("annoy", "不断重复某个玩家所说的话，使他感到厌烦.",".annoy <player>", "要关闭请输入: .annoy");
+		super("annoy", "通过重复玩家说的每一句话来惹恼他们.",
+			".annoy <player>", "Turn off: .annoy");
+		addSetting(rcMode);
 	}
 	
 	@Override
@@ -99,6 +106,10 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 		int beginIndex = message.indexOf(prefix) + prefix.length();
 		String repeated = message.substring(beginIndex).trim();
 		repeated = StringUtils.normalizeSpace(repeated);
-		MC.player.sendChatMessage(repeated, null);
+		
+		if(rcMode.isChecked() && repeated.startsWith("."))
+			WURST.getCmdProcessor().process(repeated.substring(1));
+		else
+			MC.player.sendChatMessage(repeated, null);
 	}
 }

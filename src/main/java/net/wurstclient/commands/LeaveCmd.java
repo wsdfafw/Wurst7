@@ -33,7 +33,7 @@ public final class LeaveCmd extends Command
 	@Override
 	public String getPrimaryAction()
 	{
-		return "离开";
+		return "Leave";
 	}
 	
 	@Override
