@@ -10,10 +10,10 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class NoFrictionHack extends Hack
 {
 	public final SliderSetting friction =
-                new SliderSetting("Friction/Slipperiness", 0.989, 0.8, 1.1, 0.001, ValueDisplay.DECIMAL);
+                new SliderSetting("摩擦/滑溜", 0.989, 0.8, 1.1, 0.001, ValueDisplay.DECIMAL);
 	public NoFrictionHack()
 	{
-		super("NoFriction");
+		super("无弹性");
 		setCategory(Category.MOVEMENT);
 		addSetting(friction);
 	}
