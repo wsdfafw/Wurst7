@@ -8,7 +8,6 @@
 package net.wurstclient.mixin;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,12 +42,12 @@ public class ProfileKeysMixin
 	}
 	
 	@Inject(at = @At("HEAD"),
-		method = "method_45104()Ljava/util/concurrent/CompletableFuture;",
+		method = "getPublicKeyData()Ljava/util/Optional;",
 		cancellable = true)
 	private void onGetPublicKeyData(
-		CallbackInfoReturnable<CompletableFuture<Optional<PlayerPublicKey.PublicKeyData>>> cir)
+		CallbackInfoReturnable<Optional<PlayerPublicKey.PublicKeyData>> cir)
 	{
 		if(WurstClient.INSTANCE.getOtfs().noChatReportsOtf.isActive())
-			cir.setReturnValue(CompletableFuture.supplyAsync(Optional::empty));
+			cir.setReturnValue(Optional.empty());
 	}
 }
