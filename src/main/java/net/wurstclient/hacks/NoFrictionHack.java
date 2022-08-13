@@ -13,7 +13,7 @@ public final class NoFrictionHack extends Hack
                 new SliderSetting("摩擦/滑溜", 0.989, 0.8, 1.1, 0.001, ValueDisplay.DECIMAL);
 	public NoFrictionHack()
 	{
-		super("无弹性");
+		super("无摩擦");
 		setCategory(Category.MOVEMENT);
 		addSetting(friction);
 	}
