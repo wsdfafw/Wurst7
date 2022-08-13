@@ -45,7 +45,6 @@ import net.wurstclient.mixinterface.IClientPlayerInteractionManager;
 import net.wurstclient.mixinterface.ILanguageManager;
 import net.wurstclient.mixinterface.IMinecraftClient;
 import net.wurstclient.mixinterface.IWorld;
-import net.minecraft.client.RunArgs;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin
@@ -81,11 +80,6 @@ public abstract class MinecraftClientMixin
 		super(string_1);
 	}
 	
-	@Inject(method = "<init>",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setOverlay(Lnet/minecraft/client/gui/screen/Overlay;)V", shift = At.Shift.BEFORE))
-	private void init(RunArgs args, CallbackInfo ci){
-		WurstClient.init();
-	}
-
 	@Inject(at = {@At(value = "FIELD",
 		target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
 		ordinal = 0)}, method = {"doAttack()Z"}, cancellable = true)
