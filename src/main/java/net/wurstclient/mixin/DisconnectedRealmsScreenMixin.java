@@ -43,6 +43,8 @@ public class DisconnectedRealmsScreenMixin extends RealmsScreen
 			return;
 		
 		if(ForcedChatReportsScreen.isCausedByNoChatReports(reason))
+		{
 			client.setScreen(new ForcedChatReportsScreen(parent));
+		}
 	}
 }
