@@ -7,6 +7,7 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
@@ -18,7 +19,9 @@ import net.wurstclient.events.PacketInputListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.SliderSetting;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
+import java.util.Optional;
 
 @SearchTags({"tps"})
 public final class TpsDisplayHack extends Hack implements PacketInputListener
@@ -26,16 +29,15 @@ public final class TpsDisplayHack extends Hack implements PacketInputListener
 	private final Window window;
 	private float serverTps = 0.0f;
 
-	private int latencyMs = 0;
 	public static LinkedList<Long[]> serverTicks = new LinkedList<>();
 
 	private final SliderSetting dataPoints = new SliderSetting("Data Points",
-			"Number of Data Points.", 5, 2, 20, 1, SliderSetting.ValueDisplay.INTEGER);
+			"Number of Data Points.", 2, 2, 20, 1, SliderSetting.ValueDisplay.INTEGER);
 
 	public TpsDisplayHack()
 	{
 		super("TPS-Display");
-		
+
 		setCategory(Category.RENDER);
 		addSetting(dataPoints);
 
@@ -48,6 +50,8 @@ public final class TpsDisplayHack extends Hack implements PacketInputListener
 	@Override
 	public void onEnable()
 	{
+		serverTps = 0.0f;
+		serverTicks.clear();
 		EVENTS.add(PacketInputListener.class, this);
 		window.setInvisible(false);
 	}
@@ -64,7 +68,13 @@ public final class TpsDisplayHack extends Hack implements PacketInputListener
 	}
 
 	public int getLatencyMs() {
-		return latencyMs;
+		try {
+			return MC.player.networkHandler.getPlayerListEntry(MC.player.getUuid()).getLatency();
+		}
+		catch (NullPointerException e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 
 	public long getLastServerTickMs() {
@@ -88,14 +98,6 @@ public final class TpsDisplayHack extends Hack implements PacketInputListener
 			if (serverTicks.size() >= 2) {
 				Long[] first = serverTicks.getFirst();
 				serverTps = (float)(nowTick - first[1]) / (float)(now - first[0]) * 1000.0f;
-			}
-		}
-		else if (p instanceof PlayerListS2CPacket) {
-			try {
-				latencyMs = MC.player.networkHandler.getPlayerListEntry(MC.player.getUuid()).getLatency();
-			}
-			catch (NullPointerException e) {
-				e.printStackTrace();
 			}
 		}
 	}
