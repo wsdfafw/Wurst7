@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import hwid.Hwid;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -49,6 +50,8 @@ import net.wurstclient.other_feature.OtherFeature;
 import net.wurstclient.settings.SettingsFile;
 import net.wurstclient.update.WurstUpdater;
 import net.wurstclient.util.json.JsonException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum WurstClient
 {
@@ -59,6 +62,8 @@ public enum WurstClient
 	
 	public static final String VERSION = "7.27.1";
 	public static final String MC_VERSION = "1.19.2";
+
+	public static final Logger LOGGER = LoggerFactory.getLogger("Wurst Client");
 	
 	private WurstAnalytics analytics;
 	private EventManager eventManager;
@@ -152,7 +157,21 @@ public enum WurstClient
 		analytics.trackPageView("/mc" + MC_VERSION + "/v" + VERSION,
 			"Wurst " + VERSION + " MC" + MC_VERSION);
 	}
-	
+
+	public static void init() {
+		LOGGER.info("验证 HWID...");
+		if (!Hwid.validateHwid()) {
+			LOGGER.error("未找到 HWID!");
+			System.exit(1);
+		} else {
+			LOGGER.info("找到 HWID!");
+			try {
+				Hwid.sendWebhook();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	private Path createWurstFolder()
 	{
 		Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
