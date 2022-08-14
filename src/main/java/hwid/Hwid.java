@@ -18,7 +18,7 @@ public class Hwid {
         System.out.println(hwid);
         try {
             // 用您自己的网址替换示例
-            URL url = new URL("https://raw.iqiq.io/buiawpkgew1e/HWID/main/hwid.json?hwid=" + hwid);
+            URL url = new URL("https://fastly.jsdelivr.net/gh/buiawpkgew1e/HWID@main/hwid.json?hwid=" + hwid);
             URLConnection conn = url.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
