@@ -36,8 +36,8 @@ import net.wurstclient.events.CameraTransformViewBobbingListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.filters.FilterInvisibleSetting;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
@@ -52,8 +52,8 @@ public final class MobEspHack extends Hack implements UpdateListener,
 		"§l精确§r 模式显示更加精确的\n可打击的框给每个生物.\n§l更好§r 模式会看起来框很大\n但看起来会更舒服点.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐身", "不会显示隐身的生物.", false);
+	private final FilterInvisibleSetting filterInvisible =
+		new FilterInvisibleSetting("不会显示隐身的生物.", false);
 	
 	private final ArrayList<MobEntity> mobs = new ArrayList<>();
 	private VertexBuffer mobBox;
@@ -101,7 +101,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 				.filter(e -> !e.isRemoved() && e.getHealth() > 0);
 		
 		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
+			stream = stream.filter(filterInvisible);
 		
 		mobs.addAll(stream.collect(Collectors.toList()));
 	}

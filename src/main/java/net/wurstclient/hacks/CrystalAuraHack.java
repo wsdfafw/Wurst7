@@ -20,15 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
-import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.entity.mob.WaterCreatureEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,6 +42,8 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.filterlists.CrystalAuraFilterList;
+import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.FakePlayerEntity;
 import net.wurstclient.util.RotationUtils;
@@ -58,20 +52,32 @@ import net.wurstclient.util.RotationUtils.Rotation;
 @SearchTags({"crystal aura"})
 public final class CrystalAuraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("范围", "决定放置水晶的范围并\n引爆水晶.", 6.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置水晶", "当开启时, 水晶功能 将会自动\n放置当有效的实体靠近时候.\n当关闭时候, 水晶将会只会\n引爆请手动放置水晶.", true);
-    private final EnumSetting<FaceBlocks> faceBlocks = new EnumSetting("面朝水晶", "无论怎么样 水晶功能 必须面朝\n正确的方向放置并\n左键引爆重生锚.\n\n虽然会慢下来,但有效\n避开反作弊.", (Enum[])FaceBlocks.values(), (Enum)FaceBlocks.OFF);
-    private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野", "确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.", false);
-    private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting("从哪拿物品", "应该从哪拿末影水晶.", (Enum[])TakeItemsFrom.values(), (Enum)TakeItemsFrom.INVENTORY);
-    private final CheckboxSetting filterPlayers = new CheckboxSetting("排除玩家", "不会以其他玩家作为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
-    private final CheckboxSetting filterMonsters = new CheckboxSetting("排除怪物", "不会以,僵尸,苦力怕等为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
-    private final CheckboxSetting filterAnimals = new CheckboxSetting("排除动物", "不会以猪,牛,鸡等为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
-    private final CheckboxSetting filterTraders = new CheckboxSetting("排除商人", "不会以村民,流浪商人,诸如此类为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
-    private final CheckboxSetting filterGolems = new CheckboxSetting("排除傀儡们", "不会以铁傀儡,\n雪傀儡 和 潜影盒为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
-    private final CheckboxSetting filterInvisible = new CheckboxSetting("排除隐身", "不会以隐形的实体为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
-    private final CheckboxSetting filterNamed = new CheckboxSetting("排除被命名", "不会以已经被命名的实体为目标\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", false);
-    private final CheckboxSetting filterStands = new CheckboxSetting("排除盔甲架", "不会以盔甲架为目标.\n当自动放置开启时.\n\n他们仍会受到伤害\n当他们足够靠近有效\n目标或一个存在的末影水晶.", true);
-
+	private final SliderSetting range = new SliderSetting("范围",
+		"决定放置水晶的范围并\n引爆水晶",
+		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting autoPlace = new CheckboxSetting(
+		"自动放置水晶",
+		"当开启时, 水晶功能 将会自动\n放置当有效的实体靠近时候.\n当关闭时候, 水晶将会只会\n引爆请手动放置水晶.",
+		true);
+	
+	private final EnumSetting<FaceBlocks> faceBlocks = new EnumSetting<>(
+		"面朝水晶",
+		"无论怎么样 水晶功能 必须面朝\n正确的方向放置并\n左键引爆重生锚.\n\n虽然会慢下来,但有效\n避开反作弊",
+		FaceBlocks.values(), FaceBlocks.OFF);
+	
+	private final CheckboxSetting checkLOS = new CheckboxSetting(
+		"检查视野",
+		"确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.",
+		false);
+	
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
+		new EnumSetting<>("从哪拿物品", "应该从哪拿末影水晶.",
+			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	
+	private final EntityFilterList entityFilters =
+		CrystalAuraFilterList.create();
+	
 	public CrystalAuraHack()
 	{
 		super("水晶光环");
@@ -83,14 +89,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		addSetting(checkLOS);
 		addSetting(takeItemsFrom);
 		
-		addSetting(filterPlayers);
-		addSetting(filterMonsters);
-		addSetting(filterAnimals);
-		addSetting(filterTraders);
-		addSetting(filterGolems);
-		addSetting(filterInvisible);
-		addSetting(filterNamed);
-		addSetting(filterStands);
+		entityFilters.forEach(this::addSetting);
 	}
 	
 	@Override
@@ -305,31 +304,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 				.filter(e -> !WURST.getFriends().contains(e.getEntityName()))
 				.filter(e -> MC.player.squaredDistanceTo(e) <= rangeSq);
 		
-		if(filterPlayers.isChecked())
-			stream = stream.filter(e -> !(e instanceof PlayerEntity));
-		
-		if(filterMonsters.isChecked())
-			stream = stream.filter(e -> !(e instanceof Monster));
-		
-		if(filterAnimals.isChecked())
-			stream = stream.filter(
-				e -> !(e instanceof AnimalEntity || e instanceof AmbientEntity
-					|| e instanceof WaterCreatureEntity));
-		
-		if(filterTraders.isChecked())
-			stream = stream.filter(e -> !(e instanceof MerchantEntity));
-		
-		if(filterGolems.isChecked())
-			stream = stream.filter(e -> !(e instanceof GolemEntity));
-		
-		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
-		
-		if(filterNamed.isChecked())
-			stream = stream.filter(e -> !e.hasCustomName());
-		
-		if(filterStands.isChecked())
-			stream = stream.filter(e -> !(e instanceof ArmorStandEntity));
+		stream = entityFilters.applyTo(stream);
 		
 		return stream.sorted(furthestFromPlayer)
 			.collect(Collectors.toCollection(ArrayList::new));
@@ -420,9 +395,9 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	
 	private enum TakeItemsFrom
 	{
-		HOTBAR("快捷栏", 9),
+		HOTBAR("Hotbar", 9),
 		
-		INVENTORY("背包", 36);
+		INVENTORY("Inventory", 36);
 		
 		private final String name;
 		private final int maxInvSlot;

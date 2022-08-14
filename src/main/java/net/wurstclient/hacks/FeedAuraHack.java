@@ -35,10 +35,10 @@ import net.wurstclient.events.PostMotionListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.filters.FilterBabiesSetting;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
@@ -47,9 +47,17 @@ import net.wurstclient.util.RotationUtils;
 public final class FeedAuraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围", "决定 范围喂养 的范围\n来喂动物食物.\n任何东西一旦远离\n指定的数值不会喂.", 5.0, 1.0, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Priority> priority = new EnumSetting("有限度", "决定哪只动物会优先喂养.\n§l距离§r - 喂养最近的动物.\n§l角度§r - 喂养动物所需要的\n最后头位置所可以喂养的角度.\n§l生命§r - 喂养血量最少的动物.", (Enum[])Priority.values(), (Enum)Priority.ANGLE);
-    private final CheckboxSetting filterBabies = new CheckboxSetting("排除婴儿", "不会喂食任何的婴儿.\n节省食物,但长大会很慢.", false);
+	private final SliderSetting range = new SliderSetting("范围",
+		"决定 范围喂养 的范围\n来喂动物食物.\n任何东西一旦远离\n指定的数值不会喂",
+		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<Priority> priority = new EnumSetting<>("有限度",
+		"决定哪只动物会优先喂养.\n§l距离§r - 喂养最近的动物.\n§l角度§r - 喂养动物所需要的\n最后头位置所可以喂养的角度.\n§l生命§r - 喂养血量最少的动物",
+		Priority.values(), Priority.ANGLE);
+	
+	private final FilterBabiesSetting filterBabies = new FilterBabiesSetting(
+		"不会喂食任何的婴儿.\n节省食物,但长大会很慢.",
+		false);
 	
 	private AnimalEntity target;
 	private AnimalEntity renderTarget;
@@ -107,7 +115,7 @@ public final class FeedAuraHack extends Hack
 			.filter(AnimalEntity::canEat);
 		
 		if(filterBabies.isChecked())
-			stream = stream.filter(e -> !e.isBaby());
+			stream = stream.filter(filterBabies);
 		
 		target = stream.min(priority.getSelected().comparator).orElse(null);
 		renderTarget = target;
