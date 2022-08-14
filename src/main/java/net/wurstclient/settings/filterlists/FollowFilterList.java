@@ -24,46 +24,46 @@ public final class FollowFilterList extends EntityFilterList
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
 		builder.add(
-			new FilterPlayersSetting("Won't follow other players.", false));
+			new FilterPlayersSetting("不会跟随其他玩家.", false));
 		
 		builder.add(
-			new FilterSleepingSetting("Won't follow sleeping players.", false));
+			new FilterSleepingSetting("不会跟随睡觉的玩家.", false));
 		
 		builder.add(new FilterFlyingSetting(
-			"Won't follow players that are at least the given distance above ground.",
+			"不会跟随距离地面至少给定距离的玩家.",
 			0));
 		
 		builder.add(new FilterMonstersSetting(
-			"Won't follow zombies, creepers, etc.", true));
+			"不会跟随僵尸、爬行者等.", true));
 		
 		builder
-			.add(new FilterPigmenSetting("Won't follow zombie pigmen.", true));
+			.add(new FilterPigmenSetting("不会跟随僵尸猪人.", true));
 		
-		builder.add(new FilterEndermenSetting("Won't follow endermen.", true));
+		builder.add(new FilterEndermenSetting("不会跟随末影人.", true));
 		
 		builder.add(
-			new FilterAnimalsSetting("Won't follow pigs, cows, etc.", true));
+			new FilterAnimalsSetting("不会跟随猪、牛等.", true));
 		
 		builder.add(new FilterBabiesSetting(
-			"Won't follow baby pigs, baby villagers, etc.", true));
+			"不会跟随小猪、小村民等.", true));
 		
 		builder.add(new FilterPetsSetting(
-			"Won't follow tamed wolves, tamed horses, etc.", true));
+			"不会跟随驯服的狼、驯服的马等.", true));
 		
 		builder.add(new FilterTradersSetting(
-			"Won't follow villagers, wandering traders, etc.", true));
+			"不会跟随村民、流浪商人等.", true));
 		
 		builder.add(new FilterGolemsSetting(
-			"Won't follow iron golems, snow golems and shulkers.", true));
+			"不会跟随铁傀儡、雪傀儡和潜影贝.", true));
 		
 		builder.add(new FilterInvisibleSetting(
-			"Won't follow invisible entities.", false));
+			"不会跟随隐形实体.", false));
 		
 		builder.add(
-			new FilterArmorStandsSetting("Won't follow armor stands.", true));
+			new FilterArmorStandsSetting("不会跟随盔甲架.", true));
 		
 		builder
-			.add(new FilterMinecartsSetting("Won't follow minecarts.", true));
+			.add(new FilterMinecartsSetting("不会跟随矿车.", true));
 		
 		return new FollowFilterList(builder);
 	}

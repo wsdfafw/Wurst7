@@ -24,10 +24,10 @@ public final class RemoteViewFilterList extends EntityFilterList
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
 		builder
-			.add(new FilterPlayersSetting("Won't view other players.", false));
+			.add(new FilterPlayersSetting("不会查看其他玩家.", false));
 		
 		builder.add(
-			new FilterSleepingSetting("Won't view sleeping players.", false));
+			new FilterSleepingSetting("不会查看正在睡觉的玩家.", false));
 		
 		builder.add(new FilterFlyingSetting(
 			"Won't view players that are at least the given distance above ground.",
@@ -59,7 +59,7 @@ public final class RemoteViewFilterList extends EntityFilterList
 			false));
 		
 		builder.add(
-			new FilterArmorStandsSetting("Won't view armor stands.", true));
+			new FilterArmorStandsSetting("不会查看盔甲架.", true));
 		
 		return new RemoteViewFilterList(builder);
 	}

@@ -23,45 +23,45 @@ public final class CrystalAuraFilterList extends EntityFilterList
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		String damageWarning =
-			"\n\nThey can still take damage if they get too close to a valid target or an existing crystal.";
+			"\n\n如果他们离有效目标或现有水晶太近，他们仍然会受到伤害.";
 		
 		builder.add(new FilterPlayersSetting(
-			"Won't target other players when auto-placing crystals."
+			"自动放置水晶时不会瞄准其他玩家."
 				+ damageWarning,
 			false));
 		
 		builder.add(new FilterMonstersSetting(
-			"Won't target zombies, creepers, etc. when auto-placing crystals."
+			"自动放置水晶时不会瞄准僵尸、爬行者等."
 				+ damageWarning,
 			true));
 		
 		builder.add(new FilterAnimalsSetting(
-			"Won't target pigs, cows, etc. when auto-placing crystals."
+			"自动放置水晶时不会瞄准猪、牛等."
 				+ damageWarning,
 			true));
 		
 		builder.add(new FilterTradersSetting(
-			"Won't target villagers, wandering traders, etc. when auto-placing crystals."
+			"自动放置水晶时不会瞄准村民、流浪商人等."
 				+ damageWarning,
 			true));
 		
 		builder.add(new FilterGolemsSetting(
-			"Won't target iron golems, snow golems and shulkers when auto-placing crystals."
+			"自动放置水晶时不会瞄准铁傀儡、雪傀儡和潜影贝."
 				+ damageWarning,
 			true));
 		
 		builder.add(new FilterInvisibleSetting(
-			"Won't target invisible entities when auto-placing crystals."
+			"自动放置水晶时不会瞄准隐形实体."
 				+ damageWarning,
 			false));
 		
 		builder.add(new FilterNamedSetting(
-			"Won't target name-tagged entities when auto-placing crystals."
+			"自动放置水晶时不会以带有名称标签的实体为目标."
 				+ damageWarning,
 			false));
 		
 		builder.add(new FilterArmorStandsSetting(
-			"Won't target armor stands when auto-placing crystals."
+			"自动放置水晶时不会瞄准盔甲架."
 				+ damageWarning,
 			true));
 		

@@ -16,7 +16,7 @@ public final class FilterAnimalsSetting extends EntityFilterCheckbox
 {
 	public FilterAnimalsSetting(String description, boolean checked)
 	{
-		super("Filter animals", description, checked);
+		super("排除动物", description, checked);
 	}
 	
 	@Override
