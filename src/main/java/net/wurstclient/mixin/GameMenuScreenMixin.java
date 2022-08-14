@@ -80,10 +80,10 @@ public abstract class GameMenuScreenMixin extends Screen
 		if(buttonY == -1 || buttonI == -1)
 			throw new CrashException(
 				CrashReport.create(new IllegalStateException(),
-					"有人删除了“反馈”按钮!"));
+					"Someone deleted the Feedback button!"));
 		
 		wurstOptionsButton = new ButtonWidget(width / 2 - 102, buttonY, 204, 20,
-			Text.literal("            选项"), b -> openWurstOptions());
+			Text.literal("            Options"), b -> openWurstOptions());
 		buttons.add(buttonI, wurstOptionsButton);
 	}
 	

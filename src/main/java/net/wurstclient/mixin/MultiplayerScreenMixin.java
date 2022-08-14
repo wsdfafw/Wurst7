@@ -57,15 +57,15 @@ public class MultiplayerScreenMixin extends Screen implements IMultiplayerScreen
 			return;
 		
 		lastServerButton = addDrawableChild(new ButtonWidget(width / 2 - 154,
-			10, 100, 20, Text.literal("连接最后连服务器"), b -> LastServerRememberer
+			10, 100, 20, Text.literal("Last Server"), b -> LastServerRememberer
 				.joinLastServer((MultiplayerScreen)(Object)this)));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 154 + 4, height - 52, 100,
-			20, Text.literal("服务器寻找器"), b -> client.setScreen(
+			20, Text.literal("Server Finder"), b -> client.setScreen(
 				new ServerFinderScreen((MultiplayerScreen)(Object)this))));
 		
 		addDrawableChild(new ButtonWidget(width / 2 + 154 + 4, height - 28, 100,
-			20, Text.literal("服务器列表清理"), b -> client.setScreen(
+			20, Text.literal("Clean Up"), b -> client.setScreen(
 				new CleanUpScreen((MultiplayerScreen)(Object)this))));
 	}
 	

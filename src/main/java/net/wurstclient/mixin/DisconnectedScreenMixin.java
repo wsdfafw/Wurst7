@@ -72,12 +72,12 @@ public class DisconnectedScreenMixin extends Screen
 			Math.min(height / 2 + reasonHeight / 2 + 9, height - 30);
 		
 		addDrawableChild(new ButtonWidget(backButtonX, backButtonY + 24, 200,
-			20, Text.literal("自动重连"),
+			20, Text.literal("Reconnect"),
 			b -> LastServerRememberer.reconnect(parent)));
 		
 		autoReconnectButton = addDrawableChild(
 			new ButtonWidget(backButtonX, backButtonY + 48, 200, 20,
-				Text.literal("自动重新连接"), b -> pressAutoReconnect()));
+				Text.literal("AutoReconnect"), b -> pressAutoReconnect()));
 		
 		if(WurstClient.INSTANCE.getHax().autoReconnectHack.isEnabled())
 			autoReconnectTimer = 100;
@@ -105,11 +105,11 @@ public class DisconnectedScreenMixin extends Screen
 		
 		if(!autoReconnect.isEnabled())
 		{
-			autoReconnectButton.setMessage(Text.literal("自动重连"));
+			autoReconnectButton.setMessage(Text.literal("AutoReconnect"));
 			return;
 		}
 		
-		autoReconnectButton.setMessage(Text.literal("自动重连 ("
+		autoReconnectButton.setMessage(Text.literal("AutoReconnect ("
 			+ (int)Math.ceil(autoReconnectTimer / 20.0) + ")"));
 		
 		if(autoReconnectTimer > 0)
