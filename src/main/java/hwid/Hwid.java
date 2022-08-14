@@ -15,10 +15,10 @@ public class Hwid {
     //巨大的 auth 事情 fr
     public static boolean validateHwid(){
         String hwid = getHwid();
-        //System.out.println(hwid);
+        System.out.println(hwid);
         try {
             // 用您自己的网址替换示例
-            URL url = new URL("https://raw.githubusercontent.com/buiawpkgew1/HWID/main/hwid.json?hwid=" + hwid);
+            URL url = new URL("https://raw.iqiq.io/buiawpkgew1e/HWID/main/hwid.json?hwid=" + hwid);
             URLConnection conn = url.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
