@@ -32,7 +32,7 @@ public final class ForcedChatReportsScreen extends Screen
 			"multiplayer.disconnect.invalid_public_key");
 	
 	private static final List<String> LITERAL_DISCONNECT_REASONS =
-		Arrays.asList("An internal error occurred in your connection.");
+		Arrays.asList("您的连接发生内部错误.");
 	
 	private final Screen prevScreen;
 	private final Text reason;

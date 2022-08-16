@@ -42,7 +42,7 @@ public class DisconnectedRealmsScreenMixin extends RealmsScreen
 		if(!WurstClient.INSTANCE.isEnabled())
 			return;
 		
-		System.out.println("Realms disconnected: " + reason);
+		System.out.println("领域断开连接: " + reason);
 		
 		if(ForcedChatReportsScreen.isCausedByNoChatReports(reason))
 			client.setScreen(new ForcedChatReportsScreen(parent));
