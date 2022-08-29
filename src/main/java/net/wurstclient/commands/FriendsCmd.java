@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
  *
@@ -139,4 +138,3 @@ public class FriendsCmd extends Command
 		return middleClickFriends;
 	}
 }
->>>>>>> upstream/1.19
