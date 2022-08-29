@@ -24,7 +24,7 @@ public final class VanillaSpoofOtf extends OtherFeature
 	implements ConnectionPacketOutputListener
 {
 	private final CheckboxSetting spoof =
-		new CheckboxSetting("原版伪装", false);
+		new CheckboxSetting("Spoof Vanilla", false);
 	
 	public VanillaSpoofOtf()
 	{
@@ -69,7 +69,7 @@ public final class VanillaSpoofOtf extends OtherFeature
 	@Override
 	public String getPrimaryAction()
 	{
-		return isEnabled() ? "禁用" : "启用";
+		return isEnabled() ? "Disable" : "Enable";
 	}
 	
 	@Override

@@ -31,11 +31,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -72,34 +74,34 @@ public abstract class AltEditorScreen extends Screen
 	{
 		addDrawableChild(doneButton =
 			new ButtonWidget(width / 2 - 100, height / 4 + 72 + 12, 200, 20,
-				Text.literal(getDoneButtonText()), b -> pressDoneButton()));
+				new LiteralText(getDoneButtonText()), b -> pressDoneButton()));
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200, 20,
-				Text.literal("取消"), b -> client.setScreen(prevScreen)));
+				Text.literal("Cancel"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12,
-			200, 20, Text.literal("随机名称"),
+			200, 20, Text.literal("Random Name"),
 			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
 		
 		addDrawableChild(stealSkinButton =
 			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
-				128, 20, Text.literal("盗取皮肤"),
+				128, 20, Text.literal("Steal Skin"),
 				b -> message = stealSkin(getNameOrEmail())));
 		
 		addDrawableChild(
 			new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128, 20,
-				Text.literal("打开皮肤文件夹"), b -> openSkinFolder()));
+				Text.literal("Open Skin Folder"), b -> openSkinFolder()));
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
-			200, 20, Text.literal(""));
+			200, 20, new LiteralText(""));
 		nameOrEmailBox.setMaxLength(48);
 		nameOrEmailBox.setTextFieldFocused(true);
 		nameOrEmailBox.setText(getDefaultNameOrEmail());
 		addSelectableChild(nameOrEmailBox);
 		
 		passwordBox = new TextFieldWidget(textRenderer, width / 2 - 100, 100,
-			200, 20, Text.literal(""));
+			200, 20, new LiteralText(""));
 		passwordBox.setText(getDefaultPassword());
 		passwordBox.setRenderTextProvider((text, int_1) -> {
 			String stars = "";
@@ -341,8 +343,7 @@ public abstract class AltEditorScreen extends Screen
 		renderBackground(matrixStack);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// skin preview
@@ -383,7 +384,8 @@ public abstract class AltEditorScreen extends Screen
 			bufferBuilder.vertex(matrix, width, 0, 0).next();
 			bufferBuilder.vertex(matrix, width, height, 0).next();
 			bufferBuilder.vertex(matrix, 0, height, 0).next();
-			tessellator.draw();
+			bufferBuilder.end();
+			BufferRenderer.draw(bufferBuilder);
 			
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_BLEND);

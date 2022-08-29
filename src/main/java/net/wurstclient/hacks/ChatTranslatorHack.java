@@ -7,6 +7,7 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
@@ -27,14 +28,14 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 		new GoogleTranslate();
 	
 	private final EnumSetting<FromLanguage> langFrom = new EnumSetting<>(
-		"讲语言", FromLanguage.values(), FromLanguage.AUTO_DETECT);
+		"Translate from", FromLanguage.values(), FromLanguage.AUTO_DETECT);
 	
 	private final EnumSetting<ToLanguage> langTo = new EnumSetting<>(
-		"翻译成", ToLanguage.values(), ToLanguage.ENGLISH);
+		"Translate to", ToLanguage.values(), ToLanguage.ENGLISH);
 	
 	public ChatTranslatorHack()
 	{
-		super("聊天翻译");
+		super("ChatTranslator");
 		setCategory(Category.CHAT);
 		
 		addSetting(langFrom);
@@ -85,8 +86,8 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 		if(translated == null)
 			return;
 		
-		Text translationMsg =
-			Text.literal(translatorPrefix).append(Text.literal(translated));
+		Text translationMsg = new LiteralText(translatorPrefix)
+			.append(new LiteralText(translated));
 		
 		MC.inGameHud.getChatHud().addMessage(translationMsg);
 	}

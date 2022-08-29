@@ -7,13 +7,12 @@
  */
 package net.wurstclient.hacks;
 
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.util.math.MathHelper;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.ISimpleOption;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
@@ -24,9 +23,18 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 	"FulLightness", "full lightness", "FullGamma", "full gamma"})
 public final class FullbrightHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Method> method = new EnumSetting("方法", "§l光亮Gamma§r 会设置你的\n的伽马值超过100%,但不会在有光影条件下工作.\n\n§l夜视§r 利用夜视效果的方法\n这个 §o通常§r 兼容\n光影水反效果.", (Enum[])Method.values(), (Enum)Method.GAMMA);
-    private final CheckboxSetting fade = new CheckboxSetting("渐变", "在明亮和黑暗之间转变的渐变.", true);
-    private final SliderSetting defaultGamma = new SliderSetting("默认亮度", "无限夜视功能 关闭后将会设置的你的\n光亮度回到这个数值.", 0.5, 0.0, 1.0, 0.01, SliderSetting.ValueDisplay.PERCENTAGE);
+	private final EnumSetting<Method> method = new EnumSetting<>("Method",
+		"\u00a7lGamma\u00a7r works by setting your brightness slider beyond 100%. Incompatible with shader packs.\n\n"
+			+ "\u00a7lNight Vision\u00a7r works by applying the night vision effect. This \u00a7ousually\u00a7r works with shader packs.",
+		Method.values(), Method.GAMMA);
+	
+	private final CheckboxSetting fade = new CheckboxSetting("Fade",
+		"Slowly fades between brightness and darkness.", true);
+	
+	private final SliderSetting defaultGamma = new SliderSetting(
+		"Default brightness",
+		"Fullbright will set your brightness slider back to this value when you turn it off.",
+		0.5, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	private boolean wasGammaChanged;
 	private float nightVisionStrength;
@@ -50,7 +58,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			@Override
 			public void onUpdate()
 			{
-				double gamma = MC.options.getGamma().getValue();
+				double gamma = MC.options.gamma;
 				System.out.println("Brightness started at " + gamma);
 				
 				if(gamma > 1)
@@ -88,44 +96,35 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	private void setGamma(double target)
 	{
 		wasGammaChanged = true;
+		GameOptions options = MC.options;
 		
-		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
-		double oldGammaValue = gammaOption.getValue();
-		
-		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
 		{
-			gammaOption2.forceSetValue(target);
+			options.gamma = target;
 			return;
 		}
 		
-		if(oldGammaValue < target)
-			gammaOption2.forceSetValue(oldGammaValue + 0.5);
+		if(options.gamma < target)
+			options.gamma += 0.5;
 		else
-			gammaOption2.forceSetValue(oldGammaValue - 0.5);
+			options.gamma -= 0.5;
 	}
 	
 	private void resetGamma(double target)
 	{
-		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
-		double oldGammaValue = gammaOption.getValue();
+		GameOptions options = MC.options;
 		
-		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
 		{
-			gammaOption2.forceSetValue(target);
+			options.gamma = target;
 			wasGammaChanged = false;
 			return;
 		}
 		
-		if(oldGammaValue < target)
-			gammaOption2.forceSetValue(oldGammaValue + 0.5);
+		if(options.gamma < target)
+			options.gamma += 0.5;
 		else
-			gammaOption2.forceSetValue(oldGammaValue - 0.5);
+			options.gamma -= 0.5;
 	}
 	
 	private void updateNightVision()
@@ -160,8 +159,8 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	
 	private static enum Method
 	{
-		GAMMA("伽马Gamma"),
-		NIGHT_VISION("夜视药");
+		GAMMA("Gamma"),
+		NIGHT_VISION("Night Vision");
 		
 		private final String name;
 		

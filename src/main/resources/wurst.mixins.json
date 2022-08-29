@@ -1,6 +1,5 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "net.wurstclient.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
@@ -30,7 +29,6 @@
     "EntityMixin",
     "EntityRendererMixin",
     "FishingBobberEntityMixin",
-    "FluidBlockMixin",
     "FluidRendererMixin",
     "GameMenuScreenMixin",
     "GameRendererMixin",
@@ -52,11 +50,11 @@
     "ServerListMixin",
     "ShulkerBoxScreenMixin",
     "SignEditScreenMixin",
-    "SimpleOptionMixin",
     "SodiumBlockOcclusionCacheMixin",
     "StatsScreenMixin",
     "StatusEffectInstanceMixin",
     "SwordItemMixin",
+    "TelemetrySenderMixin",
     "TerrainRenderContextMixin",
     "TextVisitFactoryMixin",
     "TitleScreenMixin",

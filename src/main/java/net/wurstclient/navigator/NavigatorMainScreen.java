@@ -19,12 +19,13 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.Feature;
 import net.wurstclient.WurstClient;
@@ -64,7 +65,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		int txtColor = gui.getTxtColor();
 		
 		TextRenderer tr = WurstClient.MC.textRenderer;
-		searchBar = new TextFieldWidget(tr, 0, 32, 200, 20, Text.literal(""));
+		searchBar =
+			new TextFieldWidget(tr, 0, 32, 200, 20, new LiteralText(""));
 		searchBar.setEditableColor(txtColor);
 		searchBar.setDrawsBackground(false);
 		searchBar.setMaxLength(128);
@@ -295,8 +297,7 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			int yt2 = yt1 + th + 2;
 			
 			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
+			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 			RenderSystem.setShader(GameRenderer::getPositionShader);
 			
 			// background
@@ -308,7 +309,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
 			bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
 			bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-			tessellator.draw();
+			bufferBuilder.end();
+			BufferRenderer.draw(bufferBuilder);
 			
 			// outline
 			RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2],
@@ -320,7 +322,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
 			bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
 			bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-			tessellator.draw();
+			bufferBuilder.end();
+			BufferRenderer.draw(bufferBuilder);
 			
 			// text
 			for(int i = 0; i < lines.length; i++)
@@ -415,8 +418,7 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			area.y + area.height);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// separator
@@ -429,7 +431,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			VertexFormats.POSITION);
 		bufferBuilder.vertex(matrix, bx1, by1, 0).next();
 		bufferBuilder.vertex(matrix, bx1, by2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// hovering
 		if(hovering)
@@ -451,7 +454,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		bufferBuilder.vertex(matrix, ax1, ay1, 0).next();
 		bufferBuilder.vertex(matrix, ax2, ay1, 0).next();
 		bufferBuilder.vertex(matrix, ax3, ay2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// arrow shadow
 		RenderSystem.setShaderColor(0.0625F, 0.0625F, 0.0625F, 0.5F);
@@ -461,7 +465,8 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		bufferBuilder.vertex(matrix, ax2, ay1, 0).next();
 		bufferBuilder.vertex(matrix, ax3, ay2, 0).next();
 		bufferBuilder.vertex(matrix, ax1, ay1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// text
 		if(!clickTimerRunning)

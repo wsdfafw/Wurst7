@@ -28,7 +28,6 @@ import net.wurstclient.events.ShouldDrawSideListener;
 import net.wurstclient.events.TesselateBlockListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.ISimpleOption;
 import net.wurstclient.settings.BlockListSetting;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.ChatUtils;
@@ -38,7 +37,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	SetOpaqueCubeListener, GetAmbientOcclusionLightLevelListener,
 	ShouldDrawSideListener, TesselateBlockListener, RenderBlockEntityListener
 {
-	private final BlockListSetting ores = new BlockListSetting("矿石", "",
+	private final BlockListSetting ores = new BlockListSetting("Ores", "",
 		"minecraft:ancient_debris", "minecraft:anvil", "minecraft:beacon",
 		"minecraft:bone_block", "minecraft:bookshelf",
 		"minecraft:brewing_stand", "minecraft:chain_command_block",
@@ -73,7 +72,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	
 	public XRayHack()
 	{
-		super("透视");
+		super("X-Ray");
 		setCategory(Category.RENDER);
 		addSetting(ores);
 		
@@ -84,7 +83,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
 		
 		if(mods.stream().anyMatch(optifine.asPredicate()))
-			warning = "OptiFine 已安装.X-射线无法正常工作!";
+			warning = "OptiFine is installed. X-Ray will not work properly!";
 		else
 			warning = null;
 	}
@@ -123,24 +122,14 @@ public final class XRayHack extends Hack implements UpdateListener,
 		EVENTS.remove(RenderBlockEntityListener.class, this);
 		MC.worldRenderer.reload();
 		
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption =
-			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
-		// TODO: Why does this use 0.5 instead of
-		// FullBright's defaultGamma setting?
 		if(!WURST.getHax().fullbrightHack.isEnabled())
-			gammaOption.forceSetValue(0.5);
+			MC.options.gamma = 0.5F;
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption =
-			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
-		gammaOption.forceSetValue(16.0);
+		MC.options.gamma = 16;
 	}
 	
 	@Override

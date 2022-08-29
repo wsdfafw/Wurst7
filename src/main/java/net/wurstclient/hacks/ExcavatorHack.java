@@ -21,6 +21,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -331,8 +332,7 @@ public final class ExcavatorHack extends Hack
 		matrixStack.push();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		String message;
 		if(step.selectPos && step.pos != null)
@@ -357,7 +357,8 @@ public final class ExcavatorHack extends Hack
 		bufferBuilder.vertex(matrix, msgWidth + 2, 0, 0).next();
 		bufferBuilder.vertex(matrix, msgWidth + 2, 10, 0).next();
 		bufferBuilder.vertex(matrix, 0, 10, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// text
 		tr.draw(matrixStack, message, 2, 1, 0xffffffff);

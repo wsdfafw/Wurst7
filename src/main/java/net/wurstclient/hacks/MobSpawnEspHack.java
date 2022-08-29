@@ -20,7 +20,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -57,20 +56,20 @@ public final class MobSpawnEspHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
 	private final EnumSetting<DrawDistance> drawDistance = new EnumSetting<>(
-		"绘制距离", DrawDistance.values(), DrawDistance.D9);
+		"Draw distance", DrawDistance.values(), DrawDistance.D9);
 	
 	private final SliderSetting loadingSpeed = new SliderSetting(
-		"载入速度", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
+		"Loading speed", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
 	
 	private final CheckboxSetting depthTest =
-		new CheckboxSetting("深度测试", true);
+		new CheckboxSetting("Depth test", true);
 	
 	private final HashMap<Chunk, ChunkScanner> scanners = new HashMap<>();
 	private ExecutorService pool;
 	
 	public MobSpawnEspHack()
 	{
-		super("生物生成透视");
+		super("MobSpawnESP");
 		setCategory(Category.RENDER);
 		addSetting(drawDistance);
 		addSetting(loadingSpeed);
@@ -248,9 +247,7 @@ public final class MobSpawnEspHack extends Hack
 			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
-			scanner.vertexBuffer.bind();
-			scanner.vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			scanner.vertexBuffer.setShader(viewMatrix, projMatrix, shader);
 			
 			matrixStack.pop();
 		}
@@ -337,8 +334,7 @@ public final class MobSpawnEspHack extends Hack
 				vertexBuffer.close();
 			
 			vertexBuffer = new VertexBuffer();
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
+			BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 			
 			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 				VertexFormats.POSITION_COLOR);
@@ -377,10 +373,8 @@ public final class MobSpawnEspHack extends Hack
 						.color(1, 1, 0, 0.5F).next();
 				});
 			
-			BuiltBuffer buffer = bufferBuilder.end();
-			vertexBuffer.bind();
-			vertexBuffer.upload(buffer);
-			VertexBuffer.unbind();
+			bufferBuilder.end();
+			vertexBuffer.upload(bufferBuilder);
 			
 			doneCompiling = true;
 		}
@@ -400,18 +394,18 @@ public final class MobSpawnEspHack extends Hack
 	
 	private enum DrawDistance
 	{
-		D3("3x3 区块", 1),
-		D5("5x5 区块", 2),
-		D7("7x7 区块", 3),
-		D9("9x9 区块", 4),
-		D11("11x11 区块", 5),
-		D13("13x13 区块", 6),
-		D15("15x15 区块", 7),
-		D17("17x17 区块", 8),
-		D19("19x19 区块", 9),
-		D21("21x21 区块", 10),
-		D23("23x23 区块", 11),
-		D25("25x25 区块", 12);
+		D3("3x3 chunks", 1),
+		D5("5x5 chunks", 2),
+		D7("7x7 chunks", 3),
+		D9("9x9 chunks", 4),
+		D11("11x11 chunks", 5),
+		D13("13x13 chunks", 6),
+		D15("15x15 chunks", 7),
+		D17("17x17 chunks", 8),
+		D19("19x19 chunks", 9),
+		D21("21x21 chunks", 10),
+		D23("23x23 chunks", 11),
+		D25("25x25 chunks", 12);
 		
 		private final String name;
 		private final int chunkRange;

@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -81,8 +82,7 @@ public final class FileComponent extends Component
 		boolean hBox = hovering && mouseX >= x3;
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// tooltip
@@ -90,7 +90,7 @@ public final class FileComponent extends Component
 			gui.setTooltip(setting.getWrappedDescription(200));
 		else if(hBox)
 		{
-			String tooltip = "\u00a7e[左键]\u00a7r 选择文件";
+			String tooltip = "\u00a7e[left-click]\u00a7r to select file";
 			gui.setTooltip(tooltip);
 		}
 		
@@ -103,7 +103,8 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// box
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
@@ -114,7 +115,8 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x3, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
 			VertexFormats.POSITION);
@@ -123,7 +125,8 @@ public final class FileComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
 		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// setting name
 		RenderSystem.setShaderColor(1, 1, 1, 1);

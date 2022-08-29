@@ -7,9 +7,10 @@
  */
 package net.wurstclient.other_features;
 
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.option.GameOptions;
 import net.wurstclient.DontBlock;
 import net.wurstclient.SearchTags;
+import net.wurstclient.WurstClient;
 import net.wurstclient.events.MouseScrollListener;
 import net.wurstclient.other_feature.OtherFeature;
 import net.wurstclient.settings.CheckboxSetting;
@@ -25,8 +26,8 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 		50, 0.1, ValueDisplay.DECIMAL.withSuffix("x"));
 	
 	private final CheckboxSetting scroll = new CheckboxSetting(
-		"Use mouse wheel", "If enabled, you can use the mouse wheel\n"
-			+ "while zooming to zoom in even further.",
+		"Use mouse wheel",
+		"If enabled, you can use the mouse wheel while zooming to zoom in even further.",
 		true);
 	
 	private Double currentLevel;
@@ -44,8 +45,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public double changeFovBasedOnZoom(double fov)
 	{
-		SimpleOption<Double> mouseSensitivitySetting =
-			MC.options.getMouseSensitivity();
+		GameOptions gameOptions = WurstClient.MC.options;
 		
 		if(currentLevel == null)
 			currentLevel = level.getValue();
@@ -56,7 +56,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 			
 			if(defaultMouseSensitivity != null)
 			{
-				mouseSensitivitySetting.setValue(defaultMouseSensitivity);
+				gameOptions.mouseSensitivity = defaultMouseSensitivity;
 				defaultMouseSensitivity = null;
 			}
 			
@@ -64,13 +64,13 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 		}
 		
 		if(defaultMouseSensitivity == null)
-			defaultMouseSensitivity = mouseSensitivitySetting.getValue();
+			defaultMouseSensitivity = gameOptions.mouseSensitivity;
 			
 		// Adjust mouse sensitivity in relation to zoom level.
-		// 1.0 / currentLevel is a value between 0.02 (50x zoom)
+		// (fov / currentLevel) / fov is a value between 0.02 (50x zoom)
 		// and 1 (no zoom).
-		mouseSensitivitySetting
-			.setValue(defaultMouseSensitivity * (1.0 / currentLevel));
+		gameOptions.mouseSensitivity =
+			defaultMouseSensitivity * (fov / currentLevel / fov);
 		
 		return fov / currentLevel;
 	}

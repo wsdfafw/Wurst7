@@ -30,7 +30,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -70,19 +69,21 @@ import net.wurstclient.util.RotationUtils;
 public final class CaveFinderHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final EnumSetting<Area> area = new EnumSetting<>("区域", 
-		"将会以玩家附近的区域寻找.\n越高的数值需要越好的电脑.",
+	private final EnumSetting<Area> area = new EnumSetting<>("Area",
+		"The area around the player to search in.\n"
+			+ "Higher values require a faster computer.",
 		Area.values(), Area.D11);
 	
-	private final SliderSetting limit = new SliderSetting("限制", 
-		"最大方块所显示的限制.\n越高数值需要越好的电脑.",
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"The maximum number of blocks to display.\n"
+			+ "Higher values require a faster computer.",
 		5, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	
-	private final ColorSetting color = new ColorSetting("颜色", 
-		"洞穴将会被高亮以\n这种颜色.", Color.RED);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Caves will be highlighted in this color.", Color.RED);
 	
-	private final SliderSetting opacity = new SliderSetting("不透明度", 
-		"高亮需要被设置透明度的数值.\n" + "0 = breathing animation", 0,
+	private final SliderSetting opacity = new SliderSetting("Opacity",
+		"How opaque the highlights should be.\n" + "0 = breathing animation", 0,
 		0, 1, 0.01, ValueDisplay.PERCENTAGE.withLabel(0, "breathing"));
 	
 	private int prevLimit;
@@ -102,7 +103,7 @@ public final class CaveFinderHack extends Hack
 	
 	public CaveFinderHack()
 	{
-		super("洞穴寻找器");
+		super("CaveFinder");
 		setCategory(Category.RENDER);
 		addSetting(area);
 		addSetting(limit);
@@ -241,9 +242,7 @@ public final class CaveFinderHack extends Hack
 			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
 			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
 			Shader shader = RenderSystem.getShader();
-			vertexBuffer.bind();
-			vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			vertexBuffer.setShader(viewMatrix, projMatrix, shader);
 		}
 		
 		matrixStack.pop();
@@ -462,19 +461,15 @@ public final class CaveFinderHack extends Hack
 		
 		vertexBuffer = new VertexBuffer();
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
 			VertexFormats.POSITION);
 		
 		for(int[] vertex : vertices)
 			bufferBuilder.vertex(vertex[0], vertex[1], vertex[2]).next();
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		vertexBuffer.upload(bufferBuilder);
 		
 		bufferUpToDate = true;
 	}

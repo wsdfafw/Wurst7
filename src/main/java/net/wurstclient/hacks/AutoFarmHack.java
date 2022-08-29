@@ -19,7 +19,6 @@ import net.minecraft.block.*;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -209,25 +208,19 @@ public final class AutoFarmHack extends Hack
 		if(greenBuffer != null)
 		{
 			RenderSystem.setShaderColor(0, 1, 0, 0.5F);
-			greenBuffer.bind();
-			greenBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			greenBuffer.setShader(viewMatrix, projMatrix, shader);
 		}
 		
 		if(cyanBuffer != null)
 		{
 			RenderSystem.setShaderColor(0, 1, 1, 0.5F);
-			cyanBuffer.bind();
-			cyanBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			cyanBuffer.setShader(viewMatrix, projMatrix, shader);
 		}
 		
 		if(redBuffer != null)
 		{
 			RenderSystem.setShaderColor(1, 0, 0, 0.5F);
-			redBuffer.bind();
-			redBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			redBuffer.setShader(viewMatrix, projMatrix, shader);
 		}
 		
 		if(currentBlock != null)
@@ -517,8 +510,7 @@ public final class AutoFarmHack extends Hack
 		if(WurstClient.MC.getBlockEntityRenderDispatcher().camera == null)
 			return;
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
@@ -542,10 +534,8 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		greenBuffer.bind();
-		greenBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		greenBuffer.upload(bufferBuilder);
 		
 		if(cyanBuffer != null)
 			cyanBuffer.close();
@@ -563,10 +553,8 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawNode(renderNode, bufferBuilder);
 		}
 		
-		buffer = bufferBuilder.end();
-		cyanBuffer.bind();
-		cyanBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		cyanBuffer.upload(bufferBuilder);
 		
 		if(redBuffer != null)
 			redBuffer.close();
@@ -582,10 +570,8 @@ public final class AutoFarmHack extends Hack
 			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
 		}
 		
-		buffer = bufferBuilder.end();
-		redBuffer.bind();
-		redBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		bufferBuilder.end();
+		redBuffer.upload(bufferBuilder);
 	}
 	
 	/**

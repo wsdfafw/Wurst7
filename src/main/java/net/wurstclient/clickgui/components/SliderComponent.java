@@ -15,6 +15,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -169,8 +170,7 @@ public final class SliderComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
 			opacity);
@@ -197,7 +197,8 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, x2, y5, 0).next();
 		bufferBuilder.vertex(matrix, x2, y4, 0).next();
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawRail(MatrixStack matrixStack, int x3, int x4, int y4,
@@ -208,8 +209,7 @@ public final class SliderComponent extends Component
 		float opacity = GUI.getOpacity();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		float xl1 = x3;
 		float xl2 = x4;
@@ -233,7 +233,8 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, xl2, y5, 0).next();
 		bufferBuilder.vertex(matrix, x4, y5, 0).next();
 		bufferBuilder.vertex(matrix, x4, y4, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// background
 		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
@@ -244,7 +245,8 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, xl1, y5, 0).next();
 		bufferBuilder.vertex(matrix, xl2, y5, 0).next();
 		bufferBuilder.vertex(matrix, xl2, y4, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// outline
 		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
@@ -255,15 +257,15 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, x4, y5, 0).next();
 		bufferBuilder.vertex(matrix, x4, y4, 0).next();
 		bufferBuilder.vertex(matrix, x3, y4, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawKnob(MatrixStack matrixStack, int x1, int x2, int y2,
 		int y3, boolean hSlider, boolean renderAsDisabled)
 	{
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		
 		double percentage = setting.getPercentage();
 		float xk1 = x1 + (x2 - x1 - 8) * (float)percentage;
@@ -285,7 +287,8 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, xk1, yk2, 0).next();
 		bufferBuilder.vertex(matrix, xk2, yk2, 0).next();
 		bufferBuilder.vertex(matrix, xk2, yk1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// outline
 		RenderSystem.setShaderColor(0.0625F, 0.0625F, 0.0625F, 0.5F);
@@ -296,7 +299,8 @@ public final class SliderComponent extends Component
 		bufferBuilder.vertex(matrix, xk2, yk2, 0).next();
 		bufferBuilder.vertex(matrix, xk2, yk1, 0).next();
 		bufferBuilder.vertex(matrix, xk1, yk1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private void drawNameAndValue(MatrixStack matrixStack, int x1, int x2,

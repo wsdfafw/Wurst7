@@ -42,7 +42,7 @@ public final class PlayerFinderHack extends Hack
 	
 	public PlayerFinderHack()
 	{
-		super("雷声漏洞");
+		super("PlayerFinder");
 		setCategory(Category.RENDER);
 	}
 	
@@ -96,8 +96,7 @@ public final class PlayerFinderHack extends Hack
 		RenderSystem.setShaderColor(rainbow[0], rainbow[1], rainbow[2], 0.5F);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// tracer line
@@ -118,7 +117,8 @@ public final class PlayerFinderHack extends Hack
 		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
 			.next();
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// block box
 		{

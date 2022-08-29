@@ -7,22 +7,34 @@
  */
 package net.wurstclient.commands;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 import net.wurstclient.events.ChatInputListener;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.util.ChatUtils;
 
 public final class AnnoyCmd extends Command implements ChatInputListener
 {
+	private final CheckboxSetting rcMode = new CheckboxSetting("RC mode",
+		"Remote control mode. Re-enables a bug that allows .annoy to run Wurst"
+			+ " commands. Not recommended for security reasons, but until we have a"
+			+ " proper remote control feature, this is at least better than nothing.",
+		false);
+	
 	private boolean enabled;
 	private String target;
 	
 	public AnnoyCmd()
 	{
-		super("annoy", "不断重复某个玩家所说的话，使他感到厌烦.", ".annoy <player>", "要关闭请输入: .annoy");
+		super("annoy", "Annoys a player by repeating everything they say.",
+			".annoy <player>", "Turn off: .annoy");
+		addSetting(rcMode);
 	}
 	
 	@Override
@@ -38,7 +50,7 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 		}else
 		{
 			if(!enabled)
-				throw new CmdError(".annoy 恼人功能已经关闭了.");
+				throw new CmdError(".annoy is already turned off.");
 			
 			disable();
 		}
@@ -50,11 +62,11 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 			throw new CmdSyntaxError();
 		
 		target = String.join(" ", args);
-		ChatUtils.message("现在正在惹恼 " + target + ".");
+		ChatUtils.message("Now annoying " + target + ".");
 		
 		ClientPlayerEntity player = MC.player;
 		if(player != null && target.equals(player.getName().getString()))
-			ChatUtils.warning("我不认为你能够惹恼你自己!");
+			ChatUtils.warning("Annoying yourself is a bad idea!");
 		
 		EVENTS.add(ChatInputListener.class, this);
 		enabled = true;
@@ -66,7 +78,7 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 		
 		if(target != null)
 		{
-			ChatUtils.message("不再惹恼" + target + ".");
+			ChatUtils.message("No longer annoying " + target + ".");
 			target = null;
 		}
 		
@@ -95,7 +107,15 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 	private void repeat(String message, String prefix)
 	{
 		int beginIndex = message.indexOf(prefix) + prefix.length();
-		String repeated = message.substring(beginIndex);
-		MC.player.sendChatMessage(repeated);
+		String repeated = message.substring(beginIndex).trim();
+		repeated = StringUtils.normalizeSpace(repeated);
+		
+		if(rcMode.isChecked() && repeated.startsWith("."))
+			WURST.getCmdProcessor().process(repeated.substring(1));
+		else
+		{
+			ChatMessageC2SPacket packet = new ChatMessageC2SPacket(repeated);
+			MC.getNetworkHandler().sendPacket(packet);
+		}
 	}
 }

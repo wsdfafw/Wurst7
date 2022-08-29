@@ -13,7 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
@@ -30,7 +30,7 @@ public final class KillPotionHack extends Hack
 	
 	public KillPotionHack()
 	{
-		super("杀戮药水");
+		super("KillPotion");
 		
 		setCategory(Category.ITEMS);
 		addSetting(potionType);
@@ -42,7 +42,7 @@ public final class KillPotionHack extends Hack
 		// check gamemode
 		if(!MC.player.getAbilities().creativeMode)
 		{
-			ChatUtils.error("仅限创造模式");
+			ChatUtils.error("Creative mode only.");
 			setEnabled(false);
 			return;
 		}
@@ -120,7 +120,7 @@ public final class KillPotionHack extends Hack
 			
 			String name =
 				"\u00a7f" + itemName + " of \u00a74\u00a7lINSTANT DEATH";
-			stack.setCustomName(Text.literal(name));
+			stack.setCustomName(new LiteralText(name));
 			
 			return stack;
 		}

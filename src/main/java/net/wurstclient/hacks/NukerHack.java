@@ -52,10 +52,24 @@ import net.wurstclient.util.RotationUtils;
 public final class NukerHack extends Hack
 	implements UpdateListener, LeftClickListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围", 5.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Mode> mode = new EnumSetting("Mode", "§l普通§r 模式很简单的破坏\n你周边的东西.\n§lID§r 模式只破坏所选的方块\n类型. 左键方块选择其方块.\n§l多个ID§r 模式只破坏那些你选择\n在你 多个ID 列表.\n§l平坦§r 模式只会挖你水平上的方块,\n但不会往下挖.\n§l粉碎§r 模式只会破坏那些\n能够瞬间破坏的方块 (例.如. 高大的草).", (Enum[])Mode.values(), (Enum)Mode.NORMAL);
-    private final BlockSetting id = new BlockSetting("ID", "在ID模式,将会破坏指定ID的方块类型.\nair = 不会破坏任何东西", "minecraft:air", true);
-    private final CheckboxSetting lockId = new CheckboxSetting("锁ID", "保护且不会导致因点击其他方块\n而改变挖掘的方块,同时也不会因重启而重置.", false);
+	private final SliderSetting range =
+		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"
+			+ "\u00a7lID\u00a7r mode only breaks the selected block type. Left-click on a block to select it.\n"
+			+ "\u00a7lMultiID\u00a7r mode only breaks the block types in your MultiID List.\n"
+			+ "\u00a7lFlat\u00a7r mode flattens the area around you, but won't dig down.\n"
+			+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be destroyed instantly (e.g. tall grass).",
+		Mode.values(), Mode.NORMAL);
+	
+	private final BlockSetting id =
+		new BlockSetting("ID", "The type of block to break in ID mode.\n"
+			+ "air = won't break anything", "minecraft:air", true);
+	
+	private final CheckboxSetting lockId = new CheckboxSetting("Lock ID",
+		"Prevents changing the ID by clicking on blocks or restarting Nuker.",
+		false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
 		"MultiID List", "The types of blocks to break in MultiID mode.",
@@ -72,7 +86,7 @@ public final class NukerHack extends Hack
 	
 	public NukerHack()
 	{
-		super("矿井");
+		super("Nuker");
 		setCategory(Category.BLOCKS);
 		addSetting(range);
 		addSetting(mode);
@@ -269,22 +283,24 @@ public final class NukerHack extends Hack
 	
 	private enum Mode
 	{
-		NORMAL("普通", NukerHack::getName, (n, p) -> true),
+		NORMAL("Normal", NukerHack::getName, (n, p) -> true),
 		
-		ID("ID", n -> "ID挖块 [" + n.id.getBlockName().replace("minecraft:", "")
+		ID("ID",
+			n -> "IDNuker [" + n.id.getBlockName().replace("minecraft:", "")
 				+ "]",
 			(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
 		
-		MULTI_ID("多ID", n -> "多ID挖块 [" + n.multiIdList.getBlockNames().size()
+		MULTI_ID("MultiID",
+			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
 				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
 					: " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
-		FLAT("平坦", n -> "平坦合法版挖块",
+		FLAT("Flat", n -> "FlatNuker",
 			(n, p) -> p.getY() >= MC.player.getPos().getY()),
 		
-		SMASH("粉碎", n -> "粉碎合法版挖块",
+		SMASH("Smash", n -> "SmashNuker",
 			(n, p) -> BlockUtils.getHardness(p) >= 1);
 		
 		private final String name;

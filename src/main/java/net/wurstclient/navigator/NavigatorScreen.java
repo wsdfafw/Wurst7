@@ -15,12 +15,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.WurstClient;
 
@@ -38,7 +39,7 @@ public abstract class NavigatorScreen extends Screen
 	
 	public NavigatorScreen()
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 	}
 	
 	@Override
@@ -236,8 +237,7 @@ public abstract class NavigatorScreen extends Screen
 		int x2, int y2)
 	{
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
@@ -246,7 +246,8 @@ public abstract class NavigatorScreen extends Screen
 		bufferBuilder.vertex(matrix, x2, y1, 0).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	protected final void drawBoxShadow(MatrixStack matrixStack, int x1, int y1,
@@ -262,8 +263,7 @@ public abstract class NavigatorScreen extends Screen
 		float yi2 = y2 + 0.1F;
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// outline
@@ -275,7 +275,8 @@ public abstract class NavigatorScreen extends Screen
 		bufferBuilder.vertex(matrix, xi2, yi2, 0).next();
 		bufferBuilder.vertex(matrix, xi1, yi2, 0).next();
 		bufferBuilder.vertex(matrix, xi1, yi1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// shadow positions
 		xi1 -= 0.9;
@@ -321,7 +322,8 @@ public abstract class NavigatorScreen extends Screen
 		bufferBuilder.vertex(matrix, x2, y2, 0)
 			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	protected final void drawDownShadow(MatrixStack matrixStack, int x1, int y1,
@@ -331,8 +333,7 @@ public abstract class NavigatorScreen extends Screen
 		float[] acColor = WurstClient.INSTANCE.getGui().getAcColor();
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		
 		// outline
@@ -342,7 +343,8 @@ public abstract class NavigatorScreen extends Screen
 			VertexFormats.POSITION);
 		bufferBuilder.vertex(matrix, x1, yi1, 0).next();
 		bufferBuilder.vertex(matrix, x2, yi1, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 		// shadow
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -355,7 +357,8 @@ public abstract class NavigatorScreen extends Screen
 			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
 		bufferBuilder.vertex(matrix, x2, y2, 0).color(0, 0, 0, 0).next();
 		bufferBuilder.vertex(matrix, x1, y2, 0).color(0, 0, 0, 0).next();
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	protected final void drawBox(MatrixStack matrixStack, int x1, int y1,

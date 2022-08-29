@@ -22,6 +22,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.mixinterface.IMultiplayerScreen;
 import net.wurstclient.mixinterface.IScreen;
@@ -40,7 +41,7 @@ public class CleanUpScreen extends Screen
 	
 	public CleanUpScreen(MultiplayerScreen prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -246,7 +247,7 @@ public class CleanUpScreen extends Screen
 		public CleanUpButton(int x, int y, Supplier<String> messageSupplier,
 			String tooltip, PressAction pressAction)
 		{
-			super(x, y, 200, 20, Text.literal(messageSupplier.get()),
+			super(x, y, 200, 20, new LiteralText(messageSupplier.get()),
 				pressAction);
 			this.messageSupplier = messageSupplier;
 			
@@ -256,9 +257,9 @@ public class CleanUpScreen extends Screen
 			{
 				String[] lines = tooltip.split("\n");
 				
-				Text[] lines2 = new Text[lines.length];
+				LiteralText[] lines2 = new LiteralText[lines.length];
 				for(int i = 0; i < lines.length; i++)
-					lines2[i] = Text.literal(lines[i]);
+					lines2[i] = new LiteralText(lines[i]);
 				
 				this.tooltip = Arrays.asList(lines2);
 			}
@@ -268,7 +269,7 @@ public class CleanUpScreen extends Screen
 		public void onPress()
 		{
 			super.onPress();
-			setMessage(Text.literal(messageSupplier.get()));
+			setMessage(new LiteralText(messageSupplier.get()));
 		}
 	}
 }

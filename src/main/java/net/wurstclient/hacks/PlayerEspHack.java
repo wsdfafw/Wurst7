@@ -17,6 +17,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -35,8 +36,10 @@ import net.wurstclient.events.CameraTransformViewBobbingListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.filterlists.EntityFilterList;
+import net.wurstclient.settings.filters.FilterInvisibleSetting;
+import net.wurstclient.settings.filters.FilterSleepingSetting;
 import net.wurstclient.util.FakePlayerEntity;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
@@ -46,29 +49,27 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("风格", Style.values(), Style.LINES_AND_BOXES);
+		new EnumSetting<>("Style", Style.values(), Style.LINES_AND_BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框大小",
-		"§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each player.\n"
+			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"排除睡觉", "不会显示正在睡觉的玩家.", false);
-	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐身", "不会显示隐身中的玩家.", false);
+	private final EntityFilterList entityFilters = new EntityFilterList(
+		new FilterSleepingSetting("Won't show sleeping players.", false),
+		new FilterInvisibleSetting("Won't show invisible players.", false));
 	
 	private final ArrayList<PlayerEntity> players = new ArrayList<>();
 	
 	public PlayerEspHack()
 	{
-		super("高亮玩家");
+		super("PlayerESP");
 		setCategory(Category.RENDER);
 		
 		addSetting(style);
 		addSetting(boxSize);
-		addSetting(filterSleeping);
-		addSetting(filterInvisible);
+		entityFilters.forEach(this::addSetting);
 	}
 	
 	@Override
@@ -100,11 +101,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 			.filter(e -> !(e instanceof FakePlayerEntity))
 			.filter(e -> Math.abs(e.getY() - MC.player.getY()) <= 1e6);
 		
-		if(filterSleeping.isChecked())
-			stream = stream.filter(e -> !e.isSleeping());
-		
-		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
+		stream = entityFilters.applyTo(stream);
 		
 		players.addAll(stream.collect(Collectors.toList()));
 	}
@@ -190,8 +187,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION_COLOR);
 		
@@ -231,14 +227,15 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 				.color(r, g, b, 0.5F).next();
 		}
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 	
 	private enum Style
 	{
-		BOXES("只显示框框", true, false),
-		LINES("只显示线条", false, true),
-		LINES_AND_BOXES("线条和框框", true, true);
+		BOXES("Boxes only", true, false),
+		LINES("Lines only", false, true),
+		LINES_AND_BOXES("Lines and boxes", true, true);
 		
 		private final String name;
 		private final boolean boxes;
@@ -260,8 +257,8 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	
 	private enum BoxSize
 	{
-		ACCURATE("精确", 0),
-		FANCY("更好", 0.1F);
+		ACCURATE("Accurate", 0),
+		FANCY("Fancy", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

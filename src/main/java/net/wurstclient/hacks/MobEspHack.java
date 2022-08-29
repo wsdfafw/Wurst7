@@ -18,6 +18,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
@@ -36,8 +37,8 @@ import net.wurstclient.events.CameraTransformViewBobbingListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.filters.FilterInvisibleSetting;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
@@ -46,21 +47,22 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("风格", Style.values(), Style.BOXES);
+		new EnumSetting<>("Style", Style.values(), Style.BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框框大小",
-		"§l精确§r 模式显示更加精确的\n可打击的框给每个生物.\n§l更好§r 模式会看起来框很大\n但看起来会更舒服点.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each mob.\n"
+			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐身", "不会显示隐身的生物.", false);
+	private final FilterInvisibleSetting filterInvisible =
+		new FilterInvisibleSetting("Won't show invisible mobs.", false);
 	
 	private final ArrayList<MobEntity> mobs = new ArrayList<>();
 	private VertexBuffer mobBox;
 	
 	public MobEspHack()
 	{
-		super("高亮生物");
+		super("MobESP");
 		setCategory(Category.RENDER);
 		addSetting(style);
 		addSetting(boxSize);
@@ -101,7 +103,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 				.filter(e -> !e.isRemoved() && e.getHealth() > 0);
 		
 		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
+			stream = stream.filter(filterInvisible);
 		
 		mobs.addAll(stream.collect(Collectors.toList()));
 	}
@@ -168,10 +170,8 @@ public final class MobEspHack extends Hack implements UpdateListener,
 			
 			Shader shader = RenderSystem.getShader();
 			Matrix4f matrix4f = RenderSystem.getProjectionMatrix();
-			mobBox.bind();
-			mobBox.draw(matrixStack.peek().getPositionMatrix(), matrix4f,
+			mobBox.setShader(matrixStack.peek().getPositionMatrix(), matrix4f,
 				shader);
-			VertexBuffer.unbind();
 			
 			matrixStack.pop();
 		}
@@ -185,8 +185,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION_COLOR);
 		
@@ -214,15 +213,16 @@ public final class MobEspHack extends Hack implements UpdateListener,
 				.color(r, g, 0, 0.5F).next();
 		}
 		
-		tessellator.draw();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 		
 	}
 	
 	private enum Style
 	{
-		BOXES("仅限框框", true, false),
-		LINES("仅限线条", false, true),
-		LINES_AND_BOXES("线条和框", true, true);
+		BOXES("Boxes only", true, false),
+		LINES("Lines only", false, true),
+		LINES_AND_BOXES("Lines and boxes", true, true);
 		
 		private final String name;
 		private final boolean boxes;
@@ -244,8 +244,8 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	
 	private enum BoxSize
 	{
-		ACCURATE("精确", 0),
-		FANCY("更好", 0.1F);
+		ACCURATE("Accurate", 0),
+		FANCY("Fancy", 0.1F);
 		
 		private final String name;
 		private final float extraSize;

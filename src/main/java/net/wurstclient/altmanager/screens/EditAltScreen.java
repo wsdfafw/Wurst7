@@ -8,7 +8,7 @@
 package net.wurstclient.altmanager.screens;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.altmanager.Alt;
 import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.MojangAlt;
@@ -21,7 +21,7 @@ public final class EditAltScreen extends AltEditorScreen
 	public EditAltScreen(Screen prevScreen, AltManager altManager,
 		Alt editedAlt)
 	{
-		super(prevScreen, Text.literal("编辑账户"));
+		super(prevScreen, new LiteralText("Edit Alt"));
 		this.altManager = altManager;
 		this.editedAlt = editedAlt;
 	}
@@ -43,7 +43,7 @@ public final class EditAltScreen extends AltEditorScreen
 	@Override
 	protected String getDoneButtonText()
 	{
-		return "保存";
+		return "Save";
 	}
 	
 	@Override

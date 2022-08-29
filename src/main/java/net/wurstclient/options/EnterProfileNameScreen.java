@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 
 public final class EnterProfileNameScreen extends Screen
 {
@@ -28,7 +28,7 @@ public final class EnterProfileNameScreen extends Screen
 	
 	public EnterProfileNameScreen(Screen prevScreen, Consumer<String> callback)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.callback = callback;
 	}
@@ -42,7 +42,8 @@ public final class EnterProfileNameScreen extends Screen
 		
 		TextRenderer tr = client.textRenderer;
 		
-		valueField = new TextFieldWidget(tr, x1, y1, 200, 20, Text.literal(""));
+		valueField =
+			new TextFieldWidget(tr, x1, y1, 200, 20, new LiteralText(""));
 		valueField.setText("");
 		valueField.setSelectionStart(0);
 		
@@ -50,7 +51,7 @@ public final class EnterProfileNameScreen extends Screen
 		setInitialFocus(valueField);
 		valueField.setTextFieldFocused(true);
 		
-		doneButton = new ButtonWidget(x1, y2, 200, 20, Text.literal("完成"),
+		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("Done"),
 			b -> done());
 		addDrawableChild(doneButton);
 	}
@@ -93,7 +94,7 @@ public final class EnterProfileNameScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		drawCenteredText(matrixStack, client.textRenderer,
-			"命名你的新档案", width / 2, 20, 0xFFFFFF);
+			"Name your new profile", width / 2, 20, 0xFFFFFF);
 		
 		valueField.render(matrixStack, mouseX, mouseY, partialTicks);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);

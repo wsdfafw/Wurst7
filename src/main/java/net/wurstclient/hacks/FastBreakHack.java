@@ -25,8 +25,9 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class FastBreakHack extends Hack
 	implements UpdateListener, BlockBreakingProgressListener
 {
-	private final CheckboxSetting legitMode = new CheckboxSetting("低速模式",
-		"只删除破坏方块时的延迟，而不加速破坏过程",
+	private final CheckboxSetting legitMode = new CheckboxSetting("Legit mode",
+		"Only removes the delay between breaking blocks, without speeding up the breaking process itself.\n\n"
+			+ "This is slower, but usually bypasses anti-cheat plugins. Use it if regular FastBreak is not working.",
 		false);
 	
 	public FastBreakHack()

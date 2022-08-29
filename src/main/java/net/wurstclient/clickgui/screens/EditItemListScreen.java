@@ -25,7 +25,7 @@ import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.wurstclient.settings.ItemListSetting;
@@ -47,7 +47,7 @@ public final class EditItemListScreen extends Screen
 	
 	public EditItemListScreen(Screen prevScreen, ItemListSetting itemList)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.itemList = itemList;
 	}
@@ -58,32 +58,32 @@ public final class EditItemListScreen extends Screen
 		listGui = new ListGui(client, this, itemList.getItemNames());
 		
 		itemNameField = new TextFieldWidget(client.textRenderer,
-			width / 2 - 152, height - 55, 150, 18, Text.literal(""));
+			width / 2 - 152, height - 55, 150, 18, new LiteralText(""));
 		addSelectableChild(itemNameField);
 		itemNameField.setMaxLength(256);
 		
 		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, Text.literal("添加"), b -> {
+			height - 56, 30, 20, new LiteralText("Add"), b -> {
 				itemList.add(itemToAdd);
 				itemNameField.setText("");
 			}));
 		
 		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, Text.literal("删除选定"),
+			height - 56, 100, 20, new LiteralText("Remove Selected"),
 			b -> itemList.remove(listGui.selected)));
 		
 		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("重置为默认值"),
+			new LiteralText("Reset to Defaults"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					itemList.resetToDefaults();
 				client.setScreen(EditItemListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?")))));
+			}, new LiteralText("Reset to Defaults"),
+				new LiteralText("Are you sure?")))));
 		
 		addDrawableChild(
 			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				Text.literal("完成"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Done"), b -> client.setScreen(prevScreen)));
 	}
 	
 	@Override
