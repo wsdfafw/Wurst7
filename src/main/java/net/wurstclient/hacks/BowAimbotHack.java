@@ -27,20 +27,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
-import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.entity.mob.WaterCreatureEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.Item;
@@ -53,11 +40,11 @@ import net.wurstclient.events.GUIRenderListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.FakePlayerEntity;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
@@ -70,53 +57,13 @@ public final class BowAimbotHack extends Hack
 		"决定哪个实体会被优先瞄准.\n§l距离§r - 攻击最近的实体先.\n§l角度§r - 攻击最后头的角度位置\n的实体优先.\n§l血量§r - 血量少的实体优先",
 		Priority.values(), Priority.ANGLE);
 	
-	private final SliderSetting predictMovement =
-		new SliderSetting("预瞄",
-			"控制弓箭自动瞄准的强度\n并自动计算落弹点,有可能提高命中率",
+	private final SliderSetting predictMovement = new SliderSetting(
+		"预瞄",
+		"控制弓箭自动瞄准的强度\n并自动计算落弹点,有可能提高命中率",
 			0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
 	
-	private final CheckboxSetting filterPlayers = new CheckboxSetting(
-		"过滤 玩家", "不会攻击其他玩家.", false);
-	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"过滤 睡觉的", "不会攻击正在睡觉的玩家.", false);
-	private final SliderSetting filterFlying =
-		new SliderSetting("过滤 飞行中", 
-			"不会攻击在飞行中玩家或\n远离地板一定距离的玩家",
-			0, 0, 2, 0.05, ValueDisplay.DECIMAL.withLabel(0, "off"));
-	
-	private final CheckboxSetting filterMonsters = new CheckboxSetting(
-		"过滤 怪物", "不会攻击僵尸,苦力怕,诸如此类.", false);
-	private final CheckboxSetting filterPigmen = new CheckboxSetting(
-		"过滤 猪人", "不会攻击僵尸猪人.", false);
-	private final CheckboxSetting filterEndermen =
-		new CheckboxSetting("过滤 末影人", "不会攻击末影人.", false);
-	
-	private final CheckboxSetting filterAnimals = new CheckboxSetting(
-		"过滤 动物", "不会攻击牛,猪,诸如此类.", false);
-	private final CheckboxSetting filterBabies =
-		new CheckboxSetting("过滤 婴儿", 
-			"不会攻击小猪仔,\n小村民, 诸如此类", false);
-	private final CheckboxSetting filterPets =
-		new CheckboxSetting("过滤 宠物", 
-			"不会攻击以驯服的狼,\n已驯服的马, 诸如此类", false);
-	
-	private final CheckboxSetting filterTraders =
-		new CheckboxSetting("过滤 商人", 
-			"不会攻击村民 , 流浪商人, 诸如此类.", false);
-	
-	private final CheckboxSetting filterGolems =
-		new CheckboxSetting("过滤 傀儡们", 
-			"不会攻击铁傀儡,\n雪傀儡 和 潜影盒.", false);
-	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"过滤 隐身", "不会攻击隐形的实体.", false);
-	private final CheckboxSetting filterNamed = new CheckboxSetting(
-		"过滤 被命名", "不会攻击已经被命名的实体.", false);
-	
-	private final CheckboxSetting filterStands = new CheckboxSetting(
-		"过滤 盔甲架", "不会攻击盔甲架.", false);
-	private final CheckboxSetting filterCrystals = new CheckboxSetting(
-		"过滤 末影水晶", "不会攻击末影水晶.", false);
+	private final EntityFilterList entityFilters =
+		EntityFilterList.genericCombat();
 	
 	private final ColorSetting color = new ColorSetting("ESP 颜色", 
 		"弓自瞄器 盒子的颜色\n指画在目标实体上的颜色.",
@@ -136,21 +83,7 @@ public final class BowAimbotHack extends Hack
 		addSetting(priority);
 		addSetting(predictMovement);
 		
-		addSetting(filterPlayers);
-		addSetting(filterSleeping);
-		addSetting(filterFlying);
-		addSetting(filterMonsters);
-		addSetting(filterPigmen);
-		addSetting(filterEndermen);
-		addSetting(filterAnimals);
-		addSetting(filterBabies);
-		addSetting(filterPets);
-		addSetting(filterTraders);
-		addSetting(filterGolems);
-		addSetting(filterInvisible);
-		addSetting(filterNamed);
-		addSetting(filterStands);
-		addSetting(filterCrystals);
+		entityFilters.forEach(this::addSetting);
 		
 		addSetting(color);
 	}
@@ -256,66 +189,7 @@ public final class BowAimbotHack extends Hack
 			.filter(e -> !(e instanceof FakePlayerEntity))
 			.filter(e -> !WURST.getFriends().contains(e.getEntityName()));
 		
-		if(filterPlayers.isChecked())
-			stream = stream.filter(e -> !(e instanceof PlayerEntity));
-		
-		if(filterSleeping.isChecked())
-			stream = stream.filter(e -> !(e instanceof PlayerEntity
-				&& ((PlayerEntity)e).isSleeping()));
-		
-		if(filterFlying.getValue() > 0)
-			stream = stream.filter(e -> {
-				
-				if(!(e instanceof PlayerEntity))
-					return true;
-				
-				Box box = e.getBoundingBox();
-				box = box.union(box.offset(0, -filterFlying.getValue(), 0));
-				return !MC.world.isSpaceEmpty(box);
-			});
-		
-		if(filterMonsters.isChecked())
-			stream = stream.filter(e -> !(e instanceof Monster));
-		
-		if(filterPigmen.isChecked())
-			stream = stream.filter(e -> !(e instanceof ZombifiedPiglinEntity));
-		
-		if(filterEndermen.isChecked())
-			stream = stream.filter(e -> !(e instanceof EndermanEntity));
-		
-		if(filterAnimals.isChecked())
-			stream = stream.filter(
-				e -> !(e instanceof AnimalEntity || e instanceof AmbientEntity
-					|| e instanceof WaterCreatureEntity));
-		
-		if(filterBabies.isChecked())
-			stream = stream.filter(e -> !(e instanceof PassiveEntity
-				&& ((PassiveEntity)e).isBaby()));
-		
-		if(filterPets.isChecked())
-			stream = stream
-				.filter(e -> !(e instanceof TameableEntity
-					&& ((TameableEntity)e).isTamed()))
-				.filter(e -> !(e instanceof AbstractHorseEntity
-					&& ((AbstractHorseEntity)e).isTame()));
-		
-		if(filterTraders.isChecked())
-			stream = stream.filter(e -> !(e instanceof MerchantEntity));
-		
-		if(filterGolems.isChecked())
-			stream = stream.filter(e -> !(e instanceof GolemEntity));
-		
-		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
-		
-		if(filterNamed.isChecked())
-			stream = stream.filter(e -> !e.hasCustomName());
-		
-		if(filterStands.isChecked())
-			stream = stream.filter(e -> !(e instanceof ArmorStandEntity));
-		
-		if(filterCrystals.isChecked())
-			stream = stream.filter(e -> !(e instanceof EndCrystalEntity));
+		stream = entityFilters.applyTo(stream);
 		
 		return stream.min(priority.getSelected().comparator).orElse(null);
 	}
