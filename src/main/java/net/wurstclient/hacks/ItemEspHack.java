@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
  *
@@ -238,4 +237,3 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		}
 	}
 }
->>>>>>> upstream/1.19

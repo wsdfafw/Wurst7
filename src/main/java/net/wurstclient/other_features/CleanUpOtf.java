@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
  *
@@ -21,4 +20,3 @@ public final class CleanUpOtf extends OtherFeature
 		super("清除","清理您的服务器列表.\n要使用它,请按服务器选择屏幕上的“清理”按钮.");
 	}
 }
->>>>>>> upstream/1.19
