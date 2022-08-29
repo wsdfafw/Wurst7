@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
  *
@@ -160,4 +159,3 @@ public final class VanillaSpoofOtf extends OtherFeature
 		spoof.setChecked(!spoof.isChecked());
 	}
 }
->>>>>>> upstream/1.19
