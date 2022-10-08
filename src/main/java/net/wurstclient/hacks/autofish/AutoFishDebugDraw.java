@@ -34,12 +34,12 @@ import net.wurstclient.util.RenderUtils;
 
 public final class AutoFishDebugDraw
 {
-	private final CheckboxSetting debugDraw = new CheckboxSetting("Debug draw",
-		"Shows where bites are occurring and where they will be detected. Useful for optimizing your 'Valid range' setting.",
+	private final CheckboxSetting debugDraw = new CheckboxSetting("调试绘图",
+		"显示叮咬发生的位置以及它们将被检测到的位置。有助于优化您的“有效范围”设置.",
 		false);
 	
-	private final ColorSetting ddColor = new ColorSetting("DD color",
-		"Color of the debug draw, if enabled.", Color.RED);
+	private final ColorSetting ddColor = new ColorSetting("DD颜色",
+		"调试绘图的颜色(如果启用).", Color.RED);
 	
 	private Vec3d lastSoundPos;
 	private Box validRangeBox;
