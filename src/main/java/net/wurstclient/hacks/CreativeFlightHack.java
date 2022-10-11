@@ -22,14 +22,13 @@ import net.wurstclient.settings.SliderSetting;
 @SearchTags({"creative flight", "CreativeFly", "creative fly"})
 public final class CreativeFlightHack extends Hack implements UpdateListener
 {
-	private final CheckboxSetting antiKick = new CheckboxSetting("Anti-Kick",
-		"Makes you fall a little bit every now and then to prevent you from getting kicked.",
+	private final CheckboxSetting antiKick = new CheckboxSetting("防踢",
+		"让你时不时摔倒一点，以防止你被踢.",
 		false);
 	
 	private final SliderSetting antiKickInterval =
-		new SliderSetting("Anti-Kick Interval",
-			"How often Anti-Kick should prevent you from getting kicked.\n"
-				+ "Most servers will kick you after 80 ticks.",
+		new SliderSetting("防踢间隔",
+			"反踢应该防止你被踢的频率.\n大多数服务器会在80秒后踢你.",
 			30, 5, 80, 1,
 			SliderSetting.ValueDisplay.INTEGER.withSuffix(" ticks"));
 	
