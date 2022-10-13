@@ -27,12 +27,12 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	private final CheckboxSetting showCounter = new CheckboxSetting(
 		"显示图腾计数器", "", true);
 	
-	private final SliderSetting delay = new SliderSetting("Delay",
-		"Amount of ticks to wait before equipping the next totem.", 0, 0, 20, 1,
+	private final SliderSetting delay = new SliderSetting("延迟",
+		"装备下一个图腾前需要等待的时间.", 0, 0, 20, 1,
 		ValueDisplay.INTEGER);
 	
-	private final SliderSetting health = new SliderSetting("Health",
-		"Effectively disables AutoTotem until your health reaches this value or falls below it.\n"
+	private final SliderSetting health = new SliderSetting("生命",
+		"有效地禁用自动死亡，直到你的生命值达到或低于这个值.\n"
 			+ "0 = always active",
 		0, 0, 10, 0.5,
 		ValueDisplay.DECIMAL.withSuffix(" hearts").withLabel(0, "ignore"));
