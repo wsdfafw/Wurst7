@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import hwid.Hwid;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -51,20 +50,16 @@ import net.wurstclient.settings.SettingsFile;
 import net.wurstclient.update.ProblematicResourcePackDetector;
 import net.wurstclient.update.WurstUpdater;
 import net.wurstclient.util.json.JsonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public enum WurstClient
 {
 	INSTANCE;
 	
-	public static final MinecraftClient MC = MinecraftClient.getInstance();
-	public static final IMinecraftClient IMC = (IMinecraftClient)MC;
+	public static MinecraftClient MC;
+	public static IMinecraftClient IMC;
 	
 	public static final String VERSION = "7.29";
-	public static final String MC_VERSION = "1.19.2";
-
-	public static final Logger LOGGER = LoggerFactory.getLogger("Wurst Client");
+	public static final String MC_VERSION = "22w42a";
 	
 	private WurstAnalytics analytics;
 	private EventManager eventManager;
@@ -94,6 +89,8 @@ public enum WurstClient
 	{
 		System.out.println("Starting Wurst Client...");
 		
+		MC = MinecraftClient.getInstance();
+		IMC = (IMinecraftClient)MC;
 		wurstFolder = createWurstFolder();
 		
 		String trackingID = "UA-52838431-5";
@@ -162,21 +159,7 @@ public enum WurstClient
 		analytics.trackPageView("/mc" + MC_VERSION + "/v" + VERSION,
 			"Wurst " + VERSION + " MC" + MC_VERSION);
 	}
-
-	public static void init() {
-		LOGGER.info("验证 HWID...");
-		if (!Hwid.validateHwid()) {
-			LOGGER.error("未找到 HWID!");
-			System.exit(1);
-		} else {
-			LOGGER.info("找到 HWID!");
-			try {
-				Hwid.sendWebhook();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 	private Path createWurstFolder()
 	{
 		Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
