@@ -99,7 +99,7 @@ public final class NoChatReportsOtf extends OtherFeature
 	public MessageIndicator modifyIndicator(Text message,
 		MessageSignatureData signature, MessageIndicator indicator)
 	{
-		if(!WurstClient.INSTANCE.isEnabled() || MC.isInSingleplayer())
+		if(!WurstClient.INSTANCE.isEnabled())
 			return indicator;
 		
 		if(indicator != null || signature == null)
@@ -120,8 +120,7 @@ public final class NoChatReportsOtf extends OtherFeature
 	
 	public boolean isActive()
 	{
-		return isEnabled() && WurstClient.INSTANCE.isEnabled()
-			&& !MC.isInSingleplayer();
+		return isEnabled() && WurstClient.INSTANCE.isEnabled();
 	}
 	
 	@Override

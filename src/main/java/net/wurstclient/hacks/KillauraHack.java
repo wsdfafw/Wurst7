@@ -23,11 +23,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.PostMotionListener;
@@ -71,12 +68,6 @@ public final class KillauraHack extends Hack
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
 	
-	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("Check line of sight",
-			"Ensures that you don't reach through blocks when attacking.\n\n"
-				+ "Slower but can help with anti-cheat plugins.",
-			false);
-	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
 	
@@ -94,7 +85,6 @@ public final class KillauraHack extends Hack
 		addSetting(fov);
 		addSetting(damageIndicator);
 		addSetting(pauseOnContainers);
-		addSetting(checkLOS);
 		
 		entityFilters.forEach(this::addSetting);
 	}
@@ -166,19 +156,8 @@ public final class KillauraHack extends Hack
 		
 		WURST.getHax().autoSwordHack.setSlot();
 		
-		Vec3d eyesPos = RotationUtils.getEyesPos();
-		Vec3d hitVec = target.getBoundingBox().getCenter();
-		if(checkLOS.isChecked() && MC.world
-			.raycast(new RaycastContext(eyesPos, hitVec,
-				RaycastContext.ShapeType.COLLIDER,
-				RaycastContext.FluidHandling.NONE, MC.player))
-			.getType() != HitResult.Type.MISS)
-		{
-			target = null;
-			return;
-		}
-		
-		WURST.getRotationFaker().faceVectorPacket(hitVec);
+		WURST.getRotationFaker()
+			.faceVectorPacket(target.getBoundingBox().getCenter());
 	}
 	
 	@Override
