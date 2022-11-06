@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -40,7 +41,6 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.WurstClient;
 import net.wurstclient.altmanager.AltRenderer;
 import net.wurstclient.altmanager.NameGenerator;
@@ -74,22 +74,31 @@ public abstract class AltEditorScreen extends Screen
 			new ButtonWidget(width / 2 - 100, height / 4 + 72 + 12, 200, 20,
 				Text.literal(getDoneButtonText()), b -> pressDoneButton()));
 		
-		addDrawableChild(
-			new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200, 20,
-				Text.literal("取消"), b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("取消"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
+			.build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12,
-			200, 20, Text.literal("随机名称"),
-			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("随机名称"),
+				b -> nameOrEmailBox.setText(NameGenerator.generateName()))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
+			.build());
 		
-		addDrawableChild(stealSkinButton =
-			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
-				128, 20, Text.literal("盗取皮肤"),
-				b -> message = stealSkin(getNameOrEmail())));
+		addDrawableChild(stealSkinButton = ButtonWidget
+			.createBuilder(Text.literal("盗取皮肤"),
+				b -> message = stealSkin(getNameOrEmail()))
+			.setPositionAndSize(width - (width / 2 - 100) / 2 - 64, height - 32,
+				128, 20)
+			.build());
 		
-		addDrawableChild(
-			new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128, 20,
-				Text.literal("打开皮肤文件夹"), b -> openSkinFolder()));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("打开皮肤文件夹"),
+				b -> openSkinFolder())
+			.setPositionAndSize((width / 2 - 100) / 2 - 64, height - 32, 128,
+				20)
+			.build());
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
 			200, 20, Text.literal(""));

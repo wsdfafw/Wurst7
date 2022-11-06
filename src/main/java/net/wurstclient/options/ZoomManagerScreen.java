@@ -39,29 +39,43 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		String zoomKeyName = WurstClient.INSTANCE.getZoomKey()
 			.getBoundKeyTranslationKey().replace("key.keyboard.", "");
 		
-		addDrawableChild(
-			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				Text.literal("返回"), b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("返回"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 144 - 16, 200, 20)
+			.build());
+		
+		addDrawableChild(keyButton = ButtonWidget
+			.createBuilder(Text.literal("放大按键: " + zoomKeyName),
+				b -> client.setScreen(new PressAKeyScreen(this)))
+			.setPositionAndSize(width / 2 - 79, height / 4 + 24 - 16, 158, 20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("更多"), b -> level.increaseValue())
+			.setPositionAndSize(width / 2 - 79, height / 4 + 72 - 16, 50, 20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("更少"), b -> level.decreaseValue())
+			.setPositionAndSize(width / 2 - 25, height / 4 + 72 - 16, 50, 20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("默认"),
+				b -> level.setValue(level.getDefaultValue()))
+			.setPositionAndSize(width / 2 + 29, height / 4 + 72 - 16, 50, 20)
+			.build());
 		
 		addDrawableChild(
-			keyButton = new ButtonWidget(width / 2 - 79, height / 4 + 24 - 16,
-				158, 20, Text.literal("放大按键: " + zoomKeyName),
-				b -> client.setScreen(new PressAKeyScreen(this))));
-		
-		addDrawableChild(new ButtonWidget(width / 2 - 79, height / 4 + 72 - 16,
-			50, 20, Text.literal("更多"), b -> level.increaseValue()));
-		
-		addDrawableChild(new ButtonWidget(width / 2 - 25, height / 4 + 72 - 16,
-			50, 20, Text.literal("更少"), b -> level.decreaseValue()));
-		
-		addDrawableChild(new ButtonWidget(width / 2 + 29, height / 4 + 72 - 16,
-			50, 20, Text.literal("默认"),
-			b -> level.setValue(level.getDefaultValue())));
-		
-		addDrawableChild(scrollButton =
-			new ButtonWidget(width / 2 - 79, height / 4 + 96 - 16, 158, 20,
-				Text.literal("使用鼠标滚轮: " + onOrOff(scroll.isChecked())),
-				b -> toggleScroll()));
+			scrollButton = ButtonWidget
+				.createBuilder(
+					Text.literal(
+						"使用鼠标滚轮: " + onOrOff(scroll.isChecked())),
+					b -> toggleScroll())
+				.setPositionAndSize(width / 2 - 79, height / 4 + 96 - 16, 158,
+					20)
+				.build());
 	}
 	
 	private void toggleScroll()

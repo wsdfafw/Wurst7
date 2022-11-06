@@ -56,17 +56,26 @@ public class MultiplayerScreenMixin extends Screen implements IMultiplayerScreen
 		if(!WurstClient.INSTANCE.isEnabled())
 			return;
 		
-		lastServerButton = addDrawableChild(new ButtonWidget(width / 2 - 154,
-			10, 100, 20, Text.literal("连接最后连服务器"), b -> LastServerRememberer
-				.joinLastServer((MultiplayerScreen)(Object)this)));
+		lastServerButton = addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("连接最后连服务器"),
+				b -> LastServerRememberer
+					.joinLastServer((MultiplayerScreen)(Object)this))
+			.setPositionAndSize(width / 2 - 154, 10, 100, 20).build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 + 154 + 4, height - 52, 100,
-			20, Text.literal("服务器寻找器"), b -> client.setScreen(
-				new ServerFinderScreen((MultiplayerScreen)(Object)this))));
+		addDrawableChild(
+			ButtonWidget
+				.createBuilder(Text.literal("服务器寻找器"),
+					b -> client.setScreen(new ServerFinderScreen(
+						(MultiplayerScreen)(Object)this)))
+				.setPositionAndSize(width / 2 + 154 + 4, height - 52, 100, 20)
+				.build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 + 154 + 4, height - 28, 100,
-			20, Text.literal("服务器列表清理"), b -> client.setScreen(
-				new CleanUpScreen((MultiplayerScreen)(Object)this))));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("服务器列表清理"),
+				b -> client.setScreen(
+					new CleanUpScreen((MultiplayerScreen)(Object)this)))
+			.setPositionAndSize(width / 2 + 154 + 4, height - 28, 100, 20)
+			.build());
 	}
 	
 	@Inject(at = {@At("TAIL")}, method = {"tick()V"})

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -26,7 +27,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.WurstClient;
@@ -87,7 +87,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("颜色", "手动设置的方块将会\n以这种颜色高亮.", Color.RED);
+	private final ColorSetting color = new ColorSetting("颜色",
+		"手动设置的方块将会\n以这种颜色高亮.", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	

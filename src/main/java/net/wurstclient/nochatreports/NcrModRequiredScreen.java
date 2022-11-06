@@ -86,21 +86,25 @@ public final class NcrModRequiredScreen extends Screen
 		int reconnectY = signaturesY + 24;
 		int backButtonY = reconnectY + 24;
 		
-		addDrawableChild(
-			signatureButton = new ButtonWidget(buttonX - 48, signaturesY, 148,
-				20, Text.literal(sigButtonMsg.get()), b -> toggleSignatures()));
+		addDrawableChild(signatureButton = ButtonWidget
+			.createBuilder(Text.literal(sigButtonMsg.get()),
+				b -> toggleSignatures())
+			.setPositionAndSize(buttonX - 48, signaturesY, 148, 20).build());
 		
-		addDrawableChild(
-			vsButton = new ButtonWidget(buttonX + 102, signaturesY, 148, 20,
-				Text.literal(vsButtonMsg.get()), b -> toggleVanillaSpoof()));
+		addDrawableChild(vsButton = ButtonWidget
+			.createBuilder(Text.literal(vsButtonMsg.get()),
+				b -> toggleVanillaSpoof())
+			.setPositionAndSize(buttonX + 102, signaturesY, 148, 20).build());
 		
-		addDrawableChild(new ButtonWidget(buttonX, reconnectY, 200, 20,
-			Text.literal("重新连接"),
-			b -> LastServerRememberer.reconnect(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("重新连接"),
+				b -> LastServerRememberer.reconnect(prevScreen))
+			.setPositionAndSize(buttonX, reconnectY, 200, 20).build());
 		
-		addDrawableChild(new ButtonWidget(buttonX, backButtonY, 200, 20,
-			Text.translatable("gui.toMenu"),
-			b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.translatable("gui.toMenu"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(buttonX, backButtonY, 200, 20).build());
 	}
 	
 	private void toggleSignatures()

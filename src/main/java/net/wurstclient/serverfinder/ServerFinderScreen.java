@@ -46,18 +46,22 @@ public class ServerFinderScreen extends Screen
 	@Override
 	public void init()
 	{
-		addDrawableChild(searchButton =
-			new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12, 200, 20,
-				Text.literal("搜索"), b -> searchOrCancel()));
+		addDrawableChild(searchButton = ButtonWidget
+			.createBuilder(Text.literal("搜索"), b -> searchOrCancel())
+			.setPositionAndSize(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
+			.build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 - 100,
-			height / 4 + 120 + 12, 200, 20, Text.literal("教程(跳转)"),
+		addDrawableChild(ButtonWidget.createBuilder(Text.literal("教程(跳转)"),
 			b -> Util.getOperatingSystem().open(
-				"https://www.wurstclient.net/wiki/Special_Features/Server_Finder/")));
+				"https://www.wurstclient.net/wiki/Special_Features/Server_Finder/"))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
+			.build());
 		
-		addDrawableChild(
-			new ButtonWidget(width / 2 - 100, height / 4 + 144 + 12, 200, 20,
-				Text.literal("返回"), b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("返回"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 144 + 12, 200, 20)
+			.build());
 		
 		ipBox = new TextFieldWidget(textRenderer, width / 2 - 100,
 			height / 4 + 34, 200, 20, Text.literal(""));

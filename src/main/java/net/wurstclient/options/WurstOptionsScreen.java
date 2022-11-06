@@ -41,9 +41,11 @@ public class WurstOptionsScreen extends Screen
 	@Override
 	public void init()
 	{
-		addDrawableChild(
-			new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200, 20,
-				Text.literal("返回"), b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("返回"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 - 100, height / 4 + 144 - 16, 200, 20)
+			.build());
 		
 		addSettingButtons();
 		addManagerButtons();
@@ -179,7 +181,9 @@ public class WurstOptionsScreen extends Screen
 		{
 			super(WurstOptionsScreen.this.width / 2 + xOffset,
 				WurstOptionsScreen.this.height / 4 - 16 + yOffset, 100, 20,
-				Text.literal(messageSupplier.get()), pressAction);
+				Text.literal(messageSupplier.get()), pressAction,
+				ButtonWidget.EMPTY_TOOLTIP,
+				ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 			
 			this.messageSupplier = messageSupplier;
 			

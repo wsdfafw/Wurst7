@@ -60,28 +60,31 @@ public final class EditBlockListScreen extends Screen
 		addSelectableChild(blockNameField);
 		blockNameField.setMaxLength(256);
 		
-		addDrawableChild(addButton = new ButtonWidget(width / 2 - 2,
-			height - 56, 30, 20, Text.literal("添加"), b -> {
+		addDrawableChild(
+			addButton = ButtonWidget.createBuilder(Text.literal("添加"), b -> {
 				blockList.add(blockToAdd);
 				blockNameField.setText("");
-			}));
+			}).setPositionAndSize(width / 2 - 2, height - 56, 30, 20).build());
 		
-		addDrawableChild(removeButton = new ButtonWidget(width / 2 + 52,
-			height - 56, 100, 20, Text.literal("删除选定"),
-			b -> blockList.remove(listGui.selected)));
-		
-		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("重置为默认值"),
-			b -> client.setScreen(new ConfirmScreen(b2 -> {
-				if(b2)
-					blockList.resetToDefaults();
-				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?")))));
+		addDrawableChild(removeButton = ButtonWidget
+			.createBuilder(Text.literal("删除选定"),
+				b -> blockList.remove(listGui.selected))
+			.setPositionAndSize(width / 2 + 52, height - 56, 100, 20).build());
 		
 		addDrawableChild(
-			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
-				Text.literal("已完成"), b -> client.setScreen(prevScreen)));
+			ButtonWidget.createBuilder(Text.literal("重置为默认值"),
+				b -> client.setScreen(new ConfirmScreen(b2 -> {
+					if(b2)
+						blockList.resetToDefaults();
+					client.setScreen(EditBlockListScreen.this);
+				}, Text.literal("重置为默认值"),
+					Text.literal("你确定吗?"))))
+				.setPositionAndSize(width - 108, 8, 100, 20).build());
+		
+		addDrawableChild(doneButton = ButtonWidget
+			.createBuilder(Text.literal("已完成"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 - 100, height - 28, 200, 20).build());
 	}
 	
 	@Override

@@ -45,18 +45,23 @@ public final class KeybindProfilesScreen extends Screen
 		listGui = new ListGui(client, this,
 			WurstClient.INSTANCE.getKeybinds().listProfiles());
 		
-		addDrawableChild(new ButtonWidget(8, 8, 100, 20,
-			Text.literal("打开目录"), b -> openFolder()));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("打开目录"), b -> openFolder())
+			.setPositionAndSize(8, 8, 100, 20).build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 - 154, height - 48, 100, 20,
-			Text.literal("新的配置文件"), b -> client.setScreen(
-				new EnterProfileNameScreen(this, this::newProfile))));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("新的配置文件"),
+				b -> client.setScreen(
+					new EnterProfileNameScreen(this, this::newProfile)))
+			.setPositionAndSize(width / 2 - 154, height - 48, 100, 20).build());
 		
-		loadButton = addDrawableChild(new ButtonWidget(width / 2 - 50,
-			height - 48, 100, 20, Text.literal("加载"), b -> loadSelected()));
+		loadButton = addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("加载"), b -> loadSelected())
+			.setPositionAndSize(width / 2 - 50, height - 48, 100, 20).build());
 		
-		addDrawableChild(new ButtonWidget(width / 2 + 54, height - 48, 100, 20,
-			Text.literal("取消"), b -> openPrevScreen()));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("取消"), b -> openPrevScreen())
+			.setPositionAndSize(width / 2 + 54, height - 48, 100, 20).build());
 	}
 	
 	private void openFolder()

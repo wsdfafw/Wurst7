@@ -41,22 +41,26 @@ public final class KeybindManagerScreen extends Screen
 	{
 		listGui = new ListGui(client, width, height, 36, height - 56, 30);
 		
-		addDrawableChild(addButton = new ButtonWidget(width / 2 - 102,
-			height - 52, 100, 20, Text.literal("添加"),
-			b -> client.setScreen(new KeybindEditorScreen(this))));
+		addDrawableChild(addButton = ButtonWidget
+			.createBuilder(Text.literal("添加"),
+				b -> client.setScreen(new KeybindEditorScreen(this)))
+			.setPositionAndSize(width / 2 - 102, height - 52, 100, 20).build());
 		
-		addDrawableChild(editButton = new ButtonWidget(width / 2 + 2,
-			height - 52, 100, 20, Text.literal("编辑"), b -> edit()));
+		addDrawableChild(editButton = ButtonWidget
+			.createBuilder(Text.literal("编辑"), b -> edit())
+			.setPositionAndSize(width / 2 + 2, height - 52, 100, 20).build());
 		
-		addDrawableChild(removeButton = new ButtonWidget(width / 2 - 102,
-			height - 28, 100, 20, Text.literal("移除"), b -> remove()));
+		addDrawableChild(removeButton = ButtonWidget
+			.createBuilder(Text.literal("移除"), b -> remove())
+			.setPositionAndSize(width / 2 - 102, height - 28, 100, 20).build());
+		
+		addDrawableChild(backButton = ButtonWidget
+			.createBuilder(Text.literal("返回"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(width / 2 + 2, height - 28, 100, 20).build());
 		
 		addDrawableChild(
-			backButton = new ButtonWidget(width / 2 + 2, height - 28, 100, 20,
-				Text.literal("返回"), b -> client.setScreen(prevScreen)));
-		
-		addDrawableChild(
-			new ButtonWidget(8, 8, 100, 20, Text.literal("重置键绑定"),
+			ButtonWidget.createBuilder(Text.literal("重置键绑定"),
 				b -> client.setScreen(new ConfirmScreen(confirmed -> {
 					if(confirmed)
 						WurstClient.INSTANCE.getKeybinds()
@@ -64,11 +68,13 @@ public final class KeybindManagerScreen extends Screen
 					client.setScreen(this);
 				}, Text
 					.literal("您确定要重置您的按键绑定吗?"),
-					Text.literal("这不能被撤消!")))));
+					Text.literal("这不能被撤消!"))))
+				.setPositionAndSize(8, 8, 100, 20).build());
 		
-		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("档案..."),
-			b -> client.setScreen(new KeybindProfilesScreen(this))));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("档案..."),
+				b -> client.setScreen(new KeybindProfilesScreen(this)))
+			.setPositionAndSize(width - 108, 8, 100, 20).build());
 	}
 	
 	private void edit()

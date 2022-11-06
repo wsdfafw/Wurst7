@@ -45,15 +45,22 @@ public final class SelectFileScreen extends Screen
 	{
 		listGui = new ListGui(client, this, setting.listFiles());
 		
-		addDrawableChild(new ButtonWidget(8, 8, 100, 20,
-			Text.literal("打开文件夹"), b -> openFolder()));
-		addDrawableChild(new ButtonWidget(width - 108, 8, 100, 20,
-			Text.literal("重置为默认值"), b -> askToConfirmReset()));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("打开文件夹"), b -> openFolder())
+			.setPositionAndSize(8, 8, 100, 20).build());
 		
-		doneButton = addDrawableChild(new ButtonWidget(width / 2 - 102,
-			height - 48, 100, 20, Text.literal("完成"), b -> done()));
-		addDrawableChild(new ButtonWidget(width / 2 + 2, height - 48, 100, 20,
-			Text.literal("取消"), b -> openPrevScreen()));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("重置为默认值"),
+				b -> askToConfirmReset())
+			.setPositionAndSize(width - 108, 8, 100, 20).build());
+		
+		doneButton = addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("完成"), b -> done())
+			.setPositionAndSize(width / 2 - 102, height - 48, 100, 20).build());
+		
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("取消"), b -> openPrevScreen())
+			.setPositionAndSize(width / 2 + 2, height - 48, 100, 20).build());
 	}
 	
 	private void openFolder()

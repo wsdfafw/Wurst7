@@ -31,6 +31,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.util.ProfileKeys;
+import net.minecraft.client.util.ProfileKeysImpl;
 import net.minecraft.client.util.Session;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -74,7 +75,7 @@ public abstract class MinecraftClientMixin
 	private YggdrasilAuthenticationService authenticationService;
 	
 	private Session wurstSession;
-	private ProfileKeys wurstProfileKeys;
+	private ProfileKeysImpl wurstProfileKeys;
 	
 	private MinecraftClientMixin(WurstClient wurst, String string_1)
 	{
@@ -154,6 +155,9 @@ public abstract class MinecraftClientMixin
 		cancellable = true)
 	public void onGetProfileKeys(CallbackInfoReturnable<ProfileKeys> cir)
 	{
+		if(WurstClient.INSTANCE.getOtfs().noChatReportsOtf.isActive())
+			cir.setReturnValue(ProfileKeys.MISSING);
+		
 		if(wurstProfileKeys == null)
 			return;
 		
@@ -211,7 +215,7 @@ public abstract class MinecraftClientMixin
 			wurst_createUserApiService(session.getAccessToken());
 		UUID uuid = wurstSession.getProfile().getId();
 		wurstProfileKeys =
-			new ProfileKeys(userApiService, uuid, runDirectory.toPath());
+			new ProfileKeysImpl(userApiService, uuid, runDirectory.toPath());
 	}
 	
 	private UserApiService wurst_createUserApiService(String accessToken)

@@ -29,10 +29,13 @@ public final class ForcedChatReportsScreen extends Screen
 	private static final List<String> TRANSLATABLE_DISCONNECT_REASONS =
 		Arrays.asList("multiplayer.disconnect.missing_public_key",
 			"multiplayer.disconnect.invalid_public_key_signature",
-			"multiplayer.disconnect.invalid_public_key");
+			"multiplayer.disconnect.invalid_public_key",
+			"multiplayer.disconnect.unsigned_chat");
 	
 	private static final List<String> LITERAL_DISCONNECT_REASONS =
-		Arrays.asList("您的连接发生内部错误.");
+		Arrays.asList("您的连接出现内部错误.",
+			"加入此服务器需要安全配置文件.",
+			"安全配置文件已过期.", "安全配置文件无效.");
 	
 	private final Screen prevScreen;
 	private final Text reason;
@@ -77,17 +80,20 @@ public final class ForcedChatReportsScreen extends Screen
 		int reconnectY = signaturesY + 24;
 		int backButtonY = reconnectY + 24;
 		
-		addDrawableChild(
-			signatureButton = new ButtonWidget(buttonX, signaturesY, 200, 20,
-				Text.literal(sigButtonMsg.get()), b -> toggleSignatures()));
+		addDrawableChild(signatureButton = ButtonWidget
+			.createBuilder(Text.literal(sigButtonMsg.get()),
+				b -> toggleSignatures())
+			.setPositionAndSize(buttonX, signaturesY, 200, 20).build());
 		
-		addDrawableChild(new ButtonWidget(buttonX, reconnectY, 200, 20,
-			Text.literal("Reconnect"),
-			b -> LastServerRememberer.reconnect(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.literal("Reconnect"),
+				b -> LastServerRememberer.reconnect(prevScreen))
+			.setPositionAndSize(buttonX, reconnectY, 200, 20).build());
 		
-		addDrawableChild(new ButtonWidget(buttonX, backButtonY, 200, 20,
-			Text.translatable("gui.toMenu"),
-			b -> client.setScreen(prevScreen)));
+		addDrawableChild(ButtonWidget
+			.createBuilder(Text.translatable("gui.toMenu"),
+				b -> client.setScreen(prevScreen))
+			.setPositionAndSize(buttonX, backButtonY, 200, 20).build());
 	}
 	
 	private void toggleSignatures()
