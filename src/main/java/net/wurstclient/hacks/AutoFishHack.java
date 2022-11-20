@@ -9,9 +9,6 @@ package net.wurstclient.hacks;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
@@ -24,6 +21,7 @@ import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.hacks.autofish.AutoFishDebugDraw;
+import net.wurstclient.hacks.autofish.AutoFishRodSelector;
 import net.wurstclient.mixinterface.IFishingBobberEntity;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
@@ -37,14 +35,11 @@ public final class AutoFishHack extends Hack
 		"在这个范围之外咬钩的鱼将被忽略\n如果范围内没有发现鱼,请扩大你的给定范围\n如果能检测到其他玩家钓到鱼,请缩小给定范围",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private int bestRodValue;
-	private int bestRodSlot;
-	
 	private int castRodTimer;
 	private int reelInTimer;
-	private int scheduledWindowClick;
 	
 	private final AutoFishDebugDraw debugDraw = new AutoFishDebugDraw();
+	private final AutoFishRodSelector rodSelector = new AutoFishRodSelector();
 	
 	private boolean wasOpenWater;
 	
@@ -60,11 +55,11 @@ public final class AutoFishHack extends Hack
 	@Override
 	public void onEnable()
 	{
-		bestRodValue = -1;
-		bestRodSlot = -1;
+		WURST.getHax().airPlaceHack.setEnabled(false);
+		
 		castRodTimer = 0;
 		reelInTimer = -1;
-		scheduledWindowClick = -1;
+		rodSelector.reset();
 		debugDraw.reset();
 		wasOpenWater = true;
 		
@@ -90,29 +85,26 @@ public final class AutoFishHack extends Hack
 			reelInTimer--;
 		
 		ClientPlayerEntity player = MC.player;
-		PlayerInventory inventory = player.getInventory();
 		
-		if(scheduledWindowClick != -1)
+		if(rodSelector.hasScheduledClick())
 		{
-			IMC.getInteractionManager()
-				.windowClick_PICKUP(scheduledWindowClick);
-			scheduledWindowClick = -1;
+			rodSelector.doScheduledClick();
 			castRodTimer = 15;
 			return;
 		}
 		
-		updateBestRod();
+		rodSelector.updateBestRod();
 		
-		if(bestRodSlot == -1)
+		if(!rodSelector.hasARod())
 		{
 			ChatUtils.message("钓鱼的鱼竿已经被用完了");
 			setEnabled(false);
 			return;
 		}
 		
-		if(bestRodSlot != inventory.selectedSlot)
+		if(!rodSelector.isBestRodAlreadySelected())
 		{
-			selectBestRod();
+			rodSelector.selectBestRod();
 			return;
 		}
 		
@@ -137,78 +129,6 @@ public final class AutoFishHack extends Hack
 			reelInTimer--;
 			rightClick();
 			castRodTimer = 15;
-		}
-	}
-	
-	private void updateBestRod()
-	{
-		PlayerInventory inventory = MC.player.getInventory();
-		int selectedSlot = inventory.selectedSlot;
-		ItemStack selectedStack = inventory.getStack(selectedSlot);
-		
-		// start with selected rod
-		bestRodValue = getRodValue(selectedStack);
-		bestRodSlot = bestRodValue > -1 ? selectedSlot : -1;
-		
-		// search inventory for better rod
-		for(int slot = 0; slot < 36; slot++)
-		{
-			ItemStack stack = inventory.getStack(slot);
-			int rodValue = getRodValue(stack);
-			
-			if(rodValue > bestRodValue)
-			{
-				bestRodValue = rodValue;
-				bestRodSlot = slot;
-			}
-		}
-	}
-	
-	private int getRodValue(ItemStack stack)
-	{
-		if(stack.isEmpty() || !(stack.getItem() instanceof FishingRodItem))
-			return -1;
-		
-		int luckOTSLvl =
-			EnchantmentHelper.getLevel(Enchantments.LUCK_OF_THE_SEA, stack);
-		int lureLvl = EnchantmentHelper.getLevel(Enchantments.LURE, stack);
-		int unbreakingLvl =
-			EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack);
-		int mendingBonus =
-			EnchantmentHelper.getLevel(Enchantments.MENDING, stack);
-		int noVanishBonus = EnchantmentHelper.hasVanishingCurse(stack) ? 0 : 1;
-		
-		return luckOTSLvl * 9 + lureLvl * 9 + unbreakingLvl * 2 + mendingBonus
-			+ noVanishBonus;
-	}
-	
-	private void selectBestRod()
-	{
-		PlayerInventory inventory = MC.player.getInventory();
-		
-		if(bestRodSlot < 9)
-		{
-			inventory.selectedSlot = bestRodSlot;
-			return;
-		}
-		
-		int firstEmptySlot = inventory.getEmptySlot();
-		
-		if(firstEmptySlot != -1)
-		{
-			if(firstEmptySlot >= 9)
-				IMC.getInteractionManager()
-					.windowClick_QUICK_MOVE(36 + inventory.selectedSlot);
-			
-			IMC.getInteractionManager().windowClick_QUICK_MOVE(bestRodSlot);
-			
-		}else
-		{
-			IMC.getInteractionManager().windowClick_PICKUP(bestRodSlot);
-			IMC.getInteractionManager()
-				.windowClick_PICKUP(36 + inventory.selectedSlot);
-			
-			scheduledWindowClick = -bestRodSlot;
 		}
 	}
 	
