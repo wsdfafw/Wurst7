@@ -39,7 +39,8 @@ public enum CmdUtils
 		Setting setting = feature.getSettings().get(name);
 		
 		if(setting == null)
-			throw new CmdError("一个设置名为 \"" + name + "\" 无法被找到在" + feature.getName() + ".");
+			throw new CmdError("一个设置名为 \"" + name
+				+ "\" 无法被找到在" + feature.getName() + ".");
 		
 		return setting;
 	}
