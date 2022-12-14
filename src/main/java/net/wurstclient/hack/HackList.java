@@ -46,7 +46,6 @@ public final class HackList implements UpdateListener
 	public final AutoEatHack autoEatHack = new AutoEatHack();
 	public final AutoFarmHack autoFarmHack = new AutoFarmHack();
 	public final AutoFishHack autoFishHack = new AutoFishHack();
-	public final AutoMLGHack autoMLGHack = new AutoMLGHack();
 	public final AutoMineHack autoMineHack = new AutoMineHack();
 	public final AutoPotionHack autoPotionHack = new AutoPotionHack();
 	public final AutoReconnectHack autoReconnectHack = new AutoReconnectHack();
@@ -129,13 +128,11 @@ public final class HackList implements UpdateListener
 	public final NoClipHack noClipHack = new NoClipHack();
 	public final NoFallHack noFallHack = new NoFallHack();
 	public final NoFireOverlayHack noFireOverlayHack = new NoFireOverlayHack();
-	public final NoFrictionHack noFrictionHack = new NoFrictionHack();
 	public final NoHurtcamHack noHurtcamHack = new NoHurtcamHack();
 	public final NoLevitationHack noLevitationHack = new NoLevitationHack();
 	public final NoOverlayHack noOverlayHack = new NoOverlayHack();
 	public final NoPumpkinHack noPumpkinHack = new NoPumpkinHack();
 	public final NoSlowdownHack noSlowdownHack = new NoSlowdownHack();
-	public final NoteBotHack noteBotHack = new NoteBotHack();
 	public final NoWeatherHack noWeatherHack = new NoWeatherHack();
 	public final NoWebHack noWebHack = new NoWebHack();
 	public final NukerHack nukerHack = new NukerHack();
@@ -172,7 +169,6 @@ public final class HackList implements UpdateListener
 	public final TiredHack tiredHack = new TiredHack();
 	public final TooManyHaxHack tooManyHaxHack = new TooManyHaxHack();
 	public final TpAuraHack tpAuraHack = new TpAuraHack();
-	public final TpsDisplayHack tpsDisplayHack = new TpsDisplayHack();
 	public final TrajectoriesHack trajectoriesHack = new TrajectoriesHack();
 	public final TreeBotHack treeBotHack = new TreeBotHack();
 	public final TriggerBotHack triggerBotHack = new TriggerBotHack();
