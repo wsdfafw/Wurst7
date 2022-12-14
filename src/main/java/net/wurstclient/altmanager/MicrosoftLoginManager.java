@@ -144,7 +144,12 @@ public enum MicrosoftLoginManager
 			URLConnection connection = LOGIN_URL.openConnection();
 			
 			System.out.println("获取登录cookie中...");
-			cookie = connection.getHeaderField("set-cookie");
+			cookie = "";
+			for(String c : connection.getHeaderFields().get("Set-Cookie"))
+			{
+				String cookieTrimmed = c.substring(0, c.indexOf(";") + 1);
+				cookie += cookieTrimmed;
+			}
 			
 			System.out.println("下载登录页面...");
 			loginWebpage = downloadData(connection);
