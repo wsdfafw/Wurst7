@@ -10,7 +10,6 @@ package net.wurstclient.mixin;
 import java.io.File;
 import java.util.UUID;
 
-import net.minecraft.client.RunArgs;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -82,12 +81,7 @@ public abstract class MinecraftClientMixin
 	{
 		super(string_1);
 	}
-
-	@Inject(method = "<init>",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setOverlay(Lnet/minecraft/client/gui/screen/Overlay;)V", shift = At.Shift.BEFORE))
-	private void init(RunArgs args, CallbackInfo ci){
-		WurstClient.init();
-	}
-
+	
 	@Inject(at = {@At(value = "FIELD",
 		target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
 		ordinal = 0)}, method = {"doAttack()Z"}, cancellable = true)
