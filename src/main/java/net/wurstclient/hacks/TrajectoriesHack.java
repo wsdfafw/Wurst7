@@ -35,7 +35,7 @@ import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
 @SearchTags({"ArrowTrajectories", "ArrowPrediction", "aim assist",
-	"arrow trajectories"})
+	"arrow trajectories","Trajectories"})
 public final class TrajectoriesHack extends Hack implements RenderListener
 {
 	private final ColorSetting color =

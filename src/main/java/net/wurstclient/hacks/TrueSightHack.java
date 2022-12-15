@@ -11,7 +11,7 @@ import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
 
-@SearchTags({"true sight"})
+@SearchTags({"true sight","TrueSight"})
 public final class TrueSightHack extends Hack
 {
 	public TrueSightHack()

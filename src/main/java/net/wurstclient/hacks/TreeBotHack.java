@@ -51,7 +51,7 @@ import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
-@SearchTags({"tree bot"})
+@SearchTags({"tree bot","TreeBot"})
 @DontSaveState
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener

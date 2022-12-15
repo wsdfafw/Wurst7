@@ -20,7 +20,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.util.ChatUtils;
 
-@SearchTags({"troll potion", "TrollingPotion", "trolling potion"})
+@SearchTags({"troll potion", "TrollingPotion", "trolling potion", "TrollPotion"})
 public final class TrollPotionHack extends Hack
 {
 	private final EnumSetting<PotionType> potionType =

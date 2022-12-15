@@ -27,7 +27,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.FakePlayerEntity;
 
-@SearchTags({"trigger bot"})
+@SearchTags({"trigger bot","TriggerBot"})
 public final class TriggerBotHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
