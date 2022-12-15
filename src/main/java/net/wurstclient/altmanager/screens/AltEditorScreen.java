@@ -78,20 +78,20 @@ public abstract class AltEditorScreen extends Screen
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200, 20,
-				Text.literal("Cancel"), b -> client.setScreen(prevScreen)));
+				new LiteralText("Cancel"), b -> client.setScreen(prevScreen)));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12,
-			200, 20, Text.literal("Random Name"),
+			200, 20, new LiteralText("Random Name"),
 			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
 		
 		addDrawableChild(stealSkinButton =
 			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
-				128, 20, Text.literal("Steal Skin"),
+				128, 20, new LiteralText("Steal Skin"),
 				b -> message = stealSkin(getNameOrEmail())));
 		
 		addDrawableChild(
 			new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128, 20,
-				Text.literal("Open Skin Folder"), b -> openSkinFolder()));
+				new LiteralText("Open Skin Folder"), b -> openSkinFolder()));
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
 			200, 20, new LiteralText(""));
