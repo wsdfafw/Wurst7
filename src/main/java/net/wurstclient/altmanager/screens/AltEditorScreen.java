@@ -50,7 +50,7 @@ import net.wurstclient.altmanager.NameGenerator;
 public abstract class AltEditorScreen extends Screen
 {
 	private final Path skinFolder =
-		WurstClient.INSTANCE.getWurstFolder().resolve("skins");
+		WurstClient.INSTANCE.getWurstFolder().resolve("皮肤");
 	
 	protected final Screen prevScreen;
 	
@@ -130,7 +130,7 @@ public abstract class AltEditorScreen extends Screen
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			message = "\u00a74\u00a7lSkin folder could not be created.";
+			message = "§4§l皮肤文件夹无法被创建.";
 		}
 	}
 	
@@ -199,17 +199,17 @@ public abstract class AltEditorScreen extends Screen
 				Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
 			}
 			
-			return "\u00a7a\u00a7lSaved skin as " + name + ".png";
+			return "\u00a7a\u00a7l皮肤已被保存为 " + name + ".png";
 			
 		}catch(IOException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7lSkin could not be saved.";
+			return "\u00a74\u00a7l皮肤无法保存.";
 			
 		}catch(NullPointerException e)
 		{
 			e.printStackTrace();
-			return "\u00a74\u00a7lPlayer does not exist.";
+			return "\u00a74\u00a7l玩家不存在.";
 		}
 	}
 	
@@ -354,11 +354,11 @@ public abstract class AltEditorScreen extends Screen
 		
 		// text
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Name (for cracked alts), or", width / 2 - 100, 37, 10526880);
+			"名字 (盗版账户), 或者", width / 2 - 100, 37, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"E-Mail (for premium alts)", width / 2 - 100, 47, 10526880);
+			"邮箱 (正版账户)", width / 2 - 100, 47, 10526880);
 		drawStringWithShadow(matrixStack, textRenderer,
-			"Password (leave blank for cracked alts)", width / 2 - 100, 87,
+			"密码 (如果是盗版请留空)", width / 2 - 100, 87,
 			10526880);
 		
 		String[] lines = message.split("\n");
