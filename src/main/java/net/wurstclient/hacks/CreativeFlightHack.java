@@ -34,9 +34,9 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 			SliderSetting.ValueDisplay.INTEGER.withSuffix(" ticks"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
-		"Anti-Kick Distance",
-		"How far Anti-Kick should make you fall.\n"
-			+ "Most servers require at least 0.032m to stop you from getting kicked.",
+		"防踢距离",
+		"反踢应该让你跌倒多远.\n"
+			+ "大多数服务器至少需要 0.032m 才能阻止您被踢.",
 		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private int tickCounter = 0;
