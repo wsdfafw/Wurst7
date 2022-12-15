@@ -46,14 +46,15 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("风格", Style.values(), Style.BOXES);
+		new EnumSetting<>("Style", Style.values(), Style.BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框框大小",
-		"§l精确§r 模式显示更加精确的\n可打击的框给每个生物.\n§l更好§r 模式会看起来框很大\n但看起来会更舒服点.",
+	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
+		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each mob.\n"
+			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐身", "不会显示隐身的生物.", false);
+	private final FilterInvisibleSetting filterInvisible =
+		new FilterInvisibleSetting("Won't show invisible mobs.", false);
 	
 	private final ArrayList<MobEntity> mobs = new ArrayList<>();
 	private VertexBuffer mobBox;
@@ -101,7 +102,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 				.filter(e -> !e.isRemoved() && e.getHealth() > 0);
 		
 		if(filterInvisible.isChecked())
-			stream = stream.filter(e -> !e.isInvisible());
+			stream = stream.filter(filterInvisible);
 		
 		mobs.addAll(stream.collect(Collectors.toList()));
 	}

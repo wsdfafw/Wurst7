@@ -54,11 +54,9 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 		"§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.",
 		BoxSize.values(), BoxSize.FANCY);
 	
-	private final CheckboxSetting filterSleeping = new CheckboxSetting(
-		"排除睡觉", "不会显示正在睡觉的玩家.", false);
-	
-	private final CheckboxSetting filterInvisible = new CheckboxSetting(
-		"排除隐身", "不会显示隐身中的玩家.", false);
+	private final EntityFilterList entityFilters = new EntityFilterList(
+		new FilterSleepingSetting("Won't show sleeping players.", false),
+		new FilterInvisibleSetting("Won't show invisible players.", false));
 	
 	private final ArrayList<PlayerEntity> players = new ArrayList<>();
 	
@@ -182,7 +180,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	private void renderTracers(MatrixStack matrixStack, double partialTicks,
 		int regionX, int regionZ)
 	{
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
