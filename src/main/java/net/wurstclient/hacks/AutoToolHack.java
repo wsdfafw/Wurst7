@@ -27,13 +27,12 @@ import net.wurstclient.util.BlockUtils;
 public final class AutoToolHack extends Hack
 	implements BlockBreakingProgressListener, UpdateListener
 {
-	private final CheckboxSetting useSwords = new CheckboxSetting("使用剑",
-		"用剑折断树叶、蜘蛛网等", false);
+	private final CheckboxSetting useSwords = new CheckboxSetting("Use swords",
+		"Uses swords to break leaves, cobwebs, etc.", false);
 	
-	private final CheckboxSetting useHands =
-		new CheckboxSetting(
-			"用手", "当找不到合适的工具时,使用空手或不可损坏的物品",
-			true);
+	private final CheckboxSetting useHands = new CheckboxSetting("Use hands",
+		"Uses an empty hand or a non-damageable item when no applicable tool is found.",
+		true);
 	
 	private final CheckboxSetting repairMode = new CheckboxSetting(
 		"修复模式", "不会使用即将损坏的工具.", false);

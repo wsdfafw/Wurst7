@@ -55,7 +55,7 @@ public final class AutoFishHack extends Hack
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
 	private CheckboxSetting debugDraw = new CheckboxSetting("Debug画面",
-		"显示一个当前所检测的框框\n一般用来调试你所设置的检测\n'有效范围'的设计是否合理",
+		"显示一个当前所检测的框框\n一般用来调试你所设置的检测\n'有效范围'的设计是否合理.",
 		false);
 	
 	private final ColorSetting ddColor = new ColorSetting("DD 颜色",

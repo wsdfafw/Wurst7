@@ -38,7 +38,8 @@ public final class AutoArmorHack extends Hack
 	implements UpdateListener, PacketOutputListener
 {
 	private final CheckboxSetting useEnchantments = new CheckboxSetting(
-		"附魔", "计算护甲强度时是否考虑附魔",
+		"附魔",
+		"计算护甲强度时是否考虑附魔",
 		true);
 	
 	private final CheckboxSetting swapWhileMoving = new CheckboxSetting(
@@ -46,10 +47,9 @@ public final class AutoArmorHack extends Hack
 		"是否在玩家移动时交换盔甲\n§c§l警告:§r如果不开挂,\n这种操作是不可能的,\n这可能会引起怀疑",
 		false);
 	
-	private final SliderSetting delay =
-		new SliderSetting("延迟",
-			"交换下一个盔甲之前等待的时间",
-			2, 0, 20, 1, ValueDisplay.INTEGER);
+	private final SliderSetting delay = new SliderSetting("延迟",
+		"交换下一个盔甲之前等待的时间", 2,
+		0, 20, 1, ValueDisplay.INTEGER);
 	
 	private int timer;
 	

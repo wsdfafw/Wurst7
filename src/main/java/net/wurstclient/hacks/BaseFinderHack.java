@@ -87,7 +87,8 @@ public final class BaseFinderHack extends Hack
 		"minecraft:tall_grass", "minecraft:tall_seagrass", "minecraft:tuff",
 		"minecraft:vine", "minecraft:water", "minecraft:white_tulip");
 	
-	private final ColorSetting color = new ColorSetting("颜色", "手动设置的方块将会\n以这种颜色高亮.", Color.RED);
+	private final ColorSetting color = new ColorSetting("Color",
+		"Man-made blocks will be highlighted in this color.", Color.RED);
 	
 	private ArrayList<String> blockNames;
 	

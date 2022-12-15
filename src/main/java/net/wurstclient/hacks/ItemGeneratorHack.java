@@ -26,8 +26,14 @@ import net.wurstclient.util.ChatUtils;
 @SearchTags({"item generator", "drop infinite"})
 public final class ItemGeneratorHack extends Hack implements UpdateListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", "§4§l警告:§r 更高的速度意味着会无响应或\n生成大量的垃圾文件并使你的游戏崩溃!", 1.0, 1.0, 36.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
-    private final SliderSetting stackSize = new SliderSetting("物品堆栈", "生成一个物品要有多少要堆在一起.\n似乎不会影响性能.", 1.0, 1.0, 64.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
+	private final SliderSetting speed = new SliderSetting("Speed",
+		"\u00a74\u00a7lWARNING:\u00a7r High speeds will cause a ton of lag and can easily crash the game!",
+		1, 1, 36, 1, ValueDisplay.INTEGER);
+	
+	private final SliderSetting stackSize = new SliderSetting("Stack size",
+		"How many items to place in each stack.\n"
+			+ "Doesn't seem to affect performance.",
+		1, 1, 64, 1, ValueDisplay.INTEGER);
 	
 	private final Random random = Random.createLocal();
 	
