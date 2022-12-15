@@ -46,7 +46,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
 	private final EnumSetting<Style> style =
-		new EnumSetting<>("Style", Style.values(), Style.BOXES);
+		new EnumSetting<>("风格", Style.values(), Style.BOXES);
 	
 	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("Box size",
 		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each mob.\n"
