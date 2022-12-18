@@ -21,6 +21,8 @@ import net.wurstclient.events.BlockBreakingProgressListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockUtils;
 
 @SearchTags({"auto tool", "AutoSwitch", "auto switch"})
@@ -30,13 +32,14 @@ public final class AutoToolHack extends Hack
 	private final CheckboxSetting useSwords = new CheckboxSetting("使用剑",
 		"用剑折断树叶、蜘蛛网等", false);
 	
-	private final CheckboxSetting useHands =
-		new CheckboxSetting(
-			"用手", "当找不到合适的工具时,使用空手或不可损坏的物品",
-			true);
+	private final CheckboxSetting useHands = new CheckboxSetting("用手",
+		"当找不到合适的工具时,使用空手或不可损坏的物品",
+		true);
 	
-	private final CheckboxSetting repairMode = new CheckboxSetting(
-		"修复模式", "不会使用即将损坏的工具.", false);
+	private final SliderSetting repairMode = new SliderSetting("Repair mode",
+		"Prevents tools from being used when their durability reaches the given threshold, so you can repair them before they break.\n"
+			+ "Can be adjusted from 0 (off) to 100.",
+		0, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
 	
 	private final CheckboxSetting switchBack = new CheckboxSetting(
 		"切换回来", "",
@@ -81,7 +84,7 @@ public final class AutoToolHack extends Hack
 			prevSelectedSlot = MC.player.getInventory().selectedSlot;
 		
 		equipBestTool(pos, useSwords.isChecked(), useHands.isChecked(),
-			repairMode.isChecked());
+			repairMode.getValueI() > 0);
 	}
 	
 	@Override
@@ -102,7 +105,7 @@ public final class AutoToolHack extends Hack
 			return;
 		
 		equipBestTool(pos, useSwords.isChecked(), useHands.isChecked(),
-			repairMode.isChecked());
+			repairMode.getValueI() > 0);
 	}
 	
 	public void equipBestTool(BlockPos pos, boolean useSwords, boolean useHands,
@@ -142,6 +145,8 @@ public final class AutoToolHack extends Hack
 		
 		BlockState state = BlockUtils.getState(pos);
 		float bestSpeed = getMiningSpeed(heldItem, state);
+		if(isTooDamaged(heldItem))
+			bestSpeed = 1;
 		int bestSlot = -1;
 		
 		for(int slot = 0; slot < 9; slot++)
@@ -190,7 +195,8 @@ public final class AutoToolHack extends Hack
 	
 	private boolean isTooDamaged(ItemStack stack)
 	{
-		return stack.getMaxDamage() - stack.getDamage() <= 4;
+		return stack.getMaxDamage() - stack.getDamage() <= repairMode
+			.getValueI();
 	}
 	
 	private boolean isWrongTool(ItemStack heldItem, BlockPos pos)
