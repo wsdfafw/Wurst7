@@ -32,21 +32,21 @@ public final class RepairCmd extends Command
 		
 		ClientPlayerEntity player = MC.player;
 		
-		if(!player.getAbilities().creativeMode)
+		if(!player.abilities.creativeMode)
 			throw new CmdError("仅限创造模式.");
 		
 		ItemStack stack = getHeldStack(player);
 		stack.setDamage(0);
 		MC.player.networkHandler
 			.sendPacket(new CreativeInventoryActionC2SPacket(
-				36 + player.getInventory().selectedSlot, stack));
+				36 + player.inventory.selectedSlot, stack));
 		
 		ChatUtils.message("物品已修复.");
 	}
 	
 	private ItemStack getHeldStack(ClientPlayerEntity player) throws CmdError
 	{
-		ItemStack stack = player.getInventory().getMainHandStack();
+		ItemStack stack = player.inventory.getMainHandStack();
 		
 		if(stack.isEmpty())
 			throw new CmdError("您需要手上的物品.");

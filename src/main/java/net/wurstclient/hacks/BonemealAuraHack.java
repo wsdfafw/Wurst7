@@ -51,11 +51,15 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	
 	private final CheckboxSetting saplings =
 		new CheckboxSetting("树苗", true);
+	
 	private final CheckboxSetting crops = new CheckboxSetting("农作物",
 		"小麦、胡萝卜、土豆和甜菜根.", true);
+	
 	private final CheckboxSetting stems =
 		new CheckboxSetting("有茎类", "Pumpkins and melons.", true);
+	
 	private final CheckboxSetting cocoa = new CheckboxSetting("可可豆", true);
+	
 	private final CheckboxSetting other = new CheckboxSetting("其他", false);
 	
 	public BonemealAuraHack()
@@ -105,7 +109,7 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 			return;
 		
 		// check held item
-		ItemStack stack = MC.player.getInventory().getMainHandStack();
+		ItemStack stack = MC.player.inventory.getMainHandStack();
 		if(stack.isEmpty() || stack.getItem() != Items.BONE_MEAL)
 		{
 			selectBonemeal();
@@ -145,29 +149,29 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 		
 		for(int slot = 0; slot < maxInvSlot; slot++)
 		{
-			if(slot == player.getInventory().selectedSlot)
+			if(slot == player.inventory.selectedSlot)
 				continue;
 			
-			ItemStack stack = player.getInventory().getStack(slot);
+			ItemStack stack = player.inventory.getStack(slot);
 			if(stack.isEmpty() || stack.getItem() != Items.BONE_MEAL)
 				continue;
 			
 			if(slot < 9)
-				player.getInventory().selectedSlot = slot;
-			else if(player.getInventory().getEmptySlot() < 9)
+				player.inventory.selectedSlot = slot;
+			else if(player.inventory.getEmptySlot() < 9)
 				IMC.getInteractionManager().windowClick_QUICK_MOVE(slot);
-			else if(player.getInventory().getEmptySlot() != -1)
+			else if(player.inventory.getEmptySlot() != -1)
 			{
-				IMC.getInteractionManager().windowClick_QUICK_MOVE(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_QUICK_MOVE(player.inventory.selectedSlot + 36);
 				IMC.getInteractionManager().windowClick_QUICK_MOVE(slot);
 			}else
 			{
-				IMC.getInteractionManager().windowClick_PICKUP(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_PICKUP(player.inventory.selectedSlot + 36);
 				IMC.getInteractionManager().windowClick_PICKUP(slot);
-				IMC.getInteractionManager().windowClick_PICKUP(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_PICKUP(player.inventory.selectedSlot + 36);
 			}
 			
 			return;

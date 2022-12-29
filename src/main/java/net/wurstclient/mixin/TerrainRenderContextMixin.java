@@ -24,7 +24,7 @@ import net.wurstclient.events.TesselateBlockListener.TesselateBlockEvent;
 public class TerrainRenderContextMixin
 {
 	@Inject(at = {@At("HEAD")},
-		method = {"tessellateBlock"},
+		method = {"tesselateBlock"},
 		cancellable = true,
 		remap = false)
 	private void tesselateBlock(BlockState blockState, BlockPos blockPos,

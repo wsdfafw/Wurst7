@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -73,13 +73,13 @@ public final class AutoDropHack extends Hack implements UpdateListener
 			int adjustedSlot = slot;
 			if(adjustedSlot >= 36)
 				adjustedSlot -= 36;
-			ItemStack stack = MC.player.getInventory().getStack(adjustedSlot);
+			ItemStack stack = MC.player.inventory.getStack(adjustedSlot);
 			
 			if(stack.isEmpty())
 				continue;
 			
 			Item item = stack.getItem();
-			String itemName = Registries.ITEM.getId(item).toString();
+			String itemName = Registry.ITEM.getId(item).toString();
 			
 			if(!items.getItemNames().contains(itemName))
 				continue;

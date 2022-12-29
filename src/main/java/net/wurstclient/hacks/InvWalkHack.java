@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.item.ItemGroups;
+import net.minecraft.item.ItemGroup;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.clickgui.screens.ClickGuiScreen;
@@ -80,17 +80,17 @@ public final class InvWalkHack extends Hack implements UpdateListener
 			return;
 		
 		ArrayList<KeyBinding> keys =
-			new ArrayList<>(Arrays.asList(MC.options.forwardKey,
-				MC.options.backKey, MC.options.leftKey, MC.options.rightKey));
+			new ArrayList<>(Arrays.asList(MC.options.keyForward,
+				MC.options.keyBack, MC.options.keyLeft, MC.options.keyRight));
 		
 		if(allowSneak.isChecked())
-			keys.add(MC.options.sneakKey);
+			keys.add(MC.options.keySneak);
 		
 		if(allowSprint.isChecked())
-			keys.add(MC.options.sprintKey);
+			keys.add(MC.options.keySprint);
 		
 		if(allowJump.isChecked())
-			keys.add(MC.options.jumpKey);
+			keys.add(MC.options.keyJump);
 		
 		for(KeyBinding key : keys)
 			key.setPressed(((IKeyBinding)key).isActallyPressed());
@@ -117,7 +117,8 @@ public final class InvWalkHack extends Hack implements UpdateListener
 		if(!(screen instanceof CreativeInventoryScreen))
 			return false;
 		
-		return CreativeInventoryScreen.selectedTab == ItemGroups.SEARCH;
+		CreativeInventoryScreen crInvScreen = (CreativeInventoryScreen)screen;
+		return crInvScreen.getSelectedTab() == ItemGroup.SEARCH.getIndex();
 	}
 	
 	private boolean hasTextBox(Screen screen)

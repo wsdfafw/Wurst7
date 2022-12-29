@@ -7,6 +7,7 @@
  */
 package net.wurstclient.commands;
 
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.wurstclient.SearchTags;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -29,9 +30,7 @@ public final class SayCmd extends Command
 			throw new CmdSyntaxError();
 		
 		String message = String.join(" ", args);
-		if(message.startsWith("/"))
-			MC.getNetworkHandler().sendChatCommand(message.substring(1));
-		else
-			MC.getNetworkHandler().sendChatMessage(message);
+		ChatMessageC2SPacket packet = new ChatMessageC2SPacket(message);
+		MC.getNetworkHandler().sendPacket(packet);
 	}
 }

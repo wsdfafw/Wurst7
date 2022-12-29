@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -119,8 +118,7 @@ public final class ProtectHack extends Hack
 			Stream<Entity> stream = StreamSupport
 				.stream(MC.world.getEntities().spliterator(), true)
 				.filter(e -> e instanceof LivingEntity)
-				.filter(
-					e -> !e.isRemoved() && ((LivingEntity)e).getHealth() > 0)
+				.filter(e -> !e.removed && ((LivingEntity)e).getHealth() > 0)
 				.filter(e -> e != MC.player)
 				.filter(e -> !(e instanceof FakePlayerEntity));
 			friend = stream
@@ -151,7 +149,7 @@ public final class ProtectHack extends Hack
 		
 		if(friend != null)
 		{
-			MC.options.forwardKey.setPressed(false);
+			MC.options.keyForward.setPressed(false);
 			friend = null;
 		}
 	}
@@ -165,8 +163,7 @@ public final class ProtectHack extends Hack
 			return;
 		
 		// check if player died, friend died or disappeared
-		if(friend == null || friend.isRemoved()
-			|| !(friend instanceof LivingEntity)
+		if(friend == null || friend.removed || !(friend instanceof LivingEntity)
 			|| ((LivingEntity)friend).getHealth() <= 0
 			|| MC.player.getHealth() <= 0)
 		{
@@ -179,7 +176,7 @@ public final class ProtectHack extends Hack
 		// set enemy
 		Stream<Entity> stream = StreamSupport
 			.stream(MC.world.getEntities().spliterator(), true)
-			.filter(e -> !e.isRemoved())
+			.filter(e -> !e.removed)
 			.filter(e -> e instanceof LivingEntity
 				&& ((LivingEntity)e).getHealth() > 0
 				|| e instanceof EndCrystalEntity
@@ -243,26 +240,26 @@ public final class ProtectHack extends Hack
 			
 			// control height if flying
 			if(!MC.player.isOnGround()
-				&& (MC.player.getAbilities().flying
+				&& (MC.player.abilities.flying
 					|| WURST.getHax().flightHack.isEnabled())
 				&& MC.player.squaredDistanceTo(target.getX(), MC.player.getY(),
 					target.getZ()) <= MC.player.squaredDistanceTo(
 						MC.player.getX(), target.getY(), MC.player.getZ()))
 			{
 				if(MC.player.getY() > target.getY() + 1D)
-					MC.options.sneakKey.setPressed(true);
+					MC.options.keySneak.setPressed(true);
 				else if(MC.player.getY() < target.getY() - 1D)
-					MC.options.jumpKey.setPressed(true);
+					MC.options.keyJump.setPressed(true);
 			}else
 			{
-				MC.options.sneakKey.setPressed(false);
-				MC.options.jumpKey.setPressed(false);
+				MC.options.keySneak.setPressed(false);
+				MC.options.keyJump.setPressed(false);
 			}
 			
 			// follow target
 			WURST.getRotationFaker()
 				.faceVectorClient(target.getBoundingBox().getCenter());
-			MC.options.forwardKey.setPressed(MC.player.distanceTo(
+			MC.options.keyForward.setPressed(MC.player.distanceTo(
 				target) > (target == friend ? distanceF : distanceE));
 		}
 		
@@ -283,14 +280,13 @@ public final class ProtectHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(!useAi.isChecked())
 			return;
 		
 		PathCmd pathCmd = WURST.getCmds().pathCmd;
-		pathFinder.renderPath(matrixStack, pathCmd.isDebugMode(),
-			pathCmd.isDepthTest());
+		pathFinder.renderPath(pathCmd.isDebugMode(), pathCmd.isDepthTest());
 	}
 	
 	public void setFriend(Entity friend)

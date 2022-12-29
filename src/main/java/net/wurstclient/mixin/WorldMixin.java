@@ -8,7 +8,6 @@
 package net.wurstclient.mixin;
 
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,7 +65,6 @@ public abstract class WorldMixin implements WorldAccess, AutoCloseable, IWorld
 	public Stream<VoxelShape> getBlockCollisionsStream(@Nullable Entity entity,
 		Box box)
 	{
-		return StreamSupport
-			.stream(getBlockCollisions(entity, box).spliterator(), false);
+		return getBlockCollisions(entity, box);
 	}
 }

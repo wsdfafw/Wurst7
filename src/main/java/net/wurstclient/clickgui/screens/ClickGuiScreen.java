@@ -9,7 +9,7 @@ package net.wurstclient.clickgui.screens;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.clickgui.ClickGui;
 
 public final class ClickGuiScreen extends Screen
@@ -18,12 +18,12 @@ public final class ClickGuiScreen extends Screen
 	
 	public ClickGuiScreen(ClickGui gui)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.gui = gui;
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}

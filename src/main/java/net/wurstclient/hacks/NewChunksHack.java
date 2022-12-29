@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -181,7 +180,7 @@ public final class NewChunksHack extends Hack
 			return;
 		
 		int minX = chunkPos.getStartX();
-		int minY = chunk.getBottomY();
+		int minY = 0;
 		int minZ = chunkPos.getStartZ();
 		int maxX = chunkPos.getEndX();
 		int maxY = chunk.getHighestNonEmptySectionYOffset() + 16;
@@ -234,7 +233,7 @@ public final class NewChunksHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
@@ -246,6 +245,6 @@ public final class NewChunksHack extends Hack
 			lastRegion = region;
 		}
 		
-		renderer.render(matrixStack, partialTicks);
+		renderer.render(partialTicks);
 	}
 }

@@ -29,10 +29,10 @@ public final class AuthorCmd extends Command
 		if(args.length == 0)
 			throw new CmdSyntaxError();
 		
-		if(!MC.player.getAbilities().creativeMode)
+		if(!MC.player.abilities.creativeMode)
 			throw new CmdError("仅限创造模式");
 		
-		ItemStack heldItem = MC.player.getInventory().getMainHandStack();
+		ItemStack heldItem = MC.player.inventory.getMainHandStack();
 		int heldItemID = Item.getRawId(heldItem.getItem());
 		int writtenBookID = Item.getRawId(Items.WRITTEN_BOOK);
 		
@@ -41,6 +41,6 @@ public final class AuthorCmd extends Command
 				"You must hold a written book in your main hand.");
 		
 		String author = String.join(" ", args);
-		heldItem.setSubNbt("author", NbtString.of(author));
+		heldItem.putSubTag("author", NbtString.of(author));
 	}
 }

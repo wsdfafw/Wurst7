@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.WurstClient;
 import net.wurstclient.keybinds.Keybind;
 import net.wurstclient.keybinds.KeybindList;
@@ -32,7 +32,7 @@ public final class KeybindManagerScreen extends Screen
 	
 	public KeybindManagerScreen(Screen prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -41,44 +41,40 @@ public final class KeybindManagerScreen extends Screen
 	{
 		listGui = new ListGui(client, width, height, 36, height - 56, 30);
 		
-		addDrawableChild(addButton = ButtonWidget
-			.builder(Text.literal("Add"),
-				b -> client.setScreen(new KeybindEditorScreen(this)))
-			.dimensions(width / 2 - 102, height - 52, 100, 20).build());
+		addButton(addButton = new ButtonWidget(width / 2 - 102, height - 52,
+			100, 20, new LiteralText("Add"),
+			b -> client.openScreen(new KeybindEditorScreen(this))));
 		
-		addDrawableChild(
-			editButton = ButtonWidget.builder(Text.literal("Edit"), b -> edit())
-				.dimensions(width / 2 + 2, height - 52, 100, 20).build());
+		addButton(editButton = new ButtonWidget(width / 2 + 2, height - 52, 100,
+			20, new LiteralText("Edit"), b -> edit()));
 		
-		addDrawableChild(removeButton =
-			ButtonWidget.builder(Text.literal("Remove"), b -> remove())
-				.dimensions(width / 2 - 102, height - 28, 100, 20).build());
+		addButton(removeButton = new ButtonWidget(width / 2 - 102, height - 28,
+			100, 20, new LiteralText("Remove"), b -> remove()));
 		
-		addDrawableChild(backButton = ButtonWidget
-			.builder(Text.literal("Back"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 + 2, height - 28, 100, 20).build());
+		addButton(backButton = new ButtonWidget(width / 2 + 2, height - 28, 100,
+			20, new LiteralText("Back"), b -> client.openScreen(prevScreen)));
 		
-		addDrawableChild(ButtonWidget.builder(Text.literal("Reset Keybinds"),
-			b -> client.setScreen(new ConfirmScreen(confirmed -> {
-				if(confirmed)
-					WurstClient.INSTANCE.getKeybinds()
-						.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
-				client.setScreen(this);
-			}, Text.literal("Are you sure you want to reset your keybinds?"),
-				Text.literal("This cannot be undone!"))))
-			.dimensions(8, 8, 100, 20).build());
+		addButton(
+			new ButtonWidget(8, 8, 100, 20, new LiteralText("Reset Keybinds"),
+				b -> client.openScreen(new ConfirmScreen(confirmed -> {
+					if(confirmed)
+						WurstClient.INSTANCE.getKeybinds()
+							.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
+					client.openScreen(this);
+				}, new LiteralText(
+					"Are you sure you want to reset your keybinds?"),
+					new LiteralText("This cannot be undone!")))));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Profiles..."),
-				b -> client.setScreen(new KeybindProfilesScreen(this)))
-			.dimensions(width - 108, 8, 100, 20).build());
+		addButton(new ButtonWidget(width - 108, 8, 100, 20,
+			new LiteralText("Profiles..."),
+			b -> client.openScreen(new KeybindProfilesScreen(this))));
 	}
 	
 	private void edit()
 	{
 		Keybind keybind = WurstClient.INSTANCE.getKeybinds().getAllKeybinds()
 			.get(listGui.selected);
-		client.setScreen(new KeybindEditorScreen(this, keybind.getKey(),
+		client.openScreen(new KeybindEditorScreen(this, keybind.getKey(),
 			keybind.getCommands()));
 	}
 	
@@ -131,23 +127,15 @@ public final class KeybindManagerScreen extends Screen
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int int_3)
 	{
-		switch(keyCode)
-		{
-			case GLFW.GLFW_KEY_ENTER:
+		if(keyCode == GLFW.GLFW_KEY_ENTER)
 			if(editButton.active)
 				editButton.onPress();
 			else
 				addButton.onPress();
-			break;
-			case GLFW.GLFW_KEY_DELETE:
+		else if(keyCode == GLFW.GLFW_KEY_DELETE)
 			removeButton.onPress();
-			break;
-			case GLFW.GLFW_KEY_ESCAPE:
+		else if(keyCode == GLFW.GLFW_KEY_ESCAPE)
 			backButton.onPress();
-			break;
-			default:
-			break;
-		}
 		
 		return super.keyPressed(keyCode, scanCode, int_3);
 	}

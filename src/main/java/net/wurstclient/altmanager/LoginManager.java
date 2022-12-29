@@ -8,7 +8,6 @@
 package net.wurstclient.altmanager;
 
 import java.net.Proxy;
-import java.util.Optional;
 
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.GameProfile;
@@ -43,8 +42,8 @@ public enum LoginManager
 			String uuid = profile.getId().toString();
 			String accessToken = auth.getAuthenticatedToken();
 			
-			Session session = new Session(username, uuid, accessToken,
-				Optional.empty(), Optional.empty(), Session.AccountType.MOJANG);
+			Session session =
+				new Session(username, uuid, accessToken, "mojang");
 			
 			WurstClient.IMC.setSession(session);
 			
@@ -83,9 +82,7 @@ public enum LoginManager
 	
 	public static void changeCrackedName(String newName)
 	{
-		Session session = new Session(newName, "", "", Optional.empty(),
-			Optional.empty(), Session.AccountType.MOJANG);
-		
+		Session session = new Session(newName, "", "", "mojang");
 		WurstClient.IMC.setSession(session);
 	}
 }

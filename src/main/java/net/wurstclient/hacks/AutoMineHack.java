@@ -72,7 +72,7 @@ public final class AutoMineHack extends Hack implements UpdateListener
 	
 	private void breakCurrentBlock()
 	{
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 			BlockBreaker.breakBlocksWithPacketSpam(Arrays.asList(currentBlock));
 		else
 			BlockBreaker.breakOneBlock(currentBlock);

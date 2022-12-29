@@ -19,24 +19,18 @@ import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -70,43 +64,34 @@ public abstract class AltEditorScreen extends Screen
 	@Override
 	public final void init()
 	{
-		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal(getDoneButtonText()), b -> pressDoneButton())
-			.dimensions(width / 2 - 100, height / 4 + 72 + 12, 200, 20)
-			.build());
+		addButton(doneButton =
+			new ButtonWidget(width / 2 - 100, height / 4 + 72 + 12, 200, 20,
+				new LiteralText(getDoneButtonText()), b -> pressDoneButton()));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
-			.build());
+		addButton(new ButtonWidget(width / 2 - 100, height / 4 + 120 + 12, 200,
+			20, new LiteralText("取消"), b -> client.openScreen(prevScreen)));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("随机名称"),
-				b -> nameOrEmailBox.setText(NameGenerator.generateName()))
-			.dimensions(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
-			.build());
+		addButton(new ButtonWidget(width / 2 - 100, height / 4 + 96 + 12, 200,
+			20, new LiteralText("随机名称"),
+			b -> nameOrEmailBox.setText(NameGenerator.generateName())));
 		
-		addDrawableChild(stealSkinButton = ButtonWidget
-			.builder(Text.literal("盗取皮肤"),
-				b -> message = stealSkin(getNameOrEmail()))
-			.dimensions(width - (width / 2 - 100) / 2 - 64, height - 32, 128,
-				20)
-			.build());
+		addButton(stealSkinButton =
+			new ButtonWidget(width - (width / 2 - 100) / 2 - 64, height - 32,
+				128, 20, new LiteralText("盗取皮肤"),
+				b -> message = stealSkin(getNameOrEmail())));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("打开皮肤文件夹"), b -> openSkinFolder())
-			.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
-			.build());
+		addButton(new ButtonWidget((width / 2 - 100) / 2 - 64, height - 32, 128,
+			20, new LiteralText("打开皮肤文件夹"), b -> openSkinFolder()));
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
-			200, 20, Text.literal(""));
+			200, 20, new LiteralText(""));
 		nameOrEmailBox.setMaxLength(48);
 		nameOrEmailBox.setTextFieldFocused(true);
 		nameOrEmailBox.setText(getDefaultNameOrEmail());
-		addSelectableChild(nameOrEmailBox);
+		children.add(nameOrEmailBox);
 		
 		passwordBox = new TextFieldWidget(textRenderer, width / 2 - 100, 100,
-			200, 20, Text.literal(""));
+			200, 20, new LiteralText(""));
 		passwordBox.setText(getDefaultPassword());
 		passwordBox.setRenderTextProvider((text, int_1) -> {
 			String stars = "";
@@ -115,7 +100,7 @@ public abstract class AltEditorScreen extends Screen
 			return OrderedText.styledForwardsVisitedString(stars, Style.EMPTY);
 		});
 		passwordBox.setMaxLength(256);
-		addSelectableChild(passwordBox);
+		children.add(passwordBox);
 		
 		setInitialFocus(nameOrEmailBox);
 	}
@@ -347,11 +332,6 @@ public abstract class AltEditorScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
 		// skin preview
 		AltRenderer.drawAltBack(matrixStack, nameOrEmailBox.getText(),
 			(width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
@@ -379,19 +359,22 @@ public abstract class AltEditorScreen extends Screen
 		// red flash for errors
 		if(errorTimer > 0)
 		{
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glEnable(GL11.GL_BLEND);
 			
-			RenderSystem.setShaderColor(1, 0, 0, errorTimer / 16F);
+			GL11.glColor4f(1, 0, 0, errorTimer / 16F);
 			
-			bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-				VertexFormats.POSITION);
-			bufferBuilder.vertex(matrix, 0, 0, 0).next();
-			bufferBuilder.vertex(matrix, width, 0, 0).next();
-			bufferBuilder.vertex(matrix, width, height, 0).next();
-			bufferBuilder.vertex(matrix, 0, height, 0).next();
-			tessellator.draw();
+			GL11.glBegin(GL11.GL_QUADS);
+			{
+				GL11.glVertex2d(0, 0);
+				GL11.glVertex2d(width, 0);
+				GL11.glVertex2d(width, height);
+				GL11.glVertex2d(0, height);
+			}
+			GL11.glEnd();
 			
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_BLEND);
 			errorTimer--;
@@ -401,8 +384,8 @@ public abstract class AltEditorScreen extends Screen
 	}
 	
 	@Override
-	public final void close()
+	public final void onClose()
 	{
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 }

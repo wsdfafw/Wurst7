@@ -69,16 +69,16 @@ public final class BoatFlyHack extends Hack implements UpdateListener
 		double motionZ = velocity.z;
 		
 		// up/down
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			motionY = upwardSpeed.getValue();
-		else if(MC.options.sprintKey.isPressed())
+		else if(MC.options.keySprint.isPressed())
 			motionY = velocity.y;
 		
 		// forward
-		if(MC.options.forwardKey.isPressed() && changeForwardSpeed.isChecked())
+		if(MC.options.keyForward.isPressed() && changeForwardSpeed.isChecked())
 		{
 			double speed = forwardSpeed.getValue();
-			float yawRad = vehicle.getYaw() * MathHelper.RADIANS_PER_DEGREE;
+			float yawRad = (float)Math.toRadians(vehicle.getYaw(1));
 			
 			motionX = MathHelper.sin(-yawRad) * speed;
 			motionZ = MathHelper.cos(yawRad) * speed;

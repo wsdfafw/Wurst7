@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 
 public final class EnterProfileNameScreen extends Screen
 {
@@ -28,7 +28,7 @@ public final class EnterProfileNameScreen extends Screen
 	
 	public EnterProfileNameScreen(Screen prevScreen, Consumer<String> callback)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.callback = callback;
 	}
@@ -42,17 +42,18 @@ public final class EnterProfileNameScreen extends Screen
 		
 		TextRenderer tr = client.textRenderer;
 		
-		valueField = new TextFieldWidget(tr, x1, y1, 200, 20, Text.literal(""));
+		valueField =
+			new TextFieldWidget(tr, x1, y1, 200, 20, new LiteralText(""));
 		valueField.setText("");
 		valueField.setSelectionStart(0);
 		
-		addSelectableChild(valueField);
+		children.add(valueField);
 		setInitialFocus(valueField);
 		valueField.setTextFieldFocused(true);
 		
-		doneButton = ButtonWidget.builder(Text.literal("Done"), b -> done())
-			.dimensions(x1, y2, 200, 20).build();
-		addDrawableChild(doneButton);
+		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("Done"),
+			b -> done());
+		addButton(doneButton);
 	}
 	
 	private void done()
@@ -61,7 +62,7 @@ public final class EnterProfileNameScreen extends Screen
 		if(!value.isEmpty())
 			callback.accept(value);
 		
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 	
 	@Override
@@ -74,7 +75,7 @@ public final class EnterProfileNameScreen extends Screen
 			break;
 			
 			case GLFW.GLFW_KEY_ESCAPE:
-			client.setScreen(prevScreen);
+			client.openScreen(prevScreen);
 			break;
 		}
 		
@@ -100,7 +101,7 @@ public final class EnterProfileNameScreen extends Screen
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}

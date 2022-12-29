@@ -9,14 +9,8 @@ package net.wurstclient.treebot;
 
 import java.util.ArrayList;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.wurstclient.util.RenderUtils;
@@ -25,7 +19,7 @@ public class Tree implements AutoCloseable
 {
 	private final BlockPos stump;
 	private final ArrayList<BlockPos> logs;
-	private VertexBuffer vertexBuffer;
+	private int displayList;
 	
 	public Tree(BlockPos stump, ArrayList<BlockPos> logs)
 	{
@@ -36,10 +30,10 @@ public class Tree implements AutoCloseable
 	
 	public void compileBuffer()
 	{
-		if(vertexBuffer != null)
-			vertexBuffer.close();
+		if(displayList != 0)
+			GL11.glDeleteLists(displayList, 1);
 		
-		vertexBuffer = new VertexBuffer();
+		displayList = GL11.glGenLists(1);
 		
 		int regionX = (stump.getX() >> 9) * 512;
 		int regionZ = (stump.getZ() >> 9) * 512;
@@ -48,28 +42,26 @@ public class Tree implements AutoCloseable
 		double boxMax = 15 / 16.0;
 		Box box = new Box(boxMin, boxMin, boxMin, boxMax, boxMax, boxMax);
 		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
+		GL11.glNewList(displayList, GL11.GL_COMPILE);
 		
-		RenderUtils.drawCrossBox(
-			box.offset(stump).offset(-regionX, 0, -regionZ), bufferBuilder);
+		RenderUtils
+			.drawCrossBox(box.offset(stump).offset(-regionX, 0, -regionZ));
 		
 		for(BlockPos log : logs)
-			RenderUtils.drawOutlinedBox(
-				box.offset(log).offset(-regionX, 0, -regionZ), bufferBuilder);
+			RenderUtils
+				.drawOutlinedBox(box.offset(log).offset(-regionX, 0, -regionZ));
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		GL11.glEndList();
 	}
 	
 	@Override
 	public void close()
 	{
-		vertexBuffer.close();
+		if(displayList == 0)
+			return;
+		
+		GL11.glDeleteLists(displayList, 1);
+		displayList = 0;
 	}
 	
 	public BlockPos getStump()
@@ -82,8 +74,8 @@ public class Tree implements AutoCloseable
 		return logs;
 	}
 	
-	public VertexBuffer getVertexBuffer()
+	public int getDisplayList()
 	{
-		return vertexBuffer;
+		return displayList;
 	}
 }

@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.MathUtils;
@@ -29,7 +29,7 @@ public final class EditSliderScreen extends Screen
 	
 	public EditSliderScreen(Screen prevScreen, SliderSetting slider)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.slider = slider;
 	}
@@ -45,17 +45,18 @@ public final class EditSliderScreen extends Screen
 		ValueDisplay vd = ValueDisplay.DECIMAL;
 		String valueString = vd.getValueString(slider.getValue());
 		
-		valueField = new TextFieldWidget(tr, x1, y1, 200, 20, Text.literal(""));
+		valueField =
+			new TextFieldWidget(tr, x1, y1, 200, 20, new LiteralText(""));
 		valueField.setText(valueString);
 		valueField.setSelectionStart(0);
 		
-		addSelectableChild(valueField);
+		children.add(valueField);
 		setInitialFocus(valueField);
 		valueField.setTextFieldFocused(true);
 		
-		doneButton = ButtonWidget.builder(Text.literal("Done"), b -> done())
-			.dimensions(x1, y2, 200, 20).build();
-		addDrawableChild(doneButton);
+		doneButton = new ButtonWidget(x1, y2, 200, 20, new LiteralText("Done"),
+			b -> done());
+		addButton(doneButton);
 	}
 	
 	private void done()
@@ -65,7 +66,7 @@ public final class EditSliderScreen extends Screen
 		if(MathUtils.isDouble(value))
 			slider.setValue(Double.parseDouble(value));
 		
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 	
 	@Override
@@ -78,7 +79,7 @@ public final class EditSliderScreen extends Screen
 			break;
 			
 			case GLFW.GLFW_KEY_ESCAPE:
-			client.setScreen(prevScreen);
+			client.openScreen(prevScreen);
 			break;
 		}
 		
@@ -104,7 +105,7 @@ public final class EditSliderScreen extends Screen
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}

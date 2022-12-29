@@ -14,7 +14,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.CameraSubmersionType;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.wurstclient.WurstClient;
 import net.wurstclient.hacks.CameraDistanceHack;
 
@@ -42,13 +43,12 @@ public abstract class CameraMixin
 			cir.setReturnValue(desiredCameraDistance);
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "getSubmersionType()Lnet/minecraft/client/render/CameraSubmersionType;",
+	@Inject(at = {@At("HEAD")},
+		method = {"getSubmergedFluidState()Lnet/minecraft/fluid/FluidState;"},
 		cancellable = true)
-	private void onGetSubmersionType(
-		CallbackInfoReturnable<CameraSubmersionType> cir)
+	private void getSubmergedFluidState(CallbackInfoReturnable<FluidState> cir)
 	{
 		if(WurstClient.INSTANCE.getHax().noOverlayHack.isEnabled())
-			cir.setReturnValue(CameraSubmersionType.NONE);
+			cir.setReturnValue(Fluids.EMPTY.getDefaultState());
 	}
 }

@@ -9,9 +9,6 @@ package net.wurstclient.hacks;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.math.Box;
@@ -47,22 +44,25 @@ public final class ProphuntEspHack extends Hack implements RenderListener
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRenderOffset();
 		
 		// set color
 		float alpha = 0.5F + 0.25F * MathHelper
 			.sin(System.currentTimeMillis() % 1000 / 500F * (float)Math.PI);
-		RenderSystem.setShaderColor(1, 0, 0, alpha);
+		GL11.glColor4f(1, 0, 0, alpha);
 		
 		// draw boxes
 		for(Entity entity : MC.world.getEntities())
@@ -76,20 +76,21 @@ public final class ProphuntEspHack extends Hack implements RenderListener
 			if(MC.player.squaredDistanceTo(entity) < 0.25)
 				continue;
 			
-			matrixStack.push();
-			matrixStack.translate(entity.getX(), entity.getY(), entity.getZ());
+			GL11.glPushMatrix();
+			GL11.glTranslated(entity.getX(), entity.getY(), entity.getZ());
 			
-			RenderUtils.drawOutlinedBox(FAKE_BLOCK_BOX, matrixStack);
-			RenderUtils.drawSolidBox(FAKE_BLOCK_BOX, matrixStack);
+			RenderUtils.drawOutlinedBox(FAKE_BLOCK_BOX);
+			RenderUtils.drawSolidBox(FAKE_BLOCK_BOX);
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}

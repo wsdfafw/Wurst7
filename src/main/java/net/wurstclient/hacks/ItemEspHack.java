@@ -10,17 +10,8 @@ package net.wurstclient.hacks;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.math.BlockPos;
@@ -51,6 +42,7 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 	private final ColorSetting color = new ColorSetting("颜色",
 		"物品将会以这种颜色高亮.", Color.YELLOW);
 	
+	private int itemBox;
 	private final ArrayList<ItemEntity> items = new ArrayList<>();
 	
 	public ItemEspHack()
@@ -69,6 +61,15 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(CameraTransformViewBobbingListener.class, this);
 		EVENTS.add(RenderListener.class, this);
+		
+		itemBox = GL11.glGenLists(1);
+		GL11.glNewList(itemBox, GL11.GL_COMPILE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		RenderUtils.drawOutlinedBox(new Box(-0.5, 0, -0.5, 0.5, 1, 0.5));
+		GL11.glEndList();
 	}
 	
 	@Override
@@ -77,6 +78,8 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(CameraTransformViewBobbingListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
+		
+		GL11.glDeleteLists(itemBox, 1);
 	}
 	
 	@Override
@@ -97,86 +100,76 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// GL settings
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
-		renderBoxes(matrixStack, partialTicks, regionX, regionZ);
+		renderBoxes(partialTicks, regionX, regionZ);
 		
 		if(style.getSelected().lines)
-			renderTracers(matrixStack, partialTicks, regionX, regionZ);
+			renderTracers(partialTicks, regionX, regionZ);
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 	
-	private void renderBoxes(MatrixStack matrixStack, double partialTicks,
-		int regionX, int regionZ)
+	private void renderBoxes(double partialTicks, int regionX, int regionZ)
 	{
-		float extraSize = boxSize.getSelected().extraSize;
+		double extraSize = boxSize.getSelected().extraSize;
 		
 		for(ItemEntity e : items)
 		{
-			matrixStack.push();
+			GL11.glPushMatrix();
 			
-			matrixStack.translate(
+			GL11.glTranslated(
 				e.prevX + (e.getX() - e.prevX) * partialTicks - regionX,
 				e.prevY + (e.getY() - e.prevY) * partialTicks,
 				e.prevZ + (e.getZ() - e.prevZ) * partialTicks - regionZ);
 			
 			if(style.getSelected().boxes)
 			{
-				matrixStack.push();
-				matrixStack.scale(e.getWidth() + extraSize,
+				GL11.glPushMatrix();
+				GL11.glScaled(e.getWidth() + extraSize,
 					e.getHeight() + extraSize, e.getWidth() + extraSize);
-				
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				float[] colorF = color.getColorF();
-				RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2],
-					0.5F);
-				RenderUtils.drawOutlinedBox(new Box(-0.5, 0, -0.5, 0.5, 1, 0.5),
-					matrixStack);
-				
-				matrixStack.pop();
+				GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
+				GL11.glCallList(itemBox);
+				GL11.glPopMatrix();
 			}
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 	}
 	
-	private void renderTracers(MatrixStack matrixStack, double partialTicks,
-		int regionX, int regionZ)
+	private void renderTracers(double partialTicks, int regionX, int regionZ)
 	{
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		float[] colorF = color.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
-		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
 		
 		Vec3d start =
 			RotationUtils.getClientLookVec().add(RenderUtils.getCameraPos());
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
+		GL11.glBegin(GL11.GL_LINES);
 		for(ItemEntity e : items)
 		{
 			Vec3d end = e.getBoundingBox().getCenter()
@@ -184,12 +177,10 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 					.subtract(e.prevX, e.prevY, e.prevZ)
 					.multiply(1 - partialTicks));
 			
-			bufferBuilder.vertex(matrix, (float)start.x - regionX,
-				(float)start.y, (float)start.z - regionZ).next();
-			bufferBuilder.vertex(matrix, (float)end.x - regionX, (float)end.y,
-				(float)end.z - regionZ).next();
+			GL11.glVertex3d(start.x - regionX, start.y, start.z - regionZ);
+			GL11.glVertex3d(end.x - regionX, end.y, end.z - regionZ);
 		}
-		tessellator.draw();
+		GL11.glEnd();
 	}
 	
 	private enum Style
@@ -219,12 +210,12 @@ public final class ItemEspHack extends Hack implements UpdateListener,
 	private enum BoxSize
 	{
 		ACCURATE("Accurate", 0),
-		FANCY("Fancy", 0.1F);
+		FANCY("Fancy", 0.1);
 		
 		private final String name;
-		private final float extraSize;
+		private final double extraSize;
 		
-		private BoxSize(String name, float extraSize)
+		private BoxSize(String name, double extraSize)
 		{
 			this.name = name;
 			this.extraSize = extraSize;

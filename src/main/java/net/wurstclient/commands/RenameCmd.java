@@ -8,7 +8,7 @@
 package net.wurstclient.commands;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -27,8 +27,8 @@ public final class RenameCmd extends Command
 	@Override
 	public void call(String[] args) throws CmdException
 	{
-		if(!MC.player.getAbilities().creativeMode)
-			throw new CmdError("仅创造模式");
+		if(!MC.player.abilities.creativeMode)
+			throw new CmdError("Creative mode only.");
 		
 		if(args.length == 0)
 			throw new CmdSyntaxError();
@@ -38,12 +38,12 @@ public final class RenameCmd extends Command
 			message += " " + args[i];
 		
 		message = message.replace("$", "\u00a7").replace("\u00a7\u00a7", "$");
-		ItemStack item = MC.player.getInventory().getMainHandStack();
+		ItemStack item = MC.player.inventory.getMainHandStack();
 		
 		if(item == null)
 			throw new CmdError("你手上没有物品.");
 		
-		item.setCustomName(Text.literal(message));
+		item.setCustomName(new LiteralText(message));
 		ChatUtils.message("Renamed item to \"" + message + "\u00a7r\".");
 	}
 }

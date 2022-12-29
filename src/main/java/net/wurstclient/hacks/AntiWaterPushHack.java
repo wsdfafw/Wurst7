@@ -52,7 +52,7 @@ public final class AntiWaterPushHack extends Hack implements UpdateListener,
 		if(!preventSlowdown.isChecked())
 			return;
 		
-		if(!MC.options.jumpKey.isPressed())
+		if(!MC.options.keyJump.isPressed())
 			return;
 		
 		if(!MC.player.isOnGround())

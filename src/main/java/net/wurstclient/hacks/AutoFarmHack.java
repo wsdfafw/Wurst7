@@ -7,30 +7,26 @@
  */
 package net.wurstclient.hacks;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.*;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
-import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -39,7 +35,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
-import net.wurstclient.WurstClient;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
@@ -68,9 +63,9 @@ public final class AutoFarmHack extends Hack
 	private float progress;
 	private float prevProgress;
 	
-	private VertexBuffer greenBuffer;
-	private VertexBuffer cyanBuffer;
-	private VertexBuffer redBuffer;
+	private int displayList;
+	private int box;
+	private int node;
 	
 	private boolean busy;
 	
@@ -90,6 +85,23 @@ public final class AutoFarmHack extends Hack
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
+		
+		displayList = GL11.glGenLists(1);
+		box = GL11.glGenLists(1);
+		node = GL11.glGenLists(1);
+		
+		GL11.glNewList(box, GL11.GL_COMPILE);
+		Box box = new Box(1 / 16.0, 1 / 16.0, 1 / 16.0, 15 / 16.0, 15 / 16.0,
+			15 / 16.0);
+		RenderUtils.drawOutlinedBox(box);
+		GL11.glEndList();
+		
+		GL11.glNewList(node, GL11.GL_COMPILE);
+		Box node = new Box(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+		GL11.glBegin(GL11.GL_LINES);
+		RenderUtils.drawNode(node);
+		GL11.glEnd();
+		GL11.glEndList();
 	}
 	
 	@Override
@@ -107,9 +119,9 @@ public final class AutoFarmHack extends Hack
 		
 		prevBlocks.clear();
 		busy = false;
-		
-		Stream.of(greenBuffer, cyanBuffer, redBuffer).filter(Objects::nonNull)
-			.forEach(VertexBuffer::close);
+		GL11.glDeleteLists(displayList, 1);
+		GL11.glDeleteLists(box, 1);
+		GL11.glDeleteLists(node, 1);
 	}
 	
 	@Override
@@ -157,7 +169,7 @@ public final class AutoFarmHack extends Hack
 			harvest(blocksToHarvest);
 		
 		busy = !blocksToHarvest.isEmpty() || !blocksToReplant.isEmpty();
-		updateVertexBuffers(blocksToHarvest, blocksToReplant);
+		updateDisplayList(blocksToHarvest, blocksToReplant);
 	}
 	
 	private List<BlockPos> getBlocksToHarvest(Vec3d eyesVec,
@@ -183,85 +195,63 @@ public final class AutoFarmHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
-		if(WurstClient.MC.getBlockEntityRenderDispatcher().camera == null)
+		if(BlockEntityRenderDispatcher.INSTANCE.camera == null)
 			return;
 		
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
-		Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-		Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-		ShaderProgram shader = RenderSystem.getShader();
-		
-		if(greenBuffer != null)
-		{
-			RenderSystem.setShaderColor(0, 1, 0, 0.5F);
-			greenBuffer.bind();
-			greenBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
-		}
-		
-		if(cyanBuffer != null)
-		{
-			RenderSystem.setShaderColor(0, 1, 1, 0.5F);
-			cyanBuffer.bind();
-			cyanBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
-		}
-		
-		if(redBuffer != null)
-		{
-			RenderSystem.setShaderColor(1, 0, 0, 0.5F);
-			redBuffer.bind();
-			redBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
-		}
+		GL11.glCallList(displayList);
 		
 		if(currentBlock != null)
 		{
-			matrixStack.push();
+			GL11.glPushMatrix();
 			
 			Box box = new Box(BlockPos.ORIGIN);
 			float p = prevProgress + (progress - prevProgress) * partialTicks;
 			float red = p * 2F;
 			float green = 2 - red;
 			
-			matrixStack.translate(currentBlock.getX() - regionX,
+			GL11.glTranslated(currentBlock.getX() - regionX,
 				currentBlock.getY(), currentBlock.getZ() - regionZ);
 			if(p < 1)
 			{
-				matrixStack.translate(0.5, 0.5, 0.5);
-				matrixStack.scale(p, p, p);
-				matrixStack.translate(-0.5, -0.5, -0.5);
+				GL11.glTranslated(0.5, 0.5, 0.5);
+				GL11.glScaled(p, p, p);
+				GL11.glTranslated(-0.5, -0.5, -0.5);
 			}
 			
-			RenderSystem.setShaderColor(red, green, 0, 0.25F);
-			RenderUtils.drawSolidBox(box, matrixStack);
+			GL11.glColor4f(red, green, 0, 0.25F);
+			RenderUtils.drawSolidBox(box);
 			
-			RenderSystem.setShaderColor(red, green, 0, 0.5F);
-			RenderUtils.drawOutlinedBox(box, matrixStack);
+			GL11.glColor4f(red, green, 0, 0.5F);
+			RenderUtils.drawOutlinedBox(box);
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
@@ -357,29 +347,29 @@ public final class AutoFarmHack extends Hack
 		
 		for(int slot = 0; slot < 36; slot++)
 		{
-			if(slot == player.getInventory().selectedSlot)
+			if(slot == player.inventory.selectedSlot)
 				continue;
 			
-			ItemStack stack = player.getInventory().getStack(slot);
+			ItemStack stack = player.inventory.getStack(slot);
 			if(stack.isEmpty() || stack.getItem() != neededItem)
 				continue;
 			
 			if(slot < 9)
-				player.getInventory().selectedSlot = slot;
-			else if(player.getInventory().getEmptySlot() < 9)
+				player.inventory.selectedSlot = slot;
+			else if(player.inventory.getEmptySlot() < 9)
 				IMC.getInteractionManager().windowClick_QUICK_MOVE(slot);
-			else if(player.getInventory().getEmptySlot() != -1)
+			else if(player.inventory.getEmptySlot() != -1)
 			{
-				IMC.getInteractionManager().windowClick_QUICK_MOVE(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_QUICK_MOVE(player.inventory.selectedSlot + 36);
 				IMC.getInteractionManager().windowClick_QUICK_MOVE(slot);
 			}else
 			{
-				IMC.getInteractionManager().windowClick_PICKUP(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_PICKUP(player.inventory.selectedSlot + 36);
 				IMC.getInteractionManager().windowClick_PICKUP(slot);
-				IMC.getInteractionManager().windowClick_PICKUP(
-					player.getInventory().selectedSlot + 36);
+				IMC.getInteractionManager()
+					.windowClick_PICKUP(player.inventory.selectedSlot + 36);
 			}
 			
 			return true;
@@ -464,7 +454,7 @@ public final class AutoFarmHack extends Hack
 	
 	private void harvest(List<BlockPos> blocksToHarvest)
 	{
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 		{
 			Stream<BlockPos> stream3 = blocksToHarvest.parallelStream();
 			for(Set<BlockPos> set : prevBlocks)
@@ -511,81 +501,45 @@ public final class AutoFarmHack extends Hack
 		}
 	}
 	
-	private void updateVertexBuffers(List<BlockPos> blocksToHarvest,
+	private void updateDisplayList(List<BlockPos> blocksToHarvest,
 		List<BlockPos> blocksToReplant)
 	{
-		if(WurstClient.MC.getBlockEntityRenderDispatcher().camera == null)
+		if(BlockEntityRenderDispatcher.INSTANCE.camera == null)
 			return;
-		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
-		if(greenBuffer != null)
-			greenBuffer.close();
-		
-		greenBuffer = new VertexBuffer();
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		
-		double boxMin = 1 / 16.0;
-		double boxMax = 15 / 16.0;
-		Box box = new Box(boxMin, boxMin, boxMin, boxMax, boxMax, boxMax);
-		
+		GL11.glNewList(displayList, GL11.GL_COMPILE);
+		GL11.glColor4f(0, 1, 0, 0.5F);
 		for(BlockPos pos : blocksToHarvest)
 		{
-			Box renderBox = box.offset(pos).offset(-regionX, 0, -regionZ);
-			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
+			GL11.glPushMatrix();
+			GL11.glTranslated(pos.getX() - regionX, pos.getY(),
+				pos.getZ() - regionZ);
+			GL11.glCallList(box);
+			GL11.glPopMatrix();
 		}
-		
-		BuiltBuffer buffer = bufferBuilder.end();
-		greenBuffer.bind();
-		greenBuffer.upload(buffer);
-		VertexBuffer.unbind();
-		
-		if(cyanBuffer != null)
-			cyanBuffer.close();
-		
-		cyanBuffer = new VertexBuffer();
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		
-		Box node = new Box(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
-		
+		GL11.glColor4f(0, 1, 1, 0.5F);
 		for(BlockPos pos : plants.keySet())
 		{
-			Box renderNode = node.offset(pos).offset(-regionX, 0, -regionZ);
-			RenderUtils.drawNode(renderNode, bufferBuilder);
+			GL11.glPushMatrix();
+			GL11.glTranslated(pos.getX() - regionX, pos.getY(),
+				pos.getZ() - regionZ);
+			GL11.glCallList(node);
+			GL11.glPopMatrix();
 		}
-		
-		buffer = bufferBuilder.end();
-		cyanBuffer.bind();
-		cyanBuffer.upload(buffer);
-		VertexBuffer.unbind();
-		
-		if(redBuffer != null)
-			redBuffer.close();
-		
-		redBuffer = new VertexBuffer();
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		
+		GL11.glColor4f(1, 0, 0, 0.5F);
 		for(BlockPos pos : blocksToReplant)
 		{
-			Box renderBox = box.offset(pos).offset(-regionX, 0, -regionZ);
-			RenderUtils.drawOutlinedBox(renderBox, bufferBuilder);
+			GL11.glPushMatrix();
+			GL11.glTranslated(pos.getX() - regionX, pos.getY(),
+				pos.getZ() - regionZ);
+			GL11.glCallList(box);
+			GL11.glPopMatrix();
 		}
-		
-		buffer = bufferBuilder.end();
-		redBuffer.bind();
-		redBuffer.upload(buffer);
-		VertexBuffer.unbind();
+		GL11.glEndList();
 	}
 	
 	/**

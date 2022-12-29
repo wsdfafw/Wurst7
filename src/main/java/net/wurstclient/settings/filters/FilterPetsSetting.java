@@ -8,7 +8,7 @@
 package net.wurstclient.settings.filters;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.HorseBaseEntity;
 import net.minecraft.entity.passive.TameableEntity;
 
 public final class FilterPetsSetting extends EntityFilterCheckbox
@@ -22,8 +22,7 @@ public final class FilterPetsSetting extends EntityFilterCheckbox
 	public boolean test(Entity e)
 	{
 		return !(e instanceof TameableEntity && ((TameableEntity)e).isTamed())
-			&& !(e instanceof AbstractHorseEntity
-				&& ((AbstractHorseEntity)e).isTame());
+			&& !(e instanceof HorseBaseEntity && ((HorseBaseEntity)e).isTame());
 	}
 	
 	public static FilterPetsSetting genericCombat(boolean checked)

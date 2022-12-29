@@ -35,13 +35,13 @@ public final class ModifyCmd extends Command
 	{
 		ClientPlayerEntity player = MC.player;
 		
-		if(!player.getAbilities().creativeMode)
+		if(!player.abilities.creativeMode)
 			throw new CmdError("仅限创造模式");
 		
 		if(args.length < 2)
 			throw new CmdSyntaxError();
 		
-		ItemStack stack = player.getInventory().getMainHandStack();
+		ItemStack stack = player.inventory.getMainHandStack();
 		
 		if(stack == null)
 			throw new CmdError("You must hold an item in your main hand.");
@@ -66,7 +66,7 @@ public final class ModifyCmd extends Command
 		
 		MC.player.networkHandler
 			.sendPacket(new CreativeInventoryActionC2SPacket(
-				36 + player.getInventory().selectedSlot, stack));
+				36 + player.inventory.selectedSlot, stack));
 		
 		ChatUtils.message("Item modified.");
 	}
@@ -76,13 +76,13 @@ public final class ModifyCmd extends Command
 		String nbt = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 		nbt = nbt.replace("$", "\u00a7").replace("\u00a7\u00a7", "$");
 		
-		if(!stack.hasNbt())
-			stack.setNbt(new NbtCompound());
+		if(!stack.hasTag())
+			stack.setTag(new NbtCompound());
 		
 		try
 		{
 			NbtCompound tag = StringNbtReader.parse(nbt);
-			stack.getNbt().copyFrom(tag);
+			stack.getTag().copyFrom(tag);
 			
 		}catch(CommandSyntaxException e)
 		{
@@ -99,7 +99,7 @@ public final class ModifyCmd extends Command
 		try
 		{
 			NbtCompound tag = StringNbtReader.parse(nbt);
-			stack.setNbt(tag);
+			stack.setTag(tag);
 			
 		}catch(CommandSyntaxException e)
 		{
@@ -113,7 +113,7 @@ public final class ModifyCmd extends Command
 		if(args.length > 2)
 			throw new CmdSyntaxError();
 		
-		NbtPath path = parseNbtPath(stack.getNbt(), args[1]);
+		NbtPath path = parseNbtPath(stack.getTag(), args[1]);
 		
 		if(path == null)
 			throw new CmdError("The path does not exist.");

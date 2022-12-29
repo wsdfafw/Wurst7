@@ -13,7 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
@@ -38,7 +38,7 @@ public final class TrollPotionHack extends Hack
 	public void onEnable()
 	{
 		// check gamemode
-		if(!MC.player.getAbilities().creativeMode)
+		if(!MC.player.abilities.creativeMode)
 		{
 			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
@@ -61,7 +61,7 @@ public final class TrollPotionHack extends Hack
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			if(!MC.player.getInventory().getStack(i).isEmpty())
+			if(!MC.player.inventory.getStack(i).isEmpty())
 				continue;
 			
 			MC.player.networkHandler.sendPacket(
@@ -115,10 +115,10 @@ public final class TrollPotionHack extends Hack
 			
 			NbtCompound nbt = new NbtCompound();
 			nbt.put("CustomPotionEffects", effects);
-			stack.setNbt(nbt);
+			stack.setTag(nbt);
 			
 			String name = "\u00a7f" + itemName + " of Trolling";
-			stack.setCustomName(Text.literal(name));
+			stack.setCustomName(new LiteralText(name));
 			
 			return stack;
 		}

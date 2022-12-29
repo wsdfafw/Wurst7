@@ -9,8 +9,6 @@ package net.wurstclient.commands;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
@@ -87,17 +85,18 @@ public final class TacoCmd extends Command
 	{
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		if(WURST.getHax().rainbowUiHack.isEnabled())
 		{
 			float[] acColor = WURST.getGui().getAcColor();
-			RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1);
+			GL11.glColor4f(acColor[0], acColor[1], acColor[2], 1);
 			
 		}else
-			RenderSystem.setShaderColor(1, 1, 1, 1);
+			GL11.glColor4f(1, 1, 1, 1);
 		
-		RenderSystem.setShaderTexture(0, tacos[ticks / 8]);
+		MC.getTextureManager().bindTexture(tacos[ticks / 8]);
 		Window sr = MC.getWindow();
 		int x = sr.getScaledWidth() / 2 - 32 + 76;
 		int y = sr.getScaledHeight() - 32 - 19;

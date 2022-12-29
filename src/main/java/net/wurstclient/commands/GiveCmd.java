@@ -17,9 +17,9 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -43,7 +43,7 @@ public final class GiveCmd extends Command
 		if(args.length < 1)
 			throw new CmdSyntaxError();
 		
-		if(!MC.player.getAbilities().creativeMode)
+		if(!MC.player.abilities.creativeMode)
 			throw new CmdError("仅限创造模式.");
 		
 		// id/name
@@ -82,7 +82,7 @@ public final class GiveCmd extends Command
 			try
 			{
 				NbtCompound tag = StringNbtReader.parse(nbt);
-				stack.setNbt(tag);
+				stack.setTag(tag);
 				
 			}catch(CommandSyntaxException e)
 			{
@@ -100,7 +100,7 @@ public final class GiveCmd extends Command
 	{
 		try
 		{
-			return Registries.ITEM.get(new Identifier(id));
+			return Registry.ITEM.get(new Identifier(id));
 			
 		}catch(InvalidIdentifierException e)
 		{
@@ -112,7 +112,7 @@ public final class GiveCmd extends Command
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			if(!MC.player.getInventory().getStack(i).isEmpty())
+			if(!MC.player.inventory.getStack(i).isEmpty())
 				continue;
 			
 			MC.player.networkHandler.sendPacket(

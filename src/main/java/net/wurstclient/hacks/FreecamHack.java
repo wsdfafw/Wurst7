@@ -9,20 +9,11 @@ package net.wurstclient.hacks;
 
 import java.awt.Color;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -47,11 +38,16 @@ public final class FreecamHack extends Hack
 	IsPlayerInLavaListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting tracer = new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
-    private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
+	private final SliderSetting speed =
+		new SliderSetting("Speed", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+	private final CheckboxSetting tracer = new CheckboxSetting("Tracer",
+		"Draws a line to your character's actual position.", false);
+	
+	private final ColorSetting color =
+		new ColorSetting("Tracer color", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
+	private int playerBox;
 	
 	public FreecamHack()
 	{
@@ -77,11 +73,17 @@ public final class FreecamHack extends Hack
 		fakePlayer = new FakePlayerEntity();
 		
 		GameOptions gs = MC.options;
-		KeyBinding[] bindings = {gs.forwardKey, gs.backKey, gs.leftKey,
-			gs.rightKey, gs.jumpKey, gs.sneakKey};
+		KeyBinding[] bindings = {gs.keyForward, gs.keyBack, gs.keyLeft,
+			gs.keyRight, gs.keyJump, gs.keySneak};
 		
 		for(KeyBinding binding : bindings)
 			binding.setPressed(((IKeyBinding)binding).isActallyPressed());
+		
+		playerBox = GL11.glGenLists(1);
+		GL11.glNewList(playerBox, GL11.GL_COMPILE);
+		Box bb = new Box(-0.5, 0, -0.5, 0.5, 1, 0.5);
+		RenderUtils.drawOutlinedBox(bb);
+		GL11.glEndList();
 	}
 	
 	@Override
@@ -103,6 +105,9 @@ public final class FreecamHack extends Hack
 		player.setVelocity(Vec3d.ZERO);
 		
 		MC.worldRenderer.reload();
+		
+		GL11.glDeleteLists(playerBox, 1);
+		playerBox = 0;
 	}
 	
 	@Override
@@ -110,16 +115,16 @@ public final class FreecamHack extends Hack
 	{
 		ClientPlayerEntity player = MC.player;
 		player.setVelocity(Vec3d.ZERO);
-		player.getAbilities().flying = false;
+		player.abilities.flying = false;
 		
 		player.setOnGround(false);
-		player.airStrafingSpeed = speed.getValueF();
+		player.flyingSpeed = speed.getValueF();
 		Vec3d velocity = player.getVelocity();
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			player.setVelocity(velocity.add(0, speed.getValue(), 0));
 		
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			player.setVelocity(velocity.subtract(0, speed.getValue(), 0));
 	}
 	
@@ -163,7 +168,7 @@ public final class FreecamHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(fakePlayer == null || !tracer.isChecked())
 			return;
@@ -172,47 +177,41 @@ public final class FreecamHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRenderOffset();
 		
 		float[] colorF = color.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
 		
 		// box
-		matrixStack.push();
-		matrixStack.translate(fakePlayer.getX(), fakePlayer.getY(),
+		GL11.glPushMatrix();
+		GL11.glTranslated(fakePlayer.getX(), fakePlayer.getY(),
 			fakePlayer.getZ());
-		matrixStack.scale(fakePlayer.getWidth() + 0.1F,
-			fakePlayer.getHeight() + 0.1F, fakePlayer.getWidth() + 0.1F);
-		Box bb = new Box(-0.5, 0, -0.5, 0.5, 1, 0.5);
-		RenderUtils.drawOutlinedBox(bb, matrixStack);
-		matrixStack.pop();
+		GL11.glScaled(fakePlayer.getWidth() + 0.1, fakePlayer.getHeight() + 0.1,
+			fakePlayer.getWidth() + 0.1);
+		GL11.glCallList(playerBox);
+		GL11.glPopMatrix();
 		
 		// line
 		Vec3d start =
 			RotationUtils.getClientLookVec().add(RenderUtils.getCameraPos());
 		Vec3d end = fakePlayer.getBoundingBox().getCenter();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex3d(start.x, start.y, start.z);
+		GL11.glVertex3d(end.x, end.y, end.z);
+		GL11.glEnd();
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		bufferBuilder
-			.vertex(matrix, (float)start.x, (float)start.y, (float)start.z)
-			.next();
-		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
-			.next();
-		tessellator.draw();
-		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}

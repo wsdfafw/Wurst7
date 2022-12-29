@@ -38,9 +38,10 @@ public final class AntiHungerHack extends Hack implements PacketOutputListener
 	@Override
 	public void onSentPacket(PacketOutputEvent event)
 	{
-		if(!(event.getPacket() instanceof PlayerMoveC2SPacket oldPacket))
+		if(!(event.getPacket() instanceof PlayerMoveC2SPacket))
 			return;
 		
+		PlayerMoveC2SPacket oldPacket = (PlayerMoveC2SPacket)event.getPacket();
 		if(!MC.player.isOnGround() || MC.player.fallDistance > 0.5)
 			return;
 		
@@ -54,18 +55,17 @@ public final class AntiHungerHack extends Hack implements PacketOutputListener
 		float pitch = oldPacket.getPitch(-1);
 		
 		Packet<?> newPacket;
-		if(oldPacket.changesPosition())
-			if(oldPacket.changesLook())
+		if(oldPacket.changePosition)
+			if(oldPacket.changeLook)
 				newPacket =
-					new PlayerMoveC2SPacket.Full(x, y, z, yaw, pitch, false);
+					new PlayerMoveC2SPacket.Both(x, y, z, yaw, pitch, false);
 			else
 				newPacket =
-					new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, false);
-		else if(oldPacket.changesLook())
-			newPacket =
-				new PlayerMoveC2SPacket.LookAndOnGround(yaw, pitch, false);
+					new PlayerMoveC2SPacket.PositionOnly(x, y, z, false);
+		else if(oldPacket.changeLook)
+			newPacket = new PlayerMoveC2SPacket.LookOnly(yaw, pitch, false);
 		else
-			newPacket = new PlayerMoveC2SPacket.OnGroundOnly(false);
+			newPacket = new PlayerMoveC2SPacket(false);
 		
 		event.setPacket(newPacket);
 	}

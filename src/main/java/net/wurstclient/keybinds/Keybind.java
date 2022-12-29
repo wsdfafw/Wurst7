@@ -43,7 +43,6 @@ public class Keybind implements Comparable<Keybind>
 			return false;
 		
 		Keybind otherKeybind = (Keybind)obj;
-		
 		return key.equalsIgnoreCase(otherKeybind.key);
 	}
 	

@@ -16,12 +16,8 @@ import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -106,7 +102,7 @@ public final class NukerLegitHack extends Hack
 		EVENTS.remove(RenderListener.class, this);
 		
 		// resets
-		MC.options.attackKey.setPressed(false);
+		MC.options.keyAttack.setPressed(false);
 		currentBlock = null;
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
@@ -164,7 +160,7 @@ public final class NukerLegitHack extends Hack
 		
 		// reset if no block was found
 		if(currentBlock == null)
-			MC.options.attackKey.setPressed(false);
+			MC.options.keyAttack.setPressed(false);
 	}
 	
 	private ArrayList<BlockPos> getValidBlocks(double range,
@@ -221,15 +217,15 @@ public final class NukerLegitHack extends Hack
 				
 			// if attack key is down but nothing happens, release it for one
 			// tick
-			if(MC.options.attackKey.isPressed()
+			if(MC.options.keyAttack.isPressed()
 				&& !MC.interactionManager.isBreakingBlock())
 			{
-				MC.options.attackKey.setPressed(false);
+				MC.options.keyAttack.setPressed(false);
 				return true;
 			}
 			
 			// damage block
-			MC.options.attackKey.setPressed(true);
+			MC.options.keyAttack.setPressed(true);
 			
 			return true;
 		}
@@ -238,7 +234,7 @@ public final class NukerLegitHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(currentBlock == null)
 			return;
@@ -247,19 +243,22 @@ public final class NukerLegitHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
 		// set position
-		matrixStack.translate(currentBlock.getX() - regionX,
-			currentBlock.getY(), currentBlock.getZ() - regionZ);
+		GL11.glTranslated(currentBlock.getX() - regionX, currentBlock.getY(),
+			currentBlock.getZ() - regionZ);
 		
 		// get progress
 		float progress;
@@ -271,9 +270,9 @@ public final class NukerLegitHack extends Hack
 		// set size
 		if(progress < 1)
 		{
-			matrixStack.translate(0.5, 0.5, 0.5);
-			matrixStack.scale(progress, progress, progress);
-			matrixStack.translate(-0.5, -0.5, -0.5);
+			GL11.glTranslated(0.5, 0.5, 0.5);
+			GL11.glScaled(progress, progress, progress);
+			GL11.glTranslated(-0.5, -0.5, -0.5);
 		}
 		
 		// get color
@@ -281,19 +280,16 @@ public final class NukerLegitHack extends Hack
 		float green = 2 - red;
 		
 		// draw box
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glColor4f(red, green, 0, 0.25F);
+		RenderUtils.drawSolidBox();
+		GL11.glColor4f(red, green, 0, 0.5F);
+		RenderUtils.drawOutlinedBox();
 		
-		RenderSystem.setShaderColor(red, green, 0, 0.25F);
-		RenderUtils.drawSolidBox(matrixStack);
-		
-		RenderSystem.setShaderColor(red, green, 0, 0.5F);
-		RenderUtils.drawOutlinedBox(matrixStack);
-		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}

@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -25,15 +25,16 @@ import net.wurstclient.util.RenderUtils;
 public final class NewChunksOutlineRenderer implements NewChunksChunkRenderer
 {
 	@Override
-	public BuiltBuffer buildBuffer(Set<ChunkPos> chunks, int drawDistance)
+	public BufferBuilder buildBuffer(Set<ChunkPos> chunks, int drawDistance)
 	{
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
+		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION);
 		renderChunks(new ArrayList<>(chunks), drawDistance, bufferBuilder);
-		return bufferBuilder.end();
+		bufferBuilder.end();
+		
+		return bufferBuilder;
 	}
 	
 	private void renderChunks(List<ChunkPos> chunks, int drawDistance,
@@ -46,11 +47,11 @@ public final class NewChunksOutlineRenderer implements NewChunksChunkRenderer
 		
 		for(ChunkPos chunkPos : chunks)
 		{
-			if(chunkPos.getChebyshevDistance(camChunkPos) > drawDistance)
+			if(chunkPos.method_24022(camChunkPos) > drawDistance)
 				continue;
 			
 			BlockPos blockPos =
-				chunkPos.getBlockPos(0, 0, 0).add(-regionX, 0, -regionZ);
+				chunkPos.getStartPos().add(-regionX, 0, -regionZ);
 			float x1 = blockPos.getX() + 0.5F;
 			float x2 = x1 + 15;
 			float z1 = blockPos.getZ() + 0.5F;

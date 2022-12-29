@@ -10,17 +10,9 @@ package net.wurstclient.hud;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.wurstclient.Category;
@@ -130,17 +122,19 @@ public final class TabGui implements KeyPressListener
 		int txtColor = gui.getTxtColor();
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
 		
-		matrixStack.push();
+		GL11.glPushMatrix();
 		Window sr = WurstClient.MC.getWindow();
 		
 		int x = 2;
 		int y = 23;
 		
-		matrixStack.translate(x, y, 0);
-		drawBox(matrixStack, 0, 0, width, height);
+		GL11.glTranslatef(x, y, 0);
+		drawBox(0, 0, width, height);
 		
 		double factor = sr.getScaleFactor();
 		GL11.glScissor((int)(x * factor),
@@ -149,7 +143,7 @@ public final class TabGui implements KeyPressListener
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		
 		int textY = 1;
-		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		for(int i = 0; i < tabs.size(); i++)
 		{
 			String tabName = tabs.get(i).name;
@@ -161,18 +155,20 @@ public final class TabGui implements KeyPressListener
 			textY += 10;
 		}
 		GL11.glEnable(GL11.GL_BLEND);
+		
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		
 		if(tabOpened)
 		{
-			matrixStack.push();
+			GL11.glPushMatrix();
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			
 			Tab tab = tabs.get(selected);
 			int tabX = x + width + 2;
 			int tabY = y;
 			
-			matrixStack.translate(width + 2, 0, 0);
-			drawBox(matrixStack, 0, 0, tab.width, tab.height);
+			GL11.glTranslatef(width + 2, 0, 0);
+			drawBox(0, 0, tab.width, tab.height);
 			
 			GL11.glScissor((int)(tabX * factor),
 				(int)((sr.getScaledHeight() - tab.height - tabY) * factor),
@@ -180,6 +176,7 @@ public final class TabGui implements KeyPressListener
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 			
 			int tabTextY = 1;
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			for(int i = 0; i < tab.features.size(); i++)
 			{
 				Feature feature = tab.features.get(i);
@@ -196,62 +193,55 @@ public final class TabGui implements KeyPressListener
 				tabTextY += 10;
 			}
 			GL11.glEnable(GL11.GL_BLEND);
+			
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 	}
 	
-	private void drawBox(MatrixStack matrixStack, int x1, int y1, int x2,
-		int y2)
+	private void drawBox(int x1, int y1, int x2, int y2)
 	{
 		ClickGui gui = WurstClient.INSTANCE.getGui();
 		float[] bgColor = gui.getBgColor();
 		float[] acColor = gui.getAcColor();
 		float opacity = gui.getOpacity();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
 		// color
-		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
-			opacity);
+		GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2], opacity);
 		
 		// box
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
+		GL11.glBegin(GL11.GL_QUADS);
 		{
-			bufferBuilder.vertex(matrix, x1, y1, 0).next();
-			bufferBuilder.vertex(matrix, x2, y1, 0).next();
-			bufferBuilder.vertex(matrix, x2, y2, 0).next();
-			bufferBuilder.vertex(matrix, x1, y2, 0).next();
+			GL11.glVertex2i(x1, y1);
+			GL11.glVertex2i(x2, y1);
+			GL11.glVertex2i(x2, y2);
+			GL11.glVertex2i(x1, y2);
 		}
-		tessellator.draw();
+		GL11.glEnd();
 		
 		// outline positions
-		float xi1 = x1 - 0.1F;
-		float xi2 = x2 + 0.1F;
-		float yi1 = y1 - 0.1F;
-		float yi2 = y2 + 0.1F;
+		double xi1 = x1 - 0.1;
+		double xi2 = x2 + 0.1;
+		double yi1 = y1 - 0.1;
+		double yi2 = y2 + 0.1;
 		
 		// outline
 		GL11.glLineWidth(1);
-		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-			VertexFormats.POSITION);
+		GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.5F);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
 		{
-			bufferBuilder.vertex(matrix, xi1, yi1, 0).next();
-			bufferBuilder.vertex(matrix, xi2, yi1, 0).next();
-			bufferBuilder.vertex(matrix, xi2, yi2, 0).next();
-			bufferBuilder.vertex(matrix, xi1, yi2, 0).next();
-			bufferBuilder.vertex(matrix, xi1, yi1, 0).next();
+			GL11.glVertex2d(xi1, yi1);
+			GL11.glVertex2d(xi2, yi1);
+			GL11.glVertex2d(xi2, yi2);
+			GL11.glVertex2d(xi1, yi2);
 		}
-		tessellator.draw();
+		GL11.glEnd();
 		
 		// shadow positions
 		xi1 -= 0.9;
@@ -259,46 +249,34 @@ public final class TabGui implements KeyPressListener
 		yi1 -= 0.9;
 		yi2 += 0.9;
 		
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		
 		// top left
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION_COLOR);
+		GL11.glBegin(GL11.GL_POLYGON);
+		{
+			GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.75F);
+			GL11.glVertex2d(x1, y1);
+			GL11.glVertex2d(x2, y1);
+			GL11.glColor4f(0, 0, 0, 0);
+			GL11.glVertex2d(xi2, yi1);
+			GL11.glVertex2d(xi1, yi1);
+			GL11.glVertex2d(xi1, yi2);
+			GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.75F);
+			GL11.glVertex2d(x1, y2);
+		}
+		GL11.glEnd();
 		
-		// top
-		bufferBuilder.vertex(matrix, x1, y1, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, xi2, yi1, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, xi1, yi1, 0).color(0, 0, 0, 0).next();
-		
-		// left
-		bufferBuilder.vertex(matrix, xi1, yi1, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, xi1, yi2, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, x1, y1, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		
-		// right
-		bufferBuilder.vertex(matrix, x2, y2, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, xi2, yi1, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, xi2, yi2, 0).color(0, 0, 0, 0).next();
-		
-		// bottom
-		bufferBuilder.vertex(matrix, xi2, yi2, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, xi1, yi2, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0)
-			.color(acColor[0], acColor[1], acColor[2], 0.75F).next();
-		
-		tessellator.draw();
+		// bottom right
+		GL11.glBegin(GL11.GL_POLYGON);
+		{
+			GL11.glVertex2d(x2, y2);
+			GL11.glVertex2d(x2, y1);
+			GL11.glColor4f(0, 0, 0, 0);
+			GL11.glVertex2d(xi2, yi1);
+			GL11.glVertex2d(xi2, yi2);
+			GL11.glVertex2d(xi1, yi2);
+			GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.75F);
+			GL11.glVertex2d(x1, y2);
+		}
+		GL11.glEnd();
 	}
 	
 	private static final class Tab

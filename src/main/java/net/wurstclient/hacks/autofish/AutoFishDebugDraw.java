@@ -10,17 +10,8 @@ package net.wurstclient.hacks.autofish;
 import java.awt.Color;
 import java.util.stream.Stream;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.util.math.BlockPos;
@@ -66,7 +57,7 @@ public final class AutoFishDebugDraw
 		lastSoundPos = new Vec3d(sound.getX(), sound.getY(), sound.getZ());
 	}
 	
-	public void render(MatrixStack matrixStack, float partialTicks)
+	public void render(float partialTicks)
 	{
 		if(!debugDraw.isChecked())
 			return;
@@ -75,11 +66,14 @@ public final class AutoFishDebugDraw
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		FishingBobberEntity bobber = WurstClient.MC.player.fishHook;
 		
@@ -88,57 +82,52 @@ public final class AutoFishDebugDraw
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
 		if(bobber != null && validRangeBox != null)
-			drawValidRange(matrixStack, bobber, regionX, regionZ);
+			drawValidRange(bobber, regionX, regionZ);
 		
 		if(lastSoundPos != null)
-			drawLastBite(matrixStack, regionX, regionZ);
+			drawLastBite(regionX, regionZ);
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 	
-	private void drawValidRange(MatrixStack matrixStack,
-		FishingBobberEntity bobber, int regionX, int regionZ)
+	private void drawValidRange(FishingBobberEntity bobber, int regionX,
+		int regionZ)
 	{
-		matrixStack.push();
-		matrixStack.translate(bobber.getX() - regionX, bobber.getY(),
+		GL11.glPushMatrix();
+		GL11.glTranslated(bobber.getX() - regionX, bobber.getY(),
 			bobber.getZ() - regionZ);
 		
 		float[] colorF = ddColor.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
 		
-		RenderUtils.drawOutlinedBox(validRangeBox, matrixStack);
+		RenderUtils.drawOutlinedBox(validRangeBox);
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
-	private void drawLastBite(MatrixStack matrixStack, int regionX, int regionZ)
+	private void drawLastBite(int regionX, int regionZ)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
-		matrixStack.push();
-		matrixStack.translate(lastSoundPos.x - regionX, lastSoundPos.y,
+		GL11.glPushMatrix();
+		GL11.glTranslated(lastSoundPos.x - regionX, lastSoundPos.y,
 			lastSoundPos.z - regionZ);
 		
 		float[] colorF = ddColor.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, -0.125F, 0, -0.125F).next();
-		bufferBuilder.vertex(matrix, 0.125F, 0, 0.125F).next();
-		bufferBuilder.vertex(matrix, 0.125F, 0, -0.125F).next();
-		bufferBuilder.vertex(matrix, -0.125F, 0, 0.125F).next();
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex3d(-0.125, 0, -0.125);
+		GL11.glVertex3d(0.125, 0, 0.125);
+		GL11.glVertex3d(0.125, 0, -0.125);
+		GL11.glVertex3d(-0.125, 0, 0.125);
+		GL11.glEnd();
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 }

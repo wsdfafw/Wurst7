@@ -22,22 +22,10 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.stream.Collectors;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
@@ -97,8 +85,8 @@ public final class CaveFinderHack extends Hack
 	private ForkJoinTask<HashSet<BlockPos>> getMatchingBlocksTask;
 	private ForkJoinTask<ArrayList<int[]>> compileVerticesTask;
 	
-	private VertexBuffer vertexBuffer;
-	private boolean bufferUpToDate;
+	private int displayList;
+	private boolean displayListUpToDate;
 	
 	public CaveFinderHack()
 	{
@@ -119,7 +107,8 @@ public final class CaveFinderHack extends Hack
 		pool1 = MinPriorityThreadFactory.newFixedThreadPool();
 		pool2 = new ForkJoinPool();
 		
-		bufferUpToDate = false;
+		displayList = GL11.glGenLists(1);
+		displayListUpToDate = false;
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketInputListener.class, this);
@@ -136,10 +125,7 @@ public final class CaveFinderHack extends Hack
 		stopPool2Tasks();
 		pool1.shutdownNow();
 		pool2.shutdownNow();
-		
-		if(vertexBuffer != null)
-			vertexBuffer.close();
-		
+		GL11.glDeleteLists(displayList, 1);
 		chunksToUpdate.clear();
 	}
 	
@@ -154,13 +140,17 @@ public final class CaveFinderHack extends Hack
 		Packet<?> packet = event.getPacket();
 		Chunk chunk;
 		
-		if(packet instanceof BlockUpdateS2CPacket change)
+		if(packet instanceof BlockUpdateS2CPacket)
 		{
+			BlockUpdateS2CPacket change = (BlockUpdateS2CPacket)packet;
 			BlockPos pos = change.getPos();
 			chunk = world.getChunk(pos);
 			
-		}else if(packet instanceof ChunkDeltaUpdateS2CPacket change)
+		}else if(packet instanceof ChunkDeltaUpdateS2CPacket)
 		{
+			ChunkDeltaUpdateS2CPacket change =
+				(ChunkDeltaUpdateS2CPacket)packet;
+			
 			ArrayList<BlockPos> changedBlocks = new ArrayList<>();
 			change.visitUpdates((pos, state) -> changedBlocks.add(pos));
 			if(changedBlocks.isEmpty())
@@ -168,9 +158,12 @@ public final class CaveFinderHack extends Hack
 			
 			chunk = world.getChunk(changedBlocks.get(0));
 			
-		}else if(packet instanceof ChunkDataS2CPacket chunkData)
+		}else if(packet instanceof ChunkDataS2CPacket)
+		{
+			ChunkDataS2CPacket chunkData = (ChunkDataS2CPacket)packet;
 			chunk = world.getChunk(chunkData.getX(), chunkData.getZ());
-		else
+			
+		}else
 			return;
 		
 		chunksToUpdate.add(chunk);
@@ -208,24 +201,27 @@ public final class CaveFinderHack extends Hack
 		if(!compileVerticesTask.isDone())
 			return;
 		
-		if(!bufferUpToDate)
-			setBufferFromTask();
+		if(!displayListUpToDate)
+			setDisplayListFromTask();
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
-		// generate rainbow color
+		// generate color
 		float x = System.currentTimeMillis() % 2000 / 1000F;
 		float alpha = 0.25F + 0.25F * MathHelper.sin(x * (float)Math.PI);
 		
@@ -233,24 +229,17 @@ public final class CaveFinderHack extends Hack
 			alpha = opacity.getValueF();
 		
 		float[] colorF = color.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], alpha);
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], alpha);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glCallList(displayList);
+		GL11.glEnd();
 		
-		if(vertexBuffer != null)
-		{
-			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-			ShaderProgram shader = RenderSystem.getShader();
-			vertexBuffer.bind();
-			vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
-		}
-		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
@@ -375,7 +364,7 @@ public final class CaveFinderHack extends Hack
 			compileVerticesTask = null;
 		}
 		
-		bufferUpToDate = false;
+		displayListUpToDate = false;
 	}
 	
 	private boolean areAllChunkSearchersDone()
@@ -453,30 +442,16 @@ public final class CaveFinderHack extends Hack
 		compileVerticesTask = pool2.submit(task);
 	}
 	
-	private void setBufferFromTask()
+	private void setDisplayListFromTask()
 	{
 		ArrayList<int[]> vertices = getVerticesFromTask();
 		
-		if(vertexBuffer != null)
-			vertexBuffer.close();
-		
-		vertexBuffer = new VertexBuffer();
-		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		
+		GL11.glNewList(displayList, GL11.GL_COMPILE);
 		for(int[] vertex : vertices)
-			bufferBuilder.vertex(vertex[0], vertex[1], vertex[2]).next();
+			GL11.glVertex3d(vertex[0], vertex[1], vertex[2]);
+		GL11.glEndList();
 		
-		BuiltBuffer buffer = bufferBuilder.end();
-		
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
-		
-		bufferUpToDate = true;
+		displayListUpToDate = true;
 	}
 	
 	public ArrayList<int[]> getVerticesFromTask()

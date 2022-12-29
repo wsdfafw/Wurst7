@@ -71,10 +71,10 @@ public final class ArrowDmgHack extends Hack implements StopUsingItemListener
 		
 		for(int i = 0; i < packets.getValueI() / 2; i++)
 		{
-			netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x,
-				y - 1e-10, z, true));
-			netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x,
-				y + 1e-10, z, false));
+			netHandler.sendPacket(
+				new PlayerMoveC2SPacket.PositionOnly(x, y - 1e-10, z, true));
+			netHandler.sendPacket(
+				new PlayerMoveC2SPacket.PositionOnly(x, y + 1e-10, z, false));
 		}
 	}
 	

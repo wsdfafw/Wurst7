@@ -13,7 +13,7 @@ import java.util.List;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -70,12 +70,11 @@ public final class RestockHack extends Hack implements UpdateListener
 		if(MC.currentScreen instanceof HandledScreen)
 			return;
 		
-		PlayerInventory inv = MC.player.getInventory();
+		PlayerInventory inv = MC.player.inventory;
 		int hotbarSlot = currentSlot.isChecked() ? inv.selectedSlot : 0;
 		for(String itemName : items.getItemNames())
 		{
-			ItemStack hotbarStack =
-				MC.player.getInventory().getStack(hotbarSlot);
+			ItemStack hotbarStack = MC.player.inventory.getStack(hotbarSlot);
 			
 			boolean wrongItem =
 				hotbarStack.isEmpty() || !itemEqual(itemName, hotbarStack);
@@ -95,7 +94,7 @@ public final class RestockHack extends Hack implements UpdateListener
 				im.windowClick_PICKUP(pickupIndex);
 				im.windowClick_PICKUP(hotbarSlot + 36);
 				
-				if(!MC.player.playerScreenHandler.getCursorStack().isEmpty())
+				if(!MC.player.inventory.getCursorStack().isEmpty())
 					im.windowClick_PICKUP(pickupIndex);
 				
 				if(hotbarStack.getCount() >= hotbarStack.getMaxCount())
@@ -108,12 +107,12 @@ public final class RestockHack extends Hack implements UpdateListener
 			break;
 		}
 		
-		ItemStack restockStack = MC.player.getInventory().getStack(hotbarSlot);
+		ItemStack restockStack = MC.player.inventory.getStack(hotbarSlot);
 		if(repairMode.getValueI() > 0 && restockStack.isDamageable()
 			&& isTooDamaged(restockStack))
 			for(int i = 36 - 1; i > 9 - 1; i--)
 			{
-				ItemStack stack = MC.player.getInventory().getStack(i);
+				ItemStack stack = MC.player.inventory.getStack(i);
 				if(stack.isEmpty() || !stack.isDamageable())
 				{
 					IMC.getInteractionManager().windowClick_SWAP(i, hotbarSlot);
@@ -128,8 +127,7 @@ public final class RestockHack extends Hack implements UpdateListener
 			&& isTooDamaged(stack))
 			return false;
 		
-		return Registries.ITEM.getId(stack.getItem()).toString()
-			.equals(itemName);
+		return Registry.ITEM.getId(stack.getItem()).toString().equals(itemName);
 	}
 	
 	private boolean isTooDamaged(ItemStack stack)
@@ -148,7 +146,7 @@ public final class RestockHack extends Hack implements UpdateListener
 			if(i == skip)
 				continue;
 			
-			ItemStack stack = MC.player.getInventory().getStack(i);
+			ItemStack stack = MC.player.inventory.getStack(i);
 			if(stack.isEmpty())
 				continue;
 			

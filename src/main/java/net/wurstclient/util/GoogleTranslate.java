@@ -18,6 +18,8 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 public class GoogleTranslate
 {
 	public String translate(String text, String langFrom, String langTo)
@@ -86,7 +88,6 @@ public class GoogleTranslate
 		return connection;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private String parseHTML(String html)
 	{
 		String regex = "class=\"result-container\">([^<]*)<\\/div>";
@@ -98,9 +99,7 @@ public class GoogleTranslate
 		
 		if(match == null || match.isEmpty())
 			return null;
-			
-		// deprecated in favor of org.apache.commons.text.StringEscapeUtils,
-		// which isn't bundled with Minecraft
-		return org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4(match);
+		
+		return StringEscapeUtils.unescapeHtml4(match);
 	}
 }

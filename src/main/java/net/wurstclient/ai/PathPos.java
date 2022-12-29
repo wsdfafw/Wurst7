@@ -39,7 +39,6 @@ public class PathPos extends BlockPos
 			return false;
 		
 		PathPos node = (PathPos)obj;
-		
 		return getX() == node.getX() && getY() == node.getY()
 			&& getZ() == node.getZ() && isJumping() == node.isJumping();
 	}

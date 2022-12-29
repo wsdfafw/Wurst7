@@ -14,11 +14,7 @@ import java.util.LinkedHashSet;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -257,8 +253,8 @@ public final class AutoBuildHack extends Hack
 			
 			// face block
 			Rotation rotation = RotationUtils.getNeededRotations(hitVec);
-			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
+			PlayerMoveC2SPacket.LookOnly packet =
+				new PlayerMoveC2SPacket.LookOnly(rotation.getYaw(),
 					rotation.getPitch(), MC.player.isOnGround());
 			MC.player.networkHandler.sendPacket(packet);
 			
@@ -286,7 +282,6 @@ public final class AutoBuildHack extends Hack
 			return;
 		
 		BlockHitResult blockHitResult = (BlockHitResult)hitResult;
-		
 		BlockPos hitResultPos = blockHitResult.getBlockPos();
 		if(!BlockUtils.canBeClicked(hitResultPos))
 			return;
@@ -340,12 +335,12 @@ public final class AutoBuildHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(status != Status.BUILDING)
 			return;
 		
-		float scale = 1F * 7F / 8F;
+		double scale = 1D * 7D / 8D;
 		double offset = (1D - scale) / 2D;
 		Vec3d eyesPos = RotationUtils.getEyesPos();
 		double rangeSq = Math.pow(range.getValue(), 2);
@@ -354,18 +349,20 @@ public final class AutoBuildHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		RenderSystem.setShaderColor(0F, 0F, 0F, 0.5F);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glColor4f(0F, 0F, 0F, 0.5F);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		
 		int blocksDrawn = 0;
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		for(Iterator<BlockPos> itr = remainingBlocks.iterator(); itr.hasNext()
 			&& blocksDrawn < 1024;)
 		{
@@ -373,40 +370,41 @@ public final class AutoBuildHack extends Hack
 			if(!BlockUtils.getState(pos).getMaterial().isReplaceable())
 				continue;
 			
-			matrixStack.push();
-			matrixStack.translate(pos.getX() - regionX, pos.getY(),
+			GL11.glPushMatrix();
+			GL11.glTranslated(pos.getX() - regionX, pos.getY(),
 				pos.getZ() - regionZ);
-			matrixStack.translate(offset, offset, offset);
-			matrixStack.scale(scale, scale, scale);
+			GL11.glTranslated(offset, offset, offset);
+			GL11.glScaled(scale, scale, scale);
 			
 			Vec3d posVec = Vec3d.ofCenter(pos);
 			
 			if(eyesPos.squaredDistanceTo(posVec) <= rangeSq)
-				drawGreenBox(matrixStack);
+				drawGreenBox();
 			else
-				RenderUtils.drawOutlinedBox(matrixStack);
+				RenderUtils.drawOutlinedBox();
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 			blocksDrawn++;
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 	}
 	
-	private void drawGreenBox(MatrixStack matrixStack)
+	private void drawGreenBox()
 	{
 		GL11.glDepthMask(false);
-		RenderSystem.setShaderColor(0F, 1F, 0F, 0.15F);
-		RenderUtils.drawSolidBox(matrixStack);
+		GL11.glColor4f(0F, 1F, 0F, 0.15F);
+		RenderUtils.drawSolidBox();
 		GL11.glDepthMask(true);
 		
-		RenderSystem.setShaderColor(0F, 0F, 0F, 0.5F);
-		RenderUtils.drawOutlinedBox(matrixStack);
+		GL11.glColor4f(0F, 0F, 0F, 0.5F);
+		RenderUtils.drawOutlinedBox();
 	}
 	
 	private enum Status

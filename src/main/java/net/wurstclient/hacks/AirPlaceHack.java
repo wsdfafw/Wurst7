@@ -47,9 +47,10 @@ public final class AirPlaceHack extends Hack implements RightClickListener
 	public void onRightClick(RightClickEvent event)
 	{
 		HitResult hitResult = MC.player.raycast(range.getValue(), 0, false);
-		if(!(hitResult instanceof BlockHitResult blockHitResult))
+		if(!(hitResult instanceof BlockHitResult))
 			return;
 		
+		BlockHitResult blockHitResult = (BlockHitResult)hitResult;
 		IMC.getInteractionManager().rightClickBlock(
 			blockHitResult.getBlockPos(), blockHitResult.getSide(),
 			blockHitResult.getPos());

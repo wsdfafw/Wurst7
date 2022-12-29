@@ -7,9 +7,6 @@
  */
 package net.wurstclient.mixin;
 
-import java.io.File;
-import java.util.UUID;
-
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,22 +17,17 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.UserApiService;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.WindowEventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.client.util.ProfileKeys;
-import net.minecraft.client.util.ProfileKeysImpl;
 import net.minecraft.client.util.Session;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.snooper.SnooperListener;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
@@ -46,16 +38,12 @@ import net.wurstclient.mixinterface.IClientPlayerInteractionManager;
 import net.wurstclient.mixinterface.ILanguageManager;
 import net.wurstclient.mixinterface.IMinecraftClient;
 import net.wurstclient.mixinterface.IWorld;
-import net.wurstclient.other_features.NoTelemetryOtf;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin
-	extends ReentrantThreadExecutor<Runnable>
-	implements WindowEventHandler, IMinecraftClient
+	extends ReentrantThreadExecutor<Runnable> implements SnooperListener,
+	WindowEventHandler, AutoCloseable, IMinecraftClient
 {
-	@Shadow
-	@Final
-	public File runDirectory;
 	@Shadow
 	private int itemUseCooldown;
 	@Shadow
@@ -70,12 +58,8 @@ public abstract class MinecraftClientMixin
 	@Shadow
 	@Final
 	private Session session;
-	@Shadow
-	@Final
-	private YggdrasilAuthenticationService authenticationService;
 	
 	private Session wurstSession;
-	private ProfileKeysImpl wurstProfileKeys;
 	
 	private MinecraftClientMixin(WurstClient wurst, String string_1)
 	{
@@ -84,14 +68,14 @@ public abstract class MinecraftClientMixin
 	
 	@Inject(at = {@At(value = "FIELD",
 		target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
-		ordinal = 0)}, method = {"doAttack()Z"}, cancellable = true)
-	private void onDoAttack(CallbackInfoReturnable<Boolean> cir)
+		ordinal = 0)}, method = {"doAttack()V"}, cancellable = true)
+	private void onDoAttack(CallbackInfo ci)
 	{
 		LeftClickEvent event = new LeftClickEvent();
 		EventManager.fire(event);
 		
 		if(event.isCancelled())
-			cir.setReturnValue(false);
+			ci.cancel();
 	}
 	
 	@Inject(at = {@At(value = "FIELD",
@@ -120,7 +104,7 @@ public abstract class MinecraftClientMixin
 		WurstClient.INSTANCE.getFriends().middleClick(entity);
 	}
 	
-	@Inject(at = @At("HEAD"),
+	@Inject(at = {@At("HEAD")},
 		method = {"getSession()Lnet/minecraft/client/util/Session;"},
 		cancellable = true)
 	private void onGetSession(CallbackInfoReturnable<Session> cir)
@@ -129,6 +113,18 @@ public abstract class MinecraftClientMixin
 			return;
 		
 		cir.setReturnValue(wurstSession);
+	}
+	
+	/**
+	 * Stops the multiplayer button being grayed out if the user's Microsoft
+	 * account is parental-control'd.
+	 */
+	@Inject(at = @At("HEAD"),
+		method = "isMultiplayerEnabled()Z",
+		cancellable = true)
+	public void isMultiplayerEnabled(CallbackInfoReturnable<Boolean> cir)
+	{
+		cir.setReturnValue(true);
 	}
 	
 	@Redirect(at = @At(value = "FIELD",
@@ -141,43 +137,7 @@ public abstract class MinecraftClientMixin
 	{
 		if(wurstSession != null)
 			return wurstSession;
-		
 		return session;
-	}
-	
-	@Inject(at = @At("HEAD"),
-		method = {"getProfileKeys()Lnet/minecraft/client/util/ProfileKeys;"},
-		cancellable = true)
-	private void onGetProfileKeys(CallbackInfoReturnable<ProfileKeys> cir)
-	{
-		if(WurstClient.INSTANCE.getOtfs().noChatReportsOtf.isActive())
-			cir.setReturnValue(ProfileKeys.MISSING);
-		
-		if(wurstProfileKeys == null)
-			return;
-		
-		cir.setReturnValue(wurstProfileKeys);
-	}
-	
-	@Inject(at = @At("HEAD"),
-		method = "isTelemetryEnabledByApi()Z",
-		cancellable = true)
-	private void onIsTelemetryEnabledByApi(CallbackInfoReturnable<Boolean> cir)
-	{
-		NoTelemetryOtf noTelemetryOtf =
-			WurstClient.INSTANCE.getOtfs().noTelemetryOtf;
-		cir.setReturnValue(!noTelemetryOtf.isEnabled());
-	}
-	
-	@Inject(at = @At("HEAD"),
-		method = "isOptionalTelemetryEnabledByApi()Z",
-		cancellable = true)
-	private void onIsOptionalTelemetryEnabledByApi(
-		CallbackInfoReturnable<Boolean> cir)
-	{
-		NoTelemetryOtf noTelemetryOtf =
-			WurstClient.INSTANCE.getOtfs().noTelemetryOtf;
-		cir.setReturnValue(!noTelemetryOtf.isEnabled());
 	}
 	
 	@Override
@@ -226,25 +186,6 @@ public abstract class MinecraftClientMixin
 	public void setSession(Session session)
 	{
 		wurstSession = session;
-		
-		UserApiService userApiService =
-			wurst_createUserApiService(session.getAccessToken());
-		UUID uuid = wurstSession.getProfile().getId();
-		wurstProfileKeys =
-			new ProfileKeysImpl(userApiService, uuid, runDirectory.toPath());
-	}
-	
-	private UserApiService wurst_createUserApiService(String accessToken)
-	{
-		try
-		{
-			return authenticationService.createUserApiService(accessToken);
-			
-		}catch(AuthenticationException e)
-		{
-			e.printStackTrace();
-			return UserApiService.OFFLINE;
-		}
 	}
 	
 	@Shadow

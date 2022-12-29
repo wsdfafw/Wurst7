@@ -8,7 +8,7 @@
 package net.wurstclient.altmanager.screens;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.CrackedAlt;
 import net.wurstclient.altmanager.MojangAlt;
@@ -19,7 +19,7 @@ public final class AddAltScreen extends AltEditorScreen
 	
 	public AddAltScreen(Screen prevScreen, AltManager altManager)
 	{
-		super(prevScreen, Text.literal("新的账号"));
+		super(prevScreen, new LiteralText("新的账号"));
 		this.altManager = altManager;
 	}
 	
@@ -40,6 +40,6 @@ public final class AddAltScreen extends AltEditorScreen
 		else
 			altManager.add(new MojangAlt(nameOrEmail, password));
 		
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 }

@@ -16,9 +16,9 @@ import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.PotionUtil;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -42,10 +42,10 @@ public final class PotionCmd extends Command
 		if(args.length == 0)
 			throw new CmdSyntaxError();
 		
-		if(!MC.player.getAbilities().creativeMode)
+		if(!MC.player.abilities.creativeMode)
 			throw new CmdError("仅限创造模式.");
 		
-		ItemStack stack = MC.player.getInventory().getMainHandStack();
+		ItemStack stack = MC.player.inventory.getMainHandStack();
 		if(!(stack.getItem() instanceof PotionItem))
 			throw new CmdError("你的主手必须拿着药水.");
 		
@@ -89,7 +89,7 @@ public final class PotionCmd extends Command
 		
 		NbtCompound nbt = new NbtCompound();
 		nbt.put("CustomPotionEffects", effects);
-		stack.setNbt(nbt);
+		stack.setTag(nbt);
 		ChatUtils.message("Potion modified.");
 	}
 	
@@ -141,7 +141,7 @@ public final class PotionCmd extends Command
 		
 		NbtCompound nbt = new NbtCompound();
 		nbt.put("CustomPotionEffects", newEffects);
-		stack.setNbt(nbt);
+		stack.setTag(nbt);
 		ChatUtils.message("Effect removed.");
 	}
 	
@@ -155,7 +155,7 @@ public final class PotionCmd extends Command
 			try
 			{
 				Identifier identifier = new Identifier(input);
-				StatusEffect effect = Registries.STATUS_EFFECT.get(identifier);
+				StatusEffect effect = Registry.STATUS_EFFECT.get(identifier);
 				
 				id = StatusEffect.getRawId(effect);
 				

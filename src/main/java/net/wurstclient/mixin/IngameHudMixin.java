@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.GUIRenderListener.GUIRenderEvent;
@@ -24,10 +23,9 @@ import net.wurstclient.events.GUIRenderListener.GUIRenderEvent;
 public class IngameHudMixin extends DrawableHelper
 {
 	@Inject(
-		at = @At(value = "INVOKE",
+		at = {@At(value = "INVOKE",
 			target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V",
-			remap = false,
-			ordinal = 4),
+			ordinal = 4)},
 		method = {"render(Lnet/minecraft/client/util/math/MatrixStack;F)V"})
 	private void onRender(MatrixStack matrixStack, float partialTicks,
 		CallbackInfo ci)
@@ -40,20 +38,11 @@ public class IngameHudMixin extends DrawableHelper
 	}
 	
 	@Inject(at = {@At("HEAD")},
-		method = {"renderOverlay(Lnet/minecraft/util/Identifier;F)V"},
+		method = {"renderPumpkinOverlay()V"},
 		cancellable = true)
-	private void onRenderOverlay(Identifier identifier, float scale,
-		CallbackInfo ci)
+	private void onRenderPumpkinOverlay(CallbackInfo ci)
 	{
-		if(identifier == null || identifier.getPath() == null)
-			return;
-		
-		if(!identifier.getPath().equals("textures/misc/pumpkinblur.png"))
-			return;
-		
-		if(!WurstClient.INSTANCE.getHax().noPumpkinHack.isEnabled())
-			return;
-		
-		ci.cancel();
+		if(WurstClient.INSTANCE.getHax().noPumpkinHack.isEnabled())
+			ci.cancel();
 	}
 }

@@ -8,7 +8,6 @@
 package net.wurstclient.hacks;
 
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
@@ -116,7 +115,7 @@ public final class AutoFishHack extends Hack
 		}
 		
 		// cast rod
-		if(player.fishHook == null || player.fishHook.isRemoved())
+		if(player.fishHook == null)
 		{
 			rightClick();
 			castRodTimer = 15;
@@ -144,8 +143,7 @@ public final class AutoFishHack extends Hack
 		
 		// check sound type
 		PlaySoundS2CPacket sound = (PlaySoundS2CPacket)event.getPacket();
-		if(!SoundEvents.ENTITY_FISHING_BOBBER_SPLASH
-			.equals(sound.getSound().value()))
+		if(!SoundEvents.ENTITY_FISHING_BOBBER_SPLASH.equals(sound.getSound()))
 			return;
 		
 		debugDraw.updateSoundPos(sound);
@@ -183,7 +181,7 @@ public final class AutoFishHack extends Hack
 	private void rightClick()
 	{
 		// check held item
-		ItemStack stack = MC.player.getInventory().getMainHandStack();
+		ItemStack stack = MC.player.inventory.getMainHandStack();
 		if(stack.isEmpty() || !(stack.getItem() instanceof FishingRodItem))
 			return;
 		
@@ -192,8 +190,8 @@ public final class AutoFishHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
-		debugDraw.render(matrixStack, partialTicks);
+		debugDraw.render(partialTicks);
 	}
 }

@@ -7,6 +7,8 @@
  */
 package net.wurstclient.commands;
 
+import java.util.stream.Stream;
+
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -89,7 +91,7 @@ public final class VClipCmd extends Command
 	
 	private boolean hasCollisions(Box box)
 	{
-		Iterable<VoxelShape> collisions =
+		Stream<VoxelShape> collisions =
 			MC.world.getBlockCollisions(MC.player, box);
 		
 		return collisions.iterator().hasNext();

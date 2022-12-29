@@ -8,20 +8,13 @@
 package net.wurstclient.hacks;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.entity.*;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.vehicle.ChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
 import net.wurstclient.Category;
@@ -37,7 +30,6 @@ import net.wurstclient.hacks.chestesp.ChestEspStyle;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
-import net.wurstclient.util.ChunkUtils;
 import net.wurstclient.util.RenderUtils;
 
 public class ChestEspHack extends Hack implements UpdateListener,
@@ -68,13 +60,6 @@ public class ChestEspHack extends Hack implements UpdateListener,
 				"Minecarts with chests will be highlighted in this color.",
 				Color.YELLOW),
 			new CheckboxSetting("Include chest carts", true));
-	
-	private final ChestEspEntityGroup chestBoats =
-		new ChestEspEntityGroup(
-			new ColorSetting("箱船颜色",
-				"Boats with chests will be highlighted in this color.",
-				Color.YELLOW),
-			new CheckboxSetting("Include chest boats", true));
 	
 	private final ChestEspBlockGroup barrels = new ChestEspBlockGroup(
 		new ColorSetting("木桶颜色",
@@ -114,12 +99,12 @@ public class ChestEspHack extends Hack implements UpdateListener,
 			"熔炉, 烟熏炉 和 高炉 将会以这种颜色高亮.",
 			Color.RED), new CheckboxSetting("包括熔炉", false));
 	
-	private final List<ChestEspGroup> groups = Arrays.asList(basicChests,
-		trapChests, enderChests, chestCarts, chestBoats, barrels, shulkerBoxes,
-		hoppers, hopperCarts, droppers, dispensers, furnaces);
+	private final List<ChestEspGroup> groups =
+		Arrays.asList(basicChests, trapChests, enderChests, chestCarts, barrels,
+			shulkerBoxes, hoppers, hopperCarts, droppers, dispensers, furnaces);
 	
 	private final List<ChestEspEntityGroup> entityGroups =
-		Arrays.asList(chestCarts, chestBoats, hopperCarts);
+		Arrays.asList(chestCarts, hopperCarts);
 	
 	public ChestEspHack()
 	{
@@ -157,11 +142,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	{
 		groups.forEach(ChestEspGroup::clear);
 		
-		ArrayList<BlockEntity> blockEntities =
-			ChunkUtils.getLoadedBlockEntities()
-				.collect(Collectors.toCollection(ArrayList::new));
-		
-		for(BlockEntity blockEntity : blockEntities)
+		for(BlockEntity blockEntity : MC.world.blockEntities)
 			if(blockEntity instanceof TrappedChestBlockEntity)
 				trapChests.add(blockEntity);
 			else if(blockEntity instanceof ChestBlockEntity)
@@ -186,8 +167,6 @@ public class ChestEspHack extends Hack implements UpdateListener,
 				chestCarts.add(entity);
 			else if(entity instanceof HopperMinecartEntity)
 				hopperCarts.add(entity);
-			else if(entity instanceof ChestBoatEntity)
-				chestBoats.add(entity);
 	}
 	
 	@Override
@@ -199,42 +178,40 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		entityGroups.stream().filter(ChestEspGroup::isEnabled)
 			.forEach(g -> g.updateBoxes(partialTicks));
 		
-		ChestEspRenderer espRenderer = new ChestEspRenderer(matrixStack);
+		ChestEspRenderer espRenderer = new ChestEspRenderer();
 		
 		if(style.getSelected().hasBoxes())
-		{
-			RenderSystem.setShader(GameRenderer::getPositionProgram);
 			groups.stream().filter(ChestEspGroup::isEnabled)
 				.forEach(espRenderer::renderBoxes);
-		}
 		
 		if(style.getSelected().hasLines())
-		{
-			RenderSystem.setShader(GameRenderer::getPositionProgram);
 			groups.stream().filter(ChestEspGroup::isEnabled)
 				.forEach(espRenderer::renderLines);
-		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}

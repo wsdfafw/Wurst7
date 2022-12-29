@@ -48,7 +48,7 @@ public final class GmCmd extends Command
 			break;
 		}
 		
-		String message = "gamemode " + args2;
-		MC.getNetworkHandler().sendChatCommand(message);
+		String message = "/gamemode " + args2;
+		MC.player.sendChatMessage(message);
 	}
 }

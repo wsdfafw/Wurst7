@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
@@ -54,6 +56,8 @@ public final class HackListHUD implements UpdateListener
 			
 		}else
 			textColor = 0x04000000 | otf.getColor();
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 		int height = posY + activeHax.size() * 9;
 		Window sr = WurstClient.MC.getWindow();

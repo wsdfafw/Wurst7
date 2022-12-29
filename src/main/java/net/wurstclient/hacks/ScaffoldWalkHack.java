@@ -64,7 +64,7 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 		for(int i = 0; i < 9; i++)
 		{
 			// filter out non-block items
-			ItemStack stack = MC.player.getInventory().getStack(i);
+			ItemStack stack = MC.player.inventory.getStack(i);
 			if(stack.isEmpty() || !(stack.getItem() instanceof BlockItem))
 				continue;
 			
@@ -88,13 +88,13 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 			return;
 		
 		// set slot
-		int oldSlot = MC.player.getInventory().selectedSlot;
-		MC.player.getInventory().selectedSlot = newSlot;
+		int oldSlot = MC.player.inventory.selectedSlot;
+		MC.player.inventory.selectedSlot = newSlot;
 		
 		scaffoldTo(belowPlayer);
 		
 		// reset slot
-		MC.player.getInventory().selectedSlot = oldSlot;
+		MC.player.inventory.selectedSlot = oldSlot;
 	}
 	
 	private void scaffoldTo(BlockPos belowPlayer)
@@ -156,8 +156,8 @@ public final class ScaffoldWalkHack extends Hack implements UpdateListener
 			
 			// place block
 			Rotation rotation = RotationUtils.getNeededRotations(hitVec);
-			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
+			PlayerMoveC2SPacket.LookOnly packet =
+				new PlayerMoveC2SPacket.LookOnly(rotation.getYaw(),
 					rotation.getPitch(), MC.player.isOnGround());
 			MC.player.networkHandler.sendPacket(packet);
 			IMC.getInteractionManager().rightClickBlock(neighbor, side2,

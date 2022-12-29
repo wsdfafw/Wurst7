@@ -7,6 +7,7 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
@@ -85,8 +86,8 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 		if(translated == null)
 			return;
 		
-		Text translationMsg =
-			Text.literal(translatorPrefix).append(Text.literal(translated));
+		Text translationMsg = new LiteralText(translatorPrefix)
+			.append(new LiteralText(translated));
 		
 		MC.inGameHud.getChatHud().addMessage(translationMsg);
 	}

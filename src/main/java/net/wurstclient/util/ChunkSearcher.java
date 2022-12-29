@@ -13,11 +13,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
-import net.wurstclient.WurstClient;
 
 /**
  * Searches a {@link Chunk} for a particular type of {@link Block}.
@@ -54,13 +52,11 @@ public final class ChunkSearcher
 			throw new IllegalStateException();
 		
 		ChunkPos chunkPos = chunk.getPos();
-		ClientWorld world = WurstClient.MC.world;
-		
 		int minX = chunkPos.getStartX();
-		int minY = world.getBottomY();
+		int minY = 0;
 		int minZ = chunkPos.getStartZ();
 		int maxX = chunkPos.getEndX();
-		int maxY = world.getTopY();
+		int maxY = 255;
 		int maxZ = chunkPos.getEndZ();
 		
 		for(int x = minX; x <= maxX; x++)

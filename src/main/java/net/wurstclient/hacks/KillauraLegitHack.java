@@ -14,12 +14,8 @@ import java.util.stream.StreamSupport;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -143,7 +139,7 @@ public final class KillauraLegitHack extends Hack
 		double rangeSq = Math.pow(range.getValue(), 2);
 		Stream<Entity> stream =
 			StreamSupport.stream(MC.world.getEntities().spliterator(), true)
-				.filter(e -> !e.isRemoved())
+				.filter(e -> !e.removed)
 				.filter(e -> e instanceof LivingEntity
 					&& ((LivingEntity)e).getHealth() > 0
 					|| e instanceof EndCrystalEntity
@@ -200,8 +196,8 @@ public final class KillauraLegitHack extends Hack
 		float oldYaw = MC.player.prevYaw;
 		float oldPitch = MC.player.prevPitch;
 		
-		MC.player.setYaw(limitAngleChange(oldYaw, rotation.getYaw(), 30));
-		MC.player.setPitch(rotation.getPitch());
+		MC.player.yaw = limitAngleChange(oldYaw, rotation.getYaw(), 30);
+		MC.player.pitch = rotation.getPitch();
 		
 		return Math.abs(oldYaw - rotation.getYaw())
 			+ Math.abs(oldPitch - rotation.getPitch()) < 1F;
@@ -216,7 +212,7 @@ public final class KillauraLegitHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(target == null || !damageIndicator.isChecked())
 			return;
@@ -225,11 +221,14 @@ public final class KillauraLegitHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
@@ -237,47 +236,48 @@ public final class KillauraLegitHack extends Hack
 		
 		Box box = new Box(BlockPos.ORIGIN);
 		float p = 1;
-		if(target instanceof LivingEntity le)
+		if(target instanceof LivingEntity)
+		{
+			LivingEntity le = (LivingEntity)target;
 			p = (le.getMaxHealth() - le.getHealth()) / le.getMaxHealth();
+		}
 		float red = p * 2F;
 		float green = 2 - red;
 		
 		if(target.isAlive())
-			matrixStack.translate(
+			GL11.glTranslated(
 				target.prevX + (target.getX() - target.prevX) * partialTicks
 					- regionX,
 				target.prevY + (target.getY() - target.prevY) * partialTicks,
 				target.prevZ + (target.getZ() - target.prevZ) * partialTicks
 					- regionZ);
 		else
-			matrixStack.translate(target.getX() - regionX, target.getY(),
+			GL11.glTranslated(target.getX() - regionX, target.getY(),
 				target.getZ() - regionZ);
 		
-		matrixStack.translate(0, 0.05, 0);
-		matrixStack.scale(target.getWidth(), target.getHeight(),
-			target.getWidth());
-		matrixStack.translate(-0.5, 0, -0.5);
+		GL11.glTranslated(0, 0.05, 0);
+		GL11.glScaled(target.getWidth(), target.getHeight(), target.getWidth());
+		GL11.glTranslated(-0.5, 0, -0.5);
 		
 		if(p < 1)
 		{
-			matrixStack.translate(0.5, 0.5, 0.5);
-			matrixStack.scale(p, p, p);
-			matrixStack.translate(-0.5, -0.5, -0.5);
+			GL11.glTranslated(0.5, 0.5, 0.5);
+			GL11.glScaled(p, p, p);
+			GL11.glTranslated(-0.5, -0.5, -0.5);
 		}
 		
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glColor4f(red, green, 0, 0.25F);
+		RenderUtils.drawSolidBox(box);
 		
-		RenderSystem.setShaderColor(red, green, 0, 0.25F);
-		RenderUtils.drawSolidBox(box, matrixStack);
+		GL11.glColor4f(red, green, 0, 0.5F);
+		RenderUtils.drawOutlinedBox(box);
 		
-		RenderSystem.setShaderColor(red, green, 0, 0.5F);
-		RenderUtils.drawOutlinedBox(box, matrixStack);
-		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}

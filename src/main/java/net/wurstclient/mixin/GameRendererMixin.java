@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -84,18 +85,20 @@ public abstract class GameRendererMixin
 	private void onRenderWorld(float partialTicks, long finishTimeNano,
 		MatrixStack matrixStack, CallbackInfo ci)
 	{
-		RenderEvent event = new RenderEvent(matrixStack, partialTicks);
+		RenderEvent event = new RenderEvent(partialTicks);
 		EventManager.fire(event);
 	}
 	
-	@Inject(at = @At(value = "RETURN", ordinal = 1),
-		method = {"getFov(Lnet/minecraft/client/render/Camera;FZ)D"},
-		cancellable = true)
-	private void onGetFov(Camera camera, float tickDelta, boolean changingFov,
-		CallbackInfoReturnable<Double> cir)
+	@Redirect(
+		at = @At(value = "FIELD",
+			target = "Lnet/minecraft/client/option/GameOptions;fov:D",
+			opcode = Opcodes.GETFIELD,
+			ordinal = 0),
+		method = {"getFov(Lnet/minecraft/client/render/Camera;FZ)D"})
+	private double getFov(GameOptions options)
 	{
-		cir.setReturnValue(WurstClient.INSTANCE.getOtfs().zoomOtf
-			.changeFovBasedOnZoom(cir.getReturnValueD()));
+		return WurstClient.INSTANCE.getOtfs().zoomOtf
+			.changeFovBasedOnZoom(options.fov);
 	}
 	
 	@Inject(at = {@At(value = "INVOKE",
@@ -154,13 +157,13 @@ public abstract class GameRendererMixin
 	}
 	
 	@Override
-	public void loadWurstShader(Identifier id)
+	public void loadWurstShader(Identifier identifier)
 	{
-		loadPostProcessor(id);
+		loadShader(identifier);
 	}
 	
 	@Shadow
-	private void loadPostProcessor(Identifier id)
+	private void loadShader(Identifier identifier)
 	{
 		
 	}

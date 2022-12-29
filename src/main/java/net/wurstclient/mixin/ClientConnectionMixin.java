@@ -9,7 +9,6 @@ package net.wurstclient.mixin;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,9 +17,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
-import net.minecraft.network.PacketCallbacks;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.ConnectionPacketOutputListener.ConnectionPacketOutputEvent;
 import net.wurstclient.events.PacketInputListener.PacketInputEvent;
@@ -49,7 +49,7 @@ public abstract class ClientConnectionMixin
 	}
 	
 	@ModifyVariable(
-		method = "send(Lnet/minecraft/network/Packet;Lnet/minecraft/network/PacketCallbacks;)V",
+		method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V",
 		at = @At("HEAD"))
 	public Packet<?> onSendPacket(Packet<?> packet)
 	{
@@ -62,10 +62,11 @@ public abstract class ClientConnectionMixin
 	
 	@Inject(at = {@At(value = "HEAD")},
 		method = {
-			"send(Lnet/minecraft/network/Packet;Lnet/minecraft/network/PacketCallbacks;)V"},
+			"send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"},
 		cancellable = true)
 	private void onSendPacket(Packet<?> packet,
-		@Nullable PacketCallbacks callback, CallbackInfo ci)
+		GenericFutureListener<? extends Future<? super Void>> callback,
+		CallbackInfo ci)
 	{
 		ConnectionPacketOutputEvent event = getEvent(packet);
 		if(event == null)

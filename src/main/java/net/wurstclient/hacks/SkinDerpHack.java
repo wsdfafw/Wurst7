@@ -8,6 +8,7 @@
 package net.wurstclient.hacks;
 
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.wurstclient.Category;
@@ -38,7 +39,7 @@ public final class SkinDerpHack extends Hack implements UpdateListener
 		EVENTS.remove(UpdateListener.class, this);
 		
 		for(PlayerModelPart part : PlayerModelPart.values())
-			MC.options.togglePlayerModelPart(part, true);
+			MC.options.setPlayerModelPart(part, true);
 	}
 	
 	@Override
@@ -47,8 +48,10 @@ public final class SkinDerpHack extends Hack implements UpdateListener
 		if(random.nextInt(4) != 0)
 			return;
 		
+		Set<PlayerModelPart> activeParts =
+			MC.options.getEnabledPlayerModelParts();
+		
 		for(PlayerModelPart part : PlayerModelPart.values())
-			MC.options.togglePlayerModelPart(part,
-				!MC.options.isPlayerModelPartEnabled(part));
+			MC.options.setPlayerModelPart(part, !activeParts.contains(part));
 	}
 }

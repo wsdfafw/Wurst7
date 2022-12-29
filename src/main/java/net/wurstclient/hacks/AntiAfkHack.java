@@ -10,10 +10,6 @@ package net.wurstclient.hacks;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
@@ -59,7 +55,7 @@ public final class AntiAfkHack extends Hack
 		start = new BlockPos(MC.player.getPos());
 		nextBlock = null;
 		pathFinder = new RandomPathFinder(start);
-		creativeFlying = MC.player.getAbilities().flying;
+		creativeFlying = MC.player.abilities.flying;
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(RenderListener.class, this);
@@ -71,10 +67,10 @@ public final class AntiAfkHack extends Hack
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
 		
-		MC.options.forwardKey.setPressed(
-			((IKeyBinding)MC.options.forwardKey).isActallyPressed());
-		MC.options.jumpKey
-			.setPressed(((IKeyBinding)MC.options.jumpKey).isActallyPressed());
+		MC.options.keyForward.setPressed(
+			((IKeyBinding)MC.options.keyForward).isActallyPressed());
+		MC.options.keyJump
+			.setPressed(((IKeyBinding)MC.options.keyJump).isActallyPressed());
 		
 		pathFinder = null;
 		processor = null;
@@ -91,7 +87,7 @@ public final class AntiAfkHack extends Hack
 			return;
 		}
 		
-		MC.player.getAbilities().flying = creativeFlying;
+		MC.player.abilities.flying = creativeFlying;
 		
 		if(useAi.isChecked())
 		{
@@ -100,7 +96,7 @@ public final class AntiAfkHack extends Hack
 			{
 				timer--;
 				if(!WURST.getHax().jesusHack.isEnabled())
-					MC.options.jumpKey.setPressed(MC.player.isTouchingWater());
+					MC.options.keyJump.setPressed(MC.player.isTouchingWater());
 				return;
 			}
 			
@@ -156,12 +152,12 @@ public final class AntiAfkHack extends Hack
 			
 			// walk
 			if(MC.player.squaredDistanceTo(Vec3d.ofCenter(nextBlock)) > 0.5)
-				MC.options.forwardKey.setPressed(true);
+				MC.options.keyForward.setPressed(true);
 			else
-				MC.options.forwardKey.setPressed(false);
+				MC.options.keyForward.setPressed(false);
 			
 			// swim up
-			MC.options.jumpKey.setPressed(MC.player.isTouchingWater());
+			MC.options.keyJump.setPressed(MC.player.isTouchingWater());
 			
 			// update timer
 			if(timer > 0)
@@ -170,15 +166,13 @@ public final class AntiAfkHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(!useAi.isChecked())
 			return;
 		
 		PathCmd pathCmd = WURST.getCmds().pathCmd;
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		pathFinder.renderPath(matrixStack, pathCmd.isDebugMode(),
-			pathCmd.isDepthTest());
+		pathFinder.renderPath(pathCmd.isDebugMode(), pathCmd.isDepthTest());
 	}
 	
 	private class RandomPathFinder extends PathFinder

@@ -46,7 +46,7 @@ public final class AutoFishRodSelector
 	
 	public void updateBestRod()
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		int selectedSlot = inventory.selectedSlot;
 		ItemStack selectedStack = inventory.getStack(selectedSlot);
 		
@@ -75,12 +75,12 @@ public final class AutoFishRodSelector
 	
 	public boolean isBestRodAlreadySelected()
 	{
-		return bestRodSlot == MC.player.getInventory().selectedSlot;
+		return bestRodSlot == MC.player.inventory.selectedSlot;
 	}
 	
 	public void selectBestRod()
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		
 		if(bestRodSlot < 9)
 		{

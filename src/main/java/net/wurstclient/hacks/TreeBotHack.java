@@ -11,20 +11,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -140,7 +132,7 @@ public final class TreeBotHack extends Hack
 			return;
 		}
 		
-		tree.getLogs().removeIf(Predicate.not(TreeBotUtils::isLog));
+		tree.getLogs().removeIf(pos -> !TreeBotUtils.isLog(pos));
 		tree.compileBuffer();
 		
 		if(tree.getLogs().isEmpty())
@@ -279,17 +271,15 @@ public final class TreeBotHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		PathCmd pathCmd = WURST.getCmds().pathCmd;
 		
 		if(treeFinder != null)
-			treeFinder.renderPath(matrixStack, pathCmd.isDebugMode(),
-				pathCmd.isDepthTest());
+			treeFinder.renderPath(pathCmd.isDebugMode(), pathCmd.isDepthTest());
 		
 		if(angleFinder != null)
-			angleFinder.renderPath(matrixStack, pathCmd.isDebugMode(),
+			angleFinder.renderPath(pathCmd.isDebugMode(),
 				pathCmd.isDepthTest());
 		
 		// GL settings
@@ -298,44 +288,40 @@ public final class TreeBotHack extends Hack
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		if(tree != null)
-			drawTree(matrixStack);
+			drawTree();
 		
 		if(currentBlock != null)
-			drawCurrentBlock(matrixStack, partialTicks);
+			drawCurrentBlock(partialTicks);
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
-	private void drawTree(MatrixStack matrixStack)
+	private void drawTree()
 	{
-		RenderSystem.setShaderColor(0, 1, 0, 0.5F);
+		GL11.glColor4f(0, 1, 0, 0.5F);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack,
-			MC.world.getChunk(tree.getStump()));
+		GL11.glPushMatrix();
+		RenderUtils
+			.applyRegionalRenderOffset(MC.world.getChunk(tree.getStump()));
 		
-		Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-		Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-		ShaderProgram shader = RenderSystem.getShader();
+		GL11.glCallList(tree.getDisplayList());
 		
-		tree.getVertexBuffer().bind();
-		tree.getVertexBuffer().draw(viewMatrix, projMatrix, shader);
-		VertexBuffer.unbind();
-		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
-	private void drawCurrentBlock(MatrixStack matrixStack, float partialTicks)
+	private void drawCurrentBlock(float partialTicks)
 	{
-		matrixStack.push();
+		GL11.glPushMatrix();
 		
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		RenderUtils.applyRegionalRenderOffset();
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
@@ -346,22 +332,22 @@ public final class TreeBotHack extends Hack
 		float red = p * 2F;
 		float green = 2 - red;
 		
-		matrixStack.translate(currentBlock.getX() - regionX,
-			currentBlock.getY(), currentBlock.getZ() - regionZ);
+		GL11.glTranslated(currentBlock.getX() - regionX, currentBlock.getY(),
+			currentBlock.getZ() - regionZ);
 		if(p < 1)
 		{
-			matrixStack.translate(0.5, 0.5, 0.5);
-			matrixStack.scale(p, p, p);
-			matrixStack.translate(-0.5, -0.5, -0.5);
+			GL11.glTranslated(0.5, 0.5, 0.5);
+			GL11.glScaled(p, p, p);
+			GL11.glTranslated(-0.5, -0.5, -0.5);
 		}
 		
-		RenderSystem.setShaderColor(red, green, 0, 0.25F);
-		RenderUtils.drawSolidBox(box, matrixStack);
+		GL11.glColor4f(red, green, 0, 0.25F);
+		RenderUtils.drawSolidBox(box);
 		
-		RenderSystem.setShaderColor(red, green, 0, 0.5F);
-		RenderUtils.drawOutlinedBox(box, matrixStack);
+		GL11.glColor4f(red, green, 0, 0.5F);
+		RenderUtils.drawOutlinedBox(box);
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
 	private ArrayList<BlockPos> getNeighbors(BlockPos pos)

@@ -29,7 +29,7 @@ public final class DamageCmd extends Command
 		if(args.length == 0)
 			throw new CmdSyntaxError();
 		
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 			throw new CmdError("无法在创造模式中造成任何伤害.");
 		
 		int amount = parseAmount(args[0]);
@@ -68,6 +68,6 @@ public final class DamageCmd extends Command
 	private void sendPosition(double x, double y, double z, boolean onGround)
 	{
 		MC.player.networkHandler.sendPacket(
-			new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround));
+			new PlayerMoveC2SPacket.PositionOnly(x, y, z, onGround));
 	}
 }

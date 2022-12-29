@@ -12,16 +12,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.StatsListener;
 import net.minecraft.client.gui.screen.StatsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
-import net.wurstclient.mixinterface.IScreen;
 
 @Mixin(StatsScreen.class)
 public abstract class StatsScreenMixin extends Screen implements StatsListener
@@ -37,25 +36,19 @@ public abstract class StatsScreenMixin extends Screen implements StatsListener
 		if(WurstClient.INSTANCE.getOtfs().disableOtf.shouldHideEnableButton())
 			return;
 		
-		ButtonWidget toggleWurstButton =
-			ButtonWidget.builder(Text.literal(""), this::toggleWurst)
-				.dimensions(width / 2 - 152, height - 28, 150, 20).build();
+		ButtonWidget toggleWurstButton = new ButtonWidget(width / 2 - 152,
+			height - 28, 150, 20, new LiteralText(""), this::toggleWurst);
 		
 		updateWurstButtonText(toggleWurstButton);
-		addDrawableChild(toggleWurstButton);
+		addButton(toggleWurstButton);
 		
-		for(Drawable d : ((IScreen)this).getButtons())
+		for(ClickableWidget button : buttons)
 		{
-			if(!(d instanceof ClickableWidget))
-				continue;
-			
-			ClickableWidget button = (ClickableWidget)d;
-			
 			if(!button.getMessage().getString()
 				.equals(I18n.translate("gui.done")))
 				continue;
 			
-			button.setX(width / 2 + 2);
+			button.x = width / 2 + 2;
 			button.setWidth(150);
 		}
 	}
@@ -71,7 +64,7 @@ public abstract class StatsScreenMixin extends Screen implements StatsListener
 	private void updateWurstButtonText(ButtonWidget button)
 	{
 		WurstClient wurst = WurstClient.INSTANCE;
-		String text = (wurst.isEnabled() ? "关闭" : "开启") + " Wurst";
-		button.setMessage(Text.literal(text));
+		String text = (wurst.isEnabled() ? "Disable" : "Enable") + " Wurst";
+		button.setMessage(new LiteralText(text));
 	}
 }

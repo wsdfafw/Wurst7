@@ -20,7 +20,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 import net.wurstclient.WurstClient;
 import net.wurstclient.util.ListWidget;
@@ -35,7 +35,7 @@ public final class KeybindProfilesScreen extends Screen
 	
 	public KeybindProfilesScreen(Screen prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 	}
 	
@@ -45,23 +45,18 @@ public final class KeybindProfilesScreen extends Screen
 		listGui = new ListGui(client, this,
 			WurstClient.INSTANCE.getKeybinds().listProfiles());
 		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Open Folder"), b -> openFolder())
-				.dimensions(8, 8, 100, 20).build());
+		addButton(new ButtonWidget(8, 8, 100, 20,
+			new LiteralText("Open Folder"), b -> openFolder()));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("New Profile"),
-				b -> client.setScreen(
-					new EnterProfileNameScreen(this, this::newProfile)))
-			.dimensions(width / 2 - 154, height - 48, 100, 20).build());
+		addButton(new ButtonWidget(width / 2 - 154, height - 48, 100, 20,
+			new LiteralText("New Profile"), b -> client.openScreen(
+				new EnterProfileNameScreen(this, this::newProfile))));
 		
-		loadButton = addDrawableChild(
-			ButtonWidget.builder(Text.literal("Load"), b -> loadSelected())
-				.dimensions(width / 2 - 50, height - 48, 100, 20).build());
+		loadButton = addButton(new ButtonWidget(width / 2 - 50, height - 48,
+			100, 20, new LiteralText("Load"), b -> loadSelected()));
 		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Cancel"), b -> openPrevScreen())
-				.dimensions(width / 2 + 54, height - 48, 100, 20).build());
+		addButton(new ButtonWidget(width / 2 + 54, height - 48, 100, 20,
+			new LiteralText("Cancel"), b -> openPrevScreen()));
 	}
 	
 	private void openFolder()
@@ -110,7 +105,7 @@ public final class KeybindProfilesScreen extends Screen
 	
 	private void openPrevScreen()
 	{
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 	
 	@Override
@@ -183,7 +178,7 @@ public final class KeybindProfilesScreen extends Screen
 		
 		if(loadButton.isHovered() && !loadButton.active)
 			renderTooltip(matrixStack,
-				Arrays.asList(Text.literal("您必须先选择一个文件.")),
+				Arrays.asList(new LiteralText("您必须先选择一个文件.")),
 				mouseX, mouseY);
 	}
 	

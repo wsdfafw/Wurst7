@@ -15,10 +15,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.wurstclient.WurstClient;
@@ -30,9 +27,9 @@ public class PathFinder
 	private final WurstClient wurst = WurstClient.INSTANCE;
 	
 	private final boolean invulnerable =
-		WurstClient.MC.player.getAbilities().creativeMode;
+		WurstClient.MC.player.abilities.creativeMode;
 	private final boolean creativeFlying =
-		WurstClient.MC.player.getAbilities().flying;
+		WurstClient.MC.player.abilities.flying;
 	protected final boolean flying =
 		creativeFlying || wurst.getHax().flightHack.isEnabled();
 	private final boolean immuneToFallDamage =
@@ -191,7 +188,7 @@ public class PathFinder
 		}
 		
 		// up
-		if(pos.getY() < WurstClient.MC.world.getTopY() && canGoThrough(up.up())
+		if(pos.getY() < 256 && canGoThrough(up.up())
 			&& (flying || onGround || canClimbUpAt(pos))
 			&& (flying || canClimbUpAt(pos) || goal.equals(up)
 				|| canSafelyStandOn(north) || canSafelyStandOn(east)
@@ -201,9 +198,8 @@ public class PathFinder
 			neighbors.add(new PathPos(up, onGround));
 		
 		// down
-		if(pos.getY() > WurstClient.MC.world.getBottomY() && canGoThrough(down)
-			&& canGoAbove(down.down()) && (flying || canFallBelow(pos))
-			&& (divingAllowed
+		if(pos.getY() > 0 && canGoThrough(down) && canGoAbove(down.down())
+			&& (flying || canFallBelow(pos)) && (divingAllowed
 				|| BlockUtils.getState(pos).getMaterial() != Material.WATER))
 			neighbors.add(new PathPos(down));
 		
@@ -289,12 +285,9 @@ public class PathFinder
 				&& (material == Material.WATER || material == Material.LAVA);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private boolean canGoThrough(BlockPos pos)
 	{
 		// check if loaded
-		// Can't see why isChunkLoaded() is deprecated. Still seems to be widely
-		// used with no replacement.
 		if(!WurstClient.MC.world.isChunkLoaded(pos))
 			return false;
 		
@@ -549,66 +542,74 @@ public class PathFinder
 		return path;
 	}
 	
-	public void renderPath(MatrixStack matrixStack, boolean debugMode,
-		boolean depthTest)
+	public void renderPath(boolean debugMode, boolean depthTest)
 	{
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		if(!depthTest)
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(false);
 		
-		matrixStack.push();
-		RenderUtils.applyRenderOffset(matrixStack);
-		matrixStack.translate(0.5, 0.5, 0.5);
+		GL11.glPushMatrix();
+		RenderUtils.applyRenderOffset();
+		GL11.glTranslated(0.5, 0.5, 0.5);
 		
 		if(debugMode)
 		{
 			int renderedThings = 0;
 			
 			// queue (yellow)
-			RenderSystem.setShaderColor(1, 1, 0, 0.75F);
+			GL11.glLineWidth(2);
+			GL11.glColor4f(1, 1, 0, 0.75F);
 			for(PathPos element : queue.toArray())
 			{
 				if(renderedThings >= 5000)
 					break;
 				
-				PathRenderer.renderNode(matrixStack, element);
+				PathRenderer.renderNode(element);
 				renderedThings++;
 			}
 			
 			// processed (red)
+			GL11.glLineWidth(2);
 			for(Entry<PathPos, PathPos> entry : prevPosMap.entrySet())
 			{
 				if(renderedThings >= 5000)
 					break;
 				
 				if(entry.getKey().isJumping())
-					RenderSystem.setShaderColor(1, 0, 1, 0.75F);
+					GL11.glColor4f(1, 0, 1, 0.75F);
 				else
-					RenderSystem.setShaderColor(1, 0, 0, 0.75F);
+					GL11.glColor4f(1, 0, 0, 0.75F);
 				
-				PathRenderer.renderArrow(matrixStack, entry.getValue(),
-					entry.getKey());
+				PathRenderer.renderArrow(entry.getValue(), entry.getKey());
 				renderedThings++;
 			}
 		}
 		
 		// path (blue)
 		if(debugMode)
-			RenderSystem.setShaderColor(0, 0, 1, 0.75F);
-		else
-			RenderSystem.setShaderColor(0, 1, 0, 0.75F);
+		{
+			GL11.glLineWidth(4);
+			GL11.glColor4f(0, 0, 1, 0.75F);
+		}else
+		{
+			GL11.glLineWidth(2);
+			GL11.glColor4f(0, 1, 0, 0.75F);
+		}
 		for(int i = 0; i < path.size() - 1; i++)
-			PathRenderer.renderArrow(matrixStack, path.get(i), path.get(i + 1));
+			PathRenderer.renderArrow(path.get(i), path.get(i + 1));
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(true);
@@ -620,7 +621,7 @@ public class PathFinder
 			throw new IllegalStateException("路径没有被格式化!");
 		
 		// check player abilities
-		if(invulnerable != WurstClient.MC.player.getAbilities().creativeMode
+		if(invulnerable != WurstClient.MC.player.abilities.creativeMode
 			|| flying != (creativeFlying
 				|| wurst.getHax().flightHack.isEnabled())
 			|| immuneToFallDamage != (invulnerable

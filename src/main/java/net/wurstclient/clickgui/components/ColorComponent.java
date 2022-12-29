@@ -7,18 +7,10 @@
  */
 package net.wurstclient.clickgui.components;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.wurstclient.WurstClient;
 import net.wurstclient.clickgui.ClickGui;
@@ -49,7 +41,7 @@ public final class ColorComponent extends Component
 			return;
 		
 		if(mouseButton == 0)
-			MC.setScreen(new EditColorScreen(MC.currentScreen, setting));
+			MC.openScreen(new EditColorScreen(MC.currentScreen, setting));
 		else if(mouseButton == 1)
 			setting.setColor(setting.getDefaultColor());
 	}
@@ -65,8 +57,6 @@ public final class ColorComponent extends Component
 		int y3 = y1 + 11;
 		
 		boolean hovering = isHovering(mouseX, mouseY, x1, x2, y1, y2);
-		
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		
 		if(hovering)
 			if(mouseY < y3)
@@ -104,21 +94,14 @@ public final class ColorComponent extends Component
 		float[] bgColor = GUI.getBgColor();
 		float opacity = GUI.getOpacity();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2], opacity);
 		
-		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
-			opacity);
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.vertex(matrix, x1, y1, 0).next();
-		
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x2, y1);
+		GL11.glVertex2i(x2, y2);
+		GL11.glVertex2i(x1, y2);
+		GL11.glVertex2i(x1, y1);
+		GL11.glEnd();
 	}
 	
 	private void drawBox(MatrixStack matrixStack, int x1, int x2, int y2,
@@ -128,31 +111,23 @@ public final class ColorComponent extends Component
 		float[] acColor = GUI.getAcColor();
 		float opacity = GUI.getOpacity();
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		GL11.glColor4f(color[0], color[1], color[2], hovering ? 1F : opacity);
 		
-		RenderSystem.setShaderColor(color[0], color[1], color[2],
-			hovering ? 1F : opacity);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x1, y2);
+		GL11.glVertex2i(x1, y3);
+		GL11.glVertex2i(x2, y3);
+		GL11.glVertex2i(x2, y2);
+		GL11.glEnd();
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.vertex(matrix, x1, y3, 0).next();
-		bufferBuilder.vertex(matrix, x2, y3, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		tessellator.draw();
+		GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.5F);
 		
-		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.vertex(matrix, x1, y3, 0).next();
-		bufferBuilder.vertex(matrix, x2, y3, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex2i(x1, y2);
+		GL11.glVertex2i(x1, y3);
+		GL11.glVertex2i(x2, y3);
+		GL11.glVertex2i(x2, y2);
+		GL11.glEnd();
 	}
 	
 	private void drawNameAndValue(MatrixStack matrixStack, int x1, int x2,
@@ -161,7 +136,8 @@ public final class ColorComponent extends Component
 		ClickGui gui = WurstClient.INSTANCE.getGui();
 		int txtColor = gui.getTxtColor();
 		
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		TextRenderer tr = MC.textRenderer;
 		
 		tr.draw(matrixStack, setting.getName(), x1, y1, txtColor);
@@ -170,6 +146,7 @@ public final class ColorComponent extends Component
 		int valueWidth = tr.getWidth(value);
 		tr.draw(matrixStack, value, x2 - valueWidth, y1, txtColor);
 		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 	

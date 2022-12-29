@@ -12,22 +12,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.Packet;
@@ -96,8 +84,8 @@ public final class MobSpawnEspHack extends Hack
 		
 		for(ChunkScanner scanner : new ArrayList<>(scanners.values()))
 		{
-			if(scanner.vertexBuffer != null)
-				scanner.vertexBuffer.close();
+			if(scanner.displayList != 0)
+				GL11.glDeleteLists(scanner.displayList, 1);
 			
 			scanners.remove(scanner.chunk);
 		}
@@ -141,8 +129,8 @@ public final class MobSpawnEspHack extends Hack
 			if(!scanner.doneCompiling)
 				continue;
 			
-			if(scanner.vertexBuffer != null)
-				scanner.vertexBuffer.close();
+			if(scanner.displayList != 0)
+				GL11.glDeleteLists(scanner.displayList, 1);
 			
 			if(scanner.future != null)
 				scanner.future.cancel(true);
@@ -150,7 +138,7 @@ public final class MobSpawnEspHack extends Hack
 			scanners.remove(scanner.chunk);
 		}
 		
-		// generate vertex buffers
+		// generate display lists
 		Comparator<ChunkScanner> c =
 			Comparator.comparingInt(s -> Math.abs(s.chunk.getPos().x - chunkX)
 				+ Math.abs(s.chunk.getPos().z - chunkZ));
@@ -159,9 +147,13 @@ public final class MobSpawnEspHack extends Hack
 			.limit(loadingSpeed.getValueI()).collect(Collectors.toList());
 		
 		for(ChunkScanner scanner : sortedScanners)
+		{
+			if(scanner.displayList == 0)
+				scanner.displayList = GL11.glGenLists(1);
+			
 			try
 			{
-				scanner.compileBuffer();
+				scanner.compileDisplayList();
 				
 			}catch(ConcurrentModificationException e)
 			{
@@ -169,9 +161,10 @@ public final class MobSpawnEspHack extends Hack
 					"WARNING! ChunkScanner.compileDisplayList(); failed with the following exception:");
 				e.printStackTrace();
 				
-				if(scanner.vertexBuffer != null)
-					scanner.vertexBuffer.close();
+				GL11.glDeleteLists(scanner.displayList, 1);
+				scanner.displayList = 0;
 			}
+		}
 	}
 	
 	@Override
@@ -185,13 +178,17 @@ public final class MobSpawnEspHack extends Hack
 		Packet<?> packet = event.getPacket();
 		Chunk chunk;
 		
-		if(packet instanceof BlockUpdateS2CPacket change)
+		if(packet instanceof BlockUpdateS2CPacket)
 		{
+			BlockUpdateS2CPacket change = (BlockUpdateS2CPacket)packet;
 			BlockPos pos = change.getPos();
 			chunk = world.getChunk(pos);
 			
-		}else if(packet instanceof ChunkDeltaUpdateS2CPacket change)
+		}else if(packet instanceof ChunkDeltaUpdateS2CPacket)
 		{
+			ChunkDeltaUpdateS2CPacket change =
+				(ChunkDeltaUpdateS2CPacket)packet;
+			
 			ArrayList<BlockPos> changedBlocks = new ArrayList<>();
 			change.visitUpdates((pos, state) -> changedBlocks.add(pos));
 			if(changedBlocks.isEmpty())
@@ -199,9 +196,12 @@ public final class MobSpawnEspHack extends Hack
 			
 			chunk = world.getChunk(changedBlocks.get(0));
 			
-		}else if(packet instanceof ChunkDataS2CPacket chunkData)
+		}else if(packet instanceof ChunkDataS2CPacket)
+		{
+			ChunkDataS2CPacket chunkData = (ChunkDataS2CPacket)packet;
 			chunk = world.getChunk(chunkData.getX(), chunkData.getZ());
-		else
+			
+		}else
 			return;
 		
 		ArrayList<Chunk> chunks = new ArrayList<>();
@@ -221,7 +221,7 @@ public final class MobSpawnEspHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// Avoid inconsistent GL state if setting changed mid-onRender
 		boolean depthTest = this.depthTest.isChecked();
@@ -230,35 +230,31 @@ public final class MobSpawnEspHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		if(!depthTest)
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
 		for(ChunkScanner scanner : new ArrayList<>(scanners.values()))
 		{
-			if(scanner.vertexBuffer == null)
+			if(scanner.displayList == 0)
 				continue;
 			
-			matrixStack.push();
-			RenderUtils.applyRegionalRenderOffset(matrixStack, scanner.chunk);
+			GL11.glPushMatrix();
+			RenderUtils.applyRegionalRenderOffset(scanner.chunk);
 			
-			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-			ShaderProgram shader = RenderSystem.getShader();
-			scanner.vertexBuffer.bind();
-			scanner.vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			GL11.glCallList(scanner.displayList);
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		if(!depthTest)
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
@@ -269,7 +265,7 @@ public final class MobSpawnEspHack extends Hack
 		private final Chunk chunk;
 		private final Set<BlockPos> red = new HashSet<>();
 		private final Set<BlockPos> yellow = new HashSet<>();
-		private VertexBuffer vertexBuffer;
+		private int displayList;
 		
 		private boolean doneScanning;
 		private boolean doneCompiling;
@@ -281,15 +277,15 @@ public final class MobSpawnEspHack extends Hack
 		
 		private void scan()
 		{
-			ClientWorld world = MC.world;
-			ArrayList<BlockPos> blocks = new ArrayList<>();
-			
 			int minX = chunk.getPos().getStartX();
-			int minY = world.getBottomY();
+			int minY = 0;
 			int minZ = chunk.getPos().getStartZ();
 			int maxX = chunk.getPos().getEndX();
-			int maxY = world.getTopY();
+			int maxY = 255;
 			int maxZ = chunk.getPos().getEndZ();
+			
+			ClientWorld world = MC.world;
+			ArrayList<BlockPos> blocks = new ArrayList<>();
 			
 			for(int x = minX; x <= maxX; x++)
 				for(int y = minY; y <= maxY; y++)
@@ -315,7 +311,7 @@ public final class MobSpawnEspHack extends Hack
 				return;
 			
 			red.addAll(blocks.stream()
-				.filter(pos -> world.getLightLevel(LightType.BLOCK, pos) < 1)
+				.filter(pos -> world.getLightLevel(LightType.BLOCK, pos) < 8)
 				.filter(pos -> world.getLightLevel(LightType.SKY, pos) < 8)
 				.collect(Collectors.toList()));
 			
@@ -323,64 +319,56 @@ public final class MobSpawnEspHack extends Hack
 				return;
 			
 			yellow.addAll(blocks.stream().filter(pos -> !red.contains(pos))
-				.filter(pos -> world.getLightLevel(LightType.BLOCK, pos) < 1)
+				.filter(pos -> world.getLightLevel(LightType.BLOCK, pos) < 8)
 				.collect(Collectors.toList()));
 			doneScanning = true;
 		}
 		
-		private void compileBuffer()
+		private void compileDisplayList()
 		{
 			int regionX = (chunk.getPos().getStartX() >> 9) * 512;
 			int regionZ = (chunk.getPos().getStartZ() >> 9) * 512;
 			
-			if(vertexBuffer != null)
-				vertexBuffer.close();
+			GL11.glNewList(displayList, GL11.GL_COMPILE);
 			
-			vertexBuffer = new VertexBuffer();
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			
-			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-				VertexFormats.POSITION_COLOR);
-			
-			new ArrayList<>(red).stream().filter(Objects::nonNull)
-				.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ))
-				.forEach(pos -> {
-					bufferBuilder
-						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ())
-						.color(1, 0, 0, 0.5F).next();
-					bufferBuilder.vertex(pos.getX() + 1, pos.getY() + 0.01,
-						pos.getZ() + 1).color(1, 0, 0, 0.5F).next();
-					bufferBuilder
-						.vertex(pos.getX() + 1, pos.getY() + 0.01, pos.getZ())
-						.color(1, 0, 0, 0.5F).next();
-					bufferBuilder
-						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ() + 1)
-						.color(1, 0, 0, 0.5F).next();
-				});
-			
-			new ArrayList<>(yellow).stream().filter(Objects::nonNull)
-				.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ))
-				.forEach(pos -> {
-					bufferBuilder
-						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ())
-						.color(1, 1, 0, 0.5F).next();
-					bufferBuilder.vertex(pos.getX() + 1, pos.getY() + 0.01,
-						pos.getZ() + 1).color(1, 1, 0, 0.5F).next();
-					bufferBuilder
-						.vertex(pos.getX() + 1, pos.getY() + 0.01, pos.getZ())
-						.color(1, 1, 0, 0.5F).next();
-					bufferBuilder
-						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ() + 1)
-						.color(1, 1, 0, 0.5F).next();
-				});
-			
-			BuiltBuffer buffer = bufferBuilder.end();
-			vertexBuffer.bind();
-			vertexBuffer.upload(buffer);
-			VertexBuffer.unbind();
+			try
+			{
+				GL11.glColor4f(1, 0, 0, 0.5F);
+				GL11.glBegin(GL11.GL_LINES);
+				new ArrayList<>(red).stream().filter(Objects::nonNull)
+					.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
+						pos.getZ() - regionZ))
+					.forEach(pos -> {
+						GL11.glVertex3d(pos.getX(), pos.getY() + 0.01,
+							pos.getZ());
+						GL11.glVertex3d(pos.getX() + 1, pos.getY() + 0.01,
+							pos.getZ() + 1);
+						GL11.glVertex3d(pos.getX() + 1, pos.getY() + 0.01,
+							pos.getZ());
+						GL11.glVertex3d(pos.getX(), pos.getY() + 0.01,
+							pos.getZ() + 1);
+					});
+				
+				GL11.glColor4f(1, 1, 0, 0.5F);
+				new ArrayList<>(yellow).stream().filter(Objects::nonNull)
+					.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
+						pos.getZ() - regionZ))
+					.forEach(pos -> {
+						GL11.glVertex3d(pos.getX(), pos.getY() + 0.01,
+							pos.getZ());
+						GL11.glVertex3d(pos.getX() + 1, pos.getY() + 0.01,
+							pos.getZ() + 1);
+						GL11.glVertex3d(pos.getX() + 1, pos.getY() + 0.01,
+							pos.getZ());
+						GL11.glVertex3d(pos.getX(), pos.getY() + 0.01,
+							pos.getZ() + 1);
+					});
+				GL11.glEnd();
+				
+			}finally
+			{
+				GL11.glEndList();
+			}
 			
 			doneCompiling = true;
 		}

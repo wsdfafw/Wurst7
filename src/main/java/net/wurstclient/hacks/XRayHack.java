@@ -28,7 +28,6 @@ import net.wurstclient.events.ShouldDrawSideListener;
 import net.wurstclient.events.TesselateBlockListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.ISimpleOption;
 import net.wurstclient.settings.BlockListSetting;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.ChatUtils;
@@ -43,23 +42,18 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:bone_block", "minecraft:bookshelf",
 		"minecraft:brewing_stand", "minecraft:chain_command_block",
 		"minecraft:chest", "minecraft:clay", "minecraft:coal_block",
-		"minecraft:coal_ore", "minecraft:command_block", "minecraft:copper_ore",
-		"minecraft:crafting_table", "minecraft:deepslate_coal_ore",
-		"minecraft:deepslate_copper_ore", "minecraft:deepslate_diamond_ore",
-		"minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore",
-		"minecraft:deepslate_lapis_ore", "minecraft:deepslate_redstone_ore",
-		"minecraft:diamond_block", "minecraft:diamond_ore",
-		"minecraft:dispenser", "minecraft:dropper", "minecraft:emerald_block",
-		"minecraft:emerald_ore", "minecraft:enchanting_table",
-		"minecraft:end_portal", "minecraft:end_portal_frame",
-		"minecraft:ender_chest", "minecraft:furnace", "minecraft:glowstone",
-		"minecraft:gold_block", "minecraft:gold_ore", "minecraft:hopper",
-		"minecraft:iron_block", "minecraft:iron_ore", "minecraft:ladder",
-		"minecraft:lapis_block", "minecraft:lapis_ore", "minecraft:lava",
-		"minecraft:lodestone", "minecraft:mossy_cobblestone",
-		"minecraft:nether_gold_ore", "minecraft:nether_portal",
-		"minecraft:nether_quartz_ore", "minecraft:raw_copper_block",
-		"minecraft:raw_gold_block", "minecraft:raw_iron_block",
+		"minecraft:coal_ore", "minecraft:command_block",
+		"minecraft:crafting_table", "minecraft:diamond_block",
+		"minecraft:diamond_ore", "minecraft:dispenser", "minecraft:dropper",
+		"minecraft:emerald_block", "minecraft:emerald_ore",
+		"minecraft:enchanting_table", "minecraft:end_portal",
+		"minecraft:end_portal_frame", "minecraft:ender_chest",
+		"minecraft:furnace", "minecraft:glowstone", "minecraft:gold_block",
+		"minecraft:gold_ore", "minecraft:hopper", "minecraft:iron_block",
+		"minecraft:iron_ore", "minecraft:ladder", "minecraft:lapis_block",
+		"minecraft:lapis_ore", "minecraft:lava", "minecraft:lodestone",
+		"minecraft:mossy_cobblestone", "minecraft:nether_gold_ore",
+		"minecraft:nether_portal", "minecraft:nether_quartz_ore",
 		"minecraft:redstone_block", "minecraft:redstone_ore",
 		"minecraft:repeating_command_block", "minecraft:spawner",
 		"minecraft:tnt", "minecraft:torch", "minecraft:trapped_chest",
@@ -123,24 +117,14 @@ public final class XRayHack extends Hack implements UpdateListener,
 		EVENTS.remove(RenderBlockEntityListener.class, this);
 		MC.worldRenderer.reload();
 		
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption =
-			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
-		// TODO: Why does this use 0.5 instead of
-		// FullBright's defaultGamma setting?
 		if(!WURST.getHax().fullbrightHack.isEnabled())
-			gammaOption.forceSetValue(0.5);
+			MC.options.gamma = 0.5F;
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption =
-			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
-		gammaOption.forceSetValue(16.0);
+		MC.options.gamma = 16;
 	}
 	
 	@Override
@@ -178,7 +162,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 	
 	public void openBlockListEditor(Screen prevScreen)
 	{
-		MC.setScreen(new EditBlockListScreen(prevScreen, ores));
+		MC.openScreen(new EditBlockListScreen(prevScreen, ores));
 	}
 	
 	private boolean isVisible(Block block)

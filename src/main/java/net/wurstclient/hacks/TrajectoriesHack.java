@@ -10,18 +10,9 @@ package net.wurstclient.hacks;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.*;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
@@ -61,75 +52,69 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
-		matrixStack.push();
+		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(false);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
 		RenderUtils.applyCameraRotationOnly();
 		
 		ArrayList<Vec3d> path = getPath(partialTicks);
 		Vec3d camPos = RenderUtils.getCameraPos();
 		
-		drawLine(matrixStack, path, camPos);
+		drawLine(path, camPos);
 		
 		if(!path.isEmpty())
 		{
 			Vec3d end = path.get(path.size() - 1);
-			drawEndOfLine(matrixStack, end, camPos);
+			drawEndOfLine(end, camPos);
 		}
 		
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
-	private void drawLine(MatrixStack matrixStack, ArrayList<Vec3d> path,
-		Vec3d camPos)
+	private void drawLine(ArrayList<Vec3d> path, Vec3d camPos)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-			VertexFormats.POSITION);
-		float[] colorF = color.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.75F);
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+		GL11.glColor4f(0, 1, 0, 0.75F);
 		
 		for(Vec3d point : path)
-			bufferBuilder
-				.vertex(matrix, (float)(point.x - camPos.x),
-					(float)(point.y - camPos.y), (float)(point.z - camPos.z))
-				.next();
+			GL11.glVertex3d(point.x - camPos.x, point.y - camPos.y,
+				point.z - camPos.z);
 		
-		tessellator.draw();
+		GL11.glEnd();
 	}
 	
-	private void drawEndOfLine(MatrixStack matrixStack, Vec3d end, Vec3d camPos)
+	private void drawEndOfLine(Vec3d end, Vec3d camPos)
 	{
 		double renderX = end.x - camPos.x;
 		double renderY = end.y - camPos.y;
 		double renderZ = end.z - camPos.z;
 		float[] colorF = color.getColorF();
 		
-		matrixStack.push();
-		matrixStack.translate(renderX - 0.5, renderY - 0.5, renderZ - 0.5);
+		GL11.glPushMatrix();
+		GL11.glTranslated(renderX - 0.5, renderY - 0.5, renderZ - 0.5);
 		
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.25F);
-		RenderUtils.drawSolidBox(matrixStack);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.25F);
+		RenderUtils.drawSolidBox();
 		
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.75F);
-		RenderUtils.drawOutlinedBox(matrixStack);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.75F);
+		RenderUtils.drawOutlinedBox();
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
 	private ArrayList<Vec3d> getPath(float partialTicks)
@@ -147,7 +132,7 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 		// calculate starting position
 		double arrowPosX = player.lastRenderX
 			+ (player.getX() - player.lastRenderX) * partialTicks
-			- Math.cos(Math.toRadians(player.getYaw())) * 0.16;
+			- Math.cos(Math.toRadians(player.yaw)) * 0.16;
 		
 		double arrowPosY = player.lastRenderY
 			+ (player.getY() - player.lastRenderY) * partialTicks
@@ -155,13 +140,13 @@ public final class TrajectoriesHack extends Hack implements RenderListener
 		
 		double arrowPosZ = player.lastRenderZ
 			+ (player.getZ() - player.lastRenderZ) * partialTicks
-			- Math.sin(Math.toRadians(player.getYaw())) * 0.16;
+			- Math.sin(Math.toRadians(player.yaw)) * 0.16;
 		
 		// Motion factor. Arrows go faster than snowballs and all that...
 		double arrowMotionFactor = item instanceof RangedWeaponItem ? 1.0 : 0.4;
 		
-		double yaw = Math.toRadians(player.getYaw());
-		double pitch = Math.toRadians(player.getPitch());
+		double yaw = Math.toRadians(player.yaw);
+		double pitch = Math.toRadians(player.pitch);
 		
 		// calculate starting motion
 		double arrowMotionX =

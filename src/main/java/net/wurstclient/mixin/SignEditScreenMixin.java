@@ -15,19 +15,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
+import net.minecraft.client.gui.screen.ingame.SignEditScreen;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.hacks.AutoSignHack;
 
-@Mixin(AbstractSignEditScreen.class)
-public abstract class AbstractSignEditScreenMixin extends Screen
+@Mixin(SignEditScreen.class)
+public abstract class SignEditScreenMixin extends Screen
 {
 	@Shadow
 	@Final
 	private String[] text;
 	
-	private AbstractSignEditScreenMixin(WurstClient wurst, Text text_1)
+	private SignEditScreenMixin(WurstClient wurst, Text text_1)
 	{
 		super(text_1);
 	}

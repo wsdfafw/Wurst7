@@ -7,27 +7,17 @@
  */
 package net.wurstclient.clickgui.components;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.wurstclient.WurstClient;
 import net.wurstclient.clickgui.ClickGui;
 import net.wurstclient.clickgui.Component;
-import net.wurstclient.clickgui.Window;
 import net.wurstclient.clickgui.screens.EditBlockScreen;
 import net.wurstclient.settings.BlockSetting;
 
@@ -55,7 +45,7 @@ public final class BlockComponent extends Component
 			Screen currentScreen = WurstClient.MC.currentScreen;
 			EditBlockScreen editScreen =
 				new EditBlockScreen(currentScreen, setting);
-			WurstClient.MC.setScreen(editScreen);
+			WurstClient.MC.openScreen(editScreen);
 			
 		}else if(mouseButton == 1)
 			setting.resetToDefault();
@@ -86,11 +76,6 @@ public final class BlockComponent extends Component
 		
 		ItemStack stack = new ItemStack(setting.getBlock());
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
 		// tooltip
 		if(hText)
 			gui.setTooltip(setting.getWrappedDescription(200));
@@ -98,32 +83,30 @@ public final class BlockComponent extends Component
 		{
 			String tooltip = "\u00a76名字:\u00a7r " + getBlockName(stack);
 			tooltip += "\n\u00a76ID:\u00a7r " + setting.getBlockName();
-			tooltip += "\n\u00a76方块 #:\u00a7r "
-				+ Block.getRawIdFromState(setting.getBlock().getDefaultState());
 			tooltip += "\n\n\u00a7e[左键]\u00a7r 编辑";
 			tooltip += "\n\u00a7e[右键]\u00a7r 重置";
 			gui.setTooltip(tooltip);
 		}
 		
 		// background
-		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
-			opacity);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x1, y1, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
+		GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2], opacity);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x1, y1);
+		GL11.glVertex2i(x1, y2);
+		GL11.glVertex2i(x2, y2);
+		GL11.glVertex2i(x2, y1);
+		GL11.glEnd();
 		
 		// setting name
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		TextRenderer fr = WurstClient.MC.textRenderer;
 		String text = setting.getName() + ":";
 		fr.draw(matrixStack, text, x1, y1 + 2, txtColor);
 		
 		renderIcon(matrixStack, stack, x3, y1, true);
 		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 	
@@ -144,25 +127,20 @@ public final class BlockComponent extends Component
 	private void renderIcon(MatrixStack matrixStack, ItemStack stack, int x,
 		int y, boolean large)
 	{
-		MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-		modelViewStack.push();
+		GL11.glPushMatrix();
 		
-		Window parent = getParent();
-		modelViewStack.translate(parent.getX(),
-			parent.getY() + 13 + parent.getScrollOffset(), 0);
-		modelViewStack.translate(x, y, 0);
-		float scale = large ? 1.5F : 0.75F;
-		modelViewStack.scale(scale, scale, scale);
+		GL11.glTranslated(x, y, 0);
+		double scale = large ? 1.5 : 0.75;
+		GL11.glScaled(scale, scale, scale);
 		
-		DiffuseLighting.enableGuiDepthLighting();
+		DiffuseLighting.enable();
 		ItemStack grass = new ItemStack(Blocks.GRASS_BLOCK);
 		ItemStack renderStack = !stack.isEmpty() ? stack : grass;
 		WurstClient.MC.getItemRenderer().renderInGuiWithOverrides(renderStack,
 			0, 0);
-		DiffuseLighting.disableGuiDepthLighting();
+		DiffuseLighting.disable();
 		
-		modelViewStack.pop();
-		RenderSystem.applyModelViewMatrix();
+		GL11.glPopMatrix();
 		
 		if(stack.isEmpty())
 			renderQuestionMark(matrixStack, x, y, large);
@@ -171,11 +149,11 @@ public final class BlockComponent extends Component
 	private void renderQuestionMark(MatrixStack matrixStack, int x, int y,
 		boolean large)
 	{
-		matrixStack.push();
+		GL11.glPushMatrix();
 		
-		matrixStack.translate(x, y, 0);
+		GL11.glTranslated(x, y, 0);
 		if(large)
-			matrixStack.scale(2, 2, 2);
+			GL11.glScaled(2, 2, 2);
 		
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		TextRenderer tr = WurstClient.MC.textRenderer;
@@ -183,7 +161,7 @@ public final class BlockComponent extends Component
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 	}
 	
 	private String getBlockName(ItemStack stack)

@@ -23,8 +23,6 @@ public final class OtfList
 	public final HackListOtf hackListOtf = new HackListOtf();
 	public final KeybindManagerOtf keybindManagerOtf = new KeybindManagerOtf();
 	public final LastServerOtf lastServerOtf = new LastServerOtf();
-	public final NoChatReportsOtf noChatReportsOtf = new NoChatReportsOtf();
-	public final NoTelemetryOtf noTelemetryOtf = new NoTelemetryOtf();
 	public final ReconnectOtf reconnectOtf = new ReconnectOtf();
 	public final ServerFinderOtf serverFinderOtf = new ServerFinderOtf();
 	public final TabGuiOtf tabGuiOtf = new TabGuiOtf();

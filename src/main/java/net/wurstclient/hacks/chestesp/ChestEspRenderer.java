@@ -7,20 +7,8 @@
  */
 package net.wurstclient.hacks.chestesp;
 
-import java.util.Objects;
-import java.util.stream.Stream;
+import org.lwjgl.opengl.GL11;
 
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -29,18 +17,15 @@ import net.wurstclient.util.RotationUtils;
 
 public final class ChestEspRenderer
 {
-	private static VertexBuffer solidBox;
-	private static VertexBuffer outlinedBox;
+	private static int solidBox;
+	private static int outlinedBox;
 	
-	private final MatrixStack matrixStack;
 	private final int regionX;
 	private final int regionZ;
 	private final Vec3d start;
 	
-	public ChestEspRenderer(MatrixStack matrixStack)
+	public ChestEspRenderer()
 	{
-		this.matrixStack = matrixStack;
-		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		regionX = (camPos.getX() >> 9) * 512;
 		regionZ = (camPos.getZ() >> 9) * 512;
@@ -55,74 +40,68 @@ public final class ChestEspRenderer
 		
 		for(Box box : group.getBoxes())
 		{
-			matrixStack.push();
+			GL11.glPushMatrix();
 			
-			matrixStack.translate(box.minX - regionX, box.minY,
-				box.minZ - regionZ);
+			GL11.glTranslated(box.minX - regionX, box.minY, box.minZ - regionZ);
 			
-			matrixStack.scale((float)(box.maxX - box.minX),
-				(float)(box.maxY - box.minY), (float)(box.maxZ - box.minZ));
+			GL11.glScaled(box.maxX - box.minX, box.maxY - box.minY,
+				box.maxZ - box.minZ);
 			
-			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-			ShaderProgram shader = RenderSystem.getShader();
+			GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.25F);
+			GL11.glCallList(solidBox);
 			
-			RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.25F);
-			solidBox.bind();
-			solidBox.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
+			GL11.glCallList(outlinedBox);
 			
-			RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
-			outlinedBox.bind();
-			outlinedBox.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
-			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 	}
 	
 	public void renderLines(ChestEspGroup group)
 	{
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		
 		float[] colorF = group.getColorF();
-		RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.5F);
+		GL11.glColor4f(colorF[0], colorF[1], colorF[2], 0.5F);
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
+		GL11.glBegin(GL11.GL_LINES);
 		
 		for(Box box : group.getBoxes())
 		{
 			Vec3d end = box.getCenter().subtract(regionX, 0, regionZ);
-			
-			bufferBuilder
-				.vertex(matrix, (float)start.x, (float)start.y, (float)start.z)
-				.next();
-			
-			bufferBuilder
-				.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
-				.next();
+			GL11.glVertex3d(start.x, start.y, start.z);
+			GL11.glVertex3d(end.x, end.y, end.z);
 		}
 		
-		tessellator.draw();
+		GL11.glEnd();
 	}
 	
 	public static void prepareBuffers()
 	{
 		closeBuffers();
-		solidBox = new VertexBuffer();
-		outlinedBox = new VertexBuffer();
-		
 		Box box = new Box(BlockPos.ORIGIN);
-		RenderUtils.drawSolidBox(box, solidBox);
-		RenderUtils.drawOutlinedBox(box, outlinedBox);
+		
+		solidBox = GL11.glGenLists(1);
+		GL11.glNewList(solidBox, GL11.GL_COMPILE);
+		RenderUtils.drawSolidBox(box);
+		GL11.glEndList();
+		
+		outlinedBox = GL11.glGenLists(1);
+		GL11.glNewList(outlinedBox, GL11.GL_COMPILE);
+		RenderUtils.drawOutlinedBox(box);
+		GL11.glEndList();
 	}
 	
 	public static void closeBuffers()
 	{
-		Stream.of(solidBox, outlinedBox).filter(Objects::nonNull)
-			.forEach(VertexBuffer::close);
+		if(solidBox != 0)
+		{
+			GL11.glDeleteLists(solidBox, 1);
+			solidBox = 0;
+		}
+		
+		if(outlinedBox != 0)
+		{
+			GL11.glDeleteLists(outlinedBox, 1);
+			outlinedBox = 0;
+		}
 	}
 }

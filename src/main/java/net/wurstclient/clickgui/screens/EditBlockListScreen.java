@@ -12,8 +12,6 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -25,7 +23,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.settings.BlockListSetting;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.ListWidget;
@@ -45,7 +43,7 @@ public final class EditBlockListScreen extends Screen
 	
 	public EditBlockListScreen(Screen prevScreen, BlockListSetting blockList)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.blockList = blockList;
 	}
@@ -56,33 +54,32 @@ public final class EditBlockListScreen extends Screen
 		listGui = new ListGui(client, this, blockList.getBlockNames());
 		
 		blockNameField = new TextFieldWidget(client.textRenderer,
-			width / 2 - 152, height - 55, 150, 18, Text.literal(""));
-		addSelectableChild(blockNameField);
+			width / 2 - 152, height - 55, 150, 18, new LiteralText(""));
+		children.add(blockNameField);
 		blockNameField.setMaxLength(256);
 		
-		addDrawableChild(
-			addButton = ButtonWidget.builder(Text.literal("Add"), b -> {
+		addButton(addButton = new ButtonWidget(width / 2 - 2, height - 56, 30,
+			20, new LiteralText("添加"), b -> {
 				blockList.add(blockToAdd);
 				blockNameField.setText("");
-			}).dimensions(width / 2 - 2, height - 56, 30, 20).build());
+			}));
 		
-		addDrawableChild(removeButton = ButtonWidget
-			.builder(Text.literal("Remove Selected"),
-				b -> blockList.remove(listGui.selected))
-			.dimensions(width / 2 + 52, height - 56, 100, 20).build());
+		addButton(removeButton = new ButtonWidget(width / 2 + 52, height - 56,
+			100, 20, new LiteralText("Remove Selected"),
+			b -> blockList.remove(listGui.selected)));
 		
-		addDrawableChild(ButtonWidget.builder(Text.literal("Reset to Defaults"),
-			b -> client.setScreen(new ConfirmScreen(b2 -> {
+		addButton(new ButtonWidget(width - 108, 8, 100, 20,
+			new LiteralText("Reset to Defaults"),
+			b -> client.openScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					blockList.resetToDefaults();
-				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("Reset to Defaults"),
-				Text.literal("Are you sure?"))))
-			.dimensions(width - 108, 8, 100, 20).build());
+				client.openScreen(EditBlockListScreen.this);
+			}, new LiteralText("Reset to Defaults"),
+				new LiteralText("Are you sure?")))));
 		
-		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal("Done"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 - 100, height - 28, 200, 20).build());
+		addButton(
+			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
+				new LiteralText("Done"), b -> client.openScreen(prevScreen)));
 	}
 	
 	@Override
@@ -167,19 +164,20 @@ public final class EditBlockListScreen extends Screen
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY,
 		float partialTicks)
 	{
+		renderBackground(matrixStack);
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
 		drawCenteredText(matrixStack, client.textRenderer,
 			blockList.getName() + " (" + listGui.getItemCount() + ")",
 			width / 2, 12, 0xffffff);
 		
-		matrixStack.push();
-		matrixStack.translate(0, 0, 300);
+		GL11.glPushMatrix();
+		GL11.glTranslated(0, 0, 300);
 		
 		blockNameField.render(matrixStack, mouseX, mouseY, partialTicks);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		matrixStack.translate(-64 + width / 2 - 152, 0, 0);
+		GL11.glTranslated(-64 + width / 2 - 152, 0, 0);
 		
 		if(blockNameField.getText().isEmpty() && !blockNameField.isFocused())
 			drawStringWithShadow(matrixStack, client.textRenderer,
@@ -198,14 +196,14 @@ public final class EditBlockListScreen extends Screen
 		fill(matrixStack, 214, height - 55, 216, height - 37, black);
 		fill(matrixStack, 242, height - 55, 245, height - 37, black);
 		
-		matrixStack.pop();
+		listGui.renderIconAndGetName(matrixStack, new ItemStack(blockToAdd), 52,
+			height - 52, false);
 		
-		listGui.renderIconAndGetName(matrixStack, new ItemStack(blockToAdd),
-			width / 2 - 164, height - 52, false);
+		GL11.glPopMatrix();
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}
@@ -281,49 +279,44 @@ public final class EditBlockListScreen extends Screen
 		{
 			if(stack.isEmpty())
 			{
-				MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-				modelViewStack.push();
-				modelViewStack.translate(x, y, 0);
+				GL11.glPushMatrix();
+				GL11.glTranslated(x, y, 0);
 				if(large)
-					modelViewStack.scale(1.5F, 1.5F, 1.5F);
+					GL11.glScaled(1.5, 1.5, 1.5);
 				else
-					modelViewStack.scale(0.75F, 0.75F, 0.75F);
+					GL11.glScaled(0.75, 0.75, 0.75);
 				
-				DiffuseLighting.enableGuiDepthLighting();
+				DiffuseLighting.enable();
 				mc.getItemRenderer().renderInGuiWithOverrides(
 					new ItemStack(Blocks.GRASS_BLOCK), 0, 0);
-				DiffuseLighting.disableGuiDepthLighting();
+				DiffuseLighting.disable();
+				GL11.glPopMatrix();
 				
-				modelViewStack.pop();
-				RenderSystem.applyModelViewMatrix();
-				
-				matrixStack.push();
-				matrixStack.translate(x, y, 0);
+				GL11.glPushMatrix();
+				GL11.glTranslated(x, y, 0);
 				if(large)
-					matrixStack.scale(2, 2, 2);
+					GL11.glScaled(2, 2, 2);
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				TextRenderer fr = mc.textRenderer;
 				fr.drawWithShadow(matrixStack, "?", 3, 2, 0xf0f0f0);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				matrixStack.pop();
+				GL11.glPopMatrix();
 				
 				return "\u00a7ounknown block\u00a7r";
 				
 			}
-			MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-			modelViewStack.push();
-			modelViewStack.translate(x, y, 0);
+			GL11.glPushMatrix();
+			GL11.glTranslated(x, y, 0);
 			if(large)
-				modelViewStack.scale(1.5F, 1.5F, 1.5F);
+				GL11.glScaled(1.5, 1.5, 1.5);
 			else
-				modelViewStack.scale(0.75F, 0.75F, 0.75F);
+				GL11.glScaled(0.75, 0.75, 0.75);
 			
-			DiffuseLighting.enableGuiDepthLighting();
+			DiffuseLighting.enable();
 			mc.getItemRenderer().renderInGuiWithOverrides(stack, 0, 0);
-			DiffuseLighting.disableGuiDepthLighting();
+			DiffuseLighting.disable();
 			
-			modelViewStack.pop();
-			RenderSystem.applyModelViewMatrix();
+			GL11.glPopMatrix();
 			
 			return stack.getName().getString();
 		}

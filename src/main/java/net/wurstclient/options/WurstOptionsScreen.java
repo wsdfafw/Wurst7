@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.Util.OperatingSystem;
@@ -24,7 +24,6 @@ import net.wurstclient.WurstClient;
 import net.wurstclient.analytics.WurstAnalytics;
 import net.wurstclient.commands.FriendsCmd;
 import net.wurstclient.hacks.XRayHack;
-import net.wurstclient.mixinterface.IScreen;
 import net.wurstclient.other_features.VanillaSpoofOtf;
 import net.wurstclient.settings.CheckboxSetting;
 
@@ -34,17 +33,15 @@ public class WurstOptionsScreen extends Screen
 	
 	public WurstOptionsScreen(Screen prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 	}
 	
 	@Override
 	public void init()
 	{
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Back"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 - 100, height / 4 + 144 - 16, 200, 20)
-			.build());
+		addButton(new ButtonWidget(width / 2 - 100, height / 4 + 144 - 16, 200,
+			20, new LiteralText("Back"), b -> client.openScreen(prevScreen)));
 		
 		addSettingButtons();
 		addManagerButtons();
@@ -91,7 +88,7 @@ public class WurstOptionsScreen extends Screen
 		
 		new WurstOptionsButton(-50, 24, () -> "热键绑定",
 			"Keybinds允许您只需按一个按钮就可以切换任何hack或命令.",
-			b -> client.setScreen(new KeybindManagerScreen(this)));
+			b -> client.openScreen(new KeybindManagerScreen(this)));
 		
 		new WurstOptionsButton(-50, 48, () -> "透视方块",
 			"X-Ray将要显示的块的管理器",
@@ -99,7 +96,7 @@ public class WurstOptionsScreen extends Screen
 		
 		new WurstOptionsButton(-50, 72, () -> "放大功能",
 		    "Zoom Manager允许您更改缩放键，它会放大多远等",
-			b -> client.setScreen(new ZoomManagerScreen(this)));
+			b -> client.openScreen(new ZoomManagerScreen(this)));
 	}
 	
 	private void addLinkButtons()
@@ -120,9 +117,9 @@ public class WurstOptionsScreen extends Screen
 	}
 	
 	@Override
-	public void close()
+	public void onClose()
 	{
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 	
 	@Override
@@ -154,13 +151,8 @@ public class WurstOptionsScreen extends Screen
 	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
 		int mouseY)
 	{
-		for(Drawable d : ((IScreen)this).getButtons())
+		for(ClickableWidget button : buttons)
 		{
-			if(!(d instanceof ClickableWidget))
-				continue;
-			
-			ClickableWidget button = (ClickableWidget)d;
-			
 			if(!button.isHovered() || !(button instanceof WurstOptionsButton))
 				continue;
 			
@@ -185,8 +177,7 @@ public class WurstOptionsScreen extends Screen
 		{
 			super(WurstOptionsScreen.this.width / 2 + xOffset,
 				WurstOptionsScreen.this.height / 4 - 16 + yOffset, 100, 20,
-				Text.literal(messageSupplier.get()), pressAction,
-				ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+				new LiteralText(messageSupplier.get()), pressAction);
 			
 			this.messageSupplier = messageSupplier;
 			
@@ -196,21 +187,21 @@ public class WurstOptionsScreen extends Screen
 			{
 				String[] lines = tooltip.split("\n");
 				
-				Text[] lines2 = new Text[lines.length];
+				LiteralText[] lines2 = new LiteralText[lines.length];
 				for(int i = 0; i < lines.length; i++)
-					lines2[i] = Text.literal(lines[i]);
+					lines2[i] = new LiteralText(lines[i]);
 				
 				this.tooltip = Arrays.asList(lines2);
 			}
 			
-			addDrawableChild(this);
+			addButton(this);
 		}
 		
 		@Override
 		public void onPress()
 		{
 			super.onPress();
-			setMessage(Text.literal(messageSupplier.get()));
+			setMessage(new LiteralText(messageSupplier.get()));
 		}
 	}
 }

@@ -7,6 +7,7 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.wurstclient.Category;
@@ -60,7 +61,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	public void onUpdate()
 	{
 		// check gamemode
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 			return;
 		
 		// check for other players
@@ -80,18 +81,19 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 			break;
 			
 			case CHARS:
-			MC.getNetworkHandler().sendChatMessage("\u00a7");
+			MC.player.networkHandler
+				.sendPacket(new ChatMessageC2SPacket("\u00a7"));
 			break;
 			
 			case TELEPORT:
-			MC.player.networkHandler
-				.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(3.1e7,
-					100, 3.1e7, false));
+			MC.player.networkHandler.sendPacket(
+				new PlayerMoveC2SPacket.PositionOnly(3.1e7, 100, 3.1e7, false));
 			break;
 			
 			case SELFHURT:
-			MC.player.networkHandler.sendPacket(PlayerInteractEntityC2SPacket
-				.attack(MC.player, MC.player.isSneaking()));
+			MC.player.networkHandler
+				.sendPacket(new PlayerInteractEntityC2SPacket(MC.player,
+					MC.player.isSneaking()));
 			break;
 		}
 		

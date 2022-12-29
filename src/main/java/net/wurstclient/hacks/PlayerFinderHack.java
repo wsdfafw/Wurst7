@@ -7,17 +7,8 @@
  */
 package net.wurstclient.hacks;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.util.math.BlockPos;
@@ -76,7 +67,7 @@ public final class PlayerFinderHack extends Hack
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		if(pos == null)
 			return;
@@ -85,58 +76,52 @@ public final class PlayerFinderHack extends Hack
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRenderOffset();
 		
 		float[] rainbow = RenderUtils.getRainbowColor();
-		RenderSystem.setShaderColor(rainbow[0], rainbow[1], rainbow[2], 0.5F);
-		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		GL11.glColor4f(rainbow[0], rainbow[1], rainbow[2], 0.5F);
 		
 		// tracer line
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		
-		// set start position
-		Vec3d start =
-			RotationUtils.getClientLookVec().add(RenderUtils.getCameraPos());
-		
-		// set end position
-		Vec3d end = Vec3d.ofCenter(pos);
-		
-		// draw line
-		bufferBuilder
-			.vertex(matrix, (float)start.x, (float)start.y, (float)start.z)
-			.next();
-		bufferBuilder.vertex(matrix, (float)end.x, (float)end.y, (float)end.z)
-			.next();
-		
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_LINES);
+		{
+			// set start position
+			Vec3d start = RotationUtils.getClientLookVec()
+				.add(RenderUtils.getCameraPos());
+			
+			// set end position
+			Vec3d end = Vec3d.ofCenter(pos);
+			
+			// draw line
+			GL11.glVertex3d(start.x, start.y, start.z);
+			GL11.glVertex3d(end.x, end.y, end.z);
+		}
+		GL11.glEnd();
 		
 		// block box
 		{
-			matrixStack.push();
-			matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
+			GL11.glPushMatrix();
+			GL11.glTranslated(pos.getX(), pos.getY(), pos.getZ());
 			
-			RenderUtils.drawOutlinedBox(matrixStack);
+			RenderUtils.drawOutlinedBox();
 			
-			RenderSystem.setShaderColor(rainbow[0], rainbow[1], rainbow[2],
-				0.25F);
-			RenderUtils.drawSolidBox(matrixStack);
+			GL11.glColor4f(rainbow[0], rainbow[1], rainbow[2], 0.25F);
+			RenderUtils.drawSolidBox();
 			
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
@@ -157,8 +142,22 @@ public final class PlayerFinderHack extends Hack
 		// newPos = effect.getSoundPos();
 		//
 		// }else
-		if(packet instanceof PlaySoundS2CPacket sound)
+		if(packet instanceof PlaySoundS2CPacket)
+		{
+			PlaySoundS2CPacket sound = (PlaySoundS2CPacket)packet;
 			newPos = new BlockPos(sound.getX(), sound.getY(), sound.getZ());
+			
+			// }else if(packet instanceof EntitySpawnGlobalS2CPacket)
+			// {
+			// EntitySpawnGlobalS2CPacket lightning =
+			// (EntitySpawnGlobalS2CPacket)packet;
+			// newPos = new BlockPos(lightning.getX() / 32D,
+			// lightning.getY() / 32D, lightning.getZ() / 32D);
+			
+			// It seems that EntitySpawnGlobalS2CPacket has been deleted from
+			// the game. Further testing is needed to figure out if PlayerFinder
+			// can still work using only PlaySoundS2CPacket.
+		}
 		
 		if(newPos == null)
 			return;

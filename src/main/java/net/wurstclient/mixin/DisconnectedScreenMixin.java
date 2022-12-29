@@ -17,17 +17,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.hacks.AutoReconnectHack;
-import net.wurstclient.nochatreports.ForcedChatReportsScreen;
-import net.wurstclient.nochatreports.NcrModRequiredScreen;
 import net.wurstclient.util.LastServerRememberer;
 
 @Mixin(DisconnectedScreen.class)
 public class DisconnectedScreenMixin extends Screen
 {
 	private int autoReconnectTimer;
+	
 	private ButtonWidget autoReconnectButton;
 	
 	@Shadow
@@ -36,15 +36,16 @@ public class DisconnectedScreenMixin extends Screen
 	@Shadow
 	@Final
 	private Screen parent;
+	
 	@Shadow
 	private int reasonHeight;
 	
-	private DisconnectedScreenMixin(WurstClient wurst, Text title)
+	private DisconnectedScreenMixin(WurstClient wurst, Text text_1)
 	{
-		super(title);
+		super(text_1);
 	}
 	
-	@Inject(at = @At("TAIL"), method = {"init()V"})
+	@Inject(at = {@At("TAIL")}, method = {"init()V"})
 	private void onInit(CallbackInfo ci)
 	{
 		if(!WurstClient.INSTANCE.isEnabled())
@@ -52,35 +53,17 @@ public class DisconnectedScreenMixin extends Screen
 		
 		System.out.println("断开连接: " + reason);
 		
-		if(ForcedChatReportsScreen.isCausedByNoChatReports(reason))
-		{
-			client.setScreen(new ForcedChatReportsScreen(parent));
-			return;
-		}
-		
-		if(NcrModRequiredScreen.isCausedByLackOfNCR(reason))
-		{
-			client.setScreen(new NcrModRequiredScreen(parent));
-			return;
-		}
-		
-		addReconnectButtons();
-	}
-	
-	private void addReconnectButtons()
-	{
 		int backButtonX = width / 2 - 100;
 		int backButtonY =
 			Math.min(height / 2 + reasonHeight / 2 + 9, height - 30);
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Reconnect"),
-				b -> LastServerRememberer.reconnect(parent))
-			.dimensions(backButtonX, backButtonY + 24, 200, 20).build());
+		addButton(new ButtonWidget(backButtonX, backButtonY + 24, 200, 20,
+			new LiteralText("Reconnect"),
+			b -> LastServerRememberer.reconnect(parent)));
 		
-		autoReconnectButton = addDrawableChild(ButtonWidget
-			.builder(Text.literal("AutoReconnect"), b -> pressAutoReconnect())
-			.dimensions(backButtonX, backButtonY + 48, 200, 20).build());
+		autoReconnectButton =
+			addButton(new ButtonWidget(backButtonX, backButtonY + 48, 200, 20,
+				new LiteralText("AutoReconnect"), b -> pressAutoReconnect()));
 		
 		AutoReconnectHack autoReconnect =
 			WurstClient.INSTANCE.getHax().autoReconnectHack;
@@ -111,11 +94,11 @@ public class DisconnectedScreenMixin extends Screen
 		
 		if(!autoReconnect.isEnabled())
 		{
-			autoReconnectButton.setMessage(Text.literal("自动重连"));
+			autoReconnectButton.setMessage(new LiteralText("自动重连"));
 			return;
 		}
 		
-		autoReconnectButton.setMessage(Text.literal("自动重连 ("
+		autoReconnectButton.setMessage(new LiteralText("自动重连 ("
 			+ (int)Math.ceil(autoReconnectTimer / 20.0) + ")"));
 		
 		if(autoReconnectTimer > 0)

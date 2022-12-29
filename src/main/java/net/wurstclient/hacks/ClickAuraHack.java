@@ -97,7 +97,7 @@ public final class ClickAuraHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		if(!MC.options.attackKey.isPressed())
+		if(!MC.options.keyAttack.isPressed())
 			return;
 		
 		speed.updateTimer();
@@ -121,7 +121,7 @@ public final class ClickAuraHack extends Hack
 		double rangeSq = Math.pow(range.getValue(), 2);
 		Stream<Entity> stream =
 			StreamSupport.stream(MC.world.getEntities().spliterator(), true)
-				.filter(e -> !e.isRemoved())
+				.filter(e -> !e.removed)
 				.filter(e -> e instanceof LivingEntity
 					&& ((LivingEntity)e).getHealth() > 0
 					|| e instanceof EndCrystalEntity
@@ -147,9 +147,8 @@ public final class ClickAuraHack extends Hack
 		// face entity
 		Rotation rotation = RotationUtils
 			.getNeededRotations(target.getBoundingBox().getCenter());
-		PlayerMoveC2SPacket.LookAndOnGround packet =
-			new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
-				rotation.getPitch(), MC.player.isOnGround());
+		PlayerMoveC2SPacket.LookOnly packet = new PlayerMoveC2SPacket.LookOnly(
+			rotation.getYaw(), rotation.getPitch(), MC.player.isOnGround());
 		MC.player.networkHandler.sendPacket(packet);
 		
 		// attack entity

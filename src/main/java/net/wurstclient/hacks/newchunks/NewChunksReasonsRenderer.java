@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -33,15 +33,16 @@ public final class NewChunksReasonsRenderer
 		this.drawDistance = drawDistance;
 	}
 	
-	public BuiltBuffer buildBuffer(Set<BlockPos> reasons)
+	public BufferBuilder buildBuffer(Set<BlockPos> reasons)
 	{
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
+		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION);
 		renderBlocks(new ArrayList<>(reasons), bufferBuilder);
-		return bufferBuilder.end();
+		bufferBuilder.end();
+		
+		return bufferBuilder;
 	}
 	
 	private void renderBlocks(List<BlockPos> blocks,
@@ -56,7 +57,7 @@ public final class NewChunksReasonsRenderer
 		for(BlockPos pos : blocks)
 		{
 			ChunkPos chunkPos = new ChunkPos(pos);
-			if(chunkPos.getChebyshevDistance(camChunkPos) > drawDistance)
+			if(chunkPos.method_24022(camChunkPos) > drawDistance)
 				continue;
 			
 			Box bb = new Box(pos).offset(-regionX, 0, -regionZ);

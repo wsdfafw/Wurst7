@@ -12,8 +12,6 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -25,9 +23,9 @@ import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.settings.ItemListSetting;
 import net.wurstclient.util.ItemUtils;
 import net.wurstclient.util.ListWidget;
@@ -47,7 +45,7 @@ public final class EditItemListScreen extends Screen
 	
 	public EditItemListScreen(Screen prevScreen, ItemListSetting itemList)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		this.itemList = itemList;
 	}
@@ -58,33 +56,32 @@ public final class EditItemListScreen extends Screen
 		listGui = new ListGui(client, this, itemList.getItemNames());
 		
 		itemNameField = new TextFieldWidget(client.textRenderer,
-			width / 2 - 152, height - 55, 150, 18, Text.literal(""));
-		addSelectableChild(itemNameField);
+			width / 2 - 152, height - 55, 150, 18, new LiteralText(""));
+		children.add(itemNameField);
 		itemNameField.setMaxLength(256);
 		
-		addDrawableChild(
-			addButton = ButtonWidget.builder(Text.literal("添加"), b -> {
+		addButton(addButton = new ButtonWidget(width / 2 - 2, height - 56, 30,
+			20, new LiteralText("添加"), b -> {
 				itemList.add(itemToAdd);
 				itemNameField.setText("");
-			}).dimensions(width / 2 - 2, height - 56, 30, 20).build());
+			}));
 		
-		addDrawableChild(removeButton = ButtonWidget
-			.builder(Text.literal("删除选定"),
-				b -> itemList.remove(listGui.selected))
-			.dimensions(width / 2 + 52, height - 56, 100, 20).build());
+		addButton(removeButton = new ButtonWidget(width / 2 + 52, height - 56,
+			100, 20, new LiteralText("删除选定"),
+			b -> itemList.remove(listGui.selected)));
 		
-		addDrawableChild(ButtonWidget.builder(Text.literal("重置为默认值"),
-			b -> client.setScreen(new ConfirmScreen(b2 -> {
+		addButton(new ButtonWidget(width - 108, 8, 100, 20,
+			new LiteralText("重置为默认值"),
+			b -> client.openScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					itemList.resetToDefaults();
-				client.setScreen(EditItemListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?"))))
-			.dimensions(width - 108, 8, 100, 20).build());
+				client.openScreen(EditItemListScreen.this);
+			}, new LiteralText("重置为默认值"),
+				new LiteralText("你确定吗?")))));
 		
-		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal("完成"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 - 100, height - 28, 200, 20).build());
+		addButton(
+			doneButton = new ButtonWidget(width / 2 - 100, height - 28, 200, 20,
+				new LiteralText("完成"), b -> client.openScreen(prevScreen)));
 	}
 	
 	@Override
@@ -169,27 +166,29 @@ public final class EditItemListScreen extends Screen
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY,
 		float partialTicks)
 	{
+		renderBackground(matrixStack);
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
 		drawCenteredText(matrixStack, client.textRenderer,
 			itemList.getName() + " (" + listGui.getItemCount() + ")", width / 2,
 			12, 0xffffff);
 		
-		matrixStack.push();
-		matrixStack.translate(0, 0, 300);
-		
+		GL11.glPushMatrix();
+		GL11.glTranslated(0, 0, 300);
 		itemNameField.render(matrixStack, mouseX, mouseY, partialTicks);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		GL11.glPopMatrix();
 		
-		matrixStack.translate(-64 + width / 2 - 152, 0, 0);
+		GL11.glPushMatrix();
+		GL11.glTranslated(-64 + width / 2 - 152, 0, 0);
 		
 		if(itemNameField.getText().isEmpty() && !itemNameField.isFocused())
 		{
-			matrixStack.push();
-			matrixStack.translate(0, 0, 300);
+			GL11.glPushMatrix();
+			GL11.glTranslated(0, 0, 300);
 			drawStringWithShadow(matrixStack, client.textRenderer,
 				"item name or ID", 68, height - 50, 0x808080);
-			matrixStack.pop();
+			GL11.glPopMatrix();
 		}
 		
 		int border = itemNameField.isFocused() ? 0xffffffff : 0xffa0a0a0;
@@ -205,14 +204,14 @@ public final class EditItemListScreen extends Screen
 		fill(matrixStack, 215, height - 55, 216, height - 37, black);
 		fill(matrixStack, 242, height - 55, 245, height - 37, black);
 		
-		matrixStack.pop();
+		listGui.renderIconAndGetName(matrixStack, new ItemStack(itemToAdd), 52,
+			height - 52, false);
 		
-		listGui.renderIconAndGetName(matrixStack, new ItemStack(itemToAdd),
-			width / 2 - 164, height - 52, false);
+		GL11.glPopMatrix();
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}
@@ -270,7 +269,7 @@ public final class EditItemListScreen extends Screen
 			int y, int var4, int var5, int var6, float partialTicks)
 		{
 			String name = list.get(index);
-			Item item = Registries.ITEM.get(new Identifier(name));
+			Item item = Registry.ITEM.get(new Identifier(name));
 			ItemStack stack = new ItemStack(item);
 			TextRenderer fr = mc.textRenderer;
 			
@@ -278,8 +277,8 @@ public final class EditItemListScreen extends Screen
 				renderIconAndGetName(matrixStack, stack, x + 1, y + 1, true);
 			fr.draw(matrixStack, displayName, x + 28, y, 0xf0f0f0);
 			fr.draw(matrixStack, name, x + 28, y + 9, 0xa0a0a0);
-			fr.draw(matrixStack, "ID: " + Registries.ITEM.getRawId(item),
-				x + 28, y + 18, 0xa0a0a0);
+			fr.draw(matrixStack, "ID: " + Registry.ITEM.getRawId(item), x + 28,
+				y + 18, 0xa0a0a0);
 		}
 		
 		private String renderIconAndGetName(MatrixStack matrixStack,
@@ -287,50 +286,44 @@ public final class EditItemListScreen extends Screen
 		{
 			if(stack.isEmpty())
 			{
-				MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-				modelViewStack.push();
-				modelViewStack.translate(x, y, 0);
+				GL11.glPushMatrix();
+				GL11.glTranslated(x, y, 0);
 				if(large)
-					modelViewStack.scale(1.5F, 1.5F, 1.5F);
+					GL11.glScaled(1.5, 1.5, 1.5);
 				else
-					modelViewStack.scale(0.75F, 0.75F, 0.75F);
+					GL11.glScaled(0.75, 0.75, 0.75);
 				
-				DiffuseLighting.enableGuiDepthLighting();
+				DiffuseLighting.enable();
 				mc.getItemRenderer().renderInGuiWithOverrides(
 					new ItemStack(Blocks.GRASS_BLOCK), 0, 0);
-				DiffuseLighting.disableGuiDepthLighting();
+				DiffuseLighting.disable();
+				GL11.glPopMatrix();
 				
-				modelViewStack.pop();
-				RenderSystem.applyModelViewMatrix();
-				
-				matrixStack.push();
-				matrixStack.translate(x, y, 0);
+				GL11.glPushMatrix();
+				GL11.glTranslated(x, y, 0);
 				if(large)
-					matrixStack.scale(2, 2, 2);
+					GL11.glScaled(2, 2, 2);
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				TextRenderer fr = mc.textRenderer;
 				fr.drawWithShadow(matrixStack, "?", 3, 2, 0xf0f0f0);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				matrixStack.pop();
+				GL11.glPopMatrix();
 				
 				return "\u00a7ounknown item\u00a7r";
+				
 			}
-			
-			MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-			modelViewStack.push();
-			modelViewStack.translate(x, y, 0);
-			
+			GL11.glPushMatrix();
+			GL11.glTranslated(x, y, 0);
 			if(large)
-				modelViewStack.scale(1.5F, 1.5F, 1.5F);
+				GL11.glScaled(1.5, 1.5, 1.5);
 			else
-				modelViewStack.scale(0.75F, 0.75F, 0.75F);
+				GL11.glScaled(0.75, 0.75, 0.75);
 			
-			DiffuseLighting.enableGuiDepthLighting();
+			DiffuseLighting.enable();
 			mc.getItemRenderer().renderInGuiWithOverrides(stack, 0, 0);
-			DiffuseLighting.disableGuiDepthLighting();
+			DiffuseLighting.disable();
 			
-			modelViewStack.pop();
-			RenderSystem.applyModelViewMatrix();
+			GL11.glPopMatrix();
 			
 			return stack.getName().getString();
 		}

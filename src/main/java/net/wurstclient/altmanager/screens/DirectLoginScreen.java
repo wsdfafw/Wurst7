@@ -9,7 +9,7 @@ package net.wurstclient.altmanager.screens;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.altmanager.LoginException;
 import net.wurstclient.altmanager.LoginManager;
 import net.wurstclient.altmanager.MicrosoftLoginManager;
@@ -18,7 +18,7 @@ public final class DirectLoginScreen extends AltEditorScreen
 {
 	public DirectLoginScreen(Screen prevScreen)
 	{
-		super(prevScreen, Text.literal("Direct Login"));
+		super(prevScreen, new LiteralText("Direct Login"));
 	}
 	
 	@Override
@@ -58,6 +58,6 @@ public final class DirectLoginScreen extends AltEditorScreen
 			}
 		
 		message = "";
-		client.setScreen(new TitleScreen());
+		client.openScreen(new TitleScreen());
 	}
 }

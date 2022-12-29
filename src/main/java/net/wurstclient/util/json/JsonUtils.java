@@ -34,17 +34,22 @@ public enum JsonUtils
 	public static final Gson PRETTY_GSON =
 		new GsonBuilder().setPrettyPrinting().create();
 	
+	public static final JsonParser JSON_PARSER = new JsonParser();
+	
 	public static JsonElement parseFile(Path path)
 		throws IOException, JsonException
 	{
 		try(BufferedReader reader = Files.newBufferedReader(path))
 		{
-			return JsonParser.parseReader(reader);
+			return JSON_PARSER.parse(reader);
 			
 		}catch(JsonParseException e)
 		{
-			if(e.getCause() instanceof MalformedJsonException c)
+			if(e.getCause() instanceof MalformedJsonException)
+			{
+				MalformedJsonException c = (MalformedJsonException)e.getCause();
 				throw new JsonException(c.getMessage(), c);
+			}
 			
 			throw new JsonException(e);
 		}
@@ -70,12 +75,15 @@ public enum JsonUtils
 		{
 			InputStreamReader reader = new InputStreamReader(input);
 			BufferedReader bufferedReader = new BufferedReader(reader);
-			return JsonParser.parseReader(bufferedReader);
+			return JSON_PARSER.parse(bufferedReader);
 			
 		}catch(JsonParseException e)
 		{
-			if(e.getCause() instanceof MalformedJsonException c)
+			if(e.getCause() instanceof MalformedJsonException)
+			{
+				MalformedJsonException c = (MalformedJsonException)e.getCause();
 				throw new JsonException(c.getMessage(), c);
+			}
 			
 			throw new JsonException(e);
 		}
@@ -103,12 +111,15 @@ public enum JsonUtils
 		{
 			InputStreamReader reader = new InputStreamReader(input);
 			BufferedReader bufferedReader = new BufferedReader(reader);
-			return JsonParser.parseReader(bufferedReader);
+			return JSON_PARSER.parse(bufferedReader);
 			
 		}catch(JsonParseException e)
 		{
-			if(e.getCause() instanceof MalformedJsonException c)
+			if(e.getCause() instanceof MalformedJsonException)
+			{
+				MalformedJsonException c = (MalformedJsonException)e.getCause();
 				throw new JsonException(c.getMessage(), c);
+			}
 			
 			throw new JsonException(e);
 		}

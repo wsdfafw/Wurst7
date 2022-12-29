@@ -7,17 +7,9 @@
  */
 package net.wurstclient.clickgui.components;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.wurstclient.WurstClient;
 import net.wurstclient.clickgui.ClickGui;
@@ -50,7 +42,7 @@ public final class BlockListEditButton extends Component
 		if(mouseX < getX() + getWidth() - buttonWidth - 4)
 			return;
 		
-		WurstClient.MC.setScreen(
+		WurstClient.MC.openScreen(
 			new EditBlockListScreen(WurstClient.MC.currentScreen, setting));
 	}
 	
@@ -78,52 +70,44 @@ public final class BlockListEditButton extends Component
 		boolean hText = hovering && mouseX < x3;
 		boolean hBox = hovering && mouseX >= x3;
 		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
 		// tooltip
 		if(hText)
 			gui.setTooltip(setting.getWrappedDescription(200));
 		
 		// background
-		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
-			opacity);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x1, y1, 0).next();
-		bufferBuilder.vertex(matrix, x1, y2, 0).next();
-		bufferBuilder.vertex(matrix, x3, y2, 0).next();
-		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2], opacity);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x1, y1);
+		GL11.glVertex2i(x1, y2);
+		GL11.glVertex2i(x3, y2);
+		GL11.glVertex2i(x3, y1);
+		GL11.glEnd();
 		
 		// box
-		RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
+		GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2],
 			hBox ? opacity * 1.5F : opacity);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.vertex(matrix, x3, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		tessellator.draw();
-		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		bufferBuilder.vertex(matrix, x3, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0).next();
-		bufferBuilder.vertex(matrix, x3, y1, 0).next();
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2i(x3, y1);
+		GL11.glVertex2i(x3, y2);
+		GL11.glVertex2i(x2, y2);
+		GL11.glVertex2i(x2, y1);
+		GL11.glEnd();
+		GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.5F);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex2i(x3, y1);
+		GL11.glVertex2i(x3, y2);
+		GL11.glVertex2i(x2, y2);
+		GL11.glVertex2i(x2, y1);
+		GL11.glEnd();
 		
 		// setting name
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		TextRenderer fr = WurstClient.MC.textRenderer;
 		String text = setting.getName() + ": " + setting.getBlockNames().size();
 		fr.draw(matrixStack, text, x1, y1 + 2, txtColor);
 		fr.draw(matrixStack, "编辑...", x3 + 2, y1 + 2, txtColor);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 	

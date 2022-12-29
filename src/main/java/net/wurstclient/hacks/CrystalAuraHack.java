@@ -173,7 +173,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	
 	private boolean selectItem(Predicate<Item> item)
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		IClientPlayerInteractionManager im = IMC.getInteractionManager();
 		int maxInvSlot = takeItemsFrom.getSelected().maxInvSlot;
 		
@@ -206,7 +206,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	
 	private boolean hasItem(Predicate<Item> item)
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		int maxInvSlot = takeItemsFrom.getSelected().maxInvSlot;
 		
 		for(int slot = 0; slot < maxInvSlot; slot++)
@@ -279,8 +279,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 			.reversed();
 		
 		return StreamSupport.stream(MC.world.getEntities().spliterator(), true)
-			.filter(e -> e instanceof EndCrystalEntity)
-			.filter(e -> !e.isRemoved())
+			.filter(e -> e instanceof EndCrystalEntity).filter(e -> !e.removed)
 			.filter(e -> player.squaredDistanceTo(e) <= rangeSq)
 			.sorted(furthestFromPlayer)
 			.collect(Collectors.toCollection(ArrayList::new));
@@ -296,7 +295,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		
 		Stream<Entity> stream =
 			StreamSupport.stream(MC.world.getEntities().spliterator(), false)
-				.filter(e -> !e.isRemoved())
+				.filter(e -> !e.removed)
 				.filter(e -> e instanceof LivingEntity
 					&& ((LivingEntity)e).getHealth() > 0)
 				.filter(e -> e != MC.player)
@@ -366,8 +365,8 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		
 		SPAM("Packet spam", v -> {
 			Rotation rotation = RotationUtils.getNeededRotations(v);
-			PlayerMoveC2SPacket.LookAndOnGround packet =
-				new PlayerMoveC2SPacket.LookAndOnGround(rotation.getYaw(),
+			PlayerMoveC2SPacket.LookOnly packet =
+				new PlayerMoveC2SPacket.LookOnly(rotation.getYaw(),
 					rotation.getPitch(), MC.player.isOnGround());
 			MC.player.networkHandler.sendPacket(packet);
 		});

@@ -22,6 +22,9 @@ import net.wurstclient.util.json.JsonUtils;
 
 public class SliderSetting extends Setting implements SliderLock
 {
+	private static final DecimalFormat LOGARITHMIC_FORMAT =
+		new DecimalFormat("#,###");
+	
 	private double value;
 	private final double defaultValue;
 	private final double minimum;
@@ -272,17 +275,8 @@ public class SliderSetting extends Setting implements SliderLock
 		public static final ValueDisplay PERCENTAGE =
 			v -> (int)(Math.round(v * 1e8) / 1e6) + "%";
 		
-		public static final ValueDisplay LOGARITHMIC = new ValueDisplay()
-		{
-			private static final DecimalFormat FORMAT =
-				new DecimalFormat("#,###");
-			
-			@Override
-			public String getValueString(double v)
-			{
-				return FORMAT.format(Math.pow(10, v));
-			}
-		};
+		public static final ValueDisplay LOGARITHMIC =
+			v -> LOGARITHMIC_FORMAT.format(Math.pow(10, v));
 		
 		public static final ValueDisplay DEGREES = INTEGER.withSuffix("\u00b0");
 		

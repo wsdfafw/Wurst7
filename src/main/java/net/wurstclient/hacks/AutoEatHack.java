@@ -9,7 +9,6 @@ package net.wurstclient.hacks;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 
@@ -162,7 +161,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private void eat(int maxPoints)
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		int foodSlot = findBestFoodSlot(maxPoints);
 		
 		if(foodSlot == -1)
@@ -195,13 +194,13 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		}
 		
 		// eat food
-		MC.options.useKey.setPressed(true);
+		MC.options.keyUse.setPressed(true);
 		IMC.getInteractionManager().rightClickItem();
 	}
 	
 	private int findBestFoodSlot(int maxPoints)
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		FoodComponent bestFood = null;
 		int bestSlot = -1;
 		
@@ -212,8 +211,8 @@ public final class AutoEatHack extends Hack implements UpdateListener
 			slots.add(inventory.selectedSlot);
 		if(allowOffhand.isChecked())
 			slots.add(40);
-		Stream.iterate(0, i -> i < maxInvSlot, i -> i + 1)
-			.forEach(i -> slots.add(i));
+		for(int i = 0; i < maxInvSlot; i++)
+			slots.add(i);
 		
 		Comparator<FoodComponent> comparator =
 			Comparator.comparingDouble(FoodComponent::getSaturationModifier);
@@ -246,7 +245,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private void moveFoodToHotbar(int foodSlot)
 	{
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		IClientPlayerInteractionManager im = IMC.getInteractionManager();
 		
 		if(inventory.getEmptySlot() < 9)
@@ -266,7 +265,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private boolean shouldEat()
 	{
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 			return false;
 		
 		if(!MC.player.canConsume(false))
@@ -284,8 +283,8 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	
 	private void stopEating()
 	{
-		MC.options.useKey.setPressed(false);
-		MC.player.getInventory().selectedSlot = oldSlot;
+		MC.options.keyUse.setPressed(false);
+		MC.player.inventory.selectedSlot = oldSlot;
 		oldSlot = -1;
 	}
 	

@@ -88,7 +88,7 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	{
 		finishMovingTotem();
 		
-		PlayerInventory inventory = MC.player.getInventory();
+		PlayerInventory inventory = MC.player.inventory;
 		int nextTotemSlot = searchForTotems(inventory);
 		
 		ItemStack offhandStack = inventory.getStack(40);

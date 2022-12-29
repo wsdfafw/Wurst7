@@ -67,7 +67,7 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 		EVENTS.remove(UpdateListener.class, this);
 		
 		ClientPlayerEntity player = MC.player;
-		PlayerAbilities abilities = player.getAbilities();
+		PlayerAbilities abilities = player.abilities;
 		
 		boolean creative = player.isCreative();
 		abilities.flying = creative && !player.isOnGround();
@@ -79,7 +79,7 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
-		PlayerAbilities abilities = MC.player.getAbilities();
+		PlayerAbilities abilities = MC.player.abilities;
 		abilities.allowFlying = true;
 		
 		if(antiKick.isChecked() && abilities.flying)
@@ -93,20 +93,25 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 		
 		switch(tickCounter)
 		{
-			case 0 ->
-			{
-				if(MC.options.sneakKey.isPressed()
-					&& !MC.options.jumpKey.isPressed())
-					tickCounter = 3;
-				else
-					setMotionY(-antiKickDistance.getValue());
-			}
+			case 0:
+			if(MC.options.keySneak.isPressed()
+				&& !MC.options.keyJump.isPressed())
+				tickCounter = 3;
+			else
+				setMotionY(-antiKickDistance.getValue());
+			break;
 			
-			case 1 -> setMotionY(antiKickDistance.getValue());
+			case 1:
+			setMotionY(antiKickDistance.getValue());
+			break;
 			
-			case 2 -> setMotionY(0);
+			case 2:
+			setMotionY(0);
+			break;
 			
-			case 3 -> restoreKeyPresses();
+			case 3:
+			restoreKeyPresses();
+			break;
 		}
 		
 		tickCounter++;
@@ -114,8 +119,8 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 	
 	private void setMotionY(double motionY)
 	{
-		MC.options.sneakKey.setPressed(false);
-		MC.options.jumpKey.setPressed(false);
+		MC.options.keySneak.setPressed(false);
+		MC.options.keyJump.setPressed(false);
 		
 		Vec3d velocity = MC.player.getVelocity();
 		MC.player.setVelocity(velocity.x, motionY, velocity.z);
@@ -123,7 +128,7 @@ public final class CreativeFlightHack extends Hack implements UpdateListener
 	
 	private void restoreKeyPresses()
 	{
-		KeyBinding[] bindings = {MC.options.jumpKey, MC.options.sneakKey};
+		KeyBinding[] bindings = {MC.options.keyJump, MC.options.keySneak};
 		
 		for(KeyBinding binding : bindings)
 			binding.setPressed(((IKeyBinding)binding).isActallyPressed());

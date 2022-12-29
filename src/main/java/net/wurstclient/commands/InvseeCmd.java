@@ -9,7 +9,6 @@ package net.wurstclient.commands;
 
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -34,7 +33,7 @@ public final class InvseeCmd extends Command implements RenderListener
 		if(args.length != 1)
 			throw new CmdSyntaxError();
 		
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.abilities.creativeMode)
 		{
 			ChatUtils.error("仅限生存模式.");
 			return;
@@ -45,7 +44,7 @@ public final class InvseeCmd extends Command implements RenderListener
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		boolean found = false;
 		
@@ -55,13 +54,12 @@ public final class InvseeCmd extends Command implements RenderListener
 				continue;
 			
 			OtherClientPlayerEntity player = (OtherClientPlayerEntity)entity;
-			
 			String otherPlayerName = player.getName().getString();
 			if(!otherPlayerName.equalsIgnoreCase(targetName))
 				continue;
 			
 			ChatUtils.message("正在展示 " + otherPlayerName + "的背包.");
-			MC.setScreen(new InventoryScreen(player));
+			MC.openScreen(new InventoryScreen(player));
 			found = true;
 			break;
 		}

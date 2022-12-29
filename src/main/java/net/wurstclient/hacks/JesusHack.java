@@ -61,7 +61,7 @@ public final class JesusHack extends Hack
 	public void onUpdate()
 	{
 		// check if sneaking
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -96,8 +96,8 @@ public final class JesusHack extends Hack
 		PlayerMoveC2SPacket packet = (PlayerMoveC2SPacket)event.getPacket();
 		
 		// check if packet contains a position
-		if(!(packet instanceof PlayerMoveC2SPacket.PositionAndOnGround
-			|| packet instanceof PlayerMoveC2SPacket.Full))
+		if(!(packet instanceof PlayerMoveC2SPacket.PositionOnly
+			|| packet instanceof PlayerMoveC2SPacket.Both))
 			return;
 		
 		// check inWater
@@ -139,11 +139,10 @@ public final class JesusHack extends Hack
 		
 		// create new packet
 		Packet<?> newPacket;
-		if(packet instanceof PlayerMoveC2SPacket.PositionAndOnGround)
-			newPacket =
-				new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true);
+		if(packet instanceof PlayerMoveC2SPacket.PositionOnly)
+			newPacket = new PlayerMoveC2SPacket.PositionOnly(x, y, z, true);
 		else
-			newPacket = new PlayerMoveC2SPacket.Full(x, y, z, packet.getYaw(0),
+			newPacket = new PlayerMoveC2SPacket.Both(x, y, z, packet.getYaw(0),
 				packet.getPitch(0), true);
 		
 		// send new packet
@@ -179,7 +178,7 @@ public final class JesusHack extends Hack
 	public boolean shouldBeSolid()
 	{
 		return isEnabled() && MC.player != null && MC.player.fallDistance <= 3
-			&& !MC.options.sneakKey.isPressed() && !MC.player.isTouchingWater()
+			&& !MC.options.keySneak.isPressed() && !MC.player.isTouchingWater()
 			&& !MC.player.isInLava();
 	}
 }

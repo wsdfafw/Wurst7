@@ -10,7 +10,7 @@ package net.wurstclient.commands;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -27,8 +27,8 @@ public final class EnchantCmd extends Command
 	@Override
 	public void call(String[] args) throws CmdException
 	{
-		if(!MC.player.getAbilities().creativeMode)
-			throw new CmdError("仅限创造模式.");
+		if(!MC.player.abilities.creativeMode)
+			throw new CmdError("Creative mode only.");
 		
 		if(args.length > 1)
 			throw new CmdSyntaxError();
@@ -41,7 +41,7 @@ public final class EnchantCmd extends Command
 	
 	private ItemStack getHeldItem() throws CmdError
 	{
-		ItemStack stack = MC.player.getInventory().getMainHandStack();
+		ItemStack stack = MC.player.inventory.getMainHandStack();
 		
 		if(stack.isEmpty())
 			throw new CmdError("There is no item in your hand.");
@@ -51,7 +51,7 @@ public final class EnchantCmd extends Command
 	
 	private void enchant(ItemStack stack)
 	{
-		for(Enchantment enchantment : Registries.ENCHANTMENT)
+		for(Enchantment enchantment : Registry.ENCHANTMENT)
 		{
 			if(enchantment == Enchantments.SILK_TOUCH)
 				continue;

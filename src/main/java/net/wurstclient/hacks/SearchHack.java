@@ -21,22 +21,10 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.stream.Collectors;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
@@ -87,8 +75,8 @@ public final class SearchHack extends Hack
 	private ForkJoinTask<HashSet<BlockPos>> getMatchingBlocksTask;
 	private ForkJoinTask<ArrayList<int[]>> compileVerticesTask;
 	
-	private VertexBuffer vertexBuffer;
-	private boolean bufferUpToDate;
+	private int displayList;
+	private boolean displayListUpToDate;
 	
 	public SearchHack()
 	{
@@ -115,7 +103,8 @@ public final class SearchHack extends Hack
 		pool1 = MinPriorityThreadFactory.newFixedThreadPool();
 		pool2 = new ForkJoinPool();
 		
-		bufferUpToDate = false;
+		displayList = GL11.glGenLists(1);
+		displayListUpToDate = false;
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketInputListener.class, this);
@@ -133,10 +122,10 @@ public final class SearchHack extends Hack
 		pool1.shutdownNow();
 		pool2.shutdownNow();
 		
-		if(vertexBuffer != null)
+		if(displayList != 0)
 		{
-			vertexBuffer.close();
-			vertexBuffer = null;
+			GL11.glDeleteLists(displayList, 1);
+			displayList = 0;
 		}
 		
 		chunksToUpdate.clear();
@@ -153,13 +142,17 @@ public final class SearchHack extends Hack
 		Packet<?> packet = event.getPacket();
 		Chunk chunk;
 		
-		if(packet instanceof BlockUpdateS2CPacket change)
+		if(packet instanceof BlockUpdateS2CPacket)
 		{
+			BlockUpdateS2CPacket change = (BlockUpdateS2CPacket)packet;
 			BlockPos pos = change.getPos();
 			chunk = world.getChunk(pos);
 			
-		}else if(packet instanceof ChunkDeltaUpdateS2CPacket change)
+		}else if(packet instanceof ChunkDeltaUpdateS2CPacket)
 		{
+			ChunkDeltaUpdateS2CPacket change =
+				(ChunkDeltaUpdateS2CPacket)packet;
+			
 			ArrayList<BlockPos> changedBlocks = new ArrayList<>();
 			change.visitUpdates((pos, state) -> changedBlocks.add(pos));
 			if(changedBlocks.isEmpty())
@@ -167,9 +160,12 @@ public final class SearchHack extends Hack
 			
 			chunk = world.getChunk(changedBlocks.get(0));
 			
-		}else if(packet instanceof ChunkDataS2CPacket chunkData)
+		}else if(packet instanceof ChunkDataS2CPacket)
+		{
+			ChunkDataS2CPacket chunkData = (ChunkDataS2CPacket)packet;
 			chunk = world.getChunk(chunkData.getX(), chunkData.getZ());
-		else
+			
+		}else
 			return;
 		
 		chunksToUpdate.add(chunk);
@@ -181,7 +177,7 @@ public final class SearchHack extends Hack
 		Block currentBlock = block.getBlock();
 		BlockPos eyesPos = new BlockPos(RotationUtils.getEyesPos());
 		
-		ChunkPos center = MC.player.getChunkPos();
+		ChunkPos center = getPlayerChunkPos(eyesPos);
 		int dimensionId = MC.world.getRegistryKey().toString().hashCode();
 		
 		addSearchersInRange(center, currentBlock, dimensionId);
@@ -206,45 +202,51 @@ public final class SearchHack extends Hack
 		if(!compileVerticesTask.isDone())
 			return;
 		
-		if(!bufferUpToDate)
-			setBufferFromTask();
+		if(!displayListUpToDate)
+			setDisplayListFromTask();
 	}
 	
 	@Override
-	public void onRender(MatrixStack matrixStack, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glLineWidth(2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		GL11.glPushMatrix();
+		RenderUtils.applyRegionalRenderOffset();
 		
 		float[] rainbow = RenderUtils.getRainbowColor();
-		RenderSystem.setShaderColor(rainbow[0], rainbow[1], rainbow[2], 0.5F);
+		GL11.glColor4f(rainbow[0], rainbow[1], rainbow[2], 0.5F);
 		
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		
-		if(vertexBuffer != null)
+		if(displayList != 0)
 		{
-			Matrix4f viewMatrix = matrixStack.peek().getPositionMatrix();
-			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
-			ShaderProgram shader = RenderSystem.getShader();
-			vertexBuffer.bind();
-			vertexBuffer.draw(viewMatrix, projMatrix, shader);
-			VertexBuffer.unbind();
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glCallList(displayList);
+			GL11.glEnd();
 		}
 		
-		matrixStack.pop();
+		GL11.glPopMatrix();
 		
 		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+	}
+	
+	private ChunkPos getPlayerChunkPos(BlockPos eyesPos)
+	{
+		int chunkX = eyesPos.getX() >> 4;
+		int chunkZ = eyesPos.getZ() >> 4;
+		return MC.world.getChunk(chunkX, chunkZ).getPos();
 	}
 	
 	private void addSearchersInRange(ChunkPos center, Block block,
@@ -342,7 +344,7 @@ public final class SearchHack extends Hack
 			compileVerticesTask = null;
 		}
 		
-		bufferUpToDate = false;
+		displayListUpToDate = false;
 	}
 	
 	private boolean areAllChunkSearchersDone()
@@ -420,30 +422,18 @@ public final class SearchHack extends Hack
 		compileVerticesTask = pool2.submit(task);
 	}
 	
-	private void setBufferFromTask()
+	private void setDisplayListFromTask()
 	{
 		ArrayList<int[]> vertices = getVerticesFromTask();
 		
-		if(vertexBuffer != null)
-			vertexBuffer.close();
-		
-		vertexBuffer = new VertexBuffer();
-		
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-			VertexFormats.POSITION);
+		GL11.glNewList(displayList, GL11.GL_COMPILE);
 		
 		for(int[] vertex : vertices)
-			bufferBuilder.vertex(vertex[0], vertex[1], vertex[2]).next();
+			GL11.glVertex3d(vertex[0], vertex[1], vertex[2]);
 		
-		BuiltBuffer buffer = bufferBuilder.end();
+		GL11.glEndList();
 		
-		vertexBuffer.bind();
-		vertexBuffer.upload(buffer);
-		VertexBuffer.unbind();
-		
-		bufferUpToDate = true;
+		displayListUpToDate = true;
 	}
 	
 	private ArrayList<int[]> getVerticesFromTask()

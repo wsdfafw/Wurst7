@@ -14,8 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
@@ -35,16 +35,16 @@ public final class ServerCrasherHack extends Hack
 	@Override
 	public void onEnable()
 	{
-		if(!MC.player.getAbilities().creativeMode)
+		if(!MC.player.abilities.creativeMode)
 		{
 			ChatUtils.error("仅限创造模式");
 			setEnabled(false);
 			return;
 		}
 		
-		Item item = Registries.ITEM.get(new Identifier("creeper_spawn_egg"));
+		Item item = Registry.ITEM.get(new Identifier("creeper_spawn_egg"));
 		ItemStack stack = new ItemStack(item, 1);
-		stack.setNbt(createNBT());
+		stack.setTag(createNBT());
 		
 		placeStackInHotbar(stack);
 		setEnabled(false);
@@ -67,7 +67,7 @@ public final class ServerCrasherHack extends Hack
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			if(!MC.player.getInventory().getStack(i).isEmpty())
+			if(!MC.player.inventory.getStack(i).isEmpty())
 				continue;
 			
 			MC.player.networkHandler.sendPacket(

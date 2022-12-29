@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,7 +15,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,8 +93,7 @@ public enum MicrosoftLoginManager
 		MinecraftProfile mcProfile = getAccount(email, password);
 		
 		Session session = new Session(mcProfile.getName(), mcProfile.getUUID(),
-			mcProfile.getAccessToken(), Optional.empty(), Optional.empty(),
-			Session.AccountType.MOJANG);
+			mcProfile.getAccessToken(), "mojang");
 		
 		WurstClient.IMC.setSession(session);
 	}
@@ -454,13 +453,18 @@ public enum MicrosoftLoginManager
 			if(sb.length() > 0)
 				sb.append("&");
 			
-			sb.append(
-				URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
-			
-			sb.append("=");
-			
-			sb.append(
-				URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+			try
+			{
+				sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+				
+				sb.append("=");
+				
+				sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+				
+			}catch(UnsupportedEncodingException e)
+			{
+				throw new RuntimeException("UTF-8 is not supported?!", e);
+			}
 		}
 		
 		return sb.toString();

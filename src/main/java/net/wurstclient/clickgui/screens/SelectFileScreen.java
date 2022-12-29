@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 import net.wurstclient.settings.FileSetting;
 import net.wurstclient.util.ListWidget;
@@ -35,7 +35,7 @@ public final class SelectFileScreen extends Screen
 	
 	public SelectFileScreen(Screen prevScreen, FileSetting blockList)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		this.prevScreen = prevScreen;
 		setting = blockList;
 	}
@@ -45,22 +45,15 @@ public final class SelectFileScreen extends Screen
 	{
 		listGui = new ListGui(client, this, setting.listFiles());
 		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Open Folder"), b -> openFolder())
-				.dimensions(8, 8, 100, 20).build());
+		addButton(new ButtonWidget(8, 8, 100, 20,
+			new LiteralText("Open Folder"), b -> openFolder()));
+		addButton(new ButtonWidget(width - 108, 8, 100, 20,
+			new LiteralText("Reset to Defaults"), b -> askToConfirmReset()));
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Reset to Defaults"),
-				b -> askToConfirmReset())
-			.dimensions(width - 108, 8, 100, 20).build());
-		
-		doneButton = addDrawableChild(
-			ButtonWidget.builder(Text.literal("Done"), b -> done())
-				.dimensions(width / 2 - 102, height - 48, 100, 20).build());
-		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("Cancel"), b -> openPrevScreen())
-				.dimensions(width / 2 + 2, height - 48, 100, 20).build());
+		doneButton = addButton(new ButtonWidget(width / 2 - 102, height - 48,
+			100, 20, new LiteralText("Done"), b -> done()));
+		addButton(new ButtonWidget(width / 2 + 2, height - 48, 100, 20,
+			new LiteralText("Cancel"), b -> openPrevScreen()));
 	}
 	
 	private void openFolder()
@@ -70,7 +63,7 @@ public final class SelectFileScreen extends Screen
 	
 	private void openPrevScreen()
 	{
-		client.setScreen(prevScreen);
+		client.openScreen(prevScreen);
 	}
 	
 	private void done()
@@ -87,13 +80,14 @@ public final class SelectFileScreen extends Screen
 	
 	private void askToConfirmReset()
 	{
-		Text title = Text.literal("重设目录");
+		LiteralText title = new LiteralText("重设目录");
 		
-		Text message = Text
-			.literal("这将会清空 '" + setting.getFolder().getFileName()
+		LiteralText message = new LiteralText(
+			"这将会清空 '" + setting.getFolder().getFileName()
 				+ "目录并重新生成默认的数值.\n你确定还要继续这样做吗");
 		
-		client.setScreen(new ConfirmScreen(this::confirmReset, title, message));
+		client
+			.openScreen(new ConfirmScreen(this::confirmReset, title, message));
 	}
 	
 	private void confirmReset(boolean confirmed)
@@ -101,7 +95,7 @@ public final class SelectFileScreen extends Screen
 		if(confirmed)
 			setting.resetFolder();
 		
-		client.setScreen(SelectFileScreen.this);
+		client.openScreen(SelectFileScreen.this);
 	}
 	
 	@Override
@@ -174,12 +168,12 @@ public final class SelectFileScreen extends Screen
 		
 		if(doneButton.isHovered() && !doneButton.active)
 			renderTooltip(matrixStack,
-				Arrays.asList(Text.literal("你必须先选择一个文件.")),
+				Arrays.asList(new LiteralText("你必须先选择一个文件.")),
 				mouseX, mouseY);
 	}
 	
 	@Override
-	public boolean shouldPause()
+	public boolean isPauseScreen()
 	{
 		return false;
 	}

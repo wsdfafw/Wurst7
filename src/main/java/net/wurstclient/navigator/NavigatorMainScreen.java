@@ -10,22 +10,14 @@ package net.wurstclient.navigator;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.wurstclient.Feature;
 import net.wurstclient.WurstClient;
 import net.wurstclient.clickgui.ClickGui;
@@ -64,16 +56,17 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		int txtColor = gui.getTxtColor();
 		
 		TextRenderer tr = WurstClient.MC.textRenderer;
-		searchBar = new TextFieldWidget(tr, 0, 32, 200, 20, Text.literal(""));
+		searchBar =
+			new TextFieldWidget(tr, 0, 32, 200, 20, new LiteralText(""));
 		searchBar.setEditableColor(txtColor);
 		searchBar.setDrawsBackground(false);
 		searchBar.setMaxLength(128);
 		
-		addSelectableChild(searchBar);
+		children.add(searchBar);
 		setInitialFocus(searchBar);
 		searchBar.setTextFieldFocused(true);
 		
-		searchBar.setX(middleX - 100);
+		searchBar.x = middleX - 100;
 		setContentHeight(navigatorDisplayList.size() / 3 * 20);
 	}
 	
@@ -117,7 +110,7 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		// back button
 		if(button == GLFW.GLFW_MOUSE_BUTTON_4)
 		{
-			WurstClient.MC.setScreen((Screen)null);
+			WurstClient.MC.openScreen((Screen)null);
 			return;
 		}
 		
@@ -212,7 +205,7 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			if(clickTimer < 4)
 				clickTimer++;
 			else
-				WurstClient.MC.setScreen(
+				WurstClient.MC.openScreen(
 					new NavigatorFeatureScreen(expandingFeature, this));
 		else if(!expanding && clickTimer > -1)
 			clickTimer--;
@@ -241,9 +234,11 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		// search bar
 		if(!clickTimerRunning)
 		{
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			WurstClient.MC.textRenderer.drawWithShadow(matrixStack, "Search: ",
 				middleX - 150, 32, txtColor);
 			searchBar.render(matrixStack, mouseX, mouseY, partialTicks);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_BLEND);
 		}
 		
@@ -294,38 +289,30 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			int yt1 = mouseY + th - 2 <= sh ? mouseY - 4 : mouseY - th - 4;
 			int yt2 = yt1 + th + 2;
 			
-			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-			Tessellator tessellator = RenderSystem.renderThreadTesselator();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			RenderSystem.setShader(GameRenderer::getPositionProgram);
-			
 			// background
-			RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
-				0.75F);
-			bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
-				VertexFormats.POSITION);
-			bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-			bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-			bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-			bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-			tessellator.draw();
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2], 0.75F);
+			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2i(xt1, yt1);
+			GL11.glVertex2i(xt1, yt2);
+			GL11.glVertex2i(xt2, yt2);
+			GL11.glVertex2i(xt2, yt1);
+			GL11.glEnd();
 			
 			// outline
-			RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2],
-				0.5F);
-			bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-				VertexFormats.POSITION);
-			bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-			bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-			bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-			bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-			bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-			tessellator.draw();
+			GL11.glColor4f(acColor[0], acColor[1], acColor[2], 0.5F);
+			GL11.glBegin(GL11.GL_LINE_LOOP);
+			GL11.glVertex2i(xt1, yt1);
+			GL11.glVertex2i(xt1, yt2);
+			GL11.glVertex2i(xt2, yt2);
+			GL11.glVertex2i(xt2, yt1);
+			GL11.glEnd();
 			
 			// text
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			for(int i = 0; i < lines.length; i++)
 				fr.draw(matrixStack, lines[i], xt1 + 2,
-					yt1 + 2 + i * fr.fontHeight, txtColor);
+					yt1 + 1 + i * fr.fontHeight, txtColor);
 		}
 	}
 	
@@ -365,7 +352,7 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			area.height =
 				(int)(area.height * antiFactor + (height - 103) * factor);
 			
-			drawBackgroundBox(matrixStack, area.x, area.y, area.x + area.width,
+			drawBackgroundBox(area.x, area.y, area.x + area.width,
 				area.y + area.height);
 			return;
 		}
@@ -387,13 +374,12 @@ public final class NavigatorMainScreen extends NavigatorScreen
 		
 		if(feature.isEnabled())
 			// if(feature.isBlocked())
-			// RenderSystem.setShaderColor(1, 0, 0,
+			// GL11.glColor4f(1, 0, 0,
 			// hovering ? opacity * 1.5F : opacity);
 			// else
-			RenderSystem.setShaderColor(0, 1, 0,
-				renderAsHovered ? opacity * 1.5F : opacity);
+			GL11.glColor4f(0, 1, 0, renderAsHovered ? opacity * 1.5F : opacity);
 		else
-			RenderSystem.setShaderColor(bgColor[0], bgColor[1], bgColor[2],
+			GL11.glColor4f(bgColor[0], bgColor[1], bgColor[2],
 				renderAsHovered ? opacity * 1.5F : opacity);
 		
 		// tooltip
@@ -411,65 +397,55 @@ public final class NavigatorMainScreen extends NavigatorScreen
 			tooltip = tt;
 		
 		// box & shadow
-		drawBox(matrixStack, area.x, area.y, area.x + area.width,
-			area.y + area.height);
-		
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		drawBox(area.x, area.y, area.x + area.width, area.y + area.height);
 		
 		// separator
 		int bx1 = area.x + area.width - area.height;
 		int by1 = area.y + 2;
 		int by2 = by1 + area.height - 4;
-		float[] acColor = WurstClient.INSTANCE.getGui().getAcColor();
-		RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5F);
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, bx1, by1, 0).next();
-		bufferBuilder.vertex(matrix, bx1, by2, 0).next();
-		tessellator.draw();
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2i(bx1, by1);
+		GL11.glVertex2i(bx1, by2);
+		GL11.glEnd();
 		
 		// hovering
 		if(hovering)
 			hoveringArrow = mouseX >= bx1;
 		
 		// arrow positions
-		float oneThrird = area.height / 3F;
-		float twoThrirds = area.height * 2F / 3F;
-		float ax1 = bx1 + oneThrird - 2F;
-		float ax2 = bx1 + twoThrirds + 2F;
-		float ax3 = bx1 + area.height / 2F;
-		float ay1 = area.y + oneThrird;
-		float ay2 = area.y + twoThrirds;
+		double oneThrird = area.height / 3D;
+		double twoThrirds = area.height * 2D / 3D;
+		double ax1 = bx1 + oneThrird - 2D;
+		double ax2 = bx1 + twoThrirds + 2D;
+		double ax3 = bx1 + area.height / 2D;
+		double ay1 = area.y + oneThrird;
+		double ay2 = area.y + twoThrirds;
 		
 		// arrow
-		RenderSystem.setShaderColor(0, hovering ? 1 : 0.85F, 0, 1);
-		bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLES,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, ax1, ay1, 0).next();
-		bufferBuilder.vertex(matrix, ax2, ay1, 0).next();
-		bufferBuilder.vertex(matrix, ax3, ay2, 0).next();
-		tessellator.draw();
+		GL11.glColor4f(0, hovering ? 1 : 0.85F, 0, 1);
+		GL11.glBegin(GL11.GL_TRIANGLES);
+		GL11.glVertex2d(ax1, ay1);
+		GL11.glVertex2d(ax2, ay1);
+		GL11.glVertex2d(ax3, ay2);
+		GL11.glEnd();
 		
 		// arrow shadow
-		RenderSystem.setShaderColor(0.0625F, 0.0625F, 0.0625F, 0.5F);
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-			VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, ax1, ay1, 0).next();
-		bufferBuilder.vertex(matrix, ax2, ay1, 0).next();
-		bufferBuilder.vertex(matrix, ax3, ay2, 0).next();
-		bufferBuilder.vertex(matrix, ax1, ay1, 0).next();
-		tessellator.draw();
+		GL11.glLineWidth(1);
+		GL11.glColor4f(0.0625F, 0.0625F, 0.0625F, 0.5F);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex2d(ax1, ay1);
+		GL11.glVertex2d(ax2, ay1);
+		GL11.glVertex2d(ax3, ay2);
+		GL11.glEnd();
 		
 		// text
 		if(!clickTimerRunning)
 		{
-			RenderSystem.setShader(GameRenderer::getPositionProgram);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			String buttonText = feature.getName();
 			client.textRenderer.draw(matrixStack, buttonText, area.x + 4,
 				area.y + 4, txtColor);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glEnable(GL11.GL_BLEND);
 		}
 	}

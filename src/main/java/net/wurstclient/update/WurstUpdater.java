@@ -7,10 +7,11 @@
  */
 package net.wurstclient.update;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.events.UpdateListener;
@@ -102,14 +103,16 @@ public final class WurstUpdater implements UpdateListener
 			textPart1 + " Click \u00a7nhere\u00a7r to download the update.";
 		String url =
 			"https://www.wurstclient.net/download/?utm_source=Wurst+Client&utm_medium=WurstUpdater+chat+message&utm_content="
-				+ URLEncoder.encode(textPart1, StandardCharsets.UTF_8);
+				+ tryEncode(textPart1);
 		showLink(text, url);
 	}
 	
 	private void showLink(String text, String url)
 	{
+		component = new LiteralText(text);
+		
 		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-		component = Text.literal(text).styled(s -> s.withClickEvent(event));
+		component.getStyle().withClickEvent(event);
 	}
 	
 	private boolean containsCompatibleAsset(WsonArray wsonArray)
@@ -132,5 +135,17 @@ public final class WurstUpdater implements UpdateListener
 	public boolean isOutdated()
 	{
 		return outdated;
+	}
+	
+	private String tryEncode(String s)
+	{
+		try
+		{
+			return URLEncoder.encode(s, "UTF-8");
+			
+		}catch(UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

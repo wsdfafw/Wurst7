@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 
 public class PressAKeyScreen extends Screen
 {
@@ -20,7 +20,7 @@ public class PressAKeyScreen extends Screen
 	
 	public PressAKeyScreen(PressAKeyCallback prevScreen)
 	{
-		super(Text.literal(""));
+		super(new LiteralText(""));
 		
 		if(!(prevScreen instanceof Screen))
 			throw new IllegalArgumentException("上一个屏幕不是一个屏幕");
@@ -34,7 +34,7 @@ public class PressAKeyScreen extends Screen
 		if(keyCode != GLFW.GLFW_KEY_ESCAPE)
 			prevScreen.setKey(getKeyName(keyCode, scanCode));
 		
-		client.setScreen((Screen)prevScreen);
+		client.openScreen((Screen)prevScreen);
 		return super.keyPressed(keyCode, scanCode, int_3);
 	}
 	

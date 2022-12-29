@@ -88,20 +88,20 @@ public final class FlightHack extends Hack
 	{
 		ClientPlayerEntity player = MC.player;
 		
-		player.getAbilities().flying = false;
-		player.airStrafingSpeed = horizontalSpeed.getValueF();
+		player.abilities.flying = false;
+		player.flyingSpeed = horizontalSpeed.getValueF();
 		
 		player.setVelocity(0, 0, 0);
 		Vec3d velocity = player.getVelocity();
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			player.setVelocity(velocity.x, verticalSpeed.getValue(),
 				velocity.z);
 		
-		if(MC.options.sneakKey.isPressed())
+		if(MC.options.keySneak.isPressed())
 		{
 			if(slowSneaking.isChecked())
-				player.airStrafingSpeed =
+				player.flyingSpeed =
 					Math.min(horizontalSpeed.getValueF(), 0.85F);
 			
 			player.setVelocity(velocity.x, -verticalSpeed.getValue(),
@@ -119,17 +119,18 @@ public final class FlightHack extends Hack
 		
 		switch(tickCounter)
 		{
-			case 0 ->
-			{
-				if(MC.options.sneakKey.isPressed())
-					tickCounter = 2;
-				else
-					MC.player.setVelocity(velocity.x,
-						-antiKickDistance.getValue(), velocity.z);
-			}
+			case 0:
+			if(MC.options.keySneak.isPressed())
+				tickCounter = 2;
+			else
+				MC.player.setVelocity(velocity.x, -antiKickDistance.getValue(),
+					velocity.z);
+			break;
 			
-			case 1 -> MC.player.setVelocity(velocity.x,
-				antiKickDistance.getValue(), velocity.z);
+			case 1:
+			MC.player.setVelocity(velocity.x, antiKickDistance.getValue(),
+				velocity.z);
+			break;
 		}
 		
 		tickCounter++;

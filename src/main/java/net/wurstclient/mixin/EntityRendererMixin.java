@@ -7,7 +7,6 @@
  */
 package net.wurstclient.mixin;
 
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,6 +22,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Matrix4f;
 import net.wurstclient.WurstClient;
 import net.wurstclient.hacks.NameTagsHack;
 
@@ -84,11 +84,11 @@ public abstract class EntityRendererMixin<T extends Entity>
 		
 		matrixStack.scale(-scale, -scale, scale);
 		
-		Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix4f = matrixStack.peek().getModel();
 		float g = WurstClient.MC.options.getTextBackgroundOpacity(0.25F);
 		int k = (int)(g * 255.0F) << 24;
 		
-		TextRenderer textRenderer = this.getTextRenderer();
+		TextRenderer textRenderer = this.getFontRenderer();
 		float h = -textRenderer.getWidth(text) / 2;
 		
 		textRenderer.draw(text.asOrderedText(), h, j, 553648127, false,
@@ -102,7 +102,7 @@ public abstract class EntityRendererMixin<T extends Entity>
 	}
 	
 	@Shadow
-	public TextRenderer getTextRenderer()
+	public TextRenderer getFontRenderer()
 	{
 		return null;
 	}

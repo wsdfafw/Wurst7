@@ -76,7 +76,7 @@ public final class ExtraElytraHack extends Hack implements UpdateListener
 			return;
 		}
 		
-		if(ElytraItem.isUsable(chest) && MC.options.jumpKey.isPressed())
+		if(ElytraItem.isUsable(chest) && MC.options.keyJump.isPressed())
 			doInstantFly();
 	}
 	
@@ -94,9 +94,9 @@ public final class ExtraElytraHack extends Hack implements UpdateListener
 		
 		Vec3d v = MC.player.getVelocity();
 		
-		if(MC.options.jumpKey.isPressed())
+		if(MC.options.keyJump.isPressed())
 			MC.player.setVelocity(v.x, v.y + 0.08, v.z);
-		else if(MC.options.sneakKey.isPressed())
+		else if(MC.options.keySneak.isPressed())
 			MC.player.setVelocity(v.x, v.y - 0.04, v.z);
 	}
 	
@@ -105,15 +105,15 @@ public final class ExtraElytraHack extends Hack implements UpdateListener
 		if(!speedCtrl.isChecked())
 			return;
 		
-		float yaw = (float)Math.toRadians(MC.player.getYaw());
+		float yaw = (float)Math.toRadians(MC.player.yaw);
 		Vec3d forward = new Vec3d(-MathHelper.sin(yaw) * 0.05, 0,
 			MathHelper.cos(yaw) * 0.05);
 		
 		Vec3d v = MC.player.getVelocity();
 		
-		if(MC.options.forwardKey.isPressed())
+		if(MC.options.keyForward.isPressed())
 			MC.player.setVelocity(v.add(forward));
-		else if(MC.options.backKey.isPressed())
+		else if(MC.options.keyBack.isPressed())
 			MC.player.setVelocity(v.subtract(forward));
 	}
 	

@@ -7,13 +7,12 @@
  */
 package net.wurstclient.hacks;
 
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.util.math.MathHelper;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.ISimpleOption;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
@@ -59,7 +58,7 @@ public final class FullbrightHack extends Hack implements UpdateListener
 			@Override
 			public void onUpdate()
 			{
-				double gamma = MC.options.getGamma().getValue();
+				double gamma = MC.options.gamma;
 				System.out.println("Brightness started at " + gamma);
 				
 				if(gamma > 1)
@@ -97,44 +96,35 @@ public final class FullbrightHack extends Hack implements UpdateListener
 	private void setGamma(double target)
 	{
 		wasGammaChanged = true;
+		GameOptions options = MC.options;
 		
-		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
-		double oldGammaValue = gammaOption.getValue();
-		
-		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
 		{
-			gammaOption2.forceSetValue(target);
+			options.gamma = target;
 			return;
 		}
 		
-		if(oldGammaValue < target)
-			gammaOption2.forceSetValue(oldGammaValue + 0.5);
+		if(options.gamma < target)
+			options.gamma += 0.5;
 		else
-			gammaOption2.forceSetValue(oldGammaValue - 0.5);
+			options.gamma -= 0.5;
 	}
 	
 	private void resetGamma(double target)
 	{
-		SimpleOption<Double> gammaOption = MC.options.getGamma();
-		@SuppressWarnings("unchecked")
-		ISimpleOption<Double> gammaOption2 =
-			(ISimpleOption<Double>)(Object)gammaOption;
-		double oldGammaValue = gammaOption.getValue();
+		GameOptions options = MC.options;
 		
-		if(!fade.isChecked() || Math.abs(oldGammaValue - target) <= 0.5)
+		if(!fade.isChecked() || Math.abs(options.gamma - target) <= 0.5)
 		{
-			gammaOption2.forceSetValue(target);
+			options.gamma = target;
 			wasGammaChanged = false;
 			return;
 		}
 		
-		if(oldGammaValue < target)
-			gammaOption2.forceSetValue(oldGammaValue + 0.5);
+		if(options.gamma < target)
+			options.gamma += 0.5;
 		else
-			gammaOption2.forceSetValue(oldGammaValue - 0.5);
+			options.gamma -= 0.5;
 	}
 	
 	private void updateNightVision()
