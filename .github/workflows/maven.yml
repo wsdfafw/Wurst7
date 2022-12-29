@@ -7,7 +7,7 @@ jobs:
       matrix:
         # 使用这些Java版本
         java: [
-          17
+          8
         ]
         # 并同时在Linux和Windows上运行
         os: [ubuntu-20.04, windows-latest]
