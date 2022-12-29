@@ -48,8 +48,6 @@ import net.wurstclient.settings.SettingsFile;
 import net.wurstclient.update.ProblematicResourcePackDetector;
 import net.wurstclient.update.WurstUpdater;
 import net.wurstclient.util.json.JsonException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public enum WurstClient
 {
