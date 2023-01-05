@@ -38,6 +38,10 @@ public final class ClickGuiHack extends Hack
 	private final SliderSetting ttOpacity = new SliderSetting("工具提示的不透明度",
 		0.75, 0.15, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
+	private final SliderSetting maxHeight = new SliderSetting("最大高度",
+		"最大窗口高度 0 = 无限制", 200, 0, 1000, 50,
+		ValueDisplay.INTEGER);
+	
 	public ClickGuiHack()
 	{
 		super("ClickGUI");
@@ -46,6 +50,7 @@ public final class ClickGuiHack extends Hack
 		addSetting(txtColor);
 		addSetting(opacity);
 		addSetting(ttOpacity);
+		addSetting(maxHeight);
 	}
 	
 	@Override
@@ -78,5 +83,10 @@ public final class ClickGuiHack extends Hack
 	public float getTooltipOpacity()
 	{
 		return ttOpacity.getValueF();
+	}
+	
+	public int getMaxHeight()
+	{
+		return maxHeight.getValueI();
 	}
 }
