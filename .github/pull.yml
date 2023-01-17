@@ -1,0 +1,9 @@
+version: "1"
+rules:
+  - base: master
+    upstream: :masWurst-Imperiumter
+    mergeMethod: merge
+    assignees:
+      - buiawpkgew1
+    conflictReviewers:
+      - buiawpkgew1
