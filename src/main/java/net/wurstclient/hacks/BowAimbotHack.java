@@ -52,9 +52,13 @@ import net.wurstclient.util.RotationUtils;
 public final class BowAimbotHack extends Hack
 	implements UpdateListener, RenderListener, GUIRenderListener
 {
-	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
-		"决定哪个实体会被优先瞄准.\n§l距离§r - 攻击最近的实体先.\n§l角度§r - 攻击最后头的角度位置\n的实体优先.\n§l血量§r - 血量少的实体优先",
-		Priority.values(), Priority.ANGLE);
+	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
+		"Determines which entity will be attacked first.\n"
+			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
+			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
+			+ "\u00a7lAngle+Dist\u00a7r - A hybrid of Angle and Distance. This is usually the best at figuring out what you want to aim at.\n"
+			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
+		Priority.values(), Priority.ANGLE_DIST);
 	
 	private final SliderSetting predictMovement =
 		new SliderSetting("预瞄",
@@ -158,7 +162,9 @@ public final class BowAimbotHack extends Hack
 			- player.getZ();
 		
 		// set yaw
-		MC.player.setYaw((float)Math.toDegrees(Math.atan2(posZ, posX)) - 90);
+		float neededYaw = (float)Math.toDegrees(Math.atan2(posZ, posX)) - 90;
+		MC.player.setYaw(
+			RotationUtils.limitAngleChange(MC.player.getYaw(), neededYaw));
 		
 		// calculate needed pitch
 		double hDistance = Math.sqrt(posX * posX + posZ * posZ);
@@ -292,6 +298,12 @@ public final class BowAimbotHack extends Hack
 		ANGLE("角度",
 			e -> RotationUtils
 				.getAngleToLookVec(e.getBoundingBox().getCenter())),
+		
+		ANGLE_DIST("Angle+Dist",
+			e -> Math
+				.pow(RotationUtils
+					.getAngleToLookVec(e.getBoundingBox().getCenter()), 2)
+				+ MC.player.squaredDistanceTo(e)),
 		
 		HEALTH("血量", e -> e instanceof LivingEntity
 			? ((LivingEntity)e).getHealth() : Integer.MAX_VALUE);
