@@ -219,33 +219,33 @@ public class ServerFinderScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		
-		drawCenteredText(matrixStack, textRenderer, "服务器查找器", width / 2,
-			20, 16777215);
-		drawCenteredText(matrixStack, textRenderer,
+		drawCenteredTextWithShadow(matrixStack, textRenderer, "服务器查找器",
+			width / 2, 20, 16777215);
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
 			"这会寻找类似IP的服务器", width / 2, 40,
 			10526880);
-		drawCenteredText(matrixStack, textRenderer,
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
 			"你在空框内所填写的IP", width / 2, 50,
 			10526880);
-		drawCenteredText(matrixStack, textRenderer,
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
 			"如果找到了则会添加到服务器列表",
 			width / 2, 60, 10526880);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "服务器地址:",
+		drawTextWithShadow(matrixStack, textRenderer, "服务器地址:",
 			width / 2 - 100, height / 4 + 24, 10526880);
 		ipBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "最大. 线程:",
+		drawTextWithShadow(matrixStack, textRenderer, "最大. 线程:",
 			width / 2 - 100, height / 4 + 60, 10526880);
 		maxThreadsBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawCenteredText(matrixStack, textRenderer, state.toString(), width / 2,
-			height / 4 + 73, 10526880);
+		drawCenteredTextWithShadow(matrixStack, textRenderer, state.toString(),
+			width / 2, height / 4 + 73, 10526880);
 		
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"已检查: " + checked + " / 1792", width / 2 - 100, height / 4 + 84,
 			10526880);
-		drawStringWithShadow(matrixStack, textRenderer, "正在运行: " + working,
+		drawTextWithShadow(matrixStack, textRenderer, "正在运行: " + working,
 			width / 2 - 100, height / 4 + 94, 10526880);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);

@@ -99,14 +99,14 @@ public final class KeybindEditorScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		
-		drawCenteredText(matrixStack, textRenderer,
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
 			(oldKey != null ? "编辑" : "添加") + " Keybind", width / 2, 20,
 			0xffffff);
 		
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"键位: " + key.replace("key.keyboard.", ""), width / 2 - 100, 47,
 			0xa0a0a0);
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"指令 (隔开方式 ';')", width / 2 - 100, 87, 0xa0a0a0);
 		
 		commandField.render(matrixStack, mouseX, mouseY, partialTicks);

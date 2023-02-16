@@ -42,7 +42,7 @@ public class WurstOptionsScreen extends Screen
 	public void init()
 	{
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Back"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("返回"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 - 100, height / 4 + 144 - 16, 200, 20)
 			.build());
 		
@@ -142,10 +142,12 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredText(matrixStack, tr, "Wurst选择,作者原来id:watermelon_GG,新id:wateTina,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
-			0xffffff);
+		drawCenteredTextWithShadow(matrixStack, tr, "Wurst选择,作者原来id:watermelon_GG,新id:wateTina,qq:750215287,感谢逆向燃烧帮忙汉化", middleX,
+			y1, 0xffffff);
 		
-		drawCenteredText(matrixStack, tr, "设置选项", middleX - 104, y2,
+		drawCenteredTextWithShadow(matrixStack, tr, "设置选项", middleX - 104,
+			y2, 0xcccccc);
+		drawCenteredTextWithShadow(matrixStack, tr, "管理者", middleX, y2,
 			0xcccccc);
 		drawCenteredText(matrixStack, tr, "管理", middleX, y2, 0xcccccc);
 		drawCenteredText(matrixStack, tr, "链接", middleX + 104, y2, 0xcccccc);

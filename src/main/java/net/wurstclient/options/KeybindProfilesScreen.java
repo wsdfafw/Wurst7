@@ -176,8 +176,8 @@ public final class KeybindProfilesScreen extends Screen
 		renderBackground(matrixStack);
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawCenteredText(matrixStack, client.textRenderer, "键位档案",
-			width / 2, 12, 0xffffff);
+		drawCenteredTextWithShadow(matrixStack, client.textRenderer,
+			"键位档案", width / 2, 12, 0xffffff);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		

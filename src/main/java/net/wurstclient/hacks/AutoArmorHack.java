@@ -183,7 +183,8 @@ public final class AutoArmorHack extends Hack
 			int prtLvl = EnchantmentHelper.getLevel(protection, stack);
 			
 			ClientPlayerEntity player = MC.player;
-			DamageSource dmgSource = DamageSource.player(player);
+			DamageSource dmgSource =
+				player.getDamageSources().playerAttack(player);
 			prtPoints = protection.getProtectionAmount(prtLvl, dmgSource);
 		}
 		

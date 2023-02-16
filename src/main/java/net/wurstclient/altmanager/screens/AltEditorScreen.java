@@ -359,18 +359,18 @@ public abstract class AltEditorScreen extends Screen
 			width - (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
 		
 		// text
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"名字 (盗版账户), 或者", width / 2 - 100, 37, 10526880);
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"邮箱 (正版账户)", width / 2 - 100, 47, 10526880);
-		drawStringWithShadow(matrixStack, textRenderer,
+		drawTextWithShadow(matrixStack, textRenderer,
 			"密码 (如果是盗版请留空)", width / 2 - 100, 87,
 			10526880);
 		
 		String[] lines = message.split("\n");
 		for(int i = 0; i < lines.length; i++)
-			drawCenteredText(matrixStack, textRenderer, lines[i], width / 2,
-				142 + 10 * i, 16777215);
+			drawCenteredTextWithShadow(matrixStack, textRenderer, lines[i],
+				width / 2, 142 + 10 * i, 16777215);
 		
 		// text boxes
 		nameOrEmailBox.render(matrixStack, mouseX, mouseY, partialTicks);
