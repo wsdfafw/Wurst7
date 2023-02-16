@@ -21,7 +21,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Gradle wrapper upgrade
-      run: ./gradlew wrapper --gradle-version=7.6 --distribution-type=bin
+      run: ./gradlew wrapper --gradle-version=8.0 --distribution-type=bin
     - name: Commit change
       run: |
         git config --local user.email "actions@github.com"
