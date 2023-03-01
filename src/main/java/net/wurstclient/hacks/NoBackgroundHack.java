@@ -7,18 +7,39 @@
  */
 package net.wurstclient.hacks;
 
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 
 @SearchTags({"no background", "NoGuiBackground", "no gui background",
 	"NoGradient", "no gradient"})
 public final class NoBackgroundHack extends Hack
 {
+	public final CheckboxSetting allGuis = new CheckboxSetting("All GUIs",
+		"移除所有图形用户界面的背景，不仅仅是库存.", false);
+	
 	public NoBackgroundHack()
 	{
 		super("无黑背景");
 		setCategory(Category.RENDER);
+		addSetting(allGuis);
+	}
+	
+	public boolean shouldCancelBackground(Screen screen)
+	{
+		if(!isEnabled())
+			return false;
+		
+		if(MC.world == null)
+			return false;
+		
+		if(!allGuis.isChecked() && !(screen instanceof HandledScreen))
+			return false;
+		
+		return true;
 	}
 	
 	// See ScreenMixin.onRenderBackground()

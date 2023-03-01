@@ -80,7 +80,7 @@ public final class TreeBotHack extends Hack
 	public String getRenderName()
 	{
 		if(treeFinder != null && !treeFinder.isDone() && !treeFinder.isFailed())
-			return getName() + " [搜索]";
+			return getName() + " [Searching]";
 		
 		if(processor != null && !processor.isDone())
 			return getName() + " [前进中]";
@@ -226,8 +226,7 @@ public final class TreeBotHack extends Hack
 		for(BlockPos pos : blocksInRange)
 			if(breakBlock(pos))
 			{
-				WURST.getHax().autoToolHack.equipBestTool(pos, false, true,
-					false);
+				WURST.getHax().autoToolHack.equipBestTool(pos, false, true, 0);
 				currentBlock = pos;
 				break;
 			}

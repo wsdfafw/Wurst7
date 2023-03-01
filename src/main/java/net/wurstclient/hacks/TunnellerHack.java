@@ -446,7 +446,7 @@ public final class TunnellerHack extends Hack
 			}
 			
 			WURST.getHax().autoToolHack.equipBestTool(currentBlock, false, true,
-				false);
+				0);
 			breakBlock(currentBlock);
 			
 			if(MC.player.getAbilities().creativeMode
@@ -563,8 +563,7 @@ public final class TunnellerHack extends Hack
 				placeBlockSimple(pos);
 			else
 			{
-				WURST.getHax().autoToolHack.equipBestTool(pos, false, true,
-					false);
+				WURST.getHax().autoToolHack.equipBestTool(pos, false, true, 0);
 				breakBlock(pos);
 			}
 		}
