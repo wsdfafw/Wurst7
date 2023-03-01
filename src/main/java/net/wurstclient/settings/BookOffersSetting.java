@@ -157,7 +157,7 @@ public final class BookOffersSetting extends Setting
 			
 		}catch(JsonException e)
 		{
-			System.out.println("Invalid book offer list: " + json);
+			System.out.println("无效的图书优惠列表: " + json);
 			e.printStackTrace();
 			resetToDefaults();
 		}
@@ -174,7 +174,7 @@ public final class BookOffersSetting extends Setting
 			
 		}catch(JsonException e)
 		{
-			System.out.println("Invalid book offer: " + wson);
+			System.out.println("无效的图书报价: " + wson);
 			e.printStackTrace();
 			return null;
 		}

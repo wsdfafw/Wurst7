@@ -129,14 +129,14 @@ public final class AddBookOfferScreen extends Screen
 		priceMinusButton.active = false;
 		
 		addDrawableChild(
-			addButton = ButtonWidget.builder(Text.literal("Add"), b -> {
+			addButton = ButtonWidget.builder(Text.literal("添加"), b -> {
 				bookOffers.add(offerToAdd);
 				client.setScreen(prevScreen);
 			}).dimensions(width / 2 - 102, height - 28, 100, 20).build());
 		addButton.active = false;
 		
 		addDrawableChild(cancelButton = ButtonWidget
-			.builder(Text.literal("Cancel"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 + 2, height - 28, 100, 20).build());
 	}
 	
@@ -304,15 +304,15 @@ public final class AddBookOfferScreen extends Screen
 		
 		matrixStack.translate(width / 2 - 100, 0, 0);
 		
-		drawStringWithShadow(matrixStack, tr, "Level:", 0, height - 72,
+		drawStringWithShadow(matrixStack, tr, "等级:", 0, height - 72,
 			0xf0f0f0);
-		drawStringWithShadow(matrixStack, tr, "Max price:", 0, height - 56,
+		drawStringWithShadow(matrixStack, tr, "最高价格:", 0, height - 56,
 			0xf0f0f0);
 		
 		if(alreadyAdded && offerToAdd != null)
 		{
 			String errorText = offerToAdd.getEnchantmentNameWithLevel()
-				+ " is already on your list!";
+				+ " 已经在您的列表中!";
 			drawStringWithShadow(matrixStack, tr, errorText, 0, height - 40,
 				0xff5555);
 		}
@@ -414,7 +414,7 @@ public final class AddBookOfferScreen extends Screen
 			tr.draw(matrixStack, bookOffer.id(), x + 28, y + 9, 0xa0a0a0);
 			
 			int maxLevel = enchantment.getMaxLevel();
-			String levels = maxLevel + (maxLevel == 1 ? " level" : " levels");
+			String levels = maxLevel + (maxLevel == 1 ? " 等级" : " 等级");
 			tr.draw(matrixStack, levels, x + 28, y + 18, 0xa0a0a0);
 		}
 	}
