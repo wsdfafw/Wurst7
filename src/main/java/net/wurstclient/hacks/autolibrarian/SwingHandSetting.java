@@ -22,14 +22,10 @@ public final class SwingHandSetting
 	
 	public SwingHandSetting()
 	{
-		super("Swing hand", "How to swing your hand when interacting with the"
-			+ " villager and job site.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't swing your hand at all. Will be detected"
-			+ " by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Swing your hand on the server-side,"
-			+ " without playing the animation on the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Swing your hand on the client-side."
-			+ " This is the most legit option.", SwingHand.values(),
+		super("摆动手", "如何在与村民和工作现场互动时挥动你的手.\n\n"
+			+ "\u00a7lOff\u00a7r - 完全不要摆动你的手。将被反作弊插件检测到.\n\n"
+			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动你的手，而不在客户端播放动画.\n\n"
+			+ "\u00a7lClient-side\u00a7r - 在客户端挥动你的手。这是最合法的选择。.", SwingHand.values(),
 			SwingHand.SERVER);
 	}
 	

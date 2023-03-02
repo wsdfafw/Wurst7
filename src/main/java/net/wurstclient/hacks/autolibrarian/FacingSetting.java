@@ -19,15 +19,11 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	
 	public FacingSetting()
 	{
-		super("Facing", "How to face the villager and job site.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't face the villager at all. Will be"
-			+ " detected by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Face the villager on the"
-			+ " server-side, while still letting you move the camera freely on"
-			+ " the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Face the villager by moving your"
-			+ " camera on the client-side. This is the most legit option, but"
-			+ " can be disorienting to look at.", Facing.values(),
+		super("面对", "如何面对村民和工地.\n\n"
+			+ "\u00a7lOff\u00a7r - 根本不面对村民。会被反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端面对村民，同时仍"
+			+ " 然允许你在客户端自由移动摄像机.\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过在客户端移动你的相机来面对村民。这是最合法的选择，但看起来可能会让人迷失方向.", Facing.values(),
 			Facing.SERVER);
 	}
 	
@@ -35,10 +31,10 @@ public final class FacingSetting extends EnumSetting<FacingSetting.Facing>
 	{
 		OFF("Off", v -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器端",
 			v -> WURST.getRotationFaker().faceVectorPacket(v)),
 		
-		CLIENT("Client-side",
+		CLIENT("客户端",
 			v -> WURST.getRotationFaker().faceVectorClient(v));
 		
 		private String name;
