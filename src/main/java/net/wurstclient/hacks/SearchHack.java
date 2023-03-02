@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -179,7 +179,7 @@ public final class SearchHack extends Hack
 	public void onUpdate()
 	{
 		Block currentBlock = block.getBlock();
-		BlockPos eyesPos = new BlockPos(RotationUtils.getEyesPos());
+		BlockPos eyesPos = BlockPos.ofFloored(RotationUtils.getEyesPos());
 		
 		ChunkPos center = MC.player.getChunkPos();
 		int dimensionId = MC.world.getRegistryKey().toString().hashCode();

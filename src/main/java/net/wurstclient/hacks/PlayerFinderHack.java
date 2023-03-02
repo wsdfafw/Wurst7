@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -158,13 +158,14 @@ public final class PlayerFinderHack extends Hack
 		//
 		// }else
 		if(packet instanceof PlaySoundS2CPacket sound)
-			newPos = new BlockPos(sound.getX(), sound.getY(), sound.getZ());
+			newPos =
+				BlockPos.ofFloored(sound.getX(), sound.getY(), sound.getZ());
 		
 		if(newPos == null)
 			return;
 		
 		// check distance to player
-		BlockPos playerPos = new BlockPos(MC.player.getPos());
+		BlockPos playerPos = BlockPos.ofFloored(MC.player.getPos());
 		if(Math.abs(playerPos.getX() - newPos.getX()) > 256
 			|| Math.abs(playerPos.getZ() - newPos.getZ()) > 256)
 			pos = newPos;

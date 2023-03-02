@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -11,6 +11,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
+import net.wurstclient.events.AirStrafingSpeedListener;
 import net.wurstclient.events.IsPlayerInWaterListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
@@ -20,7 +21,7 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 @SearchTags({"FlyHack", "fly hack", "flying"})
 public final class FlightHack extends Hack
-	implements UpdateListener, IsPlayerInWaterListener
+	implements UpdateListener, IsPlayerInWaterListener, AirStrafingSpeedListener
 {
 	public final SliderSetting horizontalSpeed = new SliderSetting(
 		"水平速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
@@ -74,6 +75,7 @@ public final class FlightHack extends Hack
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(IsPlayerInWaterListener.class, this);
+		EVENTS.add(AirStrafingSpeedListener.class, this);
 	}
 	
 	@Override
@@ -81,6 +83,7 @@ public final class FlightHack extends Hack
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(IsPlayerInWaterListener.class, this);
+		EVENTS.remove(AirStrafingSpeedListener.class, this);
 	}
 	
 	@Override
@@ -89,7 +92,6 @@ public final class FlightHack extends Hack
 		ClientPlayerEntity player = MC.player;
 		
 		player.getAbilities().flying = false;
-		player.airStrafingSpeed = horizontalSpeed.getValueF();
 		
 		player.setVelocity(0, 0, 0);
 		Vec3d velocity = player.getVelocity();
@@ -99,17 +101,22 @@ public final class FlightHack extends Hack
 				velocity.z);
 		
 		if(MC.options.sneakKey.isPressed())
-		{
-			if(slowSneaking.isChecked())
-				player.airStrafingSpeed =
-					Math.min(horizontalSpeed.getValueF(), 0.85F);
-			
 			player.setVelocity(velocity.x, -verticalSpeed.getValue(),
 				velocity.z);
-		}
 		
 		if(antiKick.isChecked())
 			doAntiKick(velocity);
+	}
+	
+	@Override
+	public void onGetAirStrafingSpeed(AirStrafingSpeedEvent event)
+	{
+		float speed = horizontalSpeed.getValueF();
+		
+		if(MC.options.sneakKey.isPressed() && slowSneaking.isChecked())
+			speed = Math.min(speed, 0.85F);
+		
+		event.setSpeed(speed);
 	}
 	
 	private void doAntiKick(Vec3d velocity)

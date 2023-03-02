@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -42,8 +42,8 @@ import net.wurstclient.util.RotationUtils;
 
 @DontSaveState
 @SearchTags({"free camera", "spectator"})
-public final class FreecamHack extends Hack
-	implements UpdateListener, PacketOutputListener, IsPlayerInWaterListener,
+public final class FreecamHack extends Hack implements UpdateListener,
+	PacketOutputListener, IsPlayerInWaterListener, AirStrafingSpeedListener,
 	IsPlayerInLavaListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
@@ -69,6 +69,7 @@ public final class FreecamHack extends Hack
 		EVENTS.add(PacketOutputListener.class, this);
 		EVENTS.add(IsPlayerInWaterListener.class, this);
 		EVENTS.add(IsPlayerInLavaListener.class, this);
+		EVENTS.add(AirStrafingSpeedListener.class, this);
 		EVENTS.add(CameraTransformViewBobbingListener.class, this);
 		EVENTS.add(IsNormalCubeListener.class, this);
 		EVENTS.add(SetOpaqueCubeListener.class, this);
@@ -81,7 +82,7 @@ public final class FreecamHack extends Hack
 			gs.rightKey, gs.jumpKey, gs.sneakKey};
 		
 		for(KeyBinding binding : bindings)
-			binding.setPressed(((IKeyBinding)binding).isActallyPressed());
+			((IKeyBinding)binding).resetPressedState();
 	}
 	
 	@Override
@@ -91,6 +92,7 @@ public final class FreecamHack extends Hack
 		EVENTS.remove(PacketOutputListener.class, this);
 		EVENTS.remove(IsPlayerInWaterListener.class, this);
 		EVENTS.remove(IsPlayerInLavaListener.class, this);
+		EVENTS.remove(AirStrafingSpeedListener.class, this);
 		EVENTS.remove(CameraTransformViewBobbingListener.class, this);
 		EVENTS.remove(IsNormalCubeListener.class, this);
 		EVENTS.remove(SetOpaqueCubeListener.class, this);
@@ -113,7 +115,6 @@ public final class FreecamHack extends Hack
 		player.getAbilities().flying = false;
 		
 		player.setOnGround(false);
-		player.airStrafingSpeed = speed.getValueF();
 		Vec3d velocity = player.getVelocity();
 		
 		if(MC.options.jumpKey.isPressed())
@@ -121,6 +122,12 @@ public final class FreecamHack extends Hack
 		
 		if(MC.options.sneakKey.isPressed())
 			player.setVelocity(velocity.subtract(0, speed.getValue(), 0));
+	}
+	
+	@Override
+	public void onGetAirStrafingSpeed(AirStrafingSpeedEvent event)
+	{
+		event.setSpeed(speed.getValueF());
 	}
 	
 	@Override

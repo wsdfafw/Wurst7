@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -181,7 +181,7 @@ public final class KeybindProfilesScreen extends Screen
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		if(loadButton.isHovered() && !loadButton.active)
+		if(loadButton.isSelected() && !loadButton.active)
 			renderTooltip(matrixStack,
 				Arrays.asList(Text.literal("您必须先选择一个文件.")),
 				mouseX, mouseY);
