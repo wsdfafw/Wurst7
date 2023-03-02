@@ -149,8 +149,8 @@ public class WurstOptionsScreen extends Screen
 			y2, 0xcccccc);
 		drawCenteredTextWithShadow(matrixStack, tr, "管理者", middleX, y2,
 			0xcccccc);
-		drawCenteredText(matrixStack, tr, "管理", middleX, y2, 0xcccccc);
-		drawCenteredText(matrixStack, tr, "链接", middleX + 104, y2, 0xcccccc);
+		drawCenteredTextWithShadow(matrixStack, tr, "链接", middleX + 104, y2,
+			0xcccccc);
 	}
 	
 	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
