@@ -260,7 +260,7 @@ public final class EditBookOfferScreen extends Screen
 		matrixStack.translate(0, 0, 300);
 		
 		TextRenderer tr = client.textRenderer;
-		String titleText = "Edit Book Offer";
+		String titleText = "编辑图书报价";
 		drawCenteredText(matrixStack, tr, titleText, width / 2, 12, 0xffffff);
 		
 		int x = width / 2 - 100;
@@ -297,8 +297,8 @@ public final class EditBookOfferScreen extends Screen
 		
 		matrixStack.translate(width / 2 - 100, 112, 0);
 		
-		drawStringWithShadow(matrixStack, tr, "Level:", 0, 0, 0xf0f0f0);
-		drawStringWithShadow(matrixStack, tr, "Max price:", 0, 16, 0xf0f0f0);
+		drawStringWithShadow(matrixStack, tr, "等级:", 0, 0, 0xf0f0f0);
+		drawStringWithShadow(matrixStack, tr, "最高价格:", 0, 16, 0xf0f0f0);
 		
 		if(alreadyAdded && offerToSave != null)
 		{

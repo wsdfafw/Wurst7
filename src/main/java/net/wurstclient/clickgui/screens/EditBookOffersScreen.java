@@ -76,12 +76,12 @@ public final class EditBookOffersScreen extends Screen
 			.dimensions(width / 2 + 54, height - 56, 100, 20).build());
 		removeButton.active = false;
 		
-		addDrawableChild(ButtonWidget.builder(Text.literal("Reset to Defaults"),
+		addDrawableChild(ButtonWidget.builder(Text.literal("重置为默认值"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					bookOffers.resetToDefaults();
 				client.setScreen(EditBookOffersScreen.this);
-			}, Text.literal("Reset to Defaults"),
+			}, Text.literal("重置为默认值"),
 				Text.literal("Are you sure?"))))
 			.dimensions(width - 106, 6, 100, 20).build());
 		
