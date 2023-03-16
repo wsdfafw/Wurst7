@@ -51,7 +51,7 @@ import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
-@SearchTags({"tree bot","TreeBot"})
+@SearchTags({"tree bot"})
 @DontSaveState
 public final class TreeBotHack extends Hack
 	implements UpdateListener, RenderListener
@@ -458,7 +458,7 @@ public final class TreeBotHack extends Hack
 	{
 		public TreeFinder()
 		{
-			super(new BlockPos(WurstClient.MC.player.getPos()));
+			super(BlockPos.ofFloored(WurstClient.MC.player.getPos()));
 		}
 		
 		public TreeFinder(TreeBotPathFinder pathFinder)
@@ -537,7 +537,7 @@ public final class TreeBotHack extends Hack
 	{
 		public AngleFinder()
 		{
-			super(new BlockPos(WurstClient.MC.player.getPos()));
+			super(BlockPos.ofFloored(WurstClient.MC.player.getPos()));
 			setThinkSpeed(512);
 			setThinkTime(1);
 		}

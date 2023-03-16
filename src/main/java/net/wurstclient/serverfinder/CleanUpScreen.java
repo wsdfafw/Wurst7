@@ -205,10 +205,10 @@ public class CleanUpScreen extends Screen
 		float partialTicks)
 	{
 		renderBackground(matrixStack);
-		drawCenteredText(matrixStack, textRenderer, "清除", width / 2, 20,
-			16777215);
-		drawCenteredText(matrixStack, textRenderer,
-			"请选择你想清除的服务器:", width / 2, 36,
+		drawCenteredTextWithShadow(matrixStack, textRenderer, "Clean Up",
+			width / 2, 20, 16777215);
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
+			"Please select the servers you want to remove:", width / 2, 36,
 			10526880);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -225,7 +225,7 @@ public class CleanUpScreen extends Screen
 			
 			ClickableWidget button = (ClickableWidget)d;
 			
-			if(!button.isHovered() || !(button instanceof CleanUpButton))
+			if(!button.isSelected() || !(button instanceof CleanUpButton))
 				continue;
 			
 			CleanUpButton cuButton = (CleanUpButton)button;

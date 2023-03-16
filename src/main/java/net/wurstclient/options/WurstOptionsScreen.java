@@ -142,13 +142,15 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		drawCenteredText(matrixStack, tr, "Wurst选择,作者原来id:watermelon_GG,新id:wateTina,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
-			0xffffff);
+		drawCenteredTextWithShadow(matrixStack, tr, "Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX,
+			y1, 0xffffff);
 		
-		drawCenteredText(matrixStack, tr, "设置选项", middleX - 104, y2,
+		drawCenteredTextWithShadow(matrixStack, tr, "设置选项", middleX - 104,
+			y2, 0xcccccc);
+		drawCenteredTextWithShadow(matrixStack, tr, "Managers", middleX, y2,
 			0xcccccc);
-		drawCenteredText(matrixStack, tr, "管理", middleX, y2, 0xcccccc);
-		drawCenteredText(matrixStack, tr, "链接", middleX + 104, y2, 0xcccccc);
+		drawCenteredTextWithShadow(matrixStack, tr, "链接", middleX + 104, y2,
+			0xcccccc);
 	}
 	
 	private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
@@ -161,7 +163,7 @@ public class WurstOptionsScreen extends Screen
 			
 			ClickableWidget button = (ClickableWidget)d;
 			
-			if(!button.isHovered() || !(button instanceof WurstOptionsButton))
+			if(!button.isSelected() || !(button instanceof WurstOptionsButton))
 				continue;
 			
 			WurstOptionsButton woButton = (WurstOptionsButton)button;

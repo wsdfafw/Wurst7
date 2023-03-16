@@ -67,7 +67,7 @@ public class ServerFinderScreen extends Screen
 		ipBox = new TextFieldWidget(textRenderer, width / 2 - 100,
 			height / 4 + 34, 200, 20, Text.literal(""));
 		ipBox.setMaxLength(200);
-		ipBox.setTextFieldFocused(true);
+		ipBox.setFocused(true);
 		addSelectableChild(ipBox);
 		
 		maxThreadsBox = new TextFieldWidget(textRenderer, width / 2 - 32,
@@ -76,7 +76,7 @@ public class ServerFinderScreen extends Screen
 		maxThreadsBox.setText("128");
 		addSelectableChild(maxThreadsBox);
 		
-		setInitialFocus(ipBox);
+		setFocused(ipBox);
 		state = ServerFinderState.NOT_RUNNING;
 	}
 	
@@ -219,33 +219,33 @@ public class ServerFinderScreen extends Screen
 	{
 		renderBackground(matrixStack);
 		
-		drawCenteredText(matrixStack, textRenderer, "服务器查找器", width / 2,
-			20, 16777215);
-		drawCenteredText(matrixStack, textRenderer,
-			"这会寻找类似IP的服务器", width / 2, 40,
+		drawCenteredTextWithShadow(matrixStack, textRenderer, "Server Finder",
+			width / 2, 20, 16777215);
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
+			"This will search for servers with similar IPs", width / 2, 40,
 			10526880);
-		drawCenteredText(matrixStack, textRenderer,
-			"你在空框内所填写的IP", width / 2, 50,
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
+			"to the IP you type into the field below.", width / 2, 50,
 			10526880);
-		drawCenteredText(matrixStack, textRenderer,
-			"如果找到了则会添加到服务器列表",
+		drawCenteredTextWithShadow(matrixStack, textRenderer,
+			"The servers it finds will be added to your server list.",
 			width / 2, 60, 10526880);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "服务器地址:",
+		drawTextWithShadow(matrixStack, textRenderer, "Server address:",
 			width / 2 - 100, height / 4 + 24, 10526880);
 		ipBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawStringWithShadow(matrixStack, textRenderer, "最大. 线程:",
+		drawTextWithShadow(matrixStack, textRenderer, "Max. threads:",
 			width / 2 - 100, height / 4 + 60, 10526880);
 		maxThreadsBox.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		drawCenteredText(matrixStack, textRenderer, state.toString(), width / 2,
-			height / 4 + 73, 10526880);
+		drawCenteredTextWithShadow(matrixStack, textRenderer, state.toString(),
+			width / 2, height / 4 + 73, 10526880);
 		
-		drawStringWithShadow(matrixStack, textRenderer,
-			"已检查: " + checked + " / 1792", width / 2 - 100, height / 4 + 84,
+		drawTextWithShadow(matrixStack, textRenderer,
+			"Checked: " + checked + " / 1792", width / 2 - 100, height / 4 + 84,
 			10526880);
-		drawStringWithShadow(matrixStack, textRenderer, "正在运行: " + working,
+		drawTextWithShadow(matrixStack, textRenderer, "Working: " + working,
 			width / 2 - 100, height / 4 + 94, 10526880);
 		
 		super.render(matrixStack, mouseX, mouseY, partialTicks);

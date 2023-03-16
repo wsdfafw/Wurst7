@@ -237,7 +237,7 @@ public final class BaseFinderHack extends Hack
 		int endY = startY - stepSize;
 		
 		BlockPos playerPos =
-			new BlockPos(MC.player.getX(), 0, MC.player.getZ());
+			BlockPos.ofFloored(MC.player.getX(), 0, MC.player.getZ());
 		
 		// search matching blocks
 		loop: for(int y = startY; y > endY; y--)

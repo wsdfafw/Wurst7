@@ -37,14 +37,14 @@ public final class DigCmd extends Command
 		if(args.length != 3)
 			throw new CmdSyntaxError();
 		
-        int length = this.tryParseInt(args[0], "length");
-        int width = this.tryParseInt(args[1], "width");
-        int height = this.tryParseInt(args[2], "height");
+		int length = tryParseInt(args[0], "length");
+		int width = tryParseInt(args[1], "width");
+		int height = tryParseInt(args[2], "height");
 		
 		ClientPlayerEntity player = MC.player;
 		Direction direction = player.getHorizontalFacing();
 		
-		BlockPos pos1 = new BlockPos(
+		BlockPos pos1 = BlockPos.ofFloored(
 			player.getPos().add(0, player.getEyeHeight(player.getPose()), 0));
 		
 		if(height < 0)

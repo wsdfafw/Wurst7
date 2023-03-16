@@ -140,12 +140,12 @@ public final class PathCmd extends Command
 		if(entity == null)
 			throw new CmdError("实体 \"" + name + "\" 无法找到.");
 		
-		return new BlockPos(entity.getPos());
+		return BlockPos.ofFloored(entity.getPos());
 	}
 	
 	private BlockPos argsToXyzPos(String... xyz) throws CmdSyntaxError
 	{
-		BlockPos playerPos = new BlockPos(MC.player.getPos());
+		BlockPos playerPos = BlockPos.ofFloored(MC.player.getPos());
 		int[] player = {playerPos.getX(), playerPos.getY(), playerPos.getZ()};
 		int[] pos = new int[3];
 		

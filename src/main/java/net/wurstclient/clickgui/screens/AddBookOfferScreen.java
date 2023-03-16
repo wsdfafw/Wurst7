@@ -296,7 +296,8 @@ public final class AddBookOfferScreen extends Screen
 		
 		TextRenderer tr = client.textRenderer;
 		String titleText = "Available Books (" + listGui.getItemCount() + ")";
-		drawCenteredText(matrixStack, tr, titleText, width / 2, 12, 0xffffff);
+		drawCenteredTextWithShadow(matrixStack, tr, titleText, width / 2, 12,
+			0xffffff);
 		
 		levelField.render(matrixStack, mouseX, mouseY, partialTicks);
 		priceField.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -304,16 +305,15 @@ public final class AddBookOfferScreen extends Screen
 		
 		matrixStack.translate(width / 2 - 100, 0, 0);
 		
-		drawStringWithShadow(matrixStack, tr, "等级:", 0, height - 72,
-			0xf0f0f0);
-		drawStringWithShadow(matrixStack, tr, "最高价格:", 0, height - 56,
+		drawTextWithShadow(matrixStack, tr, "等级:", 0, height - 72, 0xf0f0f0);
+		drawTextWithShadow(matrixStack, tr, "最高价格:", 0, height - 56,
 			0xf0f0f0);
 		
 		if(alreadyAdded && offerToAdd != null)
 		{
 			String errorText = offerToAdd.getEnchantmentNameWithLevel()
 				+ " 已经在您的列表中!";
-			drawStringWithShadow(matrixStack, tr, errorText, 0, height - 40,
+			drawTextWithShadow(matrixStack, tr, errorText, 0, height - 40,
 				0xff5555);
 		}
 		
