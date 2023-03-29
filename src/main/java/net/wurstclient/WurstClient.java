@@ -7,7 +7,6 @@
  */
 package net.wurstclient;
 
-import hwid.Hwid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
