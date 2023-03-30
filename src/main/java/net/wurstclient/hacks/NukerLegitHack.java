@@ -70,12 +70,6 @@ public final class NukerLegitHack extends Hack
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
 		"多个ID列表", "有多个方块将会被破坏在多个ID列表模式.",
-		"minecraft:ancient_debris", "minecraft:bone_block", "minecraft:clay",
-		"minecraft:coal_ore", "minecraft:diamond_ore", "minecraft:emerald_ore",
-		"minecraft:glowstone", "minecraft:gold_ore", "minecraft:iron_ore",
-		"minecraft:lapis_ore", "minecraft:nether_gold_ore",
-		"minecraft:nether_quartz_ore", "minecraft:redstone_ore");
-		"MultiID List", "The types of blocks to break in MultiID mode.",
 		"minecraft:ancient_debris", "minecraft:bone_block",
 		"minecraft:coal_ore", "minecraft:copper_ore",
 		"minecraft:deepslate_coal_ore", "minecraft:deepslate_copper_ore",
@@ -351,7 +345,8 @@ public final class NukerLegitHack extends Hack
 				+ n.id.getBlockName().replace("minecraft:", "") + "]",
 			(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
 		
-		MULTI_ID("多ID", n -> "多ID合法版挖块 [" + n.multiIdList.getBlockNames().size()
+		MULTI_ID("MultiID",
+			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
 				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
 					: " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
