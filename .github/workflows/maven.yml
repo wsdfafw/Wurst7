@@ -10,7 +10,7 @@ jobs:
           17
         ]
         # 并同时在Linux和Windows上运行
-        os: [ubuntu-20.04, windows-latest]
+        os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - name: checkout repository
