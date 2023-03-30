@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -191,11 +191,11 @@ public final class EditColorScreen extends Screen
 		// RGB letters
 		tr.draw(matrixStack, "#", fieldsX - 3 - tr.getWidth("#"), fieldsY + 6,
 			0xF0F0F0);
-		tr.draw(matrixStack, "红:", fieldsX - 3 - tr.getWidth("红:"),
+		tr.draw(matrixStack, "R:", fieldsX - 3 - tr.getWidth("R:"),
 			fieldsY + 6 + 35, 0xFF0000);
-		tr.draw(matrixStack, "绿:", fieldsX + 75 - 3 - tr.getWidth("绿:"),
+		tr.draw(matrixStack, "G:", fieldsX + 75 - 3 - tr.getWidth("G:"),
 			fieldsY + 6 + 35, 0x00FF00);
-		tr.draw(matrixStack, "蓝:", fieldsX + 150 - 3 - tr.getWidth("蓝:"),
+		tr.draw(matrixStack, "B:", fieldsX + 150 - 3 - tr.getWidth("B:"),
 			fieldsY + 6 + 35, 0x0000FF);
 		
 		hexValueField.render(matrixStack, mouseX, mouseY, partialTicks);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -39,13 +39,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
+import net.wurstclient.events.IsPlayerInLavaListener.IsPlayerInLavaEvent;
 import net.wurstclient.events.IsPlayerInWaterListener.IsPlayerInWaterEvent;
 import net.wurstclient.events.KnockbackListener.KnockbackEvent;
 import net.wurstclient.events.PlayerMoveListener.PlayerMoveEvent;
 import net.wurstclient.events.PostMotionListener.PostMotionEvent;
 import net.wurstclient.events.PreMotionListener.PreMotionEvent;
 import net.wurstclient.events.UpdateListener.UpdateEvent;
-import net.wurstclient.hacks.FullbrightHack;
+import net.wurstclient.hack.HackList;
 import net.wurstclient.mixinterface.IClientPlayerEntity;
 
 @Mixin(ClientPlayerEntity.class)
@@ -185,6 +186,23 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	}
 	
 	@Override
+	public boolean isInLava()
+	{
+		boolean inLava = super.isInLava();
+		IsPlayerInLavaEvent event = new IsPlayerInLavaEvent(inLava);
+		EventManager.fire(event);
+		
+		return event.isInLava();
+	}
+	
+	@Override
+	public boolean isSpectator()
+	{
+		return super.isSpectator()
+			|| WurstClient.INSTANCE.getHax().freecamHack.isEnabled();
+	}
+	
+	@Override
 	public boolean isTouchingWaterBypass()
 	{
 		return super.isTouchingWater();
@@ -220,12 +238,15 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Override
 	public boolean hasStatusEffect(StatusEffect effect)
 	{
-		FullbrightHack fullbright =
-			WurstClient.INSTANCE.getHax().fullbrightHack;
+		HackList hax = WurstClient.INSTANCE.getHax();
 		
 		if(effect == StatusEffects.NIGHT_VISION
-			&& fullbright.isNightVisionActive())
+			&& hax.fullbrightHack.isNightVisionActive())
 			return true;
+		
+		if(effect == StatusEffects.LEVITATION
+			&& hax.noLevitationHack.isEnabled())
+			return false;
 		
 		return super.hasStatusEffect(effect);
 	}

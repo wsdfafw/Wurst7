@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -50,7 +50,7 @@ public final class CmdProcessor implements ChatOutputListener
 				WurstClient.INSTANCE.getHax().tooManyHaxHack;
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(cmd))
 			{
-				ChatUtils.error(cmd.getName() + " 已经被 TooManyHax 功能所屏蔽.");
+				ChatUtils.error(cmd.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			
@@ -88,9 +88,9 @@ public final class CmdProcessor implements ChatOutputListener
 			
 		}catch(Throwable e)
 		{
-			CrashReport report = CrashReport.create(e, "运行 Wurst 命令");
-			CrashReportSection section = report.addElement("影响的命令");
-			section.add("命令输入", () -> input);
+			CrashReport report = CrashReport.create(e, "Running Wurst command");
+			CrashReportSection section = report.addElement("Affected command");
+			section.add("Command input", () -> input);
 			throw new CrashException(report);
 		}
 	}

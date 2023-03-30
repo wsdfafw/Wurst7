@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -70,7 +70,7 @@ public final class FeatureButton extends Component
 			WurstClient.INSTANCE.getHax().tooManyHaxHack;
 		if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 		{
-			ChatUtils.error(feature.getName() + " 被 太多外挂功能 所屏蔽.");
+			ChatUtils.error(feature.getName() + " is blocked by TooManyHax.");
 			return;
 		}
 		

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -51,9 +51,9 @@ public class ServerFinderScreen extends Screen
 				Text.literal("搜索"), b -> searchOrCancel()));
 		
 		addDrawableChild(new ButtonWidget(width / 2 - 100,
-			height / 4 + 120 + 12, 200, 20, Text.literal("教程(跳转)"),
-			b -> Util.getOperatingSystem().open(
-				"https://www.wurstclient.net/wiki/Special_Features/Server_Finder/")));
+			height / 4 + 120 + 12, 200, 20, Text.literal("Tutorial"),
+			b -> Util.getOperatingSystem()
+				.open("https://www.wurstclient.net/serverfinder-tutorial/")));
 		
 		addDrawableChild(
 			new ButtonWidget(width / 2 - 100, height / 4 + 144 + 12, 200, 20,

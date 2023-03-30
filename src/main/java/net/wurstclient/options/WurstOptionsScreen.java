@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -106,11 +106,19 @@ public class WurstOptionsScreen extends Screen
 		OperatingSystem os = Util.getOperatingSystem();
 		
 		new WurstOptionsButton(54, 24, () -> "官方网站",
-			"WurstClient.net", b -> os.open("https://www.wurstclient.net/"));
+			"WurstClient.net", b -> os.open(
+				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
-		new WurstOptionsButton(54, 48, () -> "捐款 求捐款",
-			"qq/微信/支付宝/支付",
-			b -> os.open("https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
+		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "Wurst.Wiki",
+			b -> os.open(
+				"https://wurst.wiki/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Wurst+Wiki"));
+		
+		new WurstOptionsButton(54, 72, () -> "Reddit", "r/WurstClient",
+			b -> os.open("https://www.wurstclient.net/reddit/"));
+		
+		new WurstOptionsButton(54, 96, () -> "捐款 求捐款",
+			"qq/微信/支付宝/支付", b -> os.open(
+				"https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
 	}
 	
 	@Override

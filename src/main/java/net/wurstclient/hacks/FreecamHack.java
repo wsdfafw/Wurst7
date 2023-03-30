@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -31,7 +31,6 @@ import net.wurstclient.SearchTags;
 import net.wurstclient.events.*;
 import net.wurstclient.hack.DontSaveState;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.IClientPlayerEntity;
 import net.wurstclient.mixinterface.IKeyBinding;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
@@ -44,8 +43,8 @@ import net.wurstclient.util.RotationUtils;
 @DontSaveState
 @SearchTags({"free camera", "spectator"})
 public final class FreecamHack extends Hack
-	implements UpdateListener, PacketOutputListener, PlayerMoveListener,
-	IsPlayerInWaterListener, CameraTransformViewBobbingListener,
+	implements UpdateListener, PacketOutputListener, IsPlayerInWaterListener,
+	IsPlayerInLavaListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
 	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
@@ -69,7 +68,7 @@ public final class FreecamHack extends Hack
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketOutputListener.class, this);
 		EVENTS.add(IsPlayerInWaterListener.class, this);
-		EVENTS.add(PlayerMoveListener.class, this);
+		EVENTS.add(IsPlayerInLavaListener.class, this);
 		EVENTS.add(CameraTransformViewBobbingListener.class, this);
 		EVENTS.add(IsNormalCubeListener.class, this);
 		EVENTS.add(SetOpaqueCubeListener.class, this);
@@ -82,7 +81,7 @@ public final class FreecamHack extends Hack
 			gs.rightKey, gs.jumpKey, gs.sneakKey};
 		
 		for(KeyBinding binding : bindings)
-			binding.setPressed(((IKeyBinding)binding).isActallyPressed());
+			((IKeyBinding)binding).resetPressedState();
 	}
 	
 	@Override
@@ -91,7 +90,7 @@ public final class FreecamHack extends Hack
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(PacketOutputListener.class, this);
 		EVENTS.remove(IsPlayerInWaterListener.class, this);
-		EVENTS.remove(PlayerMoveListener.class, this);
+		EVENTS.remove(IsPlayerInLavaListener.class, this);
 		EVENTS.remove(CameraTransformViewBobbingListener.class, this);
 		EVENTS.remove(IsNormalCubeListener.class, this);
 		EVENTS.remove(SetOpaqueCubeListener.class, this);
@@ -111,6 +110,7 @@ public final class FreecamHack extends Hack
 	{
 		ClientPlayerEntity player = MC.player;
 		player.setVelocity(Vec3d.ZERO);
+		player.getAbilities().flying = false;
 		
 		player.setOnGround(false);
 		player.airStrafingSpeed = speed.getValueF();
@@ -131,15 +131,15 @@ public final class FreecamHack extends Hack
 	}
 	
 	@Override
-	public void onPlayerMove(IClientPlayerEntity player)
-	{
-		player.setNoClip(true);
-	}
-	
-	@Override
 	public void onIsPlayerInWater(IsPlayerInWaterEvent event)
 	{
 		event.setInWater(false);
+	}
+	
+	@Override
+	public void onIsPlayerInLava(IsPlayerInLavaEvent event)
+	{
+		event.setInLava(false);
 	}
 	
 	@Override
