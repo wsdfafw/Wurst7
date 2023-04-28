@@ -89,13 +89,12 @@ public final class ExcavatorHack extends Hack
 	public void onEnable()
 	{
 		// disable conflicting hacks
-		// TODO:
-		// WURST.getHax().bowAimbotMod.setEnabled(false);
-		// WURST.getHax().templateToolMod.setEnabled(false);
 		WURST.getHax().autoMineHack.setEnabled(false);
+		WURST.getHax().bowAimbotHack.setEnabled(false);
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().nukerLegitHack.setEnabled(false);
 		WURST.getHax().speedNukerHack.setEnabled(false);
+		// WURST.getHax().templateToolHack.setEnabled(false);
 		WURST.getHax().tunnellerHack.setEnabled(false);
 		
 		step = Step.START_POS;
@@ -361,6 +360,7 @@ public final class ExcavatorHack extends Hack
 		tessellator.draw();
 		
 		// text
+		RenderSystem.setShaderColor(1, 1, 1, 1);
 		tr.draw(matrixStack, message, 2, 1, 0xffffffff);
 		
 		matrixStack.pop();
