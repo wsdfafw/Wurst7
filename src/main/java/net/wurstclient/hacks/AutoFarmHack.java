@@ -176,8 +176,7 @@ public final class AutoFarmHack extends Hack
 	{
 		return getBlockStream(eyesBlock, blockRange)
 			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
-			.filter(
-				pos -> BlockUtils.getState(pos).getMaterial().isReplaceable())
+			.filter(pos -> BlockUtils.getState(pos).isReplaceable())
 			.filter(pos -> plants.containsKey(pos)).filter(this::canBeReplanted)
 			.sorted(Comparator.comparingDouble(
 				pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))))
@@ -528,7 +527,7 @@ public final class AutoFarmHack extends Hack
 		if(greenBuffer != null)
 			greenBuffer.close();
 		
-		greenBuffer = new VertexBuffer();
+		greenBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
@@ -551,7 +550,7 @@ public final class AutoFarmHack extends Hack
 		if(cyanBuffer != null)
 			cyanBuffer.close();
 		
-		cyanBuffer = new VertexBuffer();
+		cyanBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
@@ -572,7 +571,7 @@ public final class AutoFarmHack extends Hack
 		if(redBuffer != null)
 			redBuffer.close();
 		
-		redBuffer = new VertexBuffer();
+		redBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		
 		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES,
 			VertexFormats.POSITION);
