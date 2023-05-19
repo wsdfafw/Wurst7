@@ -28,8 +28,8 @@ public final class AutoFishRodSelector
 	private static final MinecraftClient MC = WurstClient.MC;
 	
 	private final CheckboxSetting stopWhenOutOfRods = new CheckboxSetting(
-		"Stop when out of rods",
-		"If enabled, AutoFish will turn itself off when it runs out of fishing rods.",
+		"当没有钓竿时停止",
+		"如果启用了AutoFish，当它用完了所有的钓鱼竿时，它会自动关闭。",
 		false);
 	
 	private final AutoFishHack autoFish;
@@ -92,7 +92,7 @@ public final class AutoFishRodSelector
 	{
 		if(bestRodSlot == -1 && stopWhenOutOfRods.isChecked())
 		{
-			ChatUtils.message("AutoFish has run out of fishing rods.");
+			ChatUtils.message("AutoFish已经用完了所有的钓鱼竿.");
 			autoFish.setEnabled(false);
 			return;
 		}
