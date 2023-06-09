@@ -206,7 +206,7 @@ public final class BaseFinderHack extends Hack
 			if(vertexBuffer != null)
 				vertexBuffer.close();
 			
-			vertexBuffer = new VertexBuffer();
+			vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 			
 			Tessellator tessellator = RenderSystem.renderThreadTesselator();
 			BufferBuilder bufferBuilder = tessellator.getBuffer();
