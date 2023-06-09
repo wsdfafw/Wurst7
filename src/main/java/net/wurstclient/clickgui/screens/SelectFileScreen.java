@@ -50,7 +50,7 @@ public final class SelectFileScreen extends Screen
 				.dimensions(8, 8, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Reset to Defaults"),
+			.builder(Text.literal("重置为默认值"),
 				b -> askToConfirmReset())
 			.dimensions(width - 108, 8, 100, 20).build());
 		

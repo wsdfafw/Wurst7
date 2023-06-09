@@ -26,8 +26,7 @@ public final class TranslationsOtf extends OtherFeature
 	public TranslationsOtf()
 	{
 		super("Translations",
-			"本地化设置.\n"
-				+ "§c这是一个实验性功能！\n我们还没有很多翻译.\n如果您会说英语和其他语言,请添加更多翻译来帮助我们.");
+			"本地化设置.\n§c这是一个实验性功能！\n我们还没有很多翻译.\n如果您会说英语和其他语言,请添加更多翻译来帮助我们.");
 		addSetting(forceEnglish);
 	}
 	

@@ -7,8 +7,8 @@ rules:
       - buiawpkgew1
     conflictReviewers:
       - buiawpkgew1
-  - base: dev
-    upstream: master
+  - base: 1.19.4
+    upstream: Wurst-Imperium:1.19.4
     mergeMethod: merge
     assignees:
       - buiawpkgew1

@@ -31,15 +31,15 @@ public final class AimAssistHack extends Hack
 	implements UpdateListener, RenderListener
 {
 	private final SliderSetting range =
-		new SliderSetting("Range", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting rotationSpeed =
-		new SliderSetting("Rotation Speed", 600, 10, 3600, 10,
+		new SliderSetting("抬前轮速度", 600, 10, 3600, 10,
 			ValueDisplay.DEGREES.withSuffix("/s"));
 	
 	private final SliderSetting fov = new SliderSetting("FOV",
-		"Field Of View - how far away from your crosshair an entity can be before it's ignored.\n"
-			+ "360\u00b0 = aims at entities all around you.",
+		"视野 - 一个实体在被忽略之前离你的十字准线有多远.\n"
+			+ "360\u00b0 = 瞄准你周围的实体.",
 		120, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final EntityFilterList entityFilters =
@@ -66,7 +66,7 @@ public final class AimAssistHack extends Hack
 	
 	public AimAssistHack()
 	{
-		super("AimAssist");
+		super("瞄准辅助");
 		setCategory(Category.COMBAT);
 		
 		addSetting(range);

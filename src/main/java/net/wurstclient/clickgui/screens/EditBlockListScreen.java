@@ -67,12 +67,12 @@ public final class EditBlockListScreen extends Screen
 				b -> blockList.remove(listGui.selected))
 			.dimensions(width / 2 + 52, height - 56, 100, 20).build());
 		
-		addDrawableChild(ButtonWidget.builder(Text.literal("Reset to Defaults"),
+		addDrawableChild(ButtonWidget.builder(Text.literal("重置为默认值"),
 			b -> client.setScreen(new ConfirmScreen(b2 -> {
 				if(b2)
 					blockList.resetToDefaults();
 				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("Reset to Defaults"),
+			}, Text.literal("重置为默认值"),
 				Text.literal("Are you sure?"))))
 			.dimensions(width - 108, 8, 100, 20).build());
 		

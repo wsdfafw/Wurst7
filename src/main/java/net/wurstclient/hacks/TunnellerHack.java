@@ -159,9 +159,14 @@ public final class TunnellerHack extends Hack
 			currentBlock = null;
 		}
 		
-		for(VertexBuffer buffer : vertexBuffers)
-			if(buffer != null)
-				buffer.close();
+		for(int i = 0; i < vertexBuffers.length; i++)
+		{
+			if(vertexBuffers[i] == null)
+				continue;
+			
+			vertexBuffers[i].close();
+			vertexBuffers[i] = null;
+		}
 	}
 	
 	@Override
@@ -199,12 +204,15 @@ public final class TunnellerHack extends Hack
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		
 		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
+		
+		BlockPos camPos = RenderUtils.getCameraBlockPos();
+		int regionX = (camPos.getX() >> 9) * 512;
+		int regionZ = (camPos.getZ() >> 9) * 512;
+		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
 		
 		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		
@@ -237,10 +245,6 @@ public final class TunnellerHack extends Hack
 			float red = p * 2F;
 			float green = 2 - red;
 			
-			BlockPos camPos = RenderUtils.getCameraBlockPos();
-			int regionX = (camPos.getX() >> 9) * 512;
-			int regionZ = (camPos.getZ() >> 9) * 512;
-			
 			matrixStack.translate(currentBlock.getX() - regionX,
 				currentBlock.getY(), currentBlock.getZ() - regionZ);
 			if(p < 1)
@@ -263,7 +267,6 @@ public final class TunnellerHack extends Hack
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 	
 	private void updateCyanBuffer()
@@ -736,7 +739,10 @@ public final class TunnellerHack extends Hack
 				lastTorch = null;
 				nextTorch = BlockPos.ofFloored(MC.player.getPos());
 				if(vertexBuffers[4] != null)
+				{
 					vertexBuffers[4].close();
+					vertexBuffers[4] = null;
+				}
 				return false;
 			}
 			

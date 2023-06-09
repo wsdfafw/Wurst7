@@ -17,18 +17,16 @@ public final class NameTagsHack extends Hack
 {
 	private final CheckboxSetting unlimitedRange =
 		new CheckboxSetting("Unlimited range",
-			"Removes the 64 block distance limit for nametags.", true);
+			"取消了名片的64个街区距离限制.", true);
 	
 	private final CheckboxSetting seeThrough = new CheckboxSetting(
-		"See-through mode",
-		"Renders nametags on the see-through text layer. This makes them"
-			+ " easier to read behind walls, but harder to read behind water"
-			+ " and other transparent things.",
+		"透视模式",
+		"在透明文本层上呈现姓名标签。这使得它们在墙后更容易阅读，但是在水和其他透明的东西后面就很难阅读了。",
 		false);
 	
 	private final CheckboxSetting forceNametags = new CheckboxSetting(
-		"Force nametags",
-		"Forces nametags of all players to be visible, even your own.", false);
+		"强制名片",
+		"强制所有玩家的姓名标签可见，甚至是你自己的.", false);
 	
 	public NameTagsHack()
 	{

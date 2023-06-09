@@ -41,19 +41,9 @@ import net.wurstclient.util.RotationUtils;
 	"auto hoe"})
 public final class TillauraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("Range",
-		"How far Tillaura will reach to till blocks.", 5, 1, 6, 0.05,
-		ValueDisplay.DECIMAL);
-	
-	private final CheckboxSetting multiTill =
-		new CheckboxSetting("MultiTill", "Tills multiple blocks at once.\n"
-			+ "Faster, but can't bypass NoCheat+.", false);
-	
-	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("Check line of sight",
-			"Prevents Tillaura from reaching through blocks.\n"
-				+ "Good for NoCheat+ servers, but unnecessary in vanilla.",
-			true);
+	private final SliderSetting range = new SliderSetting("范围", "农田转化器所转化的范围.", 5.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+    private final CheckboxSetting multiTill = new CheckboxSetting("多倍转农田", "一下子将多个地转化为农田.\n但无法绕过反作弊.", false);
+    private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野", "防止农田转化触及到无法触及的方块.\n在有反作弊服务器中表现很好,\n在原生态无插件服务器中无需.", true);
 	
 	private final List<Block> tillableBlocks = Arrays.asList(Blocks.GRASS_BLOCK,
 		Blocks.DIRT_PATH, Blocks.DIRT, Blocks.COARSE_DIRT);

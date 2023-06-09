@@ -30,7 +30,7 @@ public final class KeybindEditorScreen extends Screen
 		super(Text.literal(""));
 		this.prevScreen = prevScreen;
 		
-		key = "无";
+		key = "NONE";
 		oldKey = null;
 		oldCommands = null;
 	}

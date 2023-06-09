@@ -51,17 +51,14 @@ public final class KillauraLegitHack extends Hack
 		new AttackSpeedSliderSetting();
 	
 	private final SliderSetting rotationSpeed =
-		new SliderSetting("Rotation Speed", 600, 10, 3600, 10,
+		new SliderSetting("抬前轮速度", 600, 10, 3600, 10,
 			ValueDisplay.DEGREES.withSuffix("/s"));
 	
-	private final EnumSetting<Priority> priority = new EnumSetting<>("Priority",
-		"Determines which entity will be attacked first.\n"
-			+ "\u00a7lDistance\u00a7r - Attacks the closest entity.\n"
-			+ "\u00a7lAngle\u00a7r - Attacks the entity that requires the least head movement.\n"
-			+ "\u00a7lHealth\u00a7r - Attacks the weakest entity.",
+	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
+		"决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体",
 		Priority.values(), Priority.ANGLE);
 	
-	private final SliderSetting fov = new SliderSetting("FOV",
+	private final SliderSetting fov = new SliderSetting("视场",
 		"Field Of View - how far away from your crosshair an entity can be before it's ignored.\n"
 			+ "360\u00b0 = entities can be attacked all around you.",
 		360, 30, 360, 10, ValueDisplay.DEGREES);
@@ -84,6 +81,7 @@ public final class KillauraLegitHack extends Hack
 			FilterPetsSetting.genericCombat(false),
 			FilterTradersSetting.genericCombat(false),
 			FilterGolemsSetting.genericCombat(false),
+			FilterAllaysSetting.genericCombat(false),
 			FilterInvisibleSetting.genericCombat(true),
 			FilterNamedSetting.genericCombat(false),
 			FilterShulkerBulletSetting.genericCombat(false),
@@ -213,16 +211,15 @@ public final class KillauraLegitHack extends Hack
 		// GL settings
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		
 		matrixStack.push();
-		RenderUtils.applyRegionalRenderOffset(matrixStack);
 		
 		BlockPos camPos = RenderUtils.getCameraBlockPos();
 		int regionX = (camPos.getX() >> 9) * 512;
 		int regionZ = (camPos.getZ() >> 9) * 512;
+		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
 		
 		Box box = new Box(BlockPos.ORIGIN);
 		float p = 1;
@@ -268,7 +265,6 @@ public final class KillauraLegitHack extends Hack
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 	
 	private enum Priority

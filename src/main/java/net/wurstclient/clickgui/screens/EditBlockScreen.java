@@ -56,7 +56,7 @@ public final class EditBlockScreen extends Screen
 		setFocused(blockField);
 		blockField.setFocused(true);
 		
-		doneButton = ButtonWidget.builder(Text.literal("完成"), b -> done())
+		doneButton = ButtonWidget.builder(Text.literal("Done"), b -> done())
 			.dimensions(x1, y2, 200, 20).build();
 		addDrawableChild(doneButton);
 	}
@@ -114,7 +114,7 @@ public final class EditBlockScreen extends Screen
 		boolean lblAbove =
 			!blockField.getText().isEmpty() || blockField.isFocused();
 		String lblText =
-			lblAbove ? "方块ID或数字:" : "方块ID或数字";
+			lblAbove ? "Block ID or number:" : "block ID or number";
 		int lblX = lblAbove ? 50 : 68;
 		int lblY = lblAbove ? -66 : -50;
 		int lblColor = lblAbove ? 0xF0F0F0 : 0x808080;
