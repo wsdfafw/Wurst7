@@ -50,6 +50,10 @@ public final class CrystalAuraFilterList extends EntityFilterList
 				+ damageWarning,
 			true));
 		
+		builder.add(new FilterAllaysSetting(
+			"Won't target allays when auto-placing crystals." + damageWarning,
+			true));
+		
 		builder.add(new FilterInvisibleSetting(
 			"自动放置水晶时不会瞄准隐形实体."
 				+ damageWarning,

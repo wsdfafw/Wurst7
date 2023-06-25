@@ -56,6 +56,8 @@ public final class FollowFilterList extends EntityFilterList
 		builder.add(new FilterGolemsSetting(
 			"不会跟随铁傀儡、雪傀儡和潜影贝.", true));
 		
+		builder.add(new FilterAllaysSetting("Won't follow allays.", true));
+		
 		builder.add(new FilterInvisibleSetting(
 			"不会跟随隐形实体.", false));
 		

@@ -50,6 +50,10 @@ public final class AnchorAuraFilterList extends EntityFilterList
 				+ damageWarning,
 			true));
 		
+		builder.add(new FilterAllaysSetting(
+			"Won't target allays when auto-placing anchors." + damageWarning,
+			true));
+		
 		builder.add(new FilterInvisibleSetting(
 			"自动放置锚点时不会瞄准不可见的实体."
 				+ damageWarning,
