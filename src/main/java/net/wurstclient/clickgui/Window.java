@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -40,7 +40,7 @@ public class Window
 	
 	private boolean fixedWidth;
 	private int innerHeight;
-	private int maxHeight;
+	private int maxInnerHeight;
 	private int scrollOffset;
 	private boolean scrollingEnabled;
 	
@@ -62,7 +62,29 @@ public class Window
 		this.title = title;
 	}
 	
+	/**
+	 * Returns the X position of the window, adjusted to fit inside the screen.
+	 */
 	public final int getX()
+	{
+		// prevent window from going off the right side of the screen
+		net.minecraft.client.util.Window mcWindow = WurstClient.MC.getWindow();
+		if(x > mcWindow.getScaledWidth() - 1)
+			return mcWindow.getScaledWidth() - 1;
+		
+		// prevent window from going off the left side of the screen
+		if(x <= -width)
+			return -width + 1;
+		
+		return x;
+	}
+	
+	/**
+	 * Returns the actual X position of the window, without any adjustments.
+	 * This should only be used for saving the window's position to the config
+	 * file.
+	 */
+	public final int getActualX()
 	{
 		return x;
 	}
@@ -72,7 +94,29 @@ public class Window
 		this.x = x;
 	}
 	
+	/**
+	 * Returns the Y position of the window, adjusted to fit inside the screen.
+	 */
 	public final int getY()
+	{
+		// prevent window from going off the bottom of the screen
+		net.minecraft.client.util.Window mcWindow = WurstClient.MC.getWindow();
+		if(y > mcWindow.getScaledHeight() - 1)
+			return mcWindow.getScaledHeight() - 1;
+		
+		// prevent window from going off the top of the screen
+		if(y <= -12)
+			return -12;
+		
+		return y;
+	}
+	
+	/**
+	 * Returns the actual Y position of the window, without any adjustments.
+	 * This should only be used for saving the window's position to the config
+	 * file.
+	 */
+	public final int getActualY()
 	{
 		return y;
 	}
@@ -133,10 +177,10 @@ public class Window
 			childrenHeight += c.getHeight() + 2;
 		childrenHeight += 2;
 		
-		if(maxHeight > 0 && childrenHeight > maxHeight + 13)
+		if(maxInnerHeight > 0 && childrenHeight > maxInnerHeight + 13)
 		{
 			setWidth(Math.max(maxChildWidth + 3, titleBarWidth));
-			setHeight(maxHeight + 13);
+			setHeight(maxInnerHeight + 13);
 			
 		}else
 		{
@@ -164,10 +208,10 @@ public class Window
 		
 		innerHeight = offsetY;
 		
-		if(maxHeight == 0 || innerHeight < maxHeight)
+		if(maxInnerHeight == 0 || innerHeight < maxInnerHeight)
 			setHeight(innerHeight + 13);
 		else
-			setHeight(maxHeight + 13);
+			setHeight(maxInnerHeight + 13);
 		
 		scrollingEnabled = innerHeight + 13 > height;
 		if(scrollingEnabled)
@@ -226,8 +270,8 @@ public class Window
 	public final void startDragging(int mouseX, int mouseY)
 	{
 		dragging = true;
-		dragOffsetX = x - mouseX;
-		dragOffsetY = y - mouseY;
+		dragOffsetX = getX() - mouseX;
+		dragOffsetY = getY() - mouseY;
 	}
 	
 	public final void dragTo(int mouseX, int mouseY)
@@ -328,12 +372,20 @@ public class Window
 		return innerHeight;
 	}
 	
-	public final void setMaxHeight(int maxHeight)
+	public final void setMaxInnerHeight(int maxInnerHeight)
 	{
-		if(this.maxHeight != maxHeight)
+		if(maxInnerHeight < 0)
+			maxInnerHeight = 0;
+		
+		if(this.maxInnerHeight != maxInnerHeight)
 			invalidate();
 		
-		this.maxHeight = maxHeight;
+		this.maxInnerHeight = maxInnerHeight;
+	}
+	
+	public final void setMaxHeight(int maxHeight)
+	{
+		setMaxInnerHeight(maxHeight - 13);
 	}
 	
 	public final int getScrollOffset()

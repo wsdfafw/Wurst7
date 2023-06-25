@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -81,13 +81,12 @@ public final class ExcavatorHack extends Hack
 	public void onEnable()
 	{
 		// disable conflicting hacks
-		// TODO:
-		// WURST.getHax().bowAimbotMod.setEnabled(false);
-		// WURST.getHax().templateToolMod.setEnabled(false);
 		WURST.getHax().autoMineHack.setEnabled(false);
+		WURST.getHax().bowAimbotHack.setEnabled(false);
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().nukerLegitHack.setEnabled(false);
 		WURST.getHax().speedNukerHack.setEnabled(false);
+		// WURST.getHax().templateToolHack.setEnabled(false);
 		WURST.getHax().tunnellerHack.setEnabled(false);
 		
 		step = Step.START_POS;
@@ -310,6 +309,7 @@ public final class ExcavatorHack extends Hack
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glColor4f(1, 1, 1, 1);
 	}
 	
 	@Override
@@ -350,6 +350,7 @@ public final class ExcavatorHack extends Hack
 		
 		// text
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glColor4f(1, 1, 1, 1);
 		tr.draw(matrixStack, message, 2, 1, 0xffffffff);
 		
 		GL11.glPopMatrix();
@@ -357,6 +358,7 @@ public final class ExcavatorHack extends Hack
 		// GL resets
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glColor4f(1, 1, 1, 1);
 	}
 	
 	public void enableWithArea(BlockPos pos1, BlockPos pos2)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2023 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,14 +16,15 @@ import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.shape.VoxelShape;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.LeftClickListener;
@@ -44,14 +45,28 @@ import net.wurstclient.util.RotationUtils;
 public final class NukerLegitHack extends Hack
 	implements LeftClickListener, RenderListener, UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("范围", 4.25, 1.0, 4.25, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Mode> mode = new EnumSetting("模式", "§l普通§r 模式很简单的破坏\n你周边的东西.\n§lID§r 模式只破坏所选的方块\n类型. 左键方块选择其方块.\n§l多个ID§r 模式只破坏那些你选择\n在你 多个ID 列表.\n§l平坦§r 模式只会挖你水平上的方块,\n但不会往下挖.\n§l粉碎§r 模式只会破坏那些\n能够瞬间破坏的方块 (例.如. 高大的草).", (Enum[])Mode.values(), (Enum)Mode.NORMAL);
-    private final BlockSetting id = new BlockSetting("ID", "在ID模式,将会破坏指定ID的方块类型.\nair = 不会破坏任何东西", "minecraft:air", true);
-    private final CheckboxSetting lockId = new CheckboxSetting("锁ID", "保护且不会导致因点击其他方块\n而改变挖掘的方块,同时也不会因重启而重置.", false);
+	private final SliderSetting range =
+		new SliderSetting("Range", 4.25, 1, 4.25, 0.05, ValueDisplay.DECIMAL);
+	
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"
+			+ "\u00a7lID\u00a7r mode only breaks the selected block type. Left-click on a block to select it.\n"
+			+ "\u00a7lMultiID\u00a7r mode only breaks the block types in your MultiID List.\n"
+			+ "\u00a7lFlat\u00a7r mode flattens the area around you, but won't dig down.\n"
+			+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be destroyed instantly (e.g. tall grass).",
+		Mode.values(), Mode.NORMAL);
+	
+	private final BlockSetting id =
+		new BlockSetting("ID", "The type of block to break in ID mode.\n"
+			+ "air = won't break anything", "minecraft:air", true);
+	
+	private final CheckboxSetting lockId = new CheckboxSetting("Lock ID",
+		"Prevents changing the ID by clicking on blocks or restarting NukerLegit.",
+		false);
 	
 	private final BlockListSetting multiIdList = new BlockListSetting(
-		"多个ID列表", "有多个方块将会被破坏在多个ID列表模式.",
-		"minecraft:ancient_debris", "minecraft:bone_block", "minecraft:clay",
+		"MultiID List", "The types of blocks to break in MultiID mode.",
+		"minecraft:ancient_debris", "minecraft:bone_block",
 		"minecraft:coal_ore", "minecraft:diamond_ore", "minecraft:emerald_ore",
 		"minecraft:glowstone", "minecraft:gold_ore", "minecraft:iron_ore",
 		"minecraft:lapis_ore", "minecraft:nether_gold_ore",
@@ -184,13 +199,31 @@ public final class NukerLegitHack extends Hack
 	
 	private boolean breakBlockExtraLegit(BlockPos pos)
 	{
-		Vec3d eyesPos = RotationUtils.getEyesPos();
-		Vec3d posVec = Vec3d.ofCenter(pos);
-		double distanceSqPosVec = eyesPos.squaredDistanceTo(posVec);
+		Direction[] sides = Direction.values();
 		
-		for(Direction side : Direction.values())
+		BlockState state = BlockUtils.getState(pos);
+		VoxelShape shape = state.getOutlineShape(MC.world, pos);
+		if(shape.isEmpty())
+			return false;
+		
+		Vec3d eyesPos = RotationUtils.getEyesPos();
+		Vec3d relCenter = shape.getBoundingBox().getCenter();
+		Vec3d center = Vec3d.of(pos).add(relCenter);
+		
+		Vec3d[] hitVecs = new Vec3d[sides.length];
+		for(int i = 0; i < sides.length; i++)
 		{
-			Vec3d hitVec = posVec.add(Vec3d.of(side.getVector()).multiply(0.5));
+			Vec3i dirVec = sides[i].getVector();
+			Vec3d relHitVec = new Vec3d(relCenter.x * dirVec.getX(),
+				relCenter.y * dirVec.getY(), relCenter.z * dirVec.getZ());
+			hitVecs[i] = center.add(relHitVec);
+		}
+		
+		double distanceSqToCenter = eyesPos.squaredDistanceTo(center);
+		
+		for(Direction side : sides)
+		{
+			Vec3d hitVec = hitVecs[side.ordinal()];
 			double distanceSqHitVec = eyesPos.squaredDistanceTo(hitVec);
 			
 			// check if hitVec is within range (4.25 blocks)
@@ -198,15 +231,12 @@ public final class NukerLegitHack extends Hack
 				continue;
 			
 			// check if side is facing towards player
-			if(distanceSqHitVec >= distanceSqPosVec)
+			if(distanceSqHitVec >= distanceSqToCenter)
 				continue;
 			
 			// check line of sight
-			if(MC.world
-				.raycast(new RaycastContext(eyesPos, hitVec,
-					RaycastContext.ShapeType.COLLIDER,
-					RaycastContext.FluidHandling.NONE, MC.player))
-				.getType() != HitResult.Type.MISS)
+			if(MC.world.raycastBlock(eyesPos, hitVec, pos, shape,
+				state) != null)
 				continue;
 			
 			// face block
@@ -214,9 +244,12 @@ public final class NukerLegitHack extends Hack
 			
 			if(currentBlock != null)
 				WURST.getHax().autoToolHack.equipIfEnabled(currentBlock);
+			
+			if(!MC.interactionManager.isBreakingBlock())
+				MC.interactionManager.attackBlock(pos, side);
 				
-			// if attack key is down but nothing happens, release it for one
-			// tick
+			// if attack key is down but nothing happens,
+			// release it for one tick
 			if(MC.options.keyAttack.isPressed()
 				&& !MC.interactionManager.isBreakingBlock())
 			{
