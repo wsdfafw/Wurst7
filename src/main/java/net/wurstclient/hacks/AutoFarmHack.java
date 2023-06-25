@@ -46,19 +46,7 @@ public final class AutoFarmHack extends Hack
 		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting replant =
-		new CheckboxSetting("重种", true);
-
-	private final HashMap<Block, Item> seeds = new HashMap<>();
-	{
-		seeds.put(Blocks.WHEAT, Items.WHEAT_SEEDS);
-		seeds.put(Blocks.CARROTS, Items.CARROT);
-		seeds.put(Blocks.POTATOES, Items.POTATO);
-		seeds.put(Blocks.BEETROOTS, Items.BEETROOT_SEEDS);
-		seeds.put(Blocks.PUMPKIN_STEM, Items.PUMPKIN_SEEDS);
-		seeds.put(Blocks.MELON_STEM, Items.MELON_SEEDS);
-		seeds.put(Blocks.NETHER_WART, Items.NETHER_WART);
-		seeds.put(Blocks.COCOA, Items.COCOA_BEANS);
-	}
+		new CheckboxSetting("Replant", true);
 	
 	private final HashMap<Block, Item> seeds = new HashMap<>();
 	{
