@@ -7,6 +7,13 @@ rules:
       - buiawpkgew1
     conflictReviewers:
       - buiawpkgew1
+  - base: 1.19.2
+    upstream: Wurst-Imperium:1.19.2
+    mergeMethod: merge
+    assignees:
+      - buiawpkgew1
+    conflictReviewers:
+      - buiawpkgew1
   - base: 1.19.4
     upstream: Wurst-Imperium:1.19.4
     mergeMethod: merge
