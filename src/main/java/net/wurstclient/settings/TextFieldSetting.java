@@ -37,7 +37,7 @@ public final class TextFieldSetting extends Setting
 		Objects.requireNonNull(validator);
 		if(!validator.test(defaultValue))
 			throw new IllegalArgumentException(
-				"Default value is not valid: " + defaultValue);
+				"默认值无效: " + defaultValue);
 		
 		value = defaultValue;
 		this.defaultValue = defaultValue;

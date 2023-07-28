@@ -22,17 +22,11 @@ import net.wurstclient.settings.TextFieldSetting;
 public final class ModelSettings
 {
 	public final EnumSetting<OpenAiModel> openAiModel = new EnumSetting<>(
-		"OpenAI model",
-		"The model to use for OpenAI API calls.\n\n"
-			+ "\u00a7lText-Davinci-003\u00a7r (better known as GPT-3) is an"
-			+ " older model that's less censored than ChatGPT, but it's also"
-			+ " 10x more expensive to use.\n\n"
-			+ "\u00a7lGPT-3.5-Turbo\u00a7r (better known as ChatGPT) is"
-			+ " recommended for most use cases, as it's relatively cheap and"
-			+ " powerful.\n\n"
-			+ "\u00a7lGPT-4\u00a7r is more powerful, but only works if OpenAI"
-			+ " has chosen you to be a beta tester. It can be anywhere from"
-			+ " 15x to 60x more expensive than ChatGPT.",
+		"OpenAI 模型",
+		"用于 OpenAI API 调用的模型。\n\n"
+			+ "\u00a7lText-Davinci-003\u00a7r （通常称为 GPT-3）是一个较旧的模型，相较于 ChatGPT 来说，它的审查较少，但使用它的费用也是 ChatGPT 的 10 倍。\n\n"
+			+ "\u00a7lGPT-3.5-Turbo\u00a7r（通常称为 ChatGPT）被推荐用于大多数用例，因为它相对便宜且功能强大。\n\n"
+			+ "\u00a7lGPT-4\u00a7r 更加强大，但仅适用于 OpenAI 选择您成为 Beta 测试者的情况。它的费用可能是 ChatGPT 的 15 到 60 倍。",
 		OpenAiModel.values(), OpenAiModel.GPT_3_5_TURBO);
 	
 	public enum OpenAiModel
@@ -79,24 +73,19 @@ public final class ModelSettings
 		}
 	}
 	
-	public final SliderSetting maxTokens = new SliderSetting("Max tokens",
-		"The maximum number of tokens that the model can generate.\n\n"
-			+ "Higher values allow the model to predict longer chat messages,"
-			+ " but also increase the time it takes to generate predictions.\n\n"
-			+ "The default value of 16 is fine for most use cases.",
+	public final SliderSetting maxTokens = new SliderSetting("最大标记数",
+		"模型可以生成的标记（tokens）的最大数量。\n\n"
+			+ "较高的值允许模型预测更长的聊天消息，但同时也增加了生成预测所需的时间。\n\n"
+			+ "对于大多数用例，16 的默认值已经足够。",
 		16, 1, 100, 1, ValueDisplay.INTEGER);
 	
-	public final SliderSetting temperature = new SliderSetting("Temperature",
-		"Controls the model's creativity and randomness. A higher value will"
-			+ " result in more creative and sometimes nonsensical completions,"
-			+ " while a lower value will result in more boring completions.",
+	public final SliderSetting temperature = new SliderSetting("温度",
+		"控制模型的创造力和随机性。较高的值将导致更具创意且有时不合逻辑的生成结果，而较低的值将导致更为保守和常规的生成结果。",
 		0.7, 0, 2, 0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting topP = new SliderSetting("Top P",
-		"An alternative to temperature. Makes the model less random by only"
-			+ " letting it choose from the most likely tokens.\n\n"
-			+ "A value of 100% disables this feature by letting the model"
-			+ " choose from all tokens.",
+		"是温度的另一种选择。通过仅让模型从最有可能的标记中选择，使得生成结果更加稳定而不那么随机。\n\n"
+			+ "设定值为 100% 将禁用此功能，允许模型从所有标记中进行选择。",
 		1, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	public final SliderSetting presencePenalty =
