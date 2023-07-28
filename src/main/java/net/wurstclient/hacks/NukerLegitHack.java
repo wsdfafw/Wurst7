@@ -14,17 +14,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.shape.VoxelShape;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.LeftClickListener;
@@ -37,8 +31,10 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.BlockBreaker;
+import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockUtils;
-import net.wurstclient.util.RenderUtils;
+import net.wurstclient.util.OverlayRenderer;
 import net.wurstclient.util.RotationUtils;
 
 @SearchTags({"LegitNuker", "nuker legit", "legit nuker"})
@@ -72,6 +68,7 @@ public final class NukerLegitHack extends Hack
 		"minecraft:lapis_ore", "minecraft:nether_gold_ore",
 		"minecraft:nether_quartz_ore", "minecraft:redstone_ore");
 	
+	private final OverlayRenderer renderer = new OverlayRenderer();
 	private BlockPos currentBlock;
 	
 	public NukerLegitHack()
@@ -118,6 +115,7 @@ public final class NukerLegitHack extends Hack
 		
 		// resets
 		MC.options.keyAttack.setPressed(false);
+		renderer.resetProgress();
 		currentBlock = null;
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
@@ -151,14 +149,17 @@ public final class NukerLegitHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		// abort if using IDNuker without an ID being set
-		if(mode.getSelected() == Mode.ID && id.getBlock() == Blocks.AIR)
-			return;
-		
 		currentBlock = null;
 		
+		// abort if using IDNuker without an ID being set
+		if(mode.getSelected() == Mode.ID && id.getBlock() == Blocks.AIR)
+		{
+			renderer.resetProgress();
+			return;
+		}
+		
 		// get valid blocks
-		Iterable<BlockPos> validBlocks = getValidBlocks(range.getValue(),
+		Iterable<BlockPos> validBlocks = getValidBlocks(range.getValueI(),
 			mode.getSelected().getValidator(this));
 		
 		// find closest valid block
@@ -175,156 +176,59 @@ public final class NukerLegitHack extends Hack
 		
 		// reset if no block was found
 		if(currentBlock == null)
+		{
 			MC.options.keyAttack.setPressed(false);
+			renderer.resetProgress();
+		}
+		
+		renderer.updateProgress();
 	}
 	
-	private ArrayList<BlockPos> getValidBlocks(double range,
+	private ArrayList<BlockPos> getValidBlocks(int range,
 		Predicate<BlockPos> validator)
 	{
-		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
-		double rangeSq = Math.pow(range + 0.5, 2);
-		int rangeI = (int)Math.ceil(range);
+		Vec3d eyesVec = RotationUtils.getEyesPos();
+		BlockPos center = new BlockPos(eyesVec);
 		
-		BlockPos center = new BlockPos(RotationUtils.getEyesPos());
-		BlockPos min = center.add(-rangeI, -rangeI, -rangeI);
-		BlockPos max = center.add(rangeI, rangeI, rangeI);
-		
-		return BlockUtils.getAllInBox(min, max).stream()
-			.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq)
+		return BlockUtils.getAllInBoxStream(center, range)
 			.filter(BlockUtils::canBeClicked).filter(validator)
 			.sorted(Comparator.comparingDouble(
-				pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos))))
+				pos -> eyesVec.squaredDistanceTo(Vec3d.ofCenter(pos))))
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 	
 	private boolean breakBlockExtraLegit(BlockPos pos)
 	{
-		Direction[] sides = Direction.values();
-		
-		BlockState state = BlockUtils.getState(pos);
-		VoxelShape shape = state.getOutlineShape(MC.world, pos);
-		if(shape.isEmpty())
+		BlockBreakingParams params = BlockBreaker.getBlockBreakingParams(pos);
+		if(!params.lineOfSight() || params.distanceSq() > range.getValueSq())
 			return false;
 		
-		Vec3d eyesPos = RotationUtils.getEyesPos();
-		Vec3d relCenter = shape.getBoundingBox().getCenter();
-		Vec3d center = Vec3d.of(pos).add(relCenter);
+		// face block
+		WURST.getRotationFaker().faceVectorClient(params.hitVec());
 		
-		Vec3d[] hitVecs = new Vec3d[sides.length];
-		for(int i = 0; i < sides.length; i++)
+		WURST.getHax().autoToolHack.equipIfEnabled(pos);
+		
+		if(!MC.interactionManager.isBreakingBlock())
+			MC.interactionManager.attackBlock(pos, params.side());
+			
+		// if attack key is down but nothing happens,
+		// release it for one tick
+		if(MC.options.keyAttack.isPressed()
+			&& !MC.interactionManager.isBreakingBlock())
 		{
-			Vec3i dirVec = sides[i].getVector();
-			Vec3d relHitVec = new Vec3d(relCenter.x * dirVec.getX(),
-				relCenter.y * dirVec.getY(), relCenter.z * dirVec.getZ());
-			hitVecs[i] = center.add(relHitVec);
-		}
-		
-		double distanceSqToCenter = eyesPos.squaredDistanceTo(center);
-		
-		for(Direction side : sides)
-		{
-			Vec3d hitVec = hitVecs[side.ordinal()];
-			double distanceSqHitVec = eyesPos.squaredDistanceTo(hitVec);
-			
-			// check if hitVec is within range (4.25 blocks)
-			if(distanceSqHitVec > 18.0625)
-				continue;
-			
-			// check if side is facing towards player
-			if(distanceSqHitVec >= distanceSqToCenter)
-				continue;
-			
-			// check line of sight
-			if(MC.world.raycastBlock(eyesPos, hitVec, pos, shape,
-				state) != null)
-				continue;
-			
-			// face block
-			WURST.getRotationFaker().faceVectorClient(hitVec);
-			
-			if(currentBlock != null)
-				WURST.getHax().autoToolHack.equipIfEnabled(currentBlock);
-			
-			if(!MC.interactionManager.isBreakingBlock())
-				MC.interactionManager.attackBlock(pos, side);
-				
-			// if attack key is down but nothing happens,
-			// release it for one tick
-			if(MC.options.keyAttack.isPressed()
-				&& !MC.interactionManager.isBreakingBlock())
-			{
-				MC.options.keyAttack.setPressed(false);
-				return true;
-			}
-			
-			// damage block
-			MC.options.keyAttack.setPressed(true);
-			
+			MC.options.keyAttack.setPressed(false);
 			return true;
 		}
 		
-		return false;
+		// damage block
+		MC.options.keyAttack.setPressed(true);
+		return true;
 	}
 	
 	@Override
 	public void onRender(float partialTicks)
 	{
-		if(currentBlock == null)
-			return;
-		
-		// GL settings
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glLineWidth(2);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		
-		GL11.glPushMatrix();
-		RenderUtils.applyRegionalRenderOffset();
-		
-		BlockPos camPos = RenderUtils.getCameraBlockPos();
-		int regionX = (camPos.getX() >> 9) * 512;
-		int regionZ = (camPos.getZ() >> 9) * 512;
-		
-		// set position
-		GL11.glTranslated(currentBlock.getX() - regionX, currentBlock.getY(),
-			currentBlock.getZ() - regionZ);
-		
-		// get progress
-		float progress;
-		if(BlockUtils.getHardness(currentBlock) < 1)
-			progress = IMC.getInteractionManager().getCurrentBreakingProgress();
-		else
-			progress = 1;
-		
-		// set size
-		if(progress < 1)
-		{
-			GL11.glTranslated(0.5, 0.5, 0.5);
-			GL11.glScaled(progress, progress, progress);
-			GL11.glTranslated(-0.5, -0.5, -0.5);
-		}
-		
-		// get color
-		float red = progress * 2F;
-		float green = 2 - red;
-		
-		// draw box
-		GL11.glColor4f(red, green, 0, 0.25F);
-		RenderUtils.drawSolidBox();
-		GL11.glColor4f(red, green, 0, 0.5F);
-		RenderUtils.drawOutlinedBox();
-		
-		GL11.glPopMatrix();
-		
-		// GL resets
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		renderer.render(partialTicks, currentBlock);
 	}
 	
 	private enum Mode

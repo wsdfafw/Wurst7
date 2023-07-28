@@ -1,6 +1,10 @@
 name: JSON syntax
 
 on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - '**.json'
   pull_request:
     paths:
       - '**.json'
@@ -11,6 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: json-syntax-check
-        uses: limitusus/json-syntax-check@v2.0.0
+        uses: limitusus/json-syntax-check@v2
         with:
           pattern: "\\.json$"
