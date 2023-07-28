@@ -114,8 +114,8 @@ public class WurstOptionsScreen extends Screen
 			b -> os.open(
 				"https://wurst.wiki/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Wurst+Wiki"));
 		
-		new WurstOptionsButton(54, 120, () -> "捐款 求捐款",
-			"qq/微信/支付宝/支付", b -> os.open(
+		new WurstOptionsButton(54, 72, () -> "捐款 求捐款", "qq/微信/支付宝/支付",
+			b -> os.open(
 				"https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
 	}
 	
