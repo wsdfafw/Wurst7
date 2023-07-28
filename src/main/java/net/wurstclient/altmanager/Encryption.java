@@ -189,6 +189,7 @@ public final class Encryption
 	}
 	
 	private KeyPair getRsaKeyPair(Path publicFile, Path privateFile)
+		throws IOException
 	{
 		if(Files.notExists(publicFile) || Files.notExists(privateFile))
 			return createRsaKeys(publicFile, privateFile);
@@ -207,7 +208,7 @@ public final class Encryption
 		}
 	}
 	
-	private SecretKey getAesKey(Path path, KeyPair pair)
+	private SecretKey getAesKey(Path path, KeyPair pair) throws IOException
 	{
 		if(Files.notExists(path))
 			return createAesKey(path, pair);
@@ -226,6 +227,7 @@ public final class Encryption
 	}
 	
 	private KeyPair createRsaKeys(Path publicFile, Path privateFile)
+		throws IOException
 	{
 		try
 		{
@@ -262,14 +264,14 @@ public final class Encryption
 			
 			return pair;
 			
-		}catch(GeneralSecurityException | IOException e)
+		}catch(GeneralSecurityException e)
 		{
 			throw new CrashException(
 				CrashReport.create(e, "创建RSA密钥对"));
 		}
 	}
 	
-	private SecretKey createAesKey(Path path, KeyPair pair)
+	private SecretKey createAesKey(Path path, KeyPair pair) throws IOException
 	{
 		try
 		{
@@ -287,7 +289,7 @@ public final class Encryption
 			
 			return key;
 			
-		}catch(GeneralSecurityException | IOException e)
+		}catch(GeneralSecurityException e)
 		{
 			throw new CrashException(CrashReport.create(e, "创建AES密钥"));
 		}
