@@ -36,13 +36,13 @@ public final class SwingHandSetting
 	
 	public enum SwingHand
 	{
-		OFF("Off", hand -> {}),
+		OFF("关闭", hand -> {}),
 		
-		SERVER("Server-side",
+		SERVER("服务器端",
 			hand -> MC.player.networkHandler
 				.sendPacket(new HandSwingC2SPacket(hand))),
 		
-		CLIENT("Client-side", hand -> MC.player.swingHand(hand));
+		CLIENT("客户端", hand -> MC.player.swingHand(hand));
 		
 		private String name;
 		private Consumer<Hand> swing;
