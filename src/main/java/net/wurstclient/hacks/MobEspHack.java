@@ -37,6 +37,7 @@ import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.EspStyleSetting;
 import net.wurstclient.settings.filters.FilterInvisibleSetting;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
@@ -45,8 +46,7 @@ import net.wurstclient.util.RotationUtils;
 public final class MobEspHack extends Hack implements UpdateListener,
 	CameraTransformViewBobbingListener, RenderListener
 {
-	private final EnumSetting<Style> style =
-		new EnumSetting<>("风格", Style.values(), Style.BOXES);
+	private final EspStyleSetting style = new EspStyleSetting();
 	
 	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框框大小",
 		"§l精确§r 模式显示更加精确的\n可打击的框给每个生物.\n§l更好§r 模式会看起来框很大\n但看起来会更舒服点.",
@@ -110,7 +110,7 @@ public final class MobEspHack extends Hack implements UpdateListener,
 	public void onCameraTransformViewBobbing(
 		CameraTransformViewBobbingEvent event)
 	{
-		if(style.getSelected().lines)
+		if(style.getSelected().hasLines())
 			event.cancel();
 	}
 	
@@ -129,10 +129,10 @@ public final class MobEspHack extends Hack implements UpdateListener,
 		int regionZ = (camPos.getZ() >> 9) * 512;
 		RenderUtils.applyRegionalRenderOffset(matrixStack, regionX, regionZ);
 		
-		if(style.getSelected().boxes)
+		if(style.getSelected().hasBoxes())
 			renderBoxes(matrixStack, partialTicks, regionX, regionZ);
 		
-		if(style.getSelected().lines)
+		if(style.getSelected().hasLines())
 			renderTracers(matrixStack, partialTicks, regionX, regionZ);
 		
 		matrixStack.pop();
@@ -214,30 +214,6 @@ public final class MobEspHack extends Hack implements UpdateListener,
 		
 		tessellator.draw();
 		
-	}
-	
-	private enum Style
-	{
-		BOXES("仅限框框", true, false),
-		LINES("仅限线条", false, true),
-		LINES_AND_BOXES("线条和框", true, true);
-		
-		private final String name;
-		private final boolean boxes;
-		private final boolean lines;
-		
-		private Style(String name, boolean boxes, boolean lines)
-		{
-			this.name = name;
-			this.boxes = boxes;
-			this.lines = lines;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return name;
-		}
 	}
 	
 	private enum BoxSize

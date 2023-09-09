@@ -13,10 +13,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
@@ -28,9 +26,9 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
@@ -38,30 +36,24 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
-import net.minecraft.network.packet.s2c.play.ChunkDeltaUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.EmptyChunk;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.PacketInputListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.ChunkAreaSetting;
 import net.wurstclient.settings.ColorSetting;
-import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
-import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.BlockVertexCompiler;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.ChunkSearcher;
+import net.wurstclient.util.ChunkUtils;
 import net.wurstclient.util.MinPriorityThreadFactory;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
@@ -70,9 +62,8 @@ import net.wurstclient.util.RotationUtils;
 public final class CaveFinderHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
-	private final EnumSetting<Area> area = new EnumSetting<>("区域", 
-		"将会以玩家附近的区域寻找.\n越高的数值需要越好的电脑.",
-		Area.values(), Area.D11);
+	private final ChunkAreaSetting area = new ChunkAreaSetting("区域", 
+		"将会以玩家附近的区域寻找.\n越高的数值需要越好的电脑.");
 	
 	private final SliderSetting limit = new SliderSetting("限制", 
 		"最大方块所显示的限制.\n越高数值需要越好的电脑.",
@@ -89,7 +80,7 @@ public final class CaveFinderHack extends Hack
 	private boolean notify;
 	
 	private final HashMap<Chunk, ChunkSearcher> searchers = new HashMap<>();
-	private final Set<Chunk> chunksToUpdate =
+	private final Set<ChunkPos> chunksToUpdate =
 		Collections.synchronizedSet(new HashSet<>());
 	private ExecutorService pool1;
 	
@@ -146,50 +137,23 @@ public final class CaveFinderHack extends Hack
 	@Override
 	public void onReceivedPacket(PacketInputEvent event)
 	{
-		ClientPlayerEntity player = MC.player;
-		ClientWorld world = MC.world;
-		if(player == null || world == null)
-			return;
+		ChunkPos chunkPos = ChunkUtils.getAffectedChunk(event.getPacket());
 		
-		Packet<?> packet = event.getPacket();
-		Chunk chunk;
-		
-		if(packet instanceof BlockUpdateS2CPacket change)
-		{
-			BlockPos pos = change.getPos();
-			chunk = world.getChunk(pos);
-			
-		}else if(packet instanceof ChunkDeltaUpdateS2CPacket change)
-		{
-			ArrayList<BlockPos> changedBlocks = new ArrayList<>();
-			change.visitUpdates((pos, state) -> changedBlocks.add(pos));
-			if(changedBlocks.isEmpty())
-				return;
-			
-			chunk = world.getChunk(changedBlocks.get(0));
-			
-		}else if(packet instanceof ChunkDataS2CPacket chunkData)
-			chunk = world.getChunk(chunkData.getX(), chunkData.getZ());
-		else
-			return;
-		
-		chunksToUpdate.add(chunk);
+		if(chunkPos != null)
+			chunksToUpdate.add(chunkPos);
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		Block currentBlock = BlockUtils.getBlockFromName("minecraft:cave_air");
+		Block blockToFind = Blocks.CAVE_AIR;
 		BlockPos eyesPos = BlockPos.ofFloored(RotationUtils.getEyesPos());
-		
-		ChunkPos center = getPlayerChunkPos(eyesPos);
-		int range = area.getSelected().chunkRange;
 		int dimensionId = MC.world.getRegistryKey().toString().hashCode();
 		
-		addSearchersInRange(center, range, currentBlock, dimensionId);
-		removeSearchersOutOfRange(center, range);
-		replaceSearchersWithDifferences(currentBlock, dimensionId);
-		replaceSearchersWithChunkUpdate(currentBlock, dimensionId);
+		addSearchersInRange(blockToFind, dimensionId);
+		removeSearchersOutOfRange();
+		replaceSearchersWithDifferences(blockToFind, dimensionId);
+		replaceSearchersWithChunkUpdate(blockToFind, dimensionId);
 		
 		if(!areAllChunkSearchersDone())
 			return;
@@ -253,19 +217,9 @@ public final class CaveFinderHack extends Hack
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	private ChunkPos getPlayerChunkPos(BlockPos eyesPos)
+	private void addSearchersInRange(Block block, int dimensionId)
 	{
-		int chunkX = eyesPos.getX() >> 4;
-		int chunkZ = eyesPos.getZ() >> 4;
-		return MC.world.getChunk(chunkX, chunkZ).getPos();
-	}
-	
-	private void addSearchersInRange(ChunkPos center, int chunkRange,
-		Block block, int dimensionId)
-	{
-		ArrayList<Chunk> chunksInRange = getChunksInRange(center, chunkRange);
-		
-		for(Chunk chunk : chunksInRange)
+		for(Chunk chunk : area.getSelected().getChunksInRange())
 		{
 			if(searchers.containsKey(chunk))
 				continue;
@@ -274,31 +228,12 @@ public final class CaveFinderHack extends Hack
 		}
 	}
 	
-	private ArrayList<Chunk> getChunksInRange(ChunkPos center, int chunkRange)
-	{
-		ArrayList<Chunk> chunksInRange = new ArrayList<>();
-		
-		for(int x = center.x - chunkRange; x <= center.x + chunkRange; x++)
-			for(int z = center.z - chunkRange; z <= center.z + chunkRange; z++)
-			{
-				Chunk chunk = MC.world.getChunk(x, z);
-				if(chunk instanceof EmptyChunk)
-					continue;
-				
-				chunksInRange.add(chunk);
-			}
-		
-		return chunksInRange;
-	}
-	
-	private void removeSearchersOutOfRange(ChunkPos center, int chunkRange)
+	private void removeSearchersOutOfRange()
 	{
 		for(ChunkSearcher searcher : new ArrayList<>(searchers.values()))
 		{
 			ChunkPos searcherPos = searcher.getChunk().getPos();
-			
-			if(Math.abs(searcherPos.x - center.x) <= chunkRange
-				&& Math.abs(searcherPos.z - center.z) <= chunkRange)
+			if(area.getSelected().isInRange(searcherPos))
 				continue;
 			
 			removeSearcher(searcher);
@@ -322,23 +257,26 @@ public final class CaveFinderHack extends Hack
 	private void replaceSearchersWithChunkUpdate(Block currentBlock,
 		int dimensionId)
 	{
+		// get the chunks to update and remove them from the set
+		ChunkPos[] chunks;
 		synchronized(chunksToUpdate)
 		{
-			if(chunksToUpdate.isEmpty())
-				return;
+			chunks = chunksToUpdate.toArray(ChunkPos[]::new);
+			chunksToUpdate.clear();
+		}
+		
+		// update the chunks separately so the synchronization
+		// doesn't have to wait for that
+		for(ChunkPos chunkPos : chunks)
+		{
+			Chunk chunk = MC.world.getChunk(chunkPos.x, chunkPos.z);
 			
-			for(Iterator<Chunk> itr = chunksToUpdate.iterator(); itr.hasNext();)
-			{
-				Chunk chunk = itr.next();
-				
-				ChunkSearcher oldSearcher = searchers.get(chunk);
-				if(oldSearcher == null)
-					continue;
-				
-				removeSearcher(oldSearcher);
-				addSearcher(chunk, currentBlock, dimensionId);
-				itr.remove();
-			}
+			ChunkSearcher oldSearcher = searchers.get(chunk);
+			if(oldSearcher == null)
+				continue;
+			
+			removeSearcher(oldSearcher);
+			addSearcher(chunk, currentBlock, dimensionId);
 		}
 	}
 	
@@ -411,17 +349,7 @@ public final class CaveFinderHack extends Hack
 	
 	private HashSet<BlockPos> getMatchingBlocksFromTask()
 	{
-		HashSet<BlockPos> matchingBlocks = new HashSet<>();
-		
-		try
-		{
-			matchingBlocks = getMatchingBlocksTask.get();
-			
-		}catch(InterruptedException | ExecutionException e)
-		{
-			throw new RuntimeException(e);
-		}
-		
+		HashSet<BlockPos> matchingBlocks = getMatchingBlocksTask.join();
 		int maxBlocks = (int)Math.pow(10, limit.getValueI());
 		
 		if(matchingBlocks.size() < maxBlocks)
@@ -453,74 +381,24 @@ public final class CaveFinderHack extends Hack
 	
 	private void setBufferFromTask()
 	{
-		ArrayList<int[]> vertices = getVerticesFromTask();
-		
-		if(vertexBuffer != null)
-			vertexBuffer.close();
-		
-		vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-		
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS,
 			VertexFormats.POSITION);
 		
-		for(int[] vertex : vertices)
+		for(int[] vertex : compileVerticesTask.join())
 			bufferBuilder.vertex(vertex[0], vertex[1], vertex[2]).next();
 		
 		BuiltBuffer buffer = bufferBuilder.end();
 		
+		if(vertexBuffer != null)
+			vertexBuffer.close();
+		
+		vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		vertexBuffer.bind();
 		vertexBuffer.upload(buffer);
 		VertexBuffer.unbind();
 		
 		bufferUpToDate = true;
-	}
-	
-	public ArrayList<int[]> getVerticesFromTask()
-	{
-		try
-		{
-			return compileVerticesTask.get();
-			
-		}catch(InterruptedException | ExecutionException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private enum Area
-	{
-		D3("3x3 chunks", 1),
-		D5("5x5 chunks", 2),
-		D7("7x7 chunks", 3),
-		D9("9x9 chunks", 4),
-		D11("11x11 chunks", 5),
-		D13("13x13 chunks", 6),
-		D15("15x15 chunks", 7),
-		D17("17x17 chunks", 8),
-		D19("19x19 chunks", 9),
-		D21("21x21 chunks", 10),
-		D23("23x23 chunks", 11),
-		D25("25x25 chunks", 12),
-		D27("27x27 chunks", 13),
-		D29("29x29 chunks", 14),
-		D31("31x31 chunks", 15),
-		D33("33x33 chunks", 16);
-		
-		private final String name;
-		private final int chunkRange;
-		
-		private Area(String name, int chunkRange)
-		{
-			this.name = name;
-			this.chunkRange = chunkRange;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return name;
-		}
 	}
 }
