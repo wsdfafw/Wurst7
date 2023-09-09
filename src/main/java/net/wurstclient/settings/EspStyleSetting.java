@@ -11,12 +11,12 @@ public final class EspStyleSetting extends EnumSetting<EspStyleSetting.EspStyle>
 {
 	public EspStyleSetting()
 	{
-		super("Style", EspStyle.values(), EspStyle.BOXES);
+		super("风格", EspStyle.values(), EspStyle.BOXES);
 	}
 	
 	public EspStyleSetting(EspStyle selected)
 	{
-		super("Style", EspStyle.values(), selected);
+		super("风格", EspStyle.values(), selected);
 	}
 	
 	public EspStyleSetting(String name, String description, EspStyle selected)
@@ -26,9 +26,9 @@ public final class EspStyleSetting extends EnumSetting<EspStyleSetting.EspStyle>
 	
 	public enum EspStyle
 	{
-		BOXES("Boxes only", true, false),
-		LINES("Lines only", false, true),
-		LINES_AND_BOXES("Lines and boxes", true, true);
+		BOXES("仅盒子", true, false),
+		LINES("仅线条", false, true),
+		LINES_AND_BOXES("线条和盒子", true, true);
 		
 		private final String name;
 		private final boolean boxes;
