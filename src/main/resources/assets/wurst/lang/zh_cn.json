@@ -168,13 +168,20 @@
   "description.wurst.altmanager.favorite": "你标记了这其中一个账户为你的喜爱。",
   "description.wurst.altmanager.window": "这个按钮是打开另一个窗口的.",
   "description.wurst.altmanager.window_freeze": "当打开另一个窗口时，这会导致游戏看起来未响应。",
-  "description.wurst.altmanager.fullscreen": "§c请关闭全屏模式!",
-  
-  "gui.wurst.altmanager.folder.error.title": "无法创建 '.Wurst encryption' 文件夹！",
-  "gui.wurst.altmanager.folder.error.message": "你也许不小心阻止 Wurst 访问这个文件夹。\n如果Wurst无法访问, AltManager 将无法加密或解密您的alt列表。\n你仍然可以使用 AltManager，但您现在创建的任何账户将不会被保存。\n\n全部错误如下：\n%s",
-  "gui.done": "完成",
-  "gui.wurst.altmanager.empty.title": "您的账户列表是空的。",
-  "gui.wurst.altmanager.empty.message": "你想要一些随机的账户来开始吗？"
-
-  
+  "description.wurst.altmanager.fullscreen": "§c请关闭全屏模式！",
+  "gui.wurst.altmanager.folder_error.title": "无法创建 “.Wurst encryption” 文件夹！",
+  "gui.wurst.altmanager.folder_error.message": "你也许不小心禁止了 Wurst 访问这个目录，\n因此 AltManager 无法加解密你的备用账户列表。\n你仍然可以使用 AltManager，但你新建的备用账户将不会被保存。\n\n完整错误信息如下：\n%s",
+  "gui.wurst.altmanager.empty.title": "你的备用账户列表为空。",
+  "gui.wurst.altmanager.empty.message": "你希望 Wurst 生成一些離線帳戶嗎？",
+  "gui.wurst.nochatreports.unsafe_server.title": "§4§l警告:§r 不安全的服务器",
+  "gui.wurst.nochatreports.unsafe_server.message": "此伺服器需要启用聊天签名，这会使您的帐户面临欺诈性聊天报告的风险。\n\n如果您取消阻止聊天签名然后重新连接，则可以加入此服务器。如果这样做，请考虑根本不使用聊天。或者使用您不介意丢失的替代帐户进行游戏。\n\n如果这是您的伺服器，您可以通过在 server.properties 中将“enforce-secure-profile”设置为 false 来解决此问题。在典型的 Mojang 方法中，这种设置与听起来相反。",
+  "toast.wurst.nochatreports.unsafe_server.title": "聊天消息可以被报告",
+  "toast.wurst.nochatreports.unsafe_server.message": "在这个服务器上发送的消息可能会被报告给大兄弟Mojang，您的帐户可能会在全球被封禁",
+  "gui.wurst.nochatreports.ncr_mod_server.title": "\"No Chat Reports\"服务器",
+  "gui.wurst.nochatreports.ncr_mod_server.message": "此服务器使用\"No Chat Reports\"模组。\n\n如果您屏蔽了聊天签名并禁用了 VanillaSpoof，您可以加入此服务器。",
+  "button.wurst.nochatreports.signatures_status": "签名: ",
+  "description.wurst.nochatreports.message_is_reportable": "此消息有一个有效的签名，因此容易受到欺诈性聊天报告的伤害。",
+  "gui.wurst.generic.allcaps_blocked": "黑名单",
+  "gui.wurst.generic.allcaps_allowed": "已允许",
+  "key.wurst.zoom": "缩放"
 }

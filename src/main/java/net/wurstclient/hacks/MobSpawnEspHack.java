@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.LightType;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.PacketInputListener;
@@ -46,6 +47,7 @@ import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.ChunkUtils;
 import net.wurstclient.util.MinPriorityThreadFactory;
+import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 
 @SearchTags({"mob spawn esp", "LightLevelESP", "light level esp",
@@ -62,7 +64,7 @@ public final class MobSpawnEspHack extends Hack
 	private final CheckboxSetting depthTest =
 		new CheckboxSetting("深度测试", true);
 	
-	private final HashMap<Chunk, ChunkScanner> scanners = new HashMap<>();
+	private final HashMap<ChunkPos, ChunkScanner> scanners = new HashMap<>();
 	private ExecutorService pool;
 	
 	public MobSpawnEspHack()
@@ -93,10 +95,8 @@ public final class MobSpawnEspHack extends Hack
 		
 		for(ChunkScanner scanner : new ArrayList<>(scanners.values()))
 		{
-			if(scanner.vertexBuffer != null)
-				scanner.vertexBuffer.close();
-			
-			scanners.remove(scanner.chunk);
+			scanner.reset();
+			scanners.remove(scanner.chunk.getPos());
 		}
 		
 		pool.shutdownNow();
@@ -105,35 +105,29 @@ public final class MobSpawnEspHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		ChunkArea area = drawDistance.getSelected();
-		
-		// create & start scanners for new chunks
-		for(Chunk chunk : area.getChunksInRange())
-		{
-			if(scanners.containsKey(chunk))
-				continue;
-			
-			ChunkScanner scanner = new ChunkScanner(chunk);
-			scanners.put(chunk, scanner);
-			scanner.future = pool.submit(() -> scanner.scan());
-		}
+		DimensionType dimension = MC.world.getDimension();
 		
 		// remove old scanners that are out of range
 		for(ChunkScanner scanner : new ArrayList<>(scanners.values()))
 		{
-			if(area.isInRange(scanner.chunk.getPos()))
+			if(drawDistance.isInRange(scanner.chunk.getPos())
+				&& dimension == scanner.dimension)
 				continue;
 			
-			if(!scanner.doneCompiling)
+			scanner.reset();
+			scanners.remove(scanner.chunk.getPos());
+		}
+		
+		// create & start scanners for new chunks
+		for(Chunk chunk : drawDistance.getChunksInRange())
+		{
+			ChunkPos chunkPos = chunk.getPos();
+			if(scanners.containsKey(chunkPos))
 				continue;
 			
-			if(scanner.vertexBuffer != null)
-				scanner.vertexBuffer.close();
-			
-			if(scanner.future != null)
-				scanner.future.cancel(true);
-			
-			scanners.remove(scanner.chunk);
+			ChunkScanner scanner = new ChunkScanner(chunk, dimension);
+			scanners.put(chunkPos, scanner);
+			scanner.future = pool.submit(() -> scanner.scan());
 		}
 		
 		// generate vertex buffers
@@ -167,18 +161,18 @@ public final class MobSpawnEspHack extends Hack
 		if(MC.player == null || world == null)
 			return;
 		
-		ChunkPos chunkPos = ChunkUtils.getAffectedChunk(event.getPacket());
-		if(chunkPos == null)
+		ChunkPos center = ChunkUtils.getAffectedChunk(event.getPacket());
+		if(center == null)
 			return;
 		
-		ArrayList<Chunk> chunks = new ArrayList<>();
-		for(int x = chunkPos.x - 1; x <= chunkPos.x + 1; x++)
-			for(int z = chunkPos.z - 1; z <= chunkPos.z + 1; z++)
-				chunks.add(world.getChunk(x, z));
+		ArrayList<ChunkPos> chunks = new ArrayList<>();
+		for(int x = center.x - 1; x <= center.x + 1; x++)
+			for(int z = center.z - 1; z <= center.z + 1; z++)
+				chunks.add(new ChunkPos(x, z));
 			
-		for(Chunk chunk2 : chunks)
+		for(ChunkPos chunkPos : chunks)
 		{
-			ChunkScanner scanner = scanners.get(chunk2);
+			ChunkScanner scanner = scanners.get(chunkPos);
 			if(scanner == null)
 				return;
 			
@@ -232,6 +226,7 @@ public final class MobSpawnEspHack extends Hack
 	{
 		public Future<?> future;
 		private final Chunk chunk;
+		private final DimensionType dimension;
 		private final Set<BlockPos> red = new HashSet<>();
 		private final Set<BlockPos> yellow = new HashSet<>();
 		private VertexBuffer vertexBuffer;
@@ -239,9 +234,10 @@ public final class MobSpawnEspHack extends Hack
 		private boolean doneScanning;
 		private boolean doneCompiling;
 		
-		public ChunkScanner(Chunk chunk)
+		public ChunkScanner(Chunk chunk, DimensionType dimension)
 		{
 			this.chunk = chunk;
+			this.dimension = dimension;
 		}
 		
 		@SuppressWarnings("deprecation")
@@ -296,8 +292,7 @@ public final class MobSpawnEspHack extends Hack
 		
 		private void compileBuffer()
 		{
-			int regionX = (chunk.getPos().getStartX() >> 9) * 512;
-			int regionZ = (chunk.getPos().getStartZ() >> 9) * 512;
+			RegionPos region = RegionPos.of(chunk.getPos());
 			
 			if(vertexBuffer != null)
 				vertexBuffer.close();
@@ -310,8 +305,8 @@ public final class MobSpawnEspHack extends Hack
 				VertexFormats.POSITION_COLOR);
 			
 			new ArrayList<>(red).stream().filter(Objects::nonNull)
-				.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ))
+				.map(pos -> new BlockPos(pos.getX() - region.x(), pos.getY(),
+					pos.getZ() - region.z()))
 				.forEach(pos -> {
 					bufferBuilder
 						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ())
@@ -327,8 +322,8 @@ public final class MobSpawnEspHack extends Hack
 				});
 			
 			new ArrayList<>(yellow).stream().filter(Objects::nonNull)
-				.map(pos -> new BlockPos(pos.getX() - regionX, pos.getY(),
-					pos.getZ() - regionZ))
+				.map(pos -> new BlockPos(pos.getX() - region.x(), pos.getY(),
+					pos.getZ() - region.z()))
 				.forEach(pos -> {
 					bufferBuilder
 						.vertex(pos.getX(), pos.getY() + 0.01, pos.getZ())
