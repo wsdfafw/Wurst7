@@ -195,7 +195,7 @@ public final class AutoBuildHack extends Hack
 			return;
 		}
 		
-		if(!fastPlace.isChecked() && IMC.getItemUseCooldown() > 0)
+		if(!fastPlace.isChecked() && MC.itemUseCooldown > 0)
 			return;
 		
 		placeNextBlock();
@@ -267,7 +267,7 @@ public final class AutoBuildHack extends Hack
 			IMC.getInteractionManager().rightClickBlock(neighbor,
 				side.getOpposite(), hitVec);
 			MC.player.swingHand(Hand.MAIN_HAND);
-			IMC.setItemUseCooldown(4);
+			MC.itemUseCooldown = 4;
 			return true;
 		}
 		

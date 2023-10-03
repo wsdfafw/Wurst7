@@ -145,7 +145,7 @@ public final class AutoFishHack extends Hack
 			if(castRodTimer > 0)
 				return;
 			
-			IMC.rightClick();
+			MC.doItemUse();
 			castRodTimer = retryDelay.getValueI();
 			reelInTimer = 20 * patience.getValueI();
 			return;
@@ -154,7 +154,7 @@ public final class AutoFishHack extends Hack
 		// otherwise, reel in when it's time
 		if(reelInTimer == 0)
 		{
-			IMC.rightClick();
+			MC.doItemUse();
 			reelInTimer = retryDelay.getValueI();
 			castRodTimer = retryDelay.getValueI();
 		}

@@ -141,7 +141,7 @@ public final class BuildRandomHack extends Hack
 		if(WURST.getHax().freecamHack.isEnabled())
 			return;
 		
-		if(!fastPlace.isChecked() && IMC.getItemUseCooldown() > 0)
+		if(!fastPlace.isChecked() && MC.itemUseCooldown > 0)
 			return;
 		
 		if(checkItem.isChecked() && !MC.player.isHolding(
@@ -184,7 +184,7 @@ public final class BuildRandomHack extends Hack
 		if(checkLOS.isChecked() && !params.lineOfSight())
 			return false;
 		
-		IMC.setItemUseCooldown(4);
+		MC.itemUseCooldown = 4;
 		facing.getSelected().face(params.hitVec());
 		lastPos = pos;
 		
