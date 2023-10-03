@@ -19,7 +19,6 @@ import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.mixinterface.IFishingBobberEntity;
 import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 
@@ -37,13 +36,10 @@ public final class OpenWaterEspHack extends Hack implements RenderListener
 	public String getRenderName()
 	{
 		FishingBobberEntity bobber = MC.player.fishHook;
-		
 		if(bobber == null)
 			return getName();
 		
-		if(isInOpenWater(bobber))
-			return getName() + " [开放]";
-		return getName() + " [浅水]";
+		return getName() + (isInOpenWater(bobber) ? " [开放]" : " [浅水]");
 	}
 	
 	@Override
@@ -107,7 +103,6 @@ public final class OpenWaterEspHack extends Hack implements RenderListener
 	
 	private boolean isInOpenWater(FishingBobberEntity bobber)
 	{
-		return ((IFishingBobberEntity)bobber)
-			.checkOpenWaterAround(bobber.getBlockPos());
+		return bobber.isOpenOrWaterAround(bobber.getBlockPos());
 	}
 }
