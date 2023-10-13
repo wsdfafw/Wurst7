@@ -45,12 +45,12 @@ public final class RadarHack extends Hack implements UpdateListener
 	private final CheckboxSetting rotate =
 		new CheckboxSetting("跟随玩家", true);
 	
-	private final EntityFilterList entityFilters = new EntityFilterList(
-		new FilterPlayersSetting("不显示其他玩家.", false),
-		new FilterSleepingSetting("不显示正在睡觉的.", false),
-		new FilterMonstersSetting("不显示僵尸,苦力怕,等.", false),
-		new FilterAnimalsSetting("不显示猪,牛,等.", false),
-		new FilterInvisibleSetting("不显示隐身的实体.", false));
+	private final EntityFilterList entityFilters =
+		new EntityFilterList(FilterPlayersSetting.genericVision(false),
+			FilterSleepingSetting.genericVision(false),
+			FilterMonstersSetting.genericVision(false),
+			FilterAnimalsSetting.genericVision(false),
+			FilterInvisibleSetting.genericVision(false));
 	
 	public RadarHack()
 	{
@@ -92,7 +92,7 @@ public final class RadarHack extends Hack implements UpdateListener
 			StreamSupport.stream(world.getEntities().spliterator(), true)
 				.filter(e -> !e.isRemoved() && e != player)
 				.filter(e -> !(e instanceof FakePlayerEntity))
-				.filter(e -> e instanceof LivingEntity)
+				.filter(LivingEntity.class::isInstance)
 				.filter(e -> ((LivingEntity)e).getHealth() > 0);
 		
 		stream = entityFilters.applyTo(stream);

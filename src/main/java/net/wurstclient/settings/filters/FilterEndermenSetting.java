@@ -27,4 +27,9 @@ public final class FilterEndermenSetting extends EntityFilterCheckbox
 	{
 		return new FilterEndermenSetting("不会攻击末影人.", checked);
 	}
+	
+	public static FilterEndermenSetting genericVision(boolean checked)
+	{
+		return new FilterEndermenSetting("Won't show endermen.", checked);
+	}
 }

@@ -31,4 +31,10 @@ public final class FilterPetsSetting extends EntityFilterCheckbox
 		return new FilterPetsSetting(
 			"不会攻击以驯服的狼,已驯服的马, 诸如此类.", checked);
 	}
+	
+	public static FilterPetsSetting genericVision(boolean checked)
+	{
+		return new FilterPetsSetting(
+			"Won't show tamed wolves, tamed horses, etc.", checked);
+	}
 }

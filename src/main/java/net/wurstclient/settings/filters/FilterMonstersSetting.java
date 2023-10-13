@@ -28,4 +28,10 @@ public final class FilterMonstersSetting extends EntityFilterCheckbox
 		return new FilterMonstersSetting("不会攻击僵尸,苦力怕,诸如此类.",
 			checked);
 	}
+	
+	public static FilterMonstersSetting genericVision(boolean checked)
+	{
+		return new FilterMonstersSetting("Won't show zombies, creepers, etc.",
+			checked);
+	}
 }

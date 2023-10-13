@@ -28,4 +28,10 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 		return new FilterGolemsSetting(
 			"不会攻击铁傀儡 雪傀儡 和 潜影盒.", checked);
 	}
+	
+	public static FilterGolemsSetting genericVision(boolean checked)
+	{
+		return new FilterGolemsSetting(
+			"Won't show iron golems, snow golems and shulkers.", checked);
+	}
 }
