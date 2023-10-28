@@ -33,28 +33,54 @@ public final class FollowFilterList extends EntityFilterList
 			"不会跟随距离地面至少给定距离的玩家.",
 			0));
 		
-		builder.add(new FilterMonstersSetting(
-			"不会跟随僵尸、爬行者等.", true));
+		builder.add(new FilterHostileSetting(
+			"Won't follow hostile mobs like zombies and creepers.", true));
 		
-		builder
-			.add(new FilterPigmenSetting("不会跟随僵尸猪人.", true));
+		builder.add(FilterNeutralSetting.onOffOnly(
+			"Won't follow neutral mobs like endermen and wolves.", true));
 		
-		builder.add(new FilterEndermenSetting("不会跟随末影人.", true));
+		builder.add(new FilterPassiveSetting("Won't follow animals like pigs"
+			+ " and cows, ambient mobs like bats, and water mobs like"
+			+ " fish, squid and dolphins.", true));
 		
-		builder.add(
-			new FilterAnimalsSetting("不会跟随猪、牛等.", true));
+		builder.add(new FilterPassiveWaterSetting("Won't follow passive water"
+			+ " mobs like fish, squid, dolphins and axolotls.", true));
 		
 		builder.add(new FilterBabiesSetting(
-			"不会跟随小猪、小村民等.", true));
+			"不会跟随小猪、小村民等", true));
+		
+		builder.add(new FilterBatsSetting("Won't follow bats and any other"
+			+ " \"ambient\" mobs that might be added by mods.", true));
+		
+		builder.add(new FilterSlimesSetting("Won't follow slimes.", true));
+		
+		builder.add(new FilterBatsSetting("Won't follow bats and any other"
+			+ " \"ambient\" mobs that might be added by mods.", true));
+		
+		builder.add(new FilterSlimesSetting("Won't follow slimes.", true));
 		
 		builder.add(new FilterPetsSetting(
 			"不会跟随驯服的狼、驯服的马等.", true));
 		
-		builder.add(new FilterTradersSetting(
-			"不会跟随村民、流浪商人等.", true));
+		builder.add(new FilterVillagersSetting(
+			"Won't follow villagers and wandering traders.", true));
+		
+		builder.add(new FilterZombieVillagersSetting(
+			"Won't follow zombified villagers.", true));
 		
 		builder.add(new FilterGolemsSetting(
-			"不会跟随铁傀儡、雪傀儡和潜影贝.", true));
+			"Won't follow iron golems and snow golems.", true));
+		
+		builder
+			.add(FilterPiglinsSetting.onOffOnly("Won't follow piglins.", true));
+		
+		builder.add(FilterZombiePiglinsSetting
+			.onOffOnly("Won't follow zombified piglins.", true));
+		
+		builder.add(
+			FilterEndermenSetting.onOffOnly("Won't follow endermen.", true));
+		
+		builder.add(new FilterShulkersSetting("Won't follow shulkers.", true));
 		
 		builder.add(new FilterAllaysSetting("Won't follow allays.", true));
 		

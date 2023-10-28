@@ -30,25 +30,50 @@ public final class AnchorAuraFilterList extends EntityFilterList
 				+ damageWarning,
 			false));
 		
-		builder.add(new FilterMonstersSetting(
-			"自动放置锚时不会瞄准僵尸、爬行者等."
-				+ damageWarning,
+		builder.add(new FilterHostileSetting("Won't target hostile mobs like"
+			+ " zombies and creepers when auto-placing anchors."
+			+ damageWarning, true));
+		
+		builder.add(new FilterNeutralSetting("Won't target neutral mobs like"
+			+ " endermen and wolves when auto-placing anchors." + damageWarning,
+			AttackDetectingEntityFilter.Mode.ON));
+		
+		builder.add(new FilterPassiveSetting("Won't target animals like pigs"
+			+ " and cows, ambient mobs like bats, and water mobs like fish,"
+			+ " squid and dolphins when auto-placing anchors." + damageWarning,
 			true));
 		
-		builder.add(new FilterAnimalsSetting(
-			"自动放置锚时不会瞄准猪、牛等."
-				+ damageWarning,
+		builder.add(new FilterPassiveWaterSetting("Won't target passive water"
+			+ " mobs like fish, squid, dolphins and axolotls when auto-placing"
+			+ " anchors." + damageWarning, true));
+		
+		builder.add(new FilterBatsSetting("Won't target bats and any other"
+			+ " \"ambient\" mobs when auto-placing anchors." + damageWarning,
 			true));
 		
-		builder.add(new FilterTradersSetting(
-			"自动放置锚时不会瞄准村民、流浪商人等."
-				+ damageWarning,
+		builder.add(new FilterSlimesSetting("Won't target slimes when"
+			+ " auto-placing anchors." + damageWarning, true));
+		
+		builder.add(new FilterVillagersSetting("Won't target villagers and"
+			+ " wandering traders when auto-placing anchors." + damageWarning,
 			true));
 		
-		builder.add(new FilterGolemsSetting(
-			"自动放置锚时不会瞄准铁傀儡、雪傀儡和潜影贝."
-				+ damageWarning,
-			true));
+		builder.add(new FilterZombieVillagersSetting("Won't target zombified"
+			+ " villagers when auto-placing anchors." + damageWarning, true));
+		
+		builder.add(new FilterGolemsSetting("Won't target iron golems and snow"
+			+ " golems when auto-placing anchors." + damageWarning, true));
+		
+		builder.add(new FilterPiglinsSetting(
+			"Won't target piglins when auto-placing anchors.",
+			AttackDetectingEntityFilter.Mode.ON));
+		
+		builder.add(new FilterZombiePiglinsSetting("Won't target"
+			+ " zombified piglins when auto-placing anchors." + damageWarning,
+			AttackDetectingEntityFilter.Mode.ON));
+		
+		builder.add(new FilterShulkersSetting("Won't target shulkers when"
+			+ " auto-placing anchors." + damageWarning, true));
 		
 		builder.add(new FilterAllaysSetting(
 			"Won't target allays when auto-placing anchors." + damageWarning,
