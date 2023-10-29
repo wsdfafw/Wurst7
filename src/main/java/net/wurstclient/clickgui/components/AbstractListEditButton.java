@@ -30,7 +30,7 @@ public abstract class AbstractListEditButton extends Component
 {
 	protected static final MinecraftClient MC = WurstClient.MC;
 	
-	private final String buttonText = "Edit...";
+	private final String buttonText = "编辑...";
 	private final int buttonWidth;
 	
 	public AbstractListEditButton()

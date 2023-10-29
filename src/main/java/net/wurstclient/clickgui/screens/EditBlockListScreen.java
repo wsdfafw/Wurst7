@@ -59,7 +59,7 @@ public final class EditBlockListScreen extends Screen
 		blockNameField.setMaxLength(256);
 		
 		addDrawableChild(
-			addButton = ButtonWidget.builder(Text.literal("Add"), b -> {
+			addButton = ButtonWidget.builder(Text.literal("添加"), b -> {
 				blockList.add(blockToAdd);
 				blockNameField.setText("");
 			}).dimensions(width / 2 - 2, height - 56, 30, 20).build());
@@ -79,7 +79,7 @@ public final class EditBlockListScreen extends Screen
 			.dimensions(width - 108, 8, 100, 20).build());
 		
 		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal("Done"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("完成"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 - 100, height - 28, 200, 20).build());
 	}
 	

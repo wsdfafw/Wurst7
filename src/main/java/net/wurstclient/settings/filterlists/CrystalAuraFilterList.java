@@ -30,12 +30,10 @@ public final class CrystalAuraFilterList extends EntityFilterList
 				+ damageWarning,
 			false));
 		
-		builder.add(new FilterHostileSetting("Won't target hostile mobs like"
-			+ " zombies and creepers when auto-placing crystals."
+		builder.add(new FilterHostileSetting("不会自动瞄准敌对生物，比如僵尸和爬行者，当自动放置水晶时"
 			+ damageWarning, true));
 		
-		builder.add(new FilterNeutralSetting("Won't target neutral mobs like"
-			+ " endermen and wolves when auto-placing crystals."
+		builder.add(new FilterNeutralSetting("当自动放置水晶时，不会瞄准中立生物，比如末影人和狼"
 			+ damageWarning, AttackDetectingEntityFilter.Mode.ON));
 		
 		builder.add(new FilterPassiveSetting("Won't target animals like pigs"

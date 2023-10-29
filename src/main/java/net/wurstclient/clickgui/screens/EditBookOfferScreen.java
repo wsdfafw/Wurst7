@@ -125,7 +125,7 @@ public final class EditBookOfferScreen extends Screen
 		priceMinusButton.active = false;
 		
 		addDrawableChild(
-			saveButton = ButtonWidget.builder(Text.literal("Save"), b -> {
+			saveButton = ButtonWidget.builder(Text.literal("保存"), b -> {
 				if(offerToSave == null || !offerToSave.isValid())
 					return;
 				
@@ -135,7 +135,7 @@ public final class EditBookOfferScreen extends Screen
 		saveButton.active = false;
 		
 		addDrawableChild(cancelButton = ButtonWidget
-			.builder(Text.literal("Cancel"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 + 2, height / 3 * 2, 100, 20).build());
 		
 		updateSelectedOffer(offerToSave);

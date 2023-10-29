@@ -55,13 +55,13 @@ public final class EditBookOffersScreen extends Screen
 		
 		addDrawableChild(
 			ButtonWidget
-				.builder(Text.literal("Add"),
+				.builder(Text.literal("添加"),
 					b -> client
 						.setScreen(new AddBookOfferScreen(this, bookOffers)))
 				.dimensions(width / 2 - 154, height - 56, 100, 20).build());
 		
 		addDrawableChild(
-			editButton = ButtonWidget.builder(Text.literal("Edit"), b -> {
+			editButton = ButtonWidget.builder(Text.literal("编辑"), b -> {
 				boolean selected = listGui.selected >= 0
 					&& listGui.selected < listGui.list.size();
 				if(!selected)
@@ -88,7 +88,7 @@ public final class EditBookOffersScreen extends Screen
 			.dimensions(width - 106, 6, 100, 20).build());
 		
 		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal("Done"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("完成"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 - 100, height - 32, 200, 20).build());
 	}
 	

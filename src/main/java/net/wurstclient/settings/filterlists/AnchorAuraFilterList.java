@@ -30,53 +30,40 @@ public final class AnchorAuraFilterList extends EntityFilterList
 				+ damageWarning,
 			false));
 		
-		builder.add(new FilterHostileSetting("Won't target hostile mobs like"
-			+ " zombies and creepers when auto-placing anchors."
+		builder.add(new FilterHostileSetting("在自动放置锚点时不会瞄准敌对生物,比如僵尸和爬行者."
 			+ damageWarning, true));
 		
-		builder.add(new FilterNeutralSetting("Won't target neutral mobs like"
-			+ " endermen and wolves when auto-placing anchors." + damageWarning,
+		builder.add(new FilterNeutralSetting("不会自动瞄准中立生物，如末影人和狼，当自动放置锚点时" + damageWarning,
 			AttackDetectingEntityFilter.Mode.ON));
 		
-		builder.add(new FilterPassiveSetting("Won't target animals like pigs"
-			+ " and cows, ambient mobs like bats, and water mobs like fish,"
-			+ " squid and dolphins when auto-placing anchors." + damageWarning,
+		builder.add(new FilterPassiveSetting("不会针对像猪和牛这样的动物、像蝙蝠这样的环境生物，以及像鱼、鱿鱼和海豚这样的水中生物，在自动放置锚点时进行目标选择。" + damageWarning,
 			true));
 		
-		builder.add(new FilterPassiveWaterSetting("Won't target passive water"
-			+ " mobs like fish, squid, dolphins and axolotls when auto-placing"
-			+ " anchors." + damageWarning, true));
+		builder.add(new FilterPassiveWaterSetting("在自动放置锚点时，不会针对 passiWater 生物，例如鱼、鱿鱼、海豚和水獭进行目标选择" + damageWarning, true));
 		
-		builder.add(new FilterBatsSetting("Won't target bats and any other"
-			+ " \"ambient\" mobs when auto-placing anchors." + damageWarning,
+		builder.add(new FilterBatsSetting("在自动放置锚点时，不会以目标为蝙蝠和其他“环境”生物" + damageWarning,
 			true));
 		
-		builder.add(new FilterSlimesSetting("Won't target slimes when"
-			+ " auto-placing anchors." + damageWarning, true));
+		builder.add(new FilterSlimesSetting("在自动放置锚点时不会以史莱姆为目标" + damageWarning, true));
 		
-		builder.add(new FilterVillagersSetting("Won't target villagers and"
-			+ " wandering traders when auto-placing anchors." + damageWarning,
+		builder.add(new FilterVillagersSetting("不会在自动放置锚点时瞄准村民和流浪商人" + damageWarning,
 			true));
 		
-		builder.add(new FilterZombieVillagersSetting("Won't target zombified"
-			+ " villagers when auto-placing anchors." + damageWarning, true));
+		builder.add(new FilterZombieVillagersSetting("不会针对僵化的村民在自动放置锚点时进行目标定位." + damageWarning, true));
 		
-		builder.add(new FilterGolemsSetting("Won't target iron golems and snow"
-			+ " golems when auto-placing anchors." + damageWarning, true));
+		builder.add(new FilterGolemsSetting("当自动放置锚点时，不会瞄准铁傀儡和雪傀儡." + damageWarning, true));
 		
 		builder.add(new FilterPiglinsSetting(
-			"Won't target piglins when auto-placing anchors.",
+			"在自动放置锚点时不会攻击猪灵.",
 			AttackDetectingEntityFilter.Mode.ON));
 		
-		builder.add(new FilterZombiePiglinsSetting("Won't target"
-			+ " zombified piglins when auto-placing anchors." + damageWarning,
+		builder.add(new FilterZombiePiglinsSetting("自动放置锚石时不会瞄准僵化的猪灵." + damageWarning,
 			AttackDetectingEntityFilter.Mode.ON));
 		
-		builder.add(new FilterShulkersSetting("Won't target shulkers when"
-			+ " auto-placing anchors." + damageWarning, true));
+		builder.add(new FilterShulkersSetting("不会在自动放置锚点时瞄准虫箱" + damageWarning, true));
 		
 		builder.add(new FilterAllaysSetting(
-			"Won't target allays when auto-placing anchors." + damageWarning,
+			"当自动放置锚点时，不会选择所有的避风港." + damageWarning,
 			true));
 		
 		builder.add(new FilterInvisibleSetting(

@@ -115,41 +115,41 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		addDrawableChild(useButton =
-			ButtonWidget.builder(Text.literal("Login"), b -> pressLogin())
+			ButtonWidget.builder(Text.literal("登录"), b -> pressLogin())
 				.dimensions(width / 2 - 154, height - 52, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Direct Login"),
+			.builder(Text.literal("直接登录"),
 				b -> client.setScreen(new DirectLoginScreen(this)))
 			.dimensions(width / 2 - 50, height - 52, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Add"),
+			.builder(Text.literal("添加"),
 				b -> client.setScreen(new AddAltScreen(this, altManager)))
 			.dimensions(width / 2 + 54, height - 52, 100, 20).build());
 		
 		addDrawableChild(starButton =
-			ButtonWidget.builder(Text.literal("Favorite"), b -> pressFavorite())
+			ButtonWidget.builder(Text.literal("喜爱的"), b -> pressFavorite())
 				.dimensions(width / 2 - 154, height - 28, 75, 20).build());
 		
 		addDrawableChild(editButton =
-			ButtonWidget.builder(Text.literal("Edit"), b -> pressEdit())
+			ButtonWidget.builder(Text.literal("编辑"), b -> pressEdit())
 				.dimensions(width / 2 - 76, height - 28, 74, 20).build());
 		
 		addDrawableChild(deleteButton =
-			ButtonWidget.builder(Text.literal("Delete"), b -> pressDelete())
+			ButtonWidget.builder(Text.literal("删除"), b -> pressDelete())
 				.dimensions(width / 2 + 2, height - 28, 74, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Cancel"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 + 80, height - 28, 75, 20).build());
 		
 		addDrawableChild(importButton =
-			ButtonWidget.builder(Text.literal("Import"), b -> pressImportAlts())
+			ButtonWidget.builder(Text.literal("导入"), b -> pressImportAlts())
 				.dimensions(8, 8, 50, 20).build());
 		
 		addDrawableChild(exportButton =
-			ButtonWidget.builder(Text.literal("Export"), b -> pressExportAlts())
+			ButtonWidget.builder(Text.literal("导出"), b -> pressExportAlts())
 				.dimensions(58, 8, 50, 20).build());
 	}
 	
@@ -258,14 +258,14 @@ public final class AltManagerScreen extends Screen
 		if(alt == null)
 			return;
 		
-		Text text = Text.literal("Are you sure you want to remove this alt?");
+		Text text = Text.literal("你确定要移除这个备用选项吗？");
 		
 		String altName = alt.getDisplayName();
 		Text message = Text.literal(
-			"\"" + altName + "\" will be lost forever! (A long time!)");
+			"\"" + altName + "\" 将永远失去！（很长一段时间！");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
-			message, Text.literal("Delete"), Text.literal("Cancel"));
+			message, Text.literal("删除"), Text.literal("取消"));
 		client.setScreen(screen);
 	}
 	
@@ -439,7 +439,7 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		// title text
-		context.drawCenteredTextWithShadow(textRenderer, "Alt Manager",
+		context.drawCenteredTextWithShadow(textRenderer, "账号管理器",
 			width / 2, 4, 16777215);
 		context.drawCenteredTextWithShadow(textRenderer,
 			"Alts: " + altManager.getList().size(), width / 2, 14, 10526880);
