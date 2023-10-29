@@ -46,7 +46,7 @@ public final class AimAssistHack extends Hack
 		120, 30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight", "Won't aim at entities behind blocks.", true);
+		"检查视线", "不会瞄准在方块后面的实体.", true);
 	
 	private final EntityFilterList entityFilters =
 		new EntityFilterList(FilterPlayersSetting.genericCombat(false),

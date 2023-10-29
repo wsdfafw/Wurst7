@@ -43,12 +43,12 @@ public final class KeybindManagerScreen extends Screen
 		listGui = new ListGui(client, width, height, 36, height - 56, 30);
 		
 		addDrawableChild(addButton = ButtonWidget
-			.builder(Text.literal("Add"),
+			.builder(Text.literal("添加"),
 				b -> client.setScreen(new KeybindEditorScreen(this)))
 			.dimensions(width / 2 - 102, height - 52, 100, 20).build());
 		
 		addDrawableChild(
-			editButton = ButtonWidget.builder(Text.literal("Edit"), b -> edit())
+			editButton = ButtonWidget.builder(Text.literal("编辑"), b -> edit())
 				.dimensions(width / 2 + 2, height - 52, 100, 20).build());
 		
 		addDrawableChild(removeButton =
@@ -56,7 +56,7 @@ public final class KeybindManagerScreen extends Screen
 				.dimensions(width / 2 - 102, height - 28, 100, 20).build());
 		
 		addDrawableChild(backButton = ButtonWidget
-			.builder(Text.literal("Back"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("返回"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 + 2, height - 28, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget.builder(Text.literal("Reset Keybinds"),

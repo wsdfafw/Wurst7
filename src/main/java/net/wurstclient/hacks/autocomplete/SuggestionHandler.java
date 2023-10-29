@@ -36,11 +36,9 @@ public final class SuggestionHandler
 		100, 10, 1000, 10, ValueDisplay.INTEGER);
 	
 	private final SliderSetting maxSuggestionsShown = new SliderSetting(
-		"Max suggestions shown",
-		"How many suggestions can be shown above the chat box.\n\n"
-			+ "If this is set too high, the suggestions will obscure some of"
-			+ " the existing chat messages. How high you can set this depends"
-			+ " on your screen resolution and GUI scale.",
+		"最大显示建议数量",
+		"在聊天框上方可以显示多少个建议.\n\n"
+			+ "如果设置得太高，建议可能会遮挡一些已有的聊天消息。可以设置多高依赖于您的屏幕分辨率和 GUI 缩放比例.",
 		5, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	private final List<Setting> settings = Arrays.asList(maxSuggestionPerDraft,

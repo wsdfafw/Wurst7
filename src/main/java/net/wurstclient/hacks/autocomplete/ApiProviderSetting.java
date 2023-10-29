@@ -14,15 +14,9 @@ public final class ApiProviderSetting
 {
 	public ApiProviderSetting()
 	{
-		super("API provider",
-			"\u00a7lOpenAI\u00a7r lets you use models like ChatGPT, but requires an"
-				+ " account with API access, costs money to use and sends your chat"
-				+ " history to their servers. The name is a lie - it's closed"
-				+ " source.\n\n"
-				+ "\u00a7loobabooga\u00a7r lets you use models like LLaMA and many"
-				+ " others. It's a true open source alternative to OpenAI that you"
-				+ " can run locally on your own computer. It's free to use and does"
-				+ " not send your chat history to any servers.",
+		super("API提供者",
+			"\u00a7lOpenAI\u00a7r 允许你使用像ChatGPT这样的模型，但需要拥有API访问权限的账户，使用需要花费金钱，并将你的聊天历史发送到他们的服务器。其名称是一个谎言 - 它是闭源的.\n\n"
+				+ "\u00a7loobabooga\u00a7r 允许你使用像LLaMA和许多其他模型一样。这是OpenAI的真正开源替代品，你可以在自己的计算机上本地运行它。它是免费的，不会将你的聊天历史发送到任何服务器。",
 			ApiProvider.values(), ApiProvider.OOBABOOGA);
 	}
 	

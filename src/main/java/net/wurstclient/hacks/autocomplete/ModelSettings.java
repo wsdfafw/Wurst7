@@ -89,23 +89,16 @@ public final class ModelSettings
 		1, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
 	public final SliderSetting presencePenalty =
-		new SliderSetting("Presence penalty",
-			"Penalty for choosing tokens that already appear in the chat"
-				+ " history.\n\n"
-				+ "Positive values encourage the model to use synonyms and"
-				+ " talk about different topics. Negative values encourage the"
-				+ " model to repeat the same word over and over again.\n\n"
-				+ "Only works with OpenAI models.",
+		new SliderSetting("存在惩罚",
+			"选择已经在聊天记录中出现的词汇的惩罚.\n\n"
+				+ " 正值鼓励模型使用同义词并谈论不同的话题。负值鼓励模型反复使用相同的词汇。仅适用于OpenAI模型。.",
 			0, -2, 2, 0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting frequencyPenalty =
-		new SliderSetting("Frequency penalty",
-			"Similar to presence penalty, but based on how often the token"
-				+ " appears in the chat history.\n\n"
-				+ "Positive values encourage the model to use synonyms and"
-				+ " talk about different topics. Negative values encourage the"
-				+ " model to repeat existing chat messages.\n\n"
-				+ "Only works with OpenAI models.",
+		new SliderSetting("频率惩罚",
+			"这是一种用于自然语言处理模型的技术，类似于存在性惩罚（presence penalty），但基于标记在聊天历史中出现的频率.\n\n"
+				+ "当设置为正值时，它鼓励模型使用同义词并谈论不同的主题。而当设置为负值时，它鼓励模型重复已存在的聊天消息.\n\n"
+				+ "这个技术只适用于OpenAI的模型.",
 			0.6, -2, 2, 0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting repetitionPenalty =

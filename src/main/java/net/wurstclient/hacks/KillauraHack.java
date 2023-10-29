@@ -70,9 +70,9 @@ public final class KillauraHack extends Hack
 		new PauseAttackOnContainersSetting(true);
 	
 	private final CheckboxSetting checkLOS =
-		new CheckboxSetting("Check line of sight",
-			"Ensures that you don't reach through blocks when attacking.\n\n"
-				+ "Slower but can help with anti-cheat plugins.",
+		new CheckboxSetting("检查视线",
+			"确保在攻击时不会穿过方块.\n\n"
+				+ "较慢，但可以帮助防作弊插件.",
 			false);
 	
 	private final EntityFilterList entityFilters =

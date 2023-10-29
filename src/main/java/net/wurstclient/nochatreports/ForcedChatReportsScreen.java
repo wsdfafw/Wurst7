@@ -33,9 +33,9 @@ public final class ForcedChatReportsScreen extends Screen
 			"multiplayer.disconnect.unsigned_chat");
 	
 	private static final List<String> LITERAL_DISCONNECT_REASONS =
-		Arrays.asList("An internal error occurred in your connection.",
-			"A secure profile is required to join this server.",
-			"Secure profile expired.", "Secure profile invalid.");
+		Arrays.asList("连接出现内部错误.",
+			"需要一个安全的配置文件才能加入此服务器.",
+			"安全配置文件已过期.", "安全配置文件无效.");
 	
 	private final Screen prevScreen;
 	private final Text reason;
