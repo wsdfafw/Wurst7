@@ -1,0 +1,66 @@
+name: Bug Report
+description: 报告一个错误
+labels: ["type:bug", "status:unconfirmed"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      ## 欢迎！
+      请填写以下模板，帮助我们了解并重现您所遇到的问题。
+- type: checkboxes
+  id: checklist
+  attributes:
+    label: 报告前检查清单
+    description: "请选择所有适用的选项。"
+    options:
+      - label: "我已经搜索了现有的问题，没有找到此错误的先前报告。"
+      - label: "这个错误仍然在 Wurst 的最新版本中发生。我确保我的安装是最新的。"
+      - label: "我尝试了删除所有其他模组，但错误仍然发生。"
+- type: textarea
+  id: description
+  attributes:
+    label: 描述
+    description: "请尽可能详细地描述错误。"
+  validations:
+    required: true
+- type: textarea
+  id: repro
+  attributes:
+    label: 重现步骤
+    description: "您是如何触发这个错误的？请逐步向我们说明。"
+    value: |
+      1.
+      2.
+      3.
+  validations:
+    required: true
+- type: input
+  id: wurst-version
+  attributes:
+    label: Wurst 客户端版本
+    placeholder: 例如 7.15
+  validations:
+    required: true
+- type: input
+  id: minecraft-version
+  attributes:
+    label: Minecraft 版本
+    placeholder: 例如 1.16.5
+  validations:
+    required: true
+- type: textarea
+  id: crash
+  attributes:
+    label: 崩溃报告（如果适用）
+    description: "如果您的游戏崩溃，请在此处粘贴整个崩溃报告。"
+    placeholder: |
+      ---- Minecraft Crash Report ----
+      // 谁设置了我们的TNT？
+    render: plaintext
+  validations:
+    required: false
+- type: markdown
+  attributes:
+    value: |
+      ## 谢谢！
+      感谢您通过报告此错误来帮助改进 Wurst 客户端。在提交此问题之前，请确保您已填写所有必要的信息。
