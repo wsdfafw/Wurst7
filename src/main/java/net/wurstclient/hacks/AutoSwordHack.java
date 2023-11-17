@@ -38,7 +38,8 @@ public final class AutoSwordHack extends Hack implements UpdateListener
 	
 	private final SliderSetting releaseTime = new SliderSetting("释放时间",
 		"时间直到 自动切剑 将会切换回武器的\n上一个物品的时间.\n\n只会在 §l切换回来§r 的作用开启情况下.",
-		10, 1, 200, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+		10, 1, 200, 1,
+		ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
 	private int oldSlot;
 	private int timer;

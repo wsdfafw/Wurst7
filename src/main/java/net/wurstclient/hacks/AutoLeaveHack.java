@@ -13,6 +13,7 @@ import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
@@ -29,13 +30,18 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		"§l退出§r 模式就和离开服务器一样.\n绕过反作弊检测但无战斗记录.\n\n§l字符§r 模式则发送一些特殊的符号到聊天栏\n导致服务器会将你踢出.\n绕过反作弊和一些版本的战斗记录.\n\n§lTP§r 模式将传送你到一个无效的区域,\n导致服务器将你踢出.\n绕过战斗记录, 但不绕反作弊.\n\n§l自伤§r 模式发送一个攻击包到\n其他玩家但你即是目标也是攻击者\n这会导致将你踢出.\n绕过战斗日志和反作弊",
 		Mode.values(), Mode.QUIT);
 	
+	private final CheckboxSetting disableAutoReconnect = new CheckboxSetting(
+		"Disable AutoReconnect", "Automatically turns off AutoReconnect when"
+			+ " AutoLeave makes you leave the server.",
+		true);
+	
 	public AutoLeaveHack()
 	{
 		super("自动离开");
-		
 		setCategory(Category.COMBAT);
 		addSetting(health);
 		addSetting(mode);
+		addSetting(disableAutoReconnect);
 	}
 	
 	@Override
@@ -69,7 +75,8 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 			return;
 		
 		// check health
-		if(MC.player.getHealth() > health.getValueF() * 2F)
+		float currentHealth = MC.player.getHealth();
+		if(currentHealth <= 0F || currentHealth > health.getValueF() * 2F)
 			return;
 		
 		// leave server
@@ -97,6 +104,9 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 		
 		// disable
 		setEnabled(false);
+		
+		if(disableAutoReconnect.isChecked())
+			WURST.getHax().autoReconnectHack.setEnabled(false);
 	}
 	
 	public static enum Mode

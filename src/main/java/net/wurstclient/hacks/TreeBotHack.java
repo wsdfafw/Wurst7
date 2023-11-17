@@ -87,10 +87,8 @@ public final class TreeBotHack extends Hack
 		super("砍树机器人");
 		setCategory(Category.BLOCKS);
 		addSetting(range);
-		
-		// settings to be added in v7.39
-		// addSetting(facing);
-		// addSetting(swingHand);
+		addSetting(facing);
+		addSetting(swingHand);
 	}
 	
 	@Override
