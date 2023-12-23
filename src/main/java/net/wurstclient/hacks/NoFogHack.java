@@ -11,14 +11,14 @@ import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
 
-@SearchTags({"no levitation", "levitation", "levitate"})
-public final class NoLevitationHack extends Hack
+@SearchTags({"no fog", "AntiFog", "anti fog"})
+public final class NoFogHack extends Hack
 {
-	public NoLevitationHack()
+	public NoFogHack()
 	{
-		super("NoLevitation");
-		setCategory(Category.MOVEMENT);
+		super("NoFog");
+		setCategory(Category.RENDER);
 	}
 	
-	// See ClientPlayerEntityMixin.hasStatusEffect()
+	// See BackgroundRendererMixin
 }
