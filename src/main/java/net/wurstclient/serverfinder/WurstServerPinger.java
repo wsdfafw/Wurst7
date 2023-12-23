@@ -41,7 +41,7 @@ public class WurstServerPinger
 		
 		try
 		{
-			pinger.add(server, () -> {});
+			pinger.add(server, () -> {}, () -> {});
 			System.out.println("成功测试: " + ip + ":" + port);
 			
 		}catch(UnknownHostException e)
