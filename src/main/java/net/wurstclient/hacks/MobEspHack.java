@@ -51,8 +51,8 @@ public final class MobEspHack extends Hack implements UpdateListener,
 {
 	private final EspStyleSetting style = new EspStyleSetting();
 	
-	private final EspBoxSizeSetting boxSize = new EspBoxSizeSetting(
-		"\u00a7lAccurate\u00a7r 模式显示每个生物的精确碰撞箱.\n"
+	private final EspBoxSizeSetting boxSize =
+		new EspBoxSizeSetting("\u00a7lAccurate\u00a7r 模式显示每个生物的精确碰撞箱.\n"
 			+ "\u00a7lFancy\u00a7r 模式显示略大一些的外框,看起来更好看.");
 	
 	private final EntityFilterList entityFilters =

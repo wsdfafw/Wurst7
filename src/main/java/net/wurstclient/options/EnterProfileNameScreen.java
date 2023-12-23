@@ -87,8 +87,8 @@ public final class EnterProfileNameScreen extends Screen
 		float partialTicks)
 	{
 		renderBackground(context, mouseX, mouseY, partialTicks);
-		context.drawCenteredTextWithShadow(client.textRenderer,
-			"命名你的新档案", width / 2, 20, 0xFFFFFF);
+		context.drawCenteredTextWithShadow(client.textRenderer, "命名你的新档案",
+			width / 2, 20, 0xFFFFFF);
 		
 		valueField.render(context, mouseX, mouseY, partialTicks);
 		

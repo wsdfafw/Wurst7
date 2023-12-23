@@ -26,7 +26,9 @@ public final class SettingsCmd extends Command
 {
 	public SettingsCmd()
 	{
-		super("settings", "让你制作一个保存所有设置的档案.", ".settings load-profile <文件>", ".settings save-profile <文件>", ".settings list-profiles [<页码>]", "档案保存在 '.minecraft/wurst/settings'.");
+		super("settings", "让你制作一个保存所有设置的档案.", ".settings load-profile <文件>",
+			".settings save-profile <文件>", ".settings list-profiles [<页码>]",
+			"档案保存在 '.minecraft/wurst/settings'.");
 	}
 	
 	@Override
@@ -73,8 +75,7 @@ public final class SettingsCmd extends Command
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError(
-				"档案 '" + name + "' 已损坏: " + e.getMessage());
+			throw new CmdError("档案 '" + name + "' 已损坏: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
@@ -131,8 +132,7 @@ public final class SettingsCmd extends Command
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, files.size());
 		
-		ChatUtils
-			.message("设置档案的列表 (页码 " + page + "/" + pages + ")");
+		ChatUtils.message("设置档案的列表 (页码 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

@@ -46,28 +46,23 @@ import net.wurstclient.util.RotationUtils;
 public final class CrystalAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range = new SliderSetting("范围",
-		"决定放置水晶的范围并\n引爆水晶",
-		6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		"决定放置水晶的范围并\n引爆水晶", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting(
-		"自动放置水晶",
-		"当开启时, 水晶功能 将会自动\n放置当有效的实体靠近时候.\n当关闭时候, 水晶将会只会\n引爆请手动放置水晶.",
-		true);
+	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置水晶",
+		"当开启时, 水晶功能 将会自动\n放置当有效的实体靠近时候.\n当关闭时候, 水晶将会只会\n引爆请手动放置水晶.", true);
 	
 	private final FacingSetting faceBlocks =
-		FacingSetting.withPacketSpam("面朝水晶",
-			"无论是否应该在放置和左键点击末地水晶时使 CrystalAura 面向正确方向.\n\n"
-				+ "Slower but can help with anti-cheat plugins.",
-			Facing.OFF);
+		FacingSetting
+			.withPacketSpam("面朝水晶",
+				"无论是否应该在放置和左键点击末地水晶时使 CrystalAura 面向正确方向.\n\n"
+					+ "Slower but can help with anti-cheat plugins.",
+				Facing.OFF);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"检查视野",
-		"确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.",
-		false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野",
+		"确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.", false);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("从哪拿物品", "应该从哪拿末影水晶.",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
+		"从哪拿物品", "应该从哪拿末影水晶.", TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		CrystalAuraFilterList.create();

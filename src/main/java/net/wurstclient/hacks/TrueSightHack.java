@@ -14,7 +14,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.settings.filters.*;
 
-@SearchTags({"true sight","TrueSight"})
+@SearchTags({"true sight", "TrueSight"})
 public final class TrueSightHack extends Hack
 {
 	private final EntityFilterList entityFilters =

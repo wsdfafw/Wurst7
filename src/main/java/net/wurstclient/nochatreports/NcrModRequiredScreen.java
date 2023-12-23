@@ -27,8 +27,7 @@ public final class NcrModRequiredScreen extends Screen
 {
 	private static final List<String> DISCONNECT_REASONS = Arrays.asList(
 		// Older versions of NCR have a bug that sends the raw translation key.
-		"disconnect.nochatreports.server",
-		"您没有无聊天报告，并且此服务器配置为在客户端需要它!");
+		"disconnect.nochatreports.server", "您没有无聊天报告，并且此服务器配置为在客户端需要它!");
 	
 	private final Screen prevScreen;
 	private final Text reason;
@@ -68,8 +67,8 @@ public final class NcrModRequiredScreen extends Screen
 	
 	private String blockedOrAllowed(boolean blocked)
 	{
-		return WurstClient.INSTANCE.translate(
-			"gui.wurst.generic.allcaps_" + (blocked ? "封锁" : "允许"));
+		return WurstClient.INSTANCE
+			.translate("gui.wurst.generic.allcaps_" + (blocked ? "封锁" : "允许"));
 	}
 	
 	@Override

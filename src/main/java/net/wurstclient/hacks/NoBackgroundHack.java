@@ -18,8 +18,8 @@ import net.wurstclient.settings.CheckboxSetting;
 	"NoGradient", "no gradient"})
 public final class NoBackgroundHack extends Hack
 {
-	public final CheckboxSetting allGuis = new CheckboxSetting("All GUIs",
-		"移除所有图形用户界面的背景，不仅仅是库存.", false);
+	public final CheckboxSetting allGuis =
+		new CheckboxSetting("All GUIs", "移除所有图形用户界面的背景，不仅仅是库存.", false);
 	
 	public NoBackgroundHack()
 	{

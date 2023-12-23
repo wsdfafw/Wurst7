@@ -36,10 +36,9 @@ public final class RadarHack extends Hack implements UpdateListener
 	private final Window window;
 	private final ArrayList<Entity> entities = new ArrayList<>();
 	
-	private final SliderSetting radius = new SliderSetting("半径",
-		"半径方块.", 100, 1, 100, 1, ValueDisplay.INTEGER);
-	private final CheckboxSetting rotate =
-		new CheckboxSetting("跟随玩家", true);
+	private final SliderSetting radius =
+		new SliderSetting("半径", "半径方块.", 100, 1, 100, 1, ValueDisplay.INTEGER);
+	private final CheckboxSetting rotate = new CheckboxSetting("跟随玩家", true);
 	
 	private final EntityFilterList entityFilters =
 		new EntityFilterList(FilterPlayersSetting.genericVision(false),

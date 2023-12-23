@@ -22,7 +22,7 @@ public final class ViewNbtCmd extends Command
 {
 	public ViewNbtCmd()
 	{
-		super("viewnbt", "显示一个物品的NBT数据", ".viewnbt","复制到剪贴板: .viewnbt copy");
+		super("viewnbt", "显示一个物品的NBT数据", ".viewnbt", "复制到剪贴板: .viewnbt copy");
 	}
 	
 	@Override

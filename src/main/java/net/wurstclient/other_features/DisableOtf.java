@@ -18,13 +18,11 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class DisableOtf extends OtherFeature
 {
 	private final CheckboxSetting hideEnableButton = new CheckboxSetting(
-		"隐藏启用按钮",
-		"关闭统计界面后立即移除“启用Wurst”按钮。要重新启用Wurst，您需要重新启动游戏。",
-		false);
+		"隐藏启用按钮", "关闭统计界面后立即移除“启用Wurst”按钮。要重新启用Wurst，您需要重新启动游戏。", false);
 	
 	public DisableOtf()
 	{
-		super("禁用香肠","要禁用香肠,请转到统计屏幕并按“禁用香肠”按钮.\n一旦按下它就会变成一个“启用Wurst”按钮.");
+		super("禁用香肠", "要禁用香肠,请转到统计屏幕并按“禁用香肠”按钮.\n一旦按下它就会变成一个“启用Wurst”按钮.");
 		addSetting(hideEnableButton);
 	}
 	

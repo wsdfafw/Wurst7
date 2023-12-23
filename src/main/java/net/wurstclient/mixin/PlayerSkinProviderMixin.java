@@ -55,8 +55,7 @@ public abstract class PlayerSkinProviderMixin
 			
 		}catch(Exception e)
 		{
-			System.err
-				.println("[Wurst] 载入披风失败 UUID " + uuidString);
+			System.err.println("[Wurst] 载入披风失败 UUID " + uuidString);
 			
 			e.printStackTrace();
 		}
@@ -90,8 +89,7 @@ public abstract class PlayerSkinProviderMixin
 			
 		}catch(Exception e)
 		{
-			System.err
-				.println("[Wurst] 无法从 wurstclient.net 载入披风!");
+			System.err.println("[Wurst] 无法从 wurstclient.net 载入披风!");
 			
 			e.printStackTrace();
 		}

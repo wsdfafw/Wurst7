@@ -171,8 +171,8 @@ public final class KeybindManagerScreen extends Screen
 		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器",
-			width / 2, 8, 0xffffff);
+		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器", width / 2, 8,
+			0xffffff);
 		context.drawCenteredTextWithShadow(textRenderer,
 			"键绑定: " + listGui.getItemCount(), width / 2, 20, 0xffffff);
 		
@@ -235,8 +235,7 @@ public final class KeybindManagerScreen extends Screen
 				"按键: " + keybind.getKey().replace("key.keyboard.", ""), x + 3,
 				y + 3, 0xa0a0a0, false);
 			context.drawText(client.textRenderer,
-				"指令: " + keybind.getCommands(), x + 3, y + 15, 0xa0a0a0,
-				false);
+				"指令: " + keybind.getCommands(), x + 3, y + 15, 0xa0a0a0, false);
 		}
 	}
 }

@@ -35,7 +35,6 @@ import net.wurstclient.mixinterface.IKeyBinding;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.SliderSetting;
-import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.FakePlayerEntity;
 import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
@@ -48,9 +47,11 @@ public final class FreecamHack extends Hack implements UpdateListener,
 	IsPlayerInLavaListener, CameraTransformViewBobbingListener,
 	IsNormalCubeListener, SetOpaqueCubeListener, RenderListener
 {
-	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting tracer = new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
-    private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
+	private final SliderSetting speed = new SliderSetting("速度", 1.0, 0.05, 10.0,
+		0.05, SliderSetting.ValueDisplay.DECIMAL);
+	private final CheckboxSetting tracer =
+		new CheckboxSetting("轨迹", "在你角色实际的位置描写一个框和一条轨迹出来.", false);
+	private final ColorSetting color = new ColorSetting("轨迹颜色", Color.WHITE);
 	
 	private FakePlayerEntity fakePlayer;
 	

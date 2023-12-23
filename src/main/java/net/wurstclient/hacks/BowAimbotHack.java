@@ -64,16 +64,14 @@ public final class BowAimbotHack extends Hack
 		Priority.values(), Priority.ANGLE_DIST);
 	
 	private final SliderSetting predictMovement =
-		new SliderSetting("预瞄",
-			"控制弓箭自动瞄准的强度\n并自动计算落弹点,有可能提高命中率",
-			0.2, 0, 2, 0.01, ValueDisplay.PERCENTAGE);
-
+		new SliderSetting("预瞄", "控制弓箭自动瞄准的强度\n并自动计算落弹点,有可能提高命中率", 0.2, 0, 2,
+			0.01, ValueDisplay.PERCENTAGE);
+	
 	private final EntityFilterList entityFilters =
 		EntityFilterList.genericCombat();
-
-	private final ColorSetting color = new ColorSetting("ESP 颜色", 
-		"弓自瞄器 盒子的颜色\n指画在目标实体上的颜色.",
-		Color.RED);
+	
+	private final ColorSetting color =
+		new ColorSetting("ESP 颜色", "弓自瞄器 盒子的颜色\n指画在目标实体上的颜色.", Color.RED);
 	
 	private static final Box TARGET_BOX =
 		new Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);

@@ -34,8 +34,7 @@ public final class ZoomOtf extends OtherFeature implements MouseScrollListener
 	
 	public ZoomOtf()
 	{
-		super("缩放", "允许您进行缩放.\n"
-			+ "默认情况下，通过按下\u00a7lV\u00a7r键来激活缩放功能"
+		super("缩放", "允许您进行缩放.\n" + "默认情况下，通过按下\u00a7lV\u00a7r键来激活缩放功能"
 			+ "前往 Wurst 选项 -> 缩放，以更改此按键绑定.");
 		addSetting(level);
 		addSetting(scroll);

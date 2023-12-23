@@ -95,10 +95,10 @@ public abstract class AltEditorScreen extends Screen
 				20)
 			.build());
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("打开皮肤文件夹"), b -> openSkinFolder())
-			.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
-			.build());
+		addDrawableChild(
+			ButtonWidget.builder(Text.literal("打开皮肤文件夹"), b -> openSkinFolder())
+				.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
+				.build());
 		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
 			200, 20, Text.literal(""));
@@ -361,11 +361,10 @@ public abstract class AltEditorScreen extends Screen
 		// text
 		context.drawTextWithShadow(textRenderer, "名字 (盗版账户), 或者",
 			width / 2 - 100, 37, 10526880);
-		context.drawTextWithShadow(textRenderer, "邮箱 (正版账户)",
-			width / 2 - 100, 47, 10526880);
-		context.drawTextWithShadow(textRenderer,
-			"密码 (如果是盗版请留空)", width / 2 - 100, 87,
-			10526880);
+		context.drawTextWithShadow(textRenderer, "邮箱 (正版账户)", width / 2 - 100,
+			47, 10526880);
+		context.drawTextWithShadow(textRenderer, "密码 (如果是盗版请留空)",
+			width / 2 - 100, 87, 10526880);
 		
 		String[] lines = message.split("\n");
 		for(int i = 0; i < lines.length; i++)

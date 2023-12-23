@@ -21,8 +21,7 @@ import net.wurstclient.settings.EnumSetting;
 public final class WurstLogoOtf extends OtherFeature
 {
 	private final ColorSetting bgColor = new ColorSetting("背景",
-		"背景颜色.\n"
-			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
+		"背景颜色.\n" + "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
 		Color.WHITE);
 	
 	private final ColorSetting txtColor =
@@ -58,8 +57,7 @@ public final class WurstLogoOtf extends OtherFeature
 	{
 		ALWAYS("总是", () -> true),
 		
-		ONLY_OUTDATED("仅在版本过期时候",
-			() -> WURST.getUpdater().isOutdated());
+		ONLY_OUTDATED("仅在版本过期时候", () -> WURST.getUpdater().isOutdated());
 		
 		private final String name;
 		private final BooleanSupplier visible;

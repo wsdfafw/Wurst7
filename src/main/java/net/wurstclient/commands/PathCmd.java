@@ -43,10 +43,9 @@ public final class PathCmd extends Command
 	
 	public PathCmd()
 	{
-		super("path",
-			"显示到特定点的最短路径.\n对迷宫和洞穴很有用",
-			".path <x> <y> <z>", ".path <实体名>", ".path -debug(调试模式)",
-			".path -depth(深度测试)", ".path -refresh(刷新)", "关闭: .path");
+		super("path", "显示到特定点的最短路径.\n对迷宫和洞穴很有用", ".path <x> <y> <z>",
+			".path <实体名>", ".path -debug(调试模式)", ".path -depth(深度测试)",
+			".path -refresh(刷新)", "关闭: .path");
 		
 		addSetting(debugMode);
 		addSetting(depthTest);
@@ -62,14 +61,14 @@ public final class PathCmd extends Command
 			{
 				case "-debug":
 				debugMode.setChecked(!debugMode.isChecked());
-				ChatUtils.message("Debug模式 "
-					+ (debugMode.isChecked() ? "开" : "关") + ".");
+				ChatUtils.message(
+					"Debug模式 " + (debugMode.isChecked() ? "开" : "关") + ".");
 				return;
 				
 				case "-depth":
 				depthTest.setChecked(!depthTest.isChecked());
-				ChatUtils.message("深度测试模式 "
-					+ (depthTest.isChecked() ? "开" : "关") + ".");
+				ChatUtils.message(
+					"深度测试模式 " + (depthTest.isChecked() ? "开" : "关") + ".");
 				return;
 				
 				case "-refresh":

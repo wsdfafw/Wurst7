@@ -23,9 +23,7 @@ public final class InvseeCmd extends Command implements RenderListener
 	
 	public InvseeCmd()
 	{
-		super("invsee",
-			"查看其他玩家的背包.",
-			".invsee <目标玩家>");
+		super("invsee", "查看其他玩家的背包.", ".invsee <目标玩家>");
 	}
 	
 	@Override

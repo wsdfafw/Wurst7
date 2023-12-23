@@ -22,19 +22,17 @@ public final class CrystalAuraFilterList extends EntityFilterList
 	public static CrystalAuraFilterList create()
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
-		String damageWarning =
-			"\n\n如果他们离有效目标或现有水晶太近，他们仍然会受到伤害.";
+		String damageWarning = "\n\n如果他们离有效目标或现有水晶太近，他们仍然会受到伤害.";
 		
-		builder.add(new FilterPlayersSetting(
-			"自动放置水晶时不会瞄准其他玩家."
-				+ damageWarning,
+		builder.add(new FilterPlayersSetting("自动放置水晶时不会瞄准其他玩家." + damageWarning,
 			false));
 		
-		builder.add(new FilterHostileSetting("不会自动瞄准敌对生物，比如僵尸和爬行者，当自动放置水晶时"
-			+ damageWarning, true));
+		builder.add(new FilterHostileSetting(
+			"不会自动瞄准敌对生物，比如僵尸和爬行者，当自动放置水晶时" + damageWarning, true));
 		
-		builder.add(new FilterNeutralSetting("当自动放置水晶时，不会瞄准中立生物，比如末影人和狼"
-			+ damageWarning, AttackDetectingEntityFilter.Mode.ON));
+		builder.add(new FilterNeutralSetting(
+			"当自动放置水晶时，不会瞄准中立生物，比如末影人和狼" + damageWarning,
+			AttackDetectingEntityFilter.Mode.ON));
 		
 		builder.add(new FilterPassiveSetting("Won't target animals like pigs"
 			+ " and cows, ambient mobs like bats, and water mobs like fish,"
@@ -78,19 +76,13 @@ public final class CrystalAuraFilterList extends EntityFilterList
 			true));
 		
 		builder.add(new FilterInvisibleSetting(
-			"自动放置水晶时不会瞄准隐形实体."
-				+ damageWarning,
-			false));
+			"自动放置水晶时不会瞄准隐形实体." + damageWarning, false));
 		
 		builder.add(new FilterNamedSetting(
-			"自动放置水晶时不会以带有名称标签的实体为目标."
-				+ damageWarning,
-			false));
+			"自动放置水晶时不会以带有名称标签的实体为目标." + damageWarning, false));
 		
 		builder.add(new FilterArmorStandsSetting(
-			"自动放置水晶时不会瞄准盔甲架."
-				+ damageWarning,
-			true));
+			"自动放置水晶时不会瞄准盔甲架." + damageWarning, true));
 		
 		return new CrystalAuraFilterList(builder);
 	}

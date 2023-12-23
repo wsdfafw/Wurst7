@@ -21,8 +21,7 @@ public final class NoTelemetryOtf extends OtherFeature
 	
 	public NoTelemetryOtf()
 	{
-		super("不上传遥测数据",
-			"禁用了Mojang在22w46a引入的\"必要\"遥测数据。事实证明，它并不是那么必要");
+		super("不上传遥测数据", "禁用了Mojang在22w46a引入的\"必要\"遥测数据。事实证明，它并不是那么必要");
 		addSetting(disableTelemetry);
 	}
 	

@@ -136,8 +136,8 @@ public class NavigatorRemoveKeybindScreen extends NavigatorScreen
 		int txtColor = gui.getTxtColor();
 		
 		// title bar
-		context.drawCenteredTextWithShadow(client.textRenderer,
-			"移除绑定键", middleX, 32, txtColor);
+		context.drawCenteredTextWithShadow(client.textRenderer, "移除绑定键",
+			middleX, 32, txtColor);
 		GL11.glEnable(GL11.GL_BLEND);
 		
 		// background

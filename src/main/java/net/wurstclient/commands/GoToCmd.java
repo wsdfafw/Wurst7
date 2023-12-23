@@ -34,9 +34,8 @@ public final class GoToCmd extends Command
 	
 	public GoToCmd()
 	{
-		super("goto", "自动走到某个特定的地方.",
-			".goto <x> <y> <z>(走到给定的坐标)", ".goto <实体>(走到某个实体旁边)", ".goto -path",
-			"结束此功能: .goto");
+		super("goto", "自动走到某个特定的地方.", ".goto <x> <y> <z>(走到给定的坐标)",
+			".goto <实体>(走到某个实体旁边)", ".goto -path", "结束此功能: .goto");
 	}
 	
 	@Override

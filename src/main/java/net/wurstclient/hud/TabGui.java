@@ -363,8 +363,7 @@ public final class TabGui implements KeyPressListener
 				WurstClient.INSTANCE.getHax().tooManyHaxHack;
 			if(tooManyHax.isEnabled() && tooManyHax.isBlocked(feature))
 			{
-				ChatUtils
-					.error(feature.getName() + " 被 TooManyHax 功能所屏蔽.");
+				ChatUtils.error(feature.getName() + " 被 TooManyHax 功能所屏蔽.");
 				return;
 			}
 			

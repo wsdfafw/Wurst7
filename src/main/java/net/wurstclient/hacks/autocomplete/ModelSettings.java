@@ -82,26 +82,24 @@ public final class ModelSettings
 		16, 1, 100, 1, ValueDisplay.INTEGER);
 	
 	public final SliderSetting temperature = new SliderSetting("温度",
-		"控制模型的创造力和随机性。较高的值将导致更具创意且有时不合逻辑的生成结果，而较低的值将导致更为保守和常规的生成结果。",
-		0.7, 0, 2, 0.01, ValueDisplay.DECIMAL);
+		"控制模型的创造力和随机性。较高的值将导致更具创意且有时不合逻辑的生成结果，而较低的值将导致更为保守和常规的生成结果。", 0.7, 0, 2,
+		0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting topP = new SliderSetting("Top P",
 		"是温度的另一种选择。通过仅让模型从最有可能的标记中选择，使得生成结果更加稳定而不那么随机。\n\n"
 			+ "设定值为 100% 将禁用此功能，允许模型从所有标记中进行选择。",
 		1, 0, 1, 0.01, ValueDisplay.PERCENTAGE);
 	
-	public final SliderSetting presencePenalty =
-		new SliderSetting("存在惩罚",
-			"选择已经在聊天记录中出现的词汇的惩罚.\n\n"
-				+ " 正值鼓励模型使用同义词并谈论不同的话题。负值鼓励模型反复使用相同的词汇。仅适用于OpenAI模型。.",
-			0, -2, 2, 0.01, ValueDisplay.DECIMAL);
+	public final SliderSetting presencePenalty = new SliderSetting("存在惩罚",
+		"选择已经在聊天记录中出现的词汇的惩罚.\n\n"
+			+ " 正值鼓励模型使用同义词并谈论不同的话题。负值鼓励模型反复使用相同的词汇。仅适用于OpenAI模型。.",
+		0, -2, 2, 0.01, ValueDisplay.DECIMAL);
 	
-	public final SliderSetting frequencyPenalty =
-		new SliderSetting("频率惩罚",
-			"这是一种用于自然语言处理模型的技术，类似于存在性惩罚（presence penalty），但基于标记在聊天历史中出现的频率.\n\n"
-				+ "当设置为正值时，它鼓励模型使用同义词并谈论不同的主题。而当设置为负值时，它鼓励模型重复已存在的聊天消息.\n\n"
-				+ "这个技术只适用于OpenAI的模型.",
-			0.6, -2, 2, 0.01, ValueDisplay.DECIMAL);
+	public final SliderSetting frequencyPenalty = new SliderSetting("频率惩罚",
+		"这是一种用于自然语言处理模型的技术，类似于存在性惩罚（presence penalty），但基于标记在聊天历史中出现的频率.\n\n"
+			+ "当设置为正值时，它鼓励模型使用同义词并谈论不同的主题。而当设置为负值时，它鼓励模型重复已存在的聊天消息.\n\n"
+			+ "这个技术只适用于OpenAI的模型.",
+		0.6, -2, 2, 0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting repetitionPenalty =
 		new SliderSetting("Repetition penalty",

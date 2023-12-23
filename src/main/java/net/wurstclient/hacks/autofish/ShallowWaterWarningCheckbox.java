@@ -18,9 +18,7 @@ public class ShallowWaterWarningCheckbox extends CheckboxSetting
 	
 	public ShallowWaterWarningCheckbox()
 	{
-		super("浅水警告",
-			"当您在浅水中钓鱼时，在聊天中显示警告消息。",
-			true);
+		super("浅水警告", "当您在浅水中钓鱼时，在聊天中显示警告消息。", true);
 	}
 	
 	public void reset()
@@ -39,8 +37,7 @@ public class ShallowWaterWarningCheckbox extends CheckboxSetting
 		if(isChecked() && !hasAlreadyWarned)
 		{
 			ChatUtils.warning("您当前正在浅水中钓鱼.");
-			ChatUtils.message(
-				"你不能在这种方式下钓鱼获得任何宝藏物品。");
+			ChatUtils.message("你不能在这种方式下钓鱼获得任何宝藏物品。");
 			
 			if(!WurstClient.INSTANCE.getHax().openWaterEspHack.isEnabled())
 				ChatUtils.message("使用OpenWaterESP来找到开放水域。");

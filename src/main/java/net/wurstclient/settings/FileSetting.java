@@ -96,8 +96,7 @@ public final class FileSetting extends Setting
 		
 		ArrayList<Path> files = listFiles();
 		if(files.isEmpty())
-			throw new IllegalStateException(
-				"创建了默认文件但文件夹仍然是空的!");
+			throw new IllegalStateException("创建了默认文件但文件夹仍然是空的!");
 		
 		return files;
 	}

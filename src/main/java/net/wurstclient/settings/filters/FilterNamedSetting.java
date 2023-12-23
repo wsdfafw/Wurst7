@@ -24,8 +24,7 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 	
 	public static FilterNamedSetting genericCombat(boolean checked)
 	{
-		return new FilterNamedSetting("不会攻击已经被命名的实体.",
-			checked);
+		return new FilterNamedSetting("不会攻击已经被命名的实体.", checked);
 	}
 	
 	public static FilterNamedSetting genericVision(boolean checked)

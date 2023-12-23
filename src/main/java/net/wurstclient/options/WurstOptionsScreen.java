@@ -63,8 +63,7 @@ public class WurstOptionsScreen extends Screen
 			wurst.getOtfs().translationsOtf.getForceEnglish();
 		
 		new WurstOptionsButton(-154, 24,
-			() -> "点击朋友: "
-				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
+			() -> "点击朋友: " + (middleClickFriends.isChecked() ? "开启" : "关闭"),
 			middleClickFriends.getWrappedDescription(200),
 			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
@@ -76,8 +75,7 @@ public class WurstOptionsScreen extends Screen
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
-			() -> "原版伪装: "
-				+ (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
+			() -> "原版伪装: " + (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
 			vanillaSpoofOtf.getDescription(),
 			b -> vanillaSpoofOtf.doPrimaryAction());
 		
@@ -95,12 +93,10 @@ public class WurstOptionsScreen extends Screen
 			"按键绑定允许您通过简单地按下一个按钮来切换任何作弊或命令。",
 			b -> client.setScreen(new KeybindManagerScreen(this)));
 		
-		new WurstOptionsButton(-50, 48, () -> "X-Ray Blocks",
-			"X射线将显示的方块的管理器。",
+		new WurstOptionsButton(-50, 48, () -> "X-Ray Blocks", "X射线将显示的方块的管理器。",
 			b -> xRayHack.openBlockListEditor(this));
 		
-		new WurstOptionsButton(-50, 72, () -> "Zoom",
-			"缩放管理器允许您更改缩放键以及缩放的距离。",
+		new WurstOptionsButton(-50, 72, () -> "Zoom", "缩放管理器允许您更改缩放键以及缩放的距离。",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
 	}
 	
@@ -108,8 +104,8 @@ public class WurstOptionsScreen extends Screen
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "官方网站",
-			"§n§lWurstClient.net", b -> os.open(
+		new WurstOptionsButton(54, 24, () -> "官方网站", "§n§lWurstClient.net",
+			b -> os.open(
 				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
 		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "§n§lWurst.Wiki\n"
@@ -126,8 +122,7 @@ public class WurstOptionsScreen extends Screen
 			b -> os.open("https://www.wurstclient.net/twitter/"));
 		
 		new WurstOptionsButton(54, 120, () -> "捐款 求捐款", "qq/微信/支付宝/支付",
-			b -> os.open(
-				"https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
+			b -> os.open("https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
 	}
 	
 	@Override
@@ -156,8 +151,8 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		context.drawCenteredTextWithShadow(tr, "Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
-			0xffffff);
+		context.drawCenteredTextWithShadow(tr,
+			"Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1, 0xffffff);
 		
 		context.drawCenteredTextWithShadow(tr, "设置选项", middleX - 104, y2,
 			0xcccccc);

@@ -23,8 +23,8 @@ public final class HelpCmd extends Command
 	
 	public HelpCmd()
 	{
-		super("help", "显示某个指令的使用方法,\n或显示指令列表",
-			".help <需要查看方法的指令>", "指令列表: .help [<页数>]");
+		super("help", "显示某个指令的使用方法,\n或显示指令列表", ".help <需要查看方法的指令>",
+			"指令列表: .help [<页数>]");
 	}
 	
 	@Override

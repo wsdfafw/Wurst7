@@ -33,9 +33,8 @@ public final class InvWalkHack extends Hack implements UpdateListener
 		new CheckboxSetting("允许 ClickGUI",
 			"description.wurst.setting.invwalk.allow_clickgui", true);
 	
-	private final CheckboxSetting allowOther =
-		new CheckboxSetting("允许其他屏幕",
-			"description.wurst.setting.invwalk.allow_other", true);
+	private final CheckboxSetting allowOther = new CheckboxSetting("允许其他屏幕",
+		"description.wurst.setting.invwalk.allow_other", true);
 	
 	private final CheckboxSetting allowSneak =
 		new CheckboxSetting("允许潜行", true);
@@ -43,8 +42,7 @@ public final class InvWalkHack extends Hack implements UpdateListener
 	private final CheckboxSetting allowSprint =
 		new CheckboxSetting("允许冲刺", true);
 	
-	private final CheckboxSetting allowJump =
-		new CheckboxSetting("允许跳", true);
+	private final CheckboxSetting allowJump = new CheckboxSetting("允许跳", true);
 	
 	public InvWalkHack()
 	{

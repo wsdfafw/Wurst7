@@ -185,19 +185,16 @@ public final class SpeedNukerHack extends Hack
 		NORMAL("普通", n -> "急速挖块", (n, pos) -> true),
 		
 		ID("ID",
-			n -> "ID急速挖块 ["
-				+ n.id.getBlockName().replace("minecraft:", "") + "]",
+			n -> "ID急速挖块 [" + n.id.getBlockName().replace("minecraft:", "")
+				+ "]",
 			(n, pos) -> BlockUtils.getName(pos).equals(n.id.getBlockName())),
 		
-		MULTI_ID("多ID",
-			n -> "多ID挖块 [" + n.multiIdList.getBlockNames().size()
-				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-					: " IDs]"),
+		MULTI_ID("多ID", n -> "多ID挖块 [" + n.multiIdList.getBlockNames().size()
+			+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]" : " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
-		FLAT("平坦", n -> "平坦型急速挖块",
-			(n, pos) -> pos.getY() >= MC.player.getY()),
+		FLAT("平坦", n -> "平坦型急速挖块", (n, pos) -> pos.getY() >= MC.player.getY()),
 		
 		SMASH("粉碎", n -> "粉碎型急速挖块",
 			(n, pos) -> BlockUtils.getHardness(pos) >= 1);

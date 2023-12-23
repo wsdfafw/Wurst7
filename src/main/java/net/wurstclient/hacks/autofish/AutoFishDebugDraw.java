@@ -37,11 +37,10 @@ import net.wurstclient.util.RenderUtils;
 public final class AutoFishDebugDraw
 {
 	private final CheckboxSetting debugDraw = new CheckboxSetting("调试绘图",
-		"显示叮咬发生的位置以及它们将被检测到的位置。有助于优化您的“有效范围”设置.",
-		false);
+		"显示叮咬发生的位置以及它们将被检测到的位置。有助于优化您的“有效范围”设置.", false);
 	
-	private final ColorSetting ddColor = new ColorSetting("DD颜色",
-		"调试绘图的颜色(如果启用).", Color.RED);
+	private final ColorSetting ddColor =
+		new ColorSetting("DD颜色", "调试绘图的颜色(如果启用).", Color.RED);
 	
 	private final SliderSetting validRange;
 	private Vec3d lastSoundPos;

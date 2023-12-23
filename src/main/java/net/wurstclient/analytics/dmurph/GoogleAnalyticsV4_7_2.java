@@ -90,8 +90,7 @@ public class GoogleAnalyticsV4_7_2 implements IGoogleAnalyticsURLBuilder
 				sb.append("(" + argData.getEventValue() + ")");
 		}else if(argData.getEventAction() != null
 			|| argData.getEventCategory() != null)
-			throw new IllegalArgumentException(
-				"事件跟踪必须同时具有类别和动作");
+			throw new IllegalArgumentException("事件跟踪必须同时具有类别和动作");
 		
 		if(config.getEncoding() != null)
 			sb.append("&utmcs=" + getURIString(config.getEncoding())); // encoding

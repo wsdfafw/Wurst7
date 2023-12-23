@@ -261,8 +261,7 @@ public final class AltManagerScreen extends Screen
 		Text text = Text.literal("你确定要移除这个备用选项吗？");
 		
 		String altName = alt.getDisplayName();
-		Text message = Text.literal(
-			"\"" + altName + "\" 将永远失去！（很长一段时间！");
+		Text message = Text.literal("\"" + altName + "\" 将永远失去！（很长一段时间！");
 		
 		ConfirmScreen screen = new ConfirmScreen(this::confirmRemove, text,
 			message, Text.literal("删除"), Text.literal("取消"));
@@ -362,8 +361,7 @@ public final class AltManagerScreen extends Screen
 				
 			}catch(InvalidPathException e)
 			{
-				throw new IOException(
-					"来自FileChooser的回复不是一个有效的路径");
+				throw new IOException("来自FileChooser的回复不是一个有效的路径");
 			}
 		}
 	}
@@ -439,8 +437,8 @@ public final class AltManagerScreen extends Screen
 		}
 		
 		// title text
-		context.drawCenteredTextWithShadow(textRenderer, "账号管理器",
-			width / 2, 4, 16777215);
+		context.drawCenteredTextWithShadow(textRenderer, "账号管理器", width / 2, 4,
+			16777215);
 		context.drawCenteredTextWithShadow(textRenderer,
 			"Alts: " + altManager.getList().size(), width / 2, 14, 10526880);
 		context.drawCenteredTextWithShadow(

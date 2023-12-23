@@ -63,16 +63,14 @@ public final class AutoLibrarianHack extends Hack
 {
 	private final BookOffersSetting wantedBooks = new BookOffersSetting(
 		"想要的附魔书",
-		"你想让你的村民卖掉的魔法书的清单.\n\n"
-			+ "一旦自动图书馆学会出售这些书，它将停止训练当前的村民.\n\n"
+		"你想让你的村民卖掉的魔法书的清单.\n\n" + "一旦自动图书馆学会出售这些书，它将停止训练当前的村民.\n\n"
 			+ "你也可以为每本书设定一个最高价格，以防你已经有一个村民\n在卖这本书，但是你想要一个更便宜的价格.",
 		"minecraft:depth_strider", "minecraft:efficiency",
 		"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
 		"minecraft:mending", "minecraft:protection", "minecraft:respiration",
 		"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
 	
-	private final CheckboxSetting lockInTrade = new CheckboxSetting(
-		"锁定贸易",
+	private final CheckboxSetting lockInTrade = new CheckboxSetting("锁定贸易",
 		"一旦它学会出售你想要的书，它就会自动从村民那里买东西。这可以防止村民以后改变交易条件.\n\n"
 			+ "使用此功能时，请确保您的库存中至少有24张纸和9颗绿宝石。或者，1本书和64颗绿宝石也可以。",
 		false);
@@ -82,15 +80,13 @@ public final class AutoLibrarianHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final FacingSetting facing = FacingSetting
-		.withoutPacketSpam("如何面对村民和工作站.\n\n"
-			+ "\u00a7l关闭\u00a7r - 完全不面对村民。会被反作弊插件检测到。\n\n"
+	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
+		"如何面对村民和工作站.\n\n" + "\u00a7l关闭\u00a7r - 完全不面对村民。会被反作弊插件检测到。\n\n"
 			+ "\u00a7l服务器端\u00a7r - 在服务器端面对村民，同时仍可在客户端自由移动摄像头。\n\n"
 			+ "\u00a7l客户端\u00a7r - 通过在客户端移动摄像头来面对村民。这是最合法的选项，但可能会让人感到迷失。");
 	
-	private final SwingHandSetting swingHand =
-		new SwingHandSetting("如何在与村民和工作站互动时挥动手臂.\n\n"
-			+ "\u00a7lOff\u00a7r - 完全不挥动手臂。会被反作弊插件检测到.\n\n"
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"如何在与村民和工作站互动时挥动手臂.\n\n" + "\u00a7lOff\u00a7r - 完全不挥动手臂。会被反作弊插件检测到.\n\n"
 			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，而在客户端不播放动画.\n\n"
 			+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项.");
 	
@@ -166,8 +162,7 @@ public final class AutoLibrarianHack extends Hack
 		}
 		
 		if(placingJobSite && breakingJobSite)
-			throw new IllegalStateException(
-				"试图同时放置和破坏作业现场。有点不对劲。");
+			throw new IllegalStateException("试图同时放置和破坏作业现场。有点不对劲。");
 		
 		if(placingJobSite)
 		{
@@ -216,9 +211,8 @@ public final class AutoLibrarianHack extends Hack
 			return;
 		}
 		
-		ChatUtils.message(
-			"村民在卖 " + bookOffer.getEnchantmentNameWithLevel()
-				+ " for " + bookOffer.getFormattedPrice() + ".");
+		ChatUtils.message("村民在卖 " + bookOffer.getEnchantmentNameWithLevel()
+			+ " for " + bookOffer.getFormattedPrice() + ".");
 		
 		// if wrong enchantment, break job site and start over
 		if(!wantedBooks.isWanted(bookOffer))
@@ -300,8 +294,7 @@ public final class AutoLibrarianHack extends Hack
 				
 			}else
 			{
-				System.out
-					.println("在工作现场发现错误的块。打破...");
+				System.out.println("在工作现场发现错误的块。打破...");
 				breakingJobSite = true;
 				placingJobSite = false;
 			}

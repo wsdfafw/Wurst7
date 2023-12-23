@@ -248,8 +248,7 @@ public final class NukerHack extends Hack
 		FLAT("平坦", n -> "平坦合法版挖块",
 			(n, p) -> p.getY() >= MC.player.getPos().getY()),
 		
-		SMASH("粉碎", n -> "粉碎合法版挖块",
-			(n, p) -> BlockUtils.getHardness(p) >= 1);
+		SMASH("粉碎", n -> "粉碎合法版挖块", (n, p) -> BlockUtils.getHardness(p) >= 1);
 		
 		private final String name;
 		private final Function<NukerHack, String> renderName;

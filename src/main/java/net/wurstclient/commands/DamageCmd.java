@@ -19,8 +19,8 @@ public final class DamageCmd extends Command
 {
 	public DamageCmd()
 	{
-		super("damage", "使自己受到给定的伤害(自沙)",
-			".damage <伤害值>", "注:1伤害值对应0.5颗心","例子:.damage 7(减少3.5颗心)", "若要应用更多伤害,请多次运行该命令");
+		super("damage", "使自己受到给定的伤害(自沙)", ".damage <伤害值>", "注:1伤害值对应0.5颗心",
+			"例子:.damage 7(减少3.5颗心)", "若要应用更多伤害,请多次运行该命令");
 	}
 	
 	@Override

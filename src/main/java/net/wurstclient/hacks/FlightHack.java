@@ -23,34 +23,26 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class FlightHack extends Hack
 	implements UpdateListener, IsPlayerInWaterListener, AirStrafingSpeedListener
 {
-	public final SliderSetting horizontalSpeed = new SliderSetting(
-		"水平速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+	public final SliderSetting horizontalSpeed =
+		new SliderSetting("水平速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
 	
-	public final SliderSetting verticalSpeed = new SliderSetting(
-		"升速",
-		"\u00a7c\u00a7l警告:\u00a7r 设置太高会导致坠落伤害，即使没有坠落。",
-		1, 0.05, 5, 0.05, ValueDisplay.DECIMAL);
+	public final SliderSetting verticalSpeed =
+		new SliderSetting("升速", "\u00a7c\u00a7l警告:\u00a7r 设置太高会导致坠落伤害，即使没有坠落。",
+			1, 0.05, 5, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting slowSneaking = new CheckboxSetting(
-		"缓慢潜行",
-		"当你潜行时，降低你的水平速度，以防止你出故障。",
-		true);
+	private final CheckboxSetting slowSneaking =
+		new CheckboxSetting("缓慢潜行", "当你潜行时，降低你的水平速度，以防止你出故障。", true);
 	
-	private final CheckboxSetting antiKick = new CheckboxSetting("反踢",
-		"让你时不时地摔一跤，以防被踢.",
-		false);
+	private final CheckboxSetting antiKick =
+		new CheckboxSetting("反踢", "让你时不时地摔一跤，以防被踢.", false);
 	
-	private final SliderSetting antiKickInterval =
-		new SliderSetting("防踢间隔",
-			"反踢应该防止你被踢的频率.\n大多数服务器会在80秒后踢你.",
-			30, 5, 80, 1,
-			ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
+	private final SliderSetting antiKickInterval = new SliderSetting("防踢间隔",
+		"反踢应该防止你被踢的频率.\n大多数服务器会在80秒后踢你.", 30, 5, 80, 1,
+		ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
-	private final SliderSetting antiKickDistance = new SliderSetting(
-		"防踢距离",
-		"反踢应该让你跌倒多远.\n"
-			+ "大多数服务器至少需要 0.032m 才能阻止您被踢.",
-		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
+	private final SliderSetting antiKickDistance = new SliderSetting("防踢距离",
+		"反踢应该让你跌倒多远.\n" + "大多数服务器至少需要 0.032m 才能阻止您被踢.", 0.07, 0.01, 0.2, 0.001,
+		ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private int tickCounter = 0;
 	

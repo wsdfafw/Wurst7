@@ -24,8 +24,7 @@ public final class FilterInvisibleSetting extends EntityFilterCheckbox
 	
 	public static FilterInvisibleSetting genericCombat(boolean checked)
 	{
-		return new FilterInvisibleSetting("不会攻击隐形的实体.",
-			checked);
+		return new FilterInvisibleSetting("不会攻击隐形的实体.", checked);
 	}
 	
 	public static FilterInvisibleSetting genericVision(boolean checked)

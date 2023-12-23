@@ -53,9 +53,8 @@ public final class KillauraLegitHack extends Hack
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
 	
-	private final SliderSetting rotationSpeed =
-		new SliderSetting("抬前轮速度", 600, 10, 3600, 10,
-			ValueDisplay.DEGREES.withSuffix("/s"));
+	private final SliderSetting rotationSpeed = new SliderSetting("抬前轮速度", 600,
+		10, 3600, 10, ValueDisplay.DEGREES.withSuffix("/s"));
 	
 	private final EnumSetting<Priority> priority = new EnumSetting<>("优先级",
 		"决定哪个实体会优先攻击.\n§l距离§r - 攻击最近的实体.\n§l角度§r - 攻击实体所需要的\n最后头位置所可以砍的角度.\n§l生命§r - 攻击血量最少的实体",
@@ -66,11 +65,9 @@ public final class KillauraLegitHack extends Hack
 			+ "360\u00b0 = entities can be attacked all around you.",
 		360, 30, 360, 10, ValueDisplay.DEGREES);
 	
-	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"损坏指示器", 
-		"在目标内渲染一个与其剩余生命值成反比的彩色框.",
-		true);
-
+	private final CheckboxSetting damageIndicator =
+		new CheckboxSetting("损坏指示器", "在目标内渲染一个与其剩余生命值成反比的彩色框.", true);
+	
 	// same filters as in Killaura, but with stricter defaults
 	private final EntityFilterList entityFilters =
 		new EntityFilterList(FilterPlayersSetting.genericCombat(false),

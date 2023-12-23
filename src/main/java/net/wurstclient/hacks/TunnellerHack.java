@@ -66,8 +66,8 @@ import net.wurstclient.util.RotationUtils;
 public final class TunnellerHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final EnumSetting<TunnelSize> size = new EnumSetting<>(
-		"隧道尺寸", TunnelSize.values(), TunnelSize.SIZE_3X3);
+	private final EnumSetting<TunnelSize> size =
+		new EnumSetting<>("隧道尺寸", TunnelSize.values(), TunnelSize.SIZE_3X3);
 	
 	private final SliderSetting limit = new SliderSetting("限制",
 		"Automatically stops once the tunnel\n"
@@ -76,10 +76,8 @@ public final class TunnellerHack extends Hack
 			.withLabel(1, "1 block").withLabel(0, "disabled"));
 	
 	private final CheckboxSetting torches =
-		new CheckboxSetting(
-			"放火把?", "Places just enough torches\n"
-				+ "to prevent mobs from\n" + "spawning inside the tunnel.",
-			false);
+		new CheckboxSetting("放火把?", "Places just enough torches\n"
+			+ "to prevent mobs from\n" + "spawning inside the tunnel.", false);
 	
 	private BlockPos start;
 	private Direction direction;
@@ -544,8 +542,7 @@ public final class TunnellerHack extends Hack
 			
 			if(!equipSolidBlock(pos))
 			{
-				ChatUtils.error(
-					"在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
+				ChatUtils.error("在隧道的地板上发现了一个洞，但没有任何积木来填充它.");
 				setEnabled(false);
 				return;
 			}

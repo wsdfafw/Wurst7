@@ -21,7 +21,8 @@ public final class TCmd extends Command
 {
 	public TCmd()
 	{
-		super("t", "切换一个作弊功能.", ".t <作弊功能> [on(开)|off(关)]", "例子:", "切换 Nuker: .t Nuker", "关闭 Nuker: .t Nuker off");
+		super("t", "切换一个作弊功能.", ".t <作弊功能> [on(开)|off(关)]", "例子:",
+			"切换 Nuker: .t Nuker", "关闭 Nuker: .t Nuker off");
 	}
 	
 	@Override

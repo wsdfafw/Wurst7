@@ -81,8 +81,7 @@ public final class AltsFile
 			
 		}catch(IOException e)
 		{
-			System.out.println(
-				"无法重命名损坏的文件 " + path.getFileName());
+			System.out.println("无法重命名损坏的文件 " + path.getFileName());
 			e.printStackTrace();
 		}
 	}

@@ -76,8 +76,7 @@ public final class EditItemListScreen extends Screen
 				if(b2)
 					itemList.resetToDefaults();
 				client.setScreen(EditItemListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("你确定吗?"))))
+			}, Text.literal("重置为默认值"), Text.literal("你确定吗?"))))
 			.dimensions(width - 108, 8, 100, 20).build());
 		
 		addDrawableChild(doneButton = ButtonWidget
