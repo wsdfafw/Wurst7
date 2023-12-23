@@ -187,7 +187,7 @@ public final class EditItemListScreen extends Screen
 		{
 			matrixStack.push();
 			matrixStack.translate(0, 0, 300);
-			context.drawTextWithShadow(client.textRenderer, "item name or ID",
+			context.drawTextWithShadow(client.textRenderer, "物品名称或 ID",
 				68, height - 50, 0x808080);
 			matrixStack.pop();
 		}
