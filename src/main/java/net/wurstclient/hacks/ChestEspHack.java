@@ -77,12 +77,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 	private final ChestEspBlockGroup barrels = new ChestEspBlockGroup(
 		new ColorSetting("木桶颜色",
 			"Barrels will be highlighted in this color.", Color.GREEN),
-		new CheckboxSetting("包括木桶", true));
-
-	private final ChestEspBlockGroup pots = new ChestEspBlockGroup(
-		new ColorSetting("Pots color",
-			"Decorated pots will be highlighted in this color.", Color.GREEN),
-		new CheckboxSetting("Include pots", false));
+		new CheckboxSetting("Include barrels", true));
 	
 	private final ChestEspBlockGroup pots = new ChestEspBlockGroup(
 		new ColorSetting("Pots color",
@@ -115,12 +110,7 @@ public class ChestEspHack extends Hack implements UpdateListener,
 		new ColorSetting("发射器颜色",
 			"Dispensers will be highlighted in this color.",
 			new Color(0xFF8000)),
-		new CheckboxSetting("包括发射器", false));
-
-	private final ChestEspBlockGroup crafters = new ChestEspBlockGroup(
-		new ColorSetting("Crafter color",
-			"Crafters will be highlighted in this color.", Color.WHITE),
-		new CheckboxSetting("Include crafters", false));
+		new CheckboxSetting("Include dispensers", false));
 	
 	private final ChestEspBlockGroup crafters = new ChestEspBlockGroup(
 		new ColorSetting("Crafter color",
