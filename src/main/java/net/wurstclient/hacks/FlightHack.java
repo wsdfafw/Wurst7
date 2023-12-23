@@ -43,7 +43,8 @@ public final class FlightHack extends Hack
 	private final SliderSetting antiKickInterval =
 		new SliderSetting("防踢间隔",
 			"反踢应该防止你被踢的频率.\n大多数服务器会在80秒后踢你.",
-			30, 5, 80, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+			30, 5, 80, 1,
+			ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
 		"防踢距离",

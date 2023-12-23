@@ -25,8 +25,7 @@ public final class TranslationsOtf extends OtherFeature
 	
 	public TranslationsOtf()
 	{
-		super("Translations",
-			"本地化设置.\n§c这是一个实验性功能！\n我们还没有很多翻译.\n如果您会说英语和其他语言,请添加更多翻译来帮助我们.");
+		super("Translations", "允许在 Wurst 中显示的文本以其他语言而非英语显示。它将使用 Minecraft 设置的相同语言。\n\n这是一个实验性的功能！");
 		addSetting(forceEnglish);
 	}
 	
