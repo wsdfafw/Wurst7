@@ -19,7 +19,7 @@ public final class FishHack extends Hack implements UpdateListener
 {
 	public FishHack()
 	{
-		super("鱼");
+		super("Fish");
 		setCategory(Category.MOVEMENT);
 	}
 	
@@ -40,7 +40,7 @@ public final class FishHack extends Hack implements UpdateListener
 	public void onUpdate()
 	{
 		ClientPlayerEntity player = MC.player;
-		if(!player.isWet() || player.isSneaking())
+		if(!player.isTouchingWater() || player.isSneaking())
 			return;
 		
 		Vec3d velocity = player.getVelocity();

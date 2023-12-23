@@ -10,11 +10,11 @@ package net.wurstclient.settings.filters;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.MerchantEntity;
 
-public final class FilterTradersSetting extends EntityFilterCheckbox
+public final class FilterVillagersSetting extends EntityFilterCheckbox
 {
-	public FilterTradersSetting(String description, boolean checked)
+	public FilterVillagersSetting(String description, boolean checked)
 	{
-		super("排除商人", description, checked);
+		super("Filter villagers", description, checked);
 	}
 	
 	@Override
@@ -23,9 +23,15 @@ public final class FilterTradersSetting extends EntityFilterCheckbox
 		return !(e instanceof MerchantEntity);
 	}
 	
-	public static FilterTradersSetting genericCombat(boolean checked)
+	public static FilterVillagersSetting genericCombat(boolean checked)
 	{
-		return new FilterTradersSetting(
-			"不会攻击村民 , 流浪商人, 诸如此类.", checked);
+		return new FilterVillagersSetting(
+			"Won't attack villagers and wandering traders.", checked);
+	}
+	
+	public static FilterVillagersSetting genericVision(boolean checked)
+	{
+		return new FilterVillagersSetting(
+			"Won't show villagers and wandering traders.", checked);
 	}
 }

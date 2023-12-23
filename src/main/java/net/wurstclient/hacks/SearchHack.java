@@ -31,6 +31,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.wurstclient.Category;
+import net.wurstclient.SearchTags;
 import net.wurstclient.events.PacketInputListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
@@ -47,18 +48,21 @@ import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
+@SearchTags({"BlockESP", "block esp"})
 public final class SearchHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final BlockSetting block = new BlockSetting("方块",
-		"你所需要寻找类型的方块", "minecraft:diamond_ore", false);
+	private final BlockSetting block = new BlockSetting("Block",
+		"The type of block to search for.", "minecraft:diamond_ore", false);
 	private Block lastBlock;
 	
-	private final ChunkAreaSetting area = new ChunkAreaSetting("区域",
-		"寻找玩家所在的区域.\n更高的数值需要更高配的电脑.");
+	private final ChunkAreaSetting area = new ChunkAreaSetting("Area",
+		"The area around the player to search in.\n"
+			+ "Higher values require a faster computer.");
 	
-	private final SliderSetting limit = new SliderSetting("限制",
-		"最多的显示方块所限制.\n更高的数值需要更高配的电脑.",
+	private final SliderSetting limit = new SliderSetting("Limit",
+		"The maximum number of blocks to display.\n"
+			+ "Higher values require a faster computer.",
 		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
@@ -76,7 +80,7 @@ public final class SearchHack extends Hack
 	
 	public SearchHack()
 	{
-		super("搜寻");
+		super("Search");
 		setCategory(Category.RENDER);
 		addSetting(block);
 		addSetting(area);

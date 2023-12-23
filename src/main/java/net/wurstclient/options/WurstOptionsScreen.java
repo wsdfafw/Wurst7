@@ -27,6 +27,7 @@ import net.wurstclient.commands.FriendsCmd;
 import net.wurstclient.hacks.XRayHack;
 import net.wurstclient.other_features.VanillaSpoofOtf;
 import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.util.ChatUtils;
 
 public class WurstOptionsScreen extends Screen
 {
@@ -62,26 +63,34 @@ public class WurstOptionsScreen extends Screen
 			wurst.getOtfs().translationsOtf.getForceEnglish();
 		
 		new WurstOptionsButton(-154, 24,
-			() -> "点击朋友: "
-				+ (middleClickFriends.isChecked() ? "开启" : "关闭"),
+			() -> "Click Friends: "
+				+ (middleClickFriends.isChecked() ? "ON" : "OFF"),
 			middleClickFriends.getWrappedDescription(200),
 			b -> middleClickFriends
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
-			() -> "统计用户: " + (analytics.isEnabled() ? "开启" : "关闭"),
-			"统计有多少人在使用Wurst哪个版本最受欢迎.\n我们使用这个数据来决定何时停止\n支持旧的Minecraft版本.\n我们使用一个随机ID将用户分开\n这样这个数据就永远无法链接到您的Minecraft帐户.\n随机ID为′每3天改变一次，以确保额外确信您保持匿名.",
+			() -> "Count Users: " + (analytics.isEnabled() ? "ON" : "OFF"),
+			"Counts how many people are using Wurst and which versions are the"
+				+ " most popular. We use this data to decide when to stop"
+				+ " supporting old Minecraft versions.\n\n"
+				+ "We use a random ID to tell users apart so that this data can"
+				+ " never be linked to your Minecraft account. The random ID is"
+				+ " changed every 3 days to make extra sure that you remain"
+				+ " anonymous.",
 			b -> analytics.setEnabled(!analytics.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
-			() -> "原版伪装: "
-				+ (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
-			vanillaSpoofOtf.getWrappedDescription(200),
+			() -> "Spoof Vanilla: "
+				+ (vanillaSpoofOtf.isEnabled() ? "ON" : "OFF"),
+			vanillaSpoofOtf.getDescription(),
 			b -> vanillaSpoofOtf.doPrimaryAction());
 		
 		new WurstOptionsButton(-154, 96,
-			() -> "翻译: " + (!forceEnglish.isChecked() ? "开启" : "关闭"),
-			"§c这还只是一个实验性的功能!\n我们目前还没太多的文本翻译. 如果你\n即会说英语也会说其他语言,\n请帮助我们翻译更多的内容",
+			() -> "Translations: " + (!forceEnglish.isChecked() ? "ON" : "OFF"),
+			"Allows text in Wurst to be displayed in other languages than"
+				+ " English. It will use the same language that Minecraft is"
+				+ " set to.\n\n" + "This is an experimental feature!",
 			b -> forceEnglish.setChecked(!forceEnglish.isChecked()));
 	}
 	
@@ -89,16 +98,18 @@ public class WurstOptionsScreen extends Screen
 	{
 		XRayHack xRayHack = WurstClient.INSTANCE.getHax().xRayHack;
 		
-		new WurstOptionsButton(-50, 24, () -> "热键绑定",
-			"Keybinds允许您只需按一个按钮就可以切换任何hack或命令.",
+		new WurstOptionsButton(-50, 24, () -> "Keybinds",
+			"Keybinds allow you to toggle any hack or command by simply"
+				+ " pressing a button.",
 			b -> client.setScreen(new KeybindManagerScreen(this)));
 		
-		new WurstOptionsButton(-50, 48, () -> "透视方块",
-			"X-Ray将要显示的块的管理器",
+		new WurstOptionsButton(-50, 48, () -> "X-Ray Blocks",
+			"Manager for the blocks that X-Ray will show.",
 			b -> xRayHack.openBlockListEditor(this));
 		
-		new WurstOptionsButton(-50, 72, () -> "放大功能",
-		    "Zoom Manager允许您更改缩放键，它会放大多远等",
+		new WurstOptionsButton(-50, 72, () -> "Zoom",
+			"The Zoom Manager allows you to change the zoom key and how far it"
+				+ " will zoom in.",
 			b -> client.setScreen(new ZoomManagerScreen(this)));
 	}
 	
@@ -106,17 +117,31 @@ public class WurstOptionsScreen extends Screen
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "官方网站",
-			"WurstClient.net", b -> os.open(
+		new WurstOptionsButton(54, 24, () -> "Official Website",
+			"§n§lWurstClient.net", b -> os.open(
 				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
-		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "Wurst.Wiki",
+		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "§n§lWurst.Wiki\n"
+			+ "We are looking for volunteers to help us expand"
+			+ " the wiki and keep it up to date with the latest Wurst updates.",
 			b -> os.open(
 				"https://wurst.wiki/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Wurst+Wiki"));
 		
-		new WurstOptionsButton(54, 72, () -> "捐款 求捐款", "qq/微信/支付宝/支付",
+		new WurstOptionsButton(54, 72, () -> "WurstForum", "§n§lWurstForum.net",
 			b -> os.open(
-				"https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
+				"https://wurstforum.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=WurstForum"));
+		
+		new WurstOptionsButton(54, 96, () -> "Twitter", "@Wurst_Imperium",
+			b -> os.open("https://www.wurstclient.net/twitter/"));
+		
+		new WurstOptionsButton(54, 120, () -> "Donate",
+			"§n§lWurstClient.net/donate\n"
+				+ "Donate now to help me keep the Wurst Client alive and free"
+				+ " to use for everyone.\n\n"
+				+ "Every bit helps and is much appreciated! You can also get a"
+				+ " few cool perks in return.",
+			b -> os.open(
+				"https://www.wurstclient.net/donate/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Donate"));
 	}
 	
 	@Override
@@ -145,14 +170,14 @@ public class WurstOptionsScreen extends Screen
 		int y1 = 40;
 		int y2 = height / 4 + 24 - 28;
 		
-		context.drawCenteredTextWithShadow(tr, "Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
+		context.drawCenteredTextWithShadow(tr, "Wurst Options", middleX, y1,
 			0xffffff);
 		
-		context.drawCenteredTextWithShadow(tr, "设置选项", middleX - 104, y2,
+		context.drawCenteredTextWithShadow(tr, "Settings", middleX - 104, y2,
 			0xcccccc);
 		context.drawCenteredTextWithShadow(tr, "Managers", middleX, y2,
 			0xcccccc);
-		context.drawCenteredTextWithShadow(tr, "链接", middleX + 104, y2,
+		context.drawCenteredTextWithShadow(tr, "Links", middleX + 104, y2,
 			0xcccccc);
 	}
 	
@@ -194,7 +219,7 @@ public class WurstOptionsScreen extends Screen
 				this.tooltip = Arrays.asList();
 			else
 			{
-				String[] lines = tooltip.split("\n");
+				String[] lines = ChatUtils.wrapText(tooltip, 200).split("\n");
 				
 				Text[] lines2 = new Text[lines.length];
 				for(int i = 0; i < lines.length; i++)

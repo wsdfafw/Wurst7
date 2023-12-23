@@ -23,18 +23,15 @@ import net.wurstclient.util.GoogleTranslate;
 	"google translator", "GoogleTranslation", "google translation"})
 public final class ChatTranslatorHack extends Hack implements ChatInputListener
 {
-	private static final GoogleTranslate googleTranslate =
-		new GoogleTranslate();
-	
 	private final EnumSetting<FromLanguage> langFrom = new EnumSetting<>(
-		"讲语言", FromLanguage.values(), FromLanguage.AUTO_DETECT);
+		"Translate from", FromLanguage.values(), FromLanguage.AUTO_DETECT);
 	
 	private final EnumSetting<ToLanguage> langTo = new EnumSetting<>(
-		"翻译成", ToLanguage.values(), ToLanguage.ENGLISH);
+		"Translate to", ToLanguage.values(), ToLanguage.ENGLISH);
 	
 	public ChatTranslatorHack()
 	{
-		super("聊天翻译");
+		super("ChatTranslator");
 		setCategory(Category.CHAT);
 		
 		addSetting(langFrom);
@@ -79,7 +76,7 @@ public final class ChatTranslatorHack extends Hack implements ChatInputListener
 			|| incomingMsg.startsWith(translatorPrefix))
 			return;
 		
-		String translated = googleTranslate.translate(incomingMsg,
+		String translated = GoogleTranslate.translate(incomingMsg,
 			langFrom.getSelected().value, langTo.getSelected().value);
 		
 		if(translated == null)

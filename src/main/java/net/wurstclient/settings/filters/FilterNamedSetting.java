@@ -27,4 +27,10 @@ public final class FilterNamedSetting extends EntityFilterCheckbox
 		return new FilterNamedSetting("不会攻击已经被命名的实体.",
 			checked);
 	}
+	
+	public static FilterNamedSetting genericVision(boolean checked)
+	{
+		return new FilterNamedSetting("Won't show name-tagged entities.",
+			checked);
+	}
 }

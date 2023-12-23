@@ -30,25 +30,25 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class InvWalkHack extends Hack implements UpdateListener
 {
 	private final CheckboxSetting allowClickGUI =
-		new CheckboxSetting("允许 ClickGUI",
+		new CheckboxSetting("Allow ClickGUI",
 			"description.wurst.setting.invwalk.allow_clickgui", true);
 	
 	private final CheckboxSetting allowOther =
-		new CheckboxSetting("允许其他屏幕",
+		new CheckboxSetting("Allow other screens",
 			"description.wurst.setting.invwalk.allow_other", true);
 	
 	private final CheckboxSetting allowSneak =
-		new CheckboxSetting("允许潜行", true);
+		new CheckboxSetting("Allow sneak key", true);
 	
 	private final CheckboxSetting allowSprint =
-		new CheckboxSetting("允许冲刺", true);
+		new CheckboxSetting("Allow sprint key", true);
 	
 	private final CheckboxSetting allowJump =
-		new CheckboxSetting("允许跳", true);
+		new CheckboxSetting("Allow jump key", true);
 	
 	public InvWalkHack()
 	{
-		super("背包行走");
+		super("InvWalk");
 		setCategory(Category.MOVEMENT);
 		addSetting(allowClickGUI);
 		addSetting(allowOther);
@@ -124,6 +124,6 @@ public final class InvWalkHack extends Hack implements UpdateListener
 	private boolean hasTextBox(Screen screen)
 	{
 		return screen.children().stream()
-			.anyMatch(e -> e instanceof TextFieldWidget);
+			.anyMatch(TextFieldWidget.class::isInstance);
 	}
 }

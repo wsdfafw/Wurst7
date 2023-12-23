@@ -24,48 +24,69 @@ public final class FollowFilterList extends EntityFilterList
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
 		builder.add(
-			new FilterPlayersSetting("不会跟随其他玩家.", false));
+			new FilterPlayersSetting("Won't follow other players.", false));
 		
 		builder.add(
-			new FilterSleepingSetting("不会跟随睡觉的玩家.", false));
+			new FilterSleepingSetting("Won't follow sleeping players.", false));
 		
 		builder.add(new FilterFlyingSetting(
-			"不会跟随距离地面至少给定距离的玩家.",
+			"Won't follow players that are at least the given distance above ground.",
 			0));
 		
-		builder.add(new FilterMonstersSetting(
-			"不会跟随僵尸、爬行者等.", true));
+		builder.add(new FilterHostileSetting(
+			"Won't follow hostile mobs like zombies and creepers.", true));
 		
-		builder
-			.add(new FilterPigmenSetting("不会跟随僵尸猪人.", true));
+		builder.add(FilterNeutralSetting.onOffOnly(
+			"Won't follow neutral mobs like endermen and wolves.", true));
 		
-		builder.add(new FilterEndermenSetting("不会跟随末影人.", true));
+		builder.add(new FilterPassiveSetting("Won't follow animals like pigs"
+			+ " and cows, ambient mobs like bats, and water mobs like"
+			+ " fish, squid and dolphins.", true));
 		
-		builder.add(
-			new FilterAnimalsSetting("不会跟随猪、牛等.", true));
+		builder.add(new FilterPassiveWaterSetting("Won't follow passive water"
+			+ " mobs like fish, squid, dolphins and axolotls.", true));
 		
 		builder.add(new FilterBabiesSetting(
-			"不会跟随小猪、小村民等.", true));
+			"Won't follow baby pigs, baby villagers, etc.", true));
+		
+		builder.add(new FilterBatsSetting("Won't follow bats and any other"
+			+ " \"ambient\" mobs that might be added by mods.", true));
+		
+		builder.add(new FilterSlimesSetting("Won't follow slimes.", true));
 		
 		builder.add(new FilterPetsSetting(
-			"不会跟随驯服的狼、驯服的马等.", true));
+			"Won't follow tamed wolves, tamed horses, etc.", true));
 		
-		builder.add(new FilterTradersSetting(
-			"不会跟随村民、流浪商人等.", true));
+		builder.add(new FilterVillagersSetting(
+			"Won't follow villagers and wandering traders.", true));
+		
+		builder.add(new FilterZombieVillagersSetting(
+			"Won't follow zombified villagers.", true));
 		
 		builder.add(new FilterGolemsSetting(
-			"不会跟随铁傀儡、雪傀儡和潜影贝.", true));
+			"Won't follow iron golems and snow golems.", true));
+		
+		builder
+			.add(FilterPiglinsSetting.onOffOnly("Won't follow piglins.", true));
+		
+		builder.add(FilterZombiePiglinsSetting
+			.onOffOnly("Won't follow zombified piglins.", true));
+		
+		builder.add(
+			FilterEndermenSetting.onOffOnly("Won't follow endermen.", true));
+		
+		builder.add(new FilterShulkersSetting("Won't follow shulkers.", true));
 		
 		builder.add(new FilterAllaysSetting("Won't follow allays.", true));
 		
 		builder.add(new FilterInvisibleSetting(
-			"不会跟随隐形实体.", false));
+			"Won't follow invisible entities.", false));
 		
 		builder.add(
-			new FilterArmorStandsSetting("不会跟随盔甲架.", true));
+			new FilterArmorStandsSetting("Won't follow armor stands.", true));
 		
 		builder
-			.add(new FilterMinecartsSetting("不会跟随矿车.", true));
+			.add(new FilterMinecartsSetting("Won't follow minecarts.", true));
 		
 		return new FollowFilterList(builder);
 	}

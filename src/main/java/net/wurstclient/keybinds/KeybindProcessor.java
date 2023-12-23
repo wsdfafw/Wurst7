@@ -39,6 +39,10 @@ public final class KeybindProcessor implements KeyPressListener
 		if(event.getAction() != GLFW.GLFW_PRESS)
 			return;
 		
+		if(InputUtil.isKeyPressed(WurstClient.MC.getWindow().getHandle(),
+			GLFW.GLFW_KEY_F3))
+			return;
+		
 		Screen screen = WurstClient.MC.currentScreen;
 		if(screen != null && !(screen instanceof ClickGuiScreen))
 			return;
@@ -86,7 +90,7 @@ public final class KeybindProcessor implements KeyPressListener
 			if(!hack.isEnabled() && hax.tooManyHaxHack.isEnabled()
 				&& hax.tooManyHaxHack.isBlocked(hack))
 			{
-				ChatUtils.error(hack.getName() + " 被 TooManyHax 所屏蔽.");
+				ChatUtils.error(hack.getName() + " is blocked by TooManyHax.");
 				return;
 			}
 			

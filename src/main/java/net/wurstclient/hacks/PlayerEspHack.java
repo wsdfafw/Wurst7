@@ -34,7 +34,7 @@ import net.wurstclient.events.CameraTransformViewBobbingListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.EspBoxSizeSetting;
 import net.wurstclient.settings.EspStyleSetting;
 import net.wurstclient.settings.EspStyleSetting.EspStyle;
 import net.wurstclient.settings.filterlists.EntityFilterList;
@@ -53,19 +53,19 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	private final EspStyleSetting style =
 		new EspStyleSetting(EspStyle.LINES_AND_BOXES);
 	
-	private final EnumSetting<BoxSize> boxSize = new EnumSetting<>("框大小",
-		"§l精确§r 模式显示一个精确\n的可打击的范围.\n§l更好§r 模式显示一个更大的\n框框,看起来会舒服点.",
-		BoxSize.values(), BoxSize.FANCY);
+	private final EspBoxSizeSetting boxSize = new EspBoxSizeSetting(
+		"\u00a7lAccurate\u00a7r mode shows the exact hitbox of each player.\n"
+			+ "\u00a7lFancy\u00a7r mode shows slightly larger boxes that look better.");
 	
 	private final EntityFilterList entityFilters = new EntityFilterList(
-		new FilterSleepingSetting("不会显示睡觉的玩家.", false),
-		new FilterInvisibleSetting("不会显示隐形玩家.", false));
+		new FilterSleepingSetting("Won't show sleeping players.", false),
+		new FilterInvisibleSetting("Won't show invisible players.", false));
 	
 	private final ArrayList<PlayerEntity> players = new ArrayList<>();
 	
 	public PlayerEspHack()
 	{
-		super("高亮玩家");
+		super("PlayerESP");
 		setCategory(Category.RENDER);
 		
 		addSetting(style);
@@ -111,7 +111,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	public void onCameraTransformViewBobbing(
 		CameraTransformViewBobbingEvent event)
 	{
-		if(style.getSelected().hasLines())
+		if(style.hasLines())
 			event.cancel();
 	}
 	
@@ -129,10 +129,10 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 		RenderUtils.applyRegionalRenderOffset(matrixStack, region);
 		
 		// draw boxes
-		if(style.getSelected().hasBoxes())
+		if(style.hasBoxes())
 			renderBoxes(matrixStack, partialTicks, region);
 		
-		if(style.getSelected().hasLines())
+		if(style.hasLines())
 			renderTracers(matrixStack, partialTicks, region);
 		
 		matrixStack.pop();
@@ -146,7 +146,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 	private void renderBoxes(MatrixStack matrixStack, float partialTicks,
 		RegionPos region)
 	{
-		float extraSize = boxSize.getSelected().extraSize;
+		float extraSize = boxSize.getExtraSize();
 		
 		for(PlayerEntity e : players)
 		{
@@ -189,7 +189,7 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 			VertexFormats.POSITION_COLOR);
 		
 		Vec3d regionVec = region.toVec3d();
-		Vec3d start = RotationUtils.getClientLookVec()
+		Vec3d start = RotationUtils.getClientLookVec(partialTicks)
 			.add(RenderUtils.getCameraPos()).subtract(regionVec);
 		
 		for(PlayerEntity e : players)
@@ -223,26 +223,5 @@ public final class PlayerEspHack extends Hack implements UpdateListener,
 		}
 		
 		tessellator.draw();
-	}
-	
-	private enum BoxSize
-	{
-		ACCURATE("精确", 0),
-		FANCY("更好", 0.1F);
-		
-		private final String name;
-		private final float extraSize;
-		
-		private BoxSize(String name, float extraSize)
-		{
-			this.name = name;
-			this.extraSize = extraSize;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return name;
-		}
 	}
 }

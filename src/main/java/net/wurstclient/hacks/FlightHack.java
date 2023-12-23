@@ -24,38 +24,40 @@ public final class FlightHack extends Hack
 	implements UpdateListener, IsPlayerInWaterListener, AirStrafingSpeedListener
 {
 	public final SliderSetting horizontalSpeed = new SliderSetting(
-		"水平速度", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
+		"Horizontal Speed", 1, 0.05, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting verticalSpeed = new SliderSetting(
-		"升速",
-		"\u00a7c\u00a7l警告:\u00a7r 设置太高会导致坠落伤害，即使没有坠落。",
+		"Vertical Speed",
+		"\u00a7c\u00a7lWARNING:\u00a7r Setting this too high can cause fall damage, even with NoFall.",
 		1, 0.05, 5, 0.05, ValueDisplay.DECIMAL);
 	
 	private final CheckboxSetting slowSneaking = new CheckboxSetting(
-		"缓慢潜行",
-		"当你潜行时，降低你的水平速度，以防止你出故障。",
+		"Slow sneaking",
+		"Reduces your horizontal speed while you are sneaking to prevent you from glitching out.",
 		true);
 	
-	private final CheckboxSetting antiKick = new CheckboxSetting("反踢",
-		"让你时不时地摔一跤，以防被踢.",
+	private final CheckboxSetting antiKick = new CheckboxSetting("Anti-Kick",
+		"Makes you fall a little bit every now and then to prevent you from getting kicked.",
 		false);
 	
 	private final SliderSetting antiKickInterval =
-		new SliderSetting("防踢间隔",
-			"反踢应该防止你被踢的频率.\n大多数服务器会在80秒后踢你.",
-			30, 5, 80, 1, ValueDisplay.INTEGER.withSuffix(" ticks"));
+		new SliderSetting("Anti-Kick Interval",
+			"How often Anti-Kick should prevent you from getting kicked.\n"
+				+ "Most servers will kick you after 80 ticks.",
+			30, 5, 80, 1,
+			ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
 	private final SliderSetting antiKickDistance = new SliderSetting(
-		"防踢距离",
-		"反踢应该让你跌倒多远.\n"
-			+ "大多数服务器至少需要 0.032m 才能阻止您被踢.",
+		"Anti-Kick Distance",
+		"How far Anti-Kick should make you fall.\n"
+			+ "Most servers require at least 0.032m to stop you from getting kicked.",
 		0.07, 0.01, 0.2, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private int tickCounter = 0;
 	
 	public FlightHack()
 	{
-		super("飞行");
+		super("Flight");
 		setCategory(Category.MOVEMENT);
 		addSetting(horizontalSpeed);
 		addSetting(verticalSpeed);
