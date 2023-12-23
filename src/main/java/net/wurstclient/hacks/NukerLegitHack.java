@@ -240,21 +240,20 @@ public final class NukerLegitHack extends Hack
 	{
 		NORMAL("普通", n -> "合法版挖块", (n, p) -> true),
 		
-		ID("ID", n -> "ID合法版挖块 ["
-				+ n.id.getBlockName().replace("minecraft:", "") + "]",
+		ID("ID",
+			n -> "ID合法版挖块 [" + n.id.getBlockName().replace("minecraft:", "")
+				+ "]",
 			(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
 		
 		MULTI_ID("多ID", n -> "多ID合法版挖块 [" + n.multiIdList.getBlockNames().size()
-				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-					: " IDs]"),
+			+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]" : " IDs]"),
 			(n, p) -> n.multiIdList.getBlockNames()
 				.contains(BlockUtils.getName(p))),
 		
 		FLAT("平坦", n -> "平坦合法版挖块",
 			(n, p) -> p.getY() >= MC.player.getPos().getY()),
 		
-		SMASH("粉碎", n -> "粉碎合法版挖块",
-			(n, p) -> BlockUtils.getHardness(p) >= 1);
+		SMASH("粉碎", n -> "粉碎合法版挖块", (n, p) -> BlockUtils.getHardness(p) >= 1);
 		
 		private final String name;
 		private final Function<NukerLegitHack, String> renderName;

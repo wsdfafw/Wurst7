@@ -74,8 +74,7 @@ public final class EditBlockListScreen extends Screen
 				if(b2)
 					blockList.resetToDefaults();
 				client.setScreen(EditBlockListScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("Are you sure?"))))
+			}, Text.literal("重置为默认值"), Text.literal("Are you sure?"))))
 			.dimensions(width - 108, 8, 100, 20).build());
 		
 		addDrawableChild(doneButton = ButtonWidget

@@ -22,7 +22,7 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 
-@SearchTags({"open water esp", "AutoFishESP", "auto fish esp","OpenWaterESP"})
+@SearchTags({"open water esp", "AutoFishESP", "auto fish esp", "OpenWaterESP"})
 public final class OpenWaterEspHack extends Hack implements RenderListener
 {
 	public OpenWaterEspHack()

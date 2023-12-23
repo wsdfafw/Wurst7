@@ -26,8 +26,11 @@ public final class ModifyCmd extends Command
 {
 	public ModifyCmd()
 	{
-		super("modify", "通过指令修改物品的NBT数据.",
-			".modify add <nbt数据>(添加NBT数据)", ".modify set <nbt数据>设置NBT数据)", ".modify remove <nbt路径> (删除NBT数据)", "用$表示颜色,\n用$$表示$(需要用到$符号时用$$表示)", "", "举个栗子:", ".modify add {display:{Name:'{\"text\":\"$cRed Name\"}'}}", "(changes the item's name to §cRed Name§r)");
+		super("modify", "通过指令修改物品的NBT数据.", ".modify add <nbt数据>(添加NBT数据)",
+			".modify set <nbt数据>设置NBT数据)", ".modify remove <nbt路径> (删除NBT数据)",
+			"用$表示颜色,\n用$$表示$(需要用到$符号时用$$表示)", "", "举个栗子:",
+			".modify add {display:{Name:'{\"text\":\"$cRed Name\"}'}}",
+			"(changes the item's name to §cRed Name§r)");
 	}
 	
 	@Override

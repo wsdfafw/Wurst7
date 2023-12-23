@@ -19,9 +19,7 @@ public final class FeaturesCmd extends Command
 {
 	public FeaturesCmd()
 	{
-		super("features",
-			"展示所有功能的数字和\n统计数据.",
-			".features");
+		super("features", "展示所有功能的数字和\n统计数据.", ".features");
 	}
 	
 	@Override
@@ -31,8 +29,7 @@ public final class FeaturesCmd extends Command
 			throw new CmdSyntaxError();
 		
 		if(WurstClient.VERSION.startsWith("7.0pre"))
-			ChatUtils.warning(
-				"这只是一个预览版! 暂时还没有 Wurst 7.0 所有功能! 看下载页面以寻求更多详情.");
+			ChatUtils.warning("这只是一个预览版! 暂时还没有 Wurst 7.0 所有功能! 看下载页面以寻求更多详情.");
 		
 		int hax = WURST.getHax().countHax();
 		int cmds = WURST.getCmds().countCmds();

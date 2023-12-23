@@ -120,8 +120,8 @@ public class DisconnectedScreenMixin extends Screen
 			return;
 		}
 		
-		autoReconnectButton.setMessage(Text.literal("自动重连 ("
-			+ (int)Math.ceil(autoReconnectTimer / 20.0) + ")"));
+		autoReconnectButton.setMessage(Text.literal(
+			"自动重连 (" + (int)Math.ceil(autoReconnectTimer / 20.0) + ")"));
 		
 		if(autoReconnectTimer > 0)
 		{

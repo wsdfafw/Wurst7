@@ -58,11 +58,10 @@ public final class MobSpawnEspHack extends Hack
 	private final ChunkAreaSetting drawDistance =
 		new ChunkAreaSetting("绘制距离", "", ChunkArea.A9);
 	
-	private final SliderSetting loadingSpeed = new SliderSetting(
-		"载入速度", 1, 1, 5, 1, ValueDisplay.INTEGER.withSuffix("x"));
+	private final SliderSetting loadingSpeed = new SliderSetting("载入速度", 1, 1,
+		5, 1, ValueDisplay.INTEGER.withSuffix("x"));
 	
-	private final CheckboxSetting depthTest =
-		new CheckboxSetting("深度测试", true);
+	private final CheckboxSetting depthTest = new CheckboxSetting("深度测试", true);
 	
 	private final HashMap<ChunkPos, ChunkScanner> scanners = new HashMap<>();
 	private ExecutorService pool;

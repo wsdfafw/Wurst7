@@ -16,17 +16,13 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class NameTagsHack extends Hack
 {
 	private final CheckboxSetting unlimitedRange =
-		new CheckboxSetting("Unlimited range",
-			"取消了名片的64个街区距离限制.", true);
+		new CheckboxSetting("Unlimited range", "取消了名片的64个街区距离限制.", true);
 	
-	private final CheckboxSetting seeThrough = new CheckboxSetting(
-		"透视模式",
-		"在透明文本层上呈现姓名标签。这使得它们在墙后更容易阅读，但是在水和其他透明的东西后面就很难阅读了。",
-		false);
+	private final CheckboxSetting seeThrough = new CheckboxSetting("透视模式",
+		"在透明文本层上呈现姓名标签。这使得它们在墙后更容易阅读，但是在水和其他透明的东西后面就很难阅读了。", false);
 	
-	private final CheckboxSetting forceNametags = new CheckboxSetting(
-		"强制名片",
-		"强制所有玩家的姓名标签可见，甚至是你自己的.", false);
+	private final CheckboxSetting forceNametags =
+		new CheckboxSetting("强制名片", "强制所有玩家的姓名标签可见，甚至是你自己的.", false);
 	
 	public NameTagsHack()
 	{

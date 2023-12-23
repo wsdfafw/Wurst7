@@ -52,16 +52,15 @@ import net.wurstclient.util.RotationUtils;
 public final class SearchHack extends Hack
 	implements UpdateListener, RenderListener
 {
-	private final BlockSetting block = new BlockSetting("方块",
-		"你所需要寻找类型的方块", "minecraft:diamond_ore", false);
+	private final BlockSetting block =
+		new BlockSetting("方块", "你所需要寻找类型的方块", "minecraft:diamond_ore", false);
 	private Block lastBlock;
 	
-	private final ChunkAreaSetting area = new ChunkAreaSetting("区域",
-		"寻找玩家所在的区域.\n更高的数值需要更高配的电脑.");
+	private final ChunkAreaSetting area =
+		new ChunkAreaSetting("区域", "寻找玩家所在的区域.\n更高的数值需要更高配的电脑.");
 	
 	private final SliderSetting limit = new SliderSetting("限制",
-		"最多的显示方块所限制.\n更高的数值需要更高配的电脑.",
-		4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
+		"最多的显示方块所限制.\n更高的数值需要更高配的电脑.", 4, 3, 6, 1, ValueDisplay.LOGARITHMIC);
 	private int prevLimit;
 	private boolean notify;
 	

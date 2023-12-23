@@ -82,8 +82,8 @@ public final class ModelSettings
 		16, 1, 100, 1, ValueDisplay.INTEGER);
 	
 	public final SliderSetting temperature = new SliderSetting("温度",
-		"控制模型的创造力和随机性。较高的值将导致更具创意且有时不合逻辑的生成结果，而较低的值将导致更为保守和常规的生成结果。",
-		0.7, 0, 2, 0.01, ValueDisplay.DECIMAL);
+		"控制模型的创造力和随机性。较高的值将导致更具创意且有时不合逻辑的生成结果，而较低的值将导致更为保守和常规的生成结果。", 0.7, 0, 2,
+		0.01, ValueDisplay.DECIMAL);
 	
 	public final SliderSetting topP = new SliderSetting("Top P",
 		"是温度的另一种选择。通过仅让模型从最有可能的标记中选择，使得生成结果更加稳定而不那么随机。\n\n"

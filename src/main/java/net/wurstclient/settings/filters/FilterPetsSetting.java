@@ -28,8 +28,7 @@ public final class FilterPetsSetting extends EntityFilterCheckbox
 	
 	public static FilterPetsSetting genericCombat(boolean checked)
 	{
-		return new FilterPetsSetting(
-			"不会攻击以驯服的狼,已驯服的马, 诸如此类.", checked);
+		return new FilterPetsSetting("不会攻击以驯服的狼,已驯服的马, 诸如此类.", checked);
 	}
 	
 	public static FilterPetsSetting genericVision(boolean checked)

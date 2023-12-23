@@ -136,8 +136,7 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 					WurstClient.INSTANCE.getKeybinds().getCommands(selectedKey);
 				if(commands != null)
 				{
-					text +=
-						"\n\n警告: 这个按键已经被绑定作为\n指令:";
+					text += "\n\n警告: 这个按键已经被绑定作为\n指令:";
 					commands = commands.replace(";", "\u00a7")
 						.replace("\u00a7\u00a7", ";");
 					
@@ -164,8 +163,8 @@ public class NavigatorNewKeybindScreen extends NavigatorScreen
 		int txtColor = gui.getTxtColor();
 		
 		// title bar
-		context.drawCenteredTextWithShadow(client.textRenderer, "新的键位",
-			middleX, 32, txtColor);
+		context.drawCenteredTextWithShadow(client.textRenderer, "新的键位", middleX,
+			32, txtColor);
 		GL11.glEnable(GL11.GL_BLEND);
 		
 		// background

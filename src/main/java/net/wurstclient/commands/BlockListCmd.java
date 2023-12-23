@@ -33,8 +33,7 @@ public final class BlockListCmd extends Command
 {
 	public BlockListCmd()
 	{
-		super("blocklist",
-			"更改功能的阻止列表设置. 允许您通过键绑定更改这些设置.",
+		super("blocklist", "更改功能的阻止列表设置. 允许您通过键绑定更改这些设置.",
 			".blocklist <feature> <setting> add <block>",
 			".blocklist <feature> <setting> remove <block>",
 			".blocklist <feature> <setting> list [<page>]",
@@ -85,8 +84,7 @@ public final class BlockListCmd extends Command
 		String inputBlockName = args[3];
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
-			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\" 不是一个有效的块.");
+			throw new CmdSyntaxError("\"" + inputBlockName + "\" 不是一个有效的块.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
@@ -107,8 +105,7 @@ public final class BlockListCmd extends Command
 		String inputBlockName = args[3];
 		Block block = getBlockFromNameOrID(inputBlockName);
 		if(block == null)
-			throw new CmdSyntaxError(
-				"\"" + inputBlockName + "\" 不是一个有效的块.");
+			throw new CmdSyntaxError("\"" + inputBlockName + "\" 不是一个有效的块.");
 		
 		String blockName = BlockUtils.getName(block);
 		int index =
@@ -141,8 +138,8 @@ public final class BlockListCmd extends Command
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, blocks.size());
 		
-		ChatUtils.message(feature.getName() + " " + setting.getName()
-			+ " (页 " + page + "/" + pages + ")");
+		ChatUtils.message(feature.getName() + " " + setting.getName() + " (页 "
+			+ page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(blocks.get(i).toString());
 	}

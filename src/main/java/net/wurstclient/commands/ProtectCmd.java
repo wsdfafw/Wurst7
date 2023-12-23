@@ -23,8 +23,7 @@ public final class ProtectCmd extends Command
 {
 	public ProtectCmd()
 	{
-		super("protect", "保护(距离)最近的实体.",
-			".protect <实体名>");
+		super("protect", "保护(距离)最近的实体.", ".protect <实体名>");
 	}
 	
 	@Override
@@ -50,8 +49,7 @@ public final class ProtectCmd extends Command
 			.orElse(null);
 		
 		if(entity == null)
-			throw new CmdError(
-				"实体 \"" + args[0] + "\" 无法找到.");
+			throw new CmdError("实体 \"" + args[0] + "\" 无法找到.");
 		
 		protectHack.setFriend(entity);
 		protectHack.setEnabled(true);

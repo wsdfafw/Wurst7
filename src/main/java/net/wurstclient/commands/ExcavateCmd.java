@@ -17,8 +17,7 @@ public final class ExcavateCmd extends Command
 {
 	public ExcavateCmd()
 	{
-		super("excavate",
-			"挖掘指定范围内的方块.",
+		super("excavate", "挖掘指定范围内的方块.",
 			".excavate <x1> <y1> <z1> <x2> <y2> <z2>");
 	}
 	

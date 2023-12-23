@@ -83,8 +83,7 @@ public final class EditBookOffersScreen extends Screen
 				if(b2)
 					bookOffers.resetToDefaults();
 				client.setScreen(EditBookOffersScreen.this);
-			}, Text.literal("重置为默认值"),
-				Text.literal("Are you sure?"))))
+			}, Text.literal("重置为默认值"), Text.literal("Are you sure?"))))
 			.dimensions(width - 106, 6, 100, 20).build());
 		
 		addDrawableChild(doneButton = ButtonWidget

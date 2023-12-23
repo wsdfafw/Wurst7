@@ -51,9 +51,9 @@ import net.wurstclient.util.RotationUtils;
 public final class FeedAuraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"决定 范围喂养 的范围\n来喂动物食物.\n任何东西一旦远离\n指定的数值不会喂",
-		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "决定 范围喂养 的范围\n来喂动物食物.\n任何东西一旦远离\n指定的数值不会喂", 5,
+			1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FilterBabiesSetting filterBabies =
 		new FilterBabiesSetting("Won't feed baby animals.\n"

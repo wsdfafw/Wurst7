@@ -29,8 +29,8 @@ public final class AnnoyCmd extends Command implements ChatInputListener
 	
 	public AnnoyCmd()
 	{
-		super("annoy", "通过重复玩家说的每一句话来惹恼他们.",
-			".annoy <player>", "Turn off: .annoy");
+		super("annoy", "通过重复玩家说的每一句话来惹恼他们.", ".annoy <player>",
+			"Turn off: .annoy");
 		addSetting(rcMode);
 	}
 	

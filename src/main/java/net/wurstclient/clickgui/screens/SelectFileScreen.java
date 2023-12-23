@@ -51,8 +51,7 @@ public final class SelectFileScreen extends Screen
 				.dimensions(8, 8, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("重置为默认值"),
-				b -> askToConfirmReset())
+			.builder(Text.literal("重置为默认值"), b -> askToConfirmReset())
 			.dimensions(width - 108, 8, 100, 20).build());
 		
 		doneButton = addDrawableChild(
@@ -90,9 +89,8 @@ public final class SelectFileScreen extends Screen
 	{
 		Text title = Text.literal("重设目录");
 		
-		Text message = Text
-			.literal("这将会清空 '" + setting.getFolder().getFileName()
-				+ "目录并重新生成默认的数值.\n你确定还要继续这样做吗");
+		Text message = Text.literal("这将会清空 '"
+			+ setting.getFolder().getFileName() + "目录并重新生成默认的数值.\n你确定还要继续这样做吗");
 		
 		client.setScreen(new ConfirmScreen(this::confirmReset, title, message));
 	}
@@ -177,8 +175,7 @@ public final class SelectFileScreen extends Screen
 		
 		if(doneButton.isSelected() && !doneButton.active)
 			context.drawTooltip(textRenderer,
-				Arrays.asList(Text.literal("你必须先选择一个文件.")),
-				mouseX, mouseY);
+				Arrays.asList(Text.literal("你必须先选择一个文件.")), mouseX, mouseY);
 	}
 	
 	@Override

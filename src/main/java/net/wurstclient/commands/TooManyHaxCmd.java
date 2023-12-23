@@ -31,8 +31,16 @@ public final class TooManyHaxCmd extends Command
 {
 	public TooManyHaxCmd()
 	{
-		super("toomanyhax",
-			"当TooManyHax被启用时，\n一些功能会被暂时性地禁用,\n你可以在此处设置将要禁用的功能", ".toomanyhax block <功能名>\n禁用某功能", ".toomanyhax unblock <功能名>\n取消禁用某功能", ".toomanyhax block-all\n禁用所有功能", ".toomanyhax unblock-all\n取消禁用所有功能", ".toomanyhax list [<页数>]\n显示禁用列表", ".toomanyhax load-profile <预设名>\n加载预设", ".toomanyhax save-profile <预设名>\n设置预设", ".toomanyhax list-profiles [<页数>]\n预设列表", "预设储存路径'.minecraft/wurst/toomanyhax'.");
+		super("toomanyhax", "当TooManyHax被启用时，\n一些功能会被暂时性地禁用,\n你可以在此处设置将要禁用的功能",
+			".toomanyhax block <功能名>\n禁用某功能",
+			".toomanyhax unblock <功能名>\n取消禁用某功能",
+			".toomanyhax block-all\n禁用所有功能",
+			".toomanyhax unblock-all\n取消禁用所有功能",
+			".toomanyhax list [<页数>]\n显示禁用列表",
+			".toomanyhax load-profile <预设名>\n加载预设",
+			".toomanyhax save-profile <预设名>\n设置预设",
+			".toomanyhax list-profiles [<页数>]\n预设列表",
+			"预设储存路径'.minecraft/wurst/toomanyhax'.");
 	}
 	
 	@Override
@@ -128,8 +136,7 @@ public final class TooManyHaxCmd extends Command
 	{
 		WURST.getHax().tooManyHaxHack.blockAll();
 		ChatUtils.message("所有功能都被屏蔽了.");
-		ChatUtils
-			.message("*注意: 一些特殊的功能作用无法被屏蔽因为");
+		ChatUtils.message("*注意: 一些特殊的功能作用无法被屏蔽因为");
 		ChatUtils.message("他们需要驱动Wurst工作.");
 	}
 	
@@ -143,8 +150,7 @@ public final class TooManyHaxCmd extends Command
 	{
 		Feature feature = WURST.getFeatureByName(name);
 		if(feature == null)
-			throw new CmdSyntaxError(
-				"一个功能名为 '" + name + "' 无法被找到");
+			throw new CmdSyntaxError("一个功能名为 '" + name + "' 无法被找到");
 		
 		return feature;
 	}
@@ -219,8 +225,7 @@ public final class TooManyHaxCmd extends Command
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError(
-				"档案 '" + name + "' 是损坏的: " + e.getMessage());
+			throw new CmdError("档案 '" + name + "' 是损坏的: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
@@ -277,8 +282,7 @@ public final class TooManyHaxCmd extends Command
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, files.size());
 		
-		ChatUtils.message(
-			"TooManyHax 档案列表 (页码 " + page + "/" + pages + ")");
+		ChatUtils.message("TooManyHax 档案列表 (页码 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

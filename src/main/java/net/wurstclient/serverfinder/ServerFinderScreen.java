@@ -158,8 +158,7 @@ public class ServerFinderScreen extends Screen
 	@Override
 	public void tick()
 	{
-		searchButton
-			.setMessage(Text.literal(state.isRunning() ? "取消" : "搜索"));
+		searchButton.setMessage(Text.literal(state.isRunning() ? "取消" : "搜索"));
 		ipBox.active = !state.isRunning();
 		maxThreadsBox.active = !state.isRunning();
 		

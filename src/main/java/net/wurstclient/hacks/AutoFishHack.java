@@ -127,8 +127,7 @@ public final class AutoFishHack extends Hack
 		if(stopWhenInvFull.isChecked()
 			&& MC.player.getInventory().getEmptySlot() == -1)
 		{
-			ChatUtils.message(
-				"AutoFish已停止，因为您的库存已满。");
+			ChatUtils.message("AutoFish已停止，因为您的库存已满。");
 			setEnabled(false);
 			return;
 		}

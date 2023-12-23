@@ -44,16 +44,12 @@ public final class BuildRandomHack extends Hack
 		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private SliderSetting maxAttempts = new SliderSetting("最大尝试次数",
-		"在一个游戏刻内，BuildRandom 尝试放置方块的最大随机位置次数。\n\n"
-			+ "较高的值可以加快建造过程，但会增加延迟。",
+		"在一个游戏刻内，BuildRandom 尝试放置方块的最大随机位置次数。\n\n" + "较高的值可以加快建造过程，但会增加延迟。",
 		128, 1, 1024, 1, ValueDisplay.INTEGER);
 	
 	private final CheckboxSetting checkItem =
-		new CheckboxSetting("检查手持物品",
-			"只有当您实际手持一个方块时才会建造。\n"
-				+ "关闭此选项可用火、水、岩浆、生成蛋等进行建造，"
-				+ "或者当您只想用空手右键在随机位置建造时。",
-			true);
+		new CheckboxSetting("检查手持物品", "只有当您实际手持一个方块时才会建造。\n"
+			+ "关闭此选项可用火、水、岩浆、生成蛋等进行建造，" + "或者当您只想用空手右键在随机位置建造时。", true);
 	
 	private final CheckboxSetting checkLOS =
 		new CheckboxSetting("Check line of sight",
@@ -85,19 +81,14 @@ public final class BuildRandomHack extends Hack
 			"Builds as if FastPlace was enabled, even if it's not.", false);
 	
 	private final CheckboxSetting placeWhileBreaking = new CheckboxSetting(
-		"打破时建造",
-		"即使您正在破坏一个方块，也可以进行建造。\n"
-			+ "这在一些外挂中可能可行，但在原版游戏中不会生效。可能会显得可疑。",
+		"打破时建造", "即使您正在破坏一个方块，也可以进行建造。\n" + "这在一些外挂中可能可行，但在原版游戏中不会生效。可能会显得可疑。",
 		false);
 	
-	private final CheckboxSetting placeWhileRiding = new CheckboxSetting(
-		"骑乘建造",
-		"即使您正在骑乘交通工具，也可以进行建造。\n"
-			+ "这在一些外挂中可能可行，但在原版游戏中不会生效。可能会显得可疑。",
-		false);
+	private final CheckboxSetting placeWhileRiding = new CheckboxSetting("骑乘建造",
+		"即使您正在骑乘交通工具，也可以进行建造。\n" + "这在一些外挂中可能可行，但在原版游戏中不会生效。可能会显得可疑。", false);
 	
-	private final CheckboxSetting indicator = new CheckboxSetting("指示器",
-		"显示 BuildRandom 放置方块的位置。", true);
+	private final CheckboxSetting indicator =
+		new CheckboxSetting("指示器", "显示 BuildRandom 放置方块的位置。", true);
 	
 	private final Random random = new Random();
 	private BlockPos lastPos;

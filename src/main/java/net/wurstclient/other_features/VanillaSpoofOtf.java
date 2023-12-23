@@ -21,8 +21,7 @@ import net.wurstclient.settings.CheckboxSetting;
 public final class VanillaSpoofOtf extends OtherFeature
 	implements ConnectionPacketOutputListener
 {
-	private final CheckboxSetting spoof =
-		new CheckboxSetting("原版伪装", false);
+	private final CheckboxSetting spoof = new CheckboxSetting("原版伪装", false);
 	
 	public VanillaSpoofOtf()
 	{

@@ -60,8 +60,7 @@ public class CleanUpScreen extends Screen
 		
 		addDrawableChild(
 			new CleanUpButton(width / 2 - 100, height / 4 - 24 + 12,
-				() -> "未知的主机: " + removeOrKeep(cleanupUnknown),
-				"显然不存在的服务器.",
+				() -> "未知的主机: " + removeOrKeep(cleanupUnknown), "显然不存在的服务器.",
 				b -> cleanupUnknown = !cleanupUnknown));
 		
 		addDrawableChild(new CleanUpButton(width / 2 - 100, height / 4 + 0 + 12,
@@ -83,7 +82,7 @@ public class CleanUpScreen extends Screen
 			new CleanUpButton(width / 2 - 100, height / 4 + 48 + 12,
 				() -> "\"Grief me\" 服务器: " + removeOrKeep(cleanupGriefMe),
 				"All servers where name starts with \"Grief me\"\n"
-				+ "用于移除由ServerFinder发现的服务器.",
+					+ "用于移除由ServerFinder发现的服务器.",
 				b -> cleanupGriefMe = !cleanupGriefMe));
 		
 		addDrawableChild(
@@ -93,12 +92,11 @@ public class CleanUpScreen extends Screen
 					+ "list. \u00a7cUse with caution!\u00a7r",
 				b -> removeAll = !removeAll));
 		
-		addDrawableChild(
-			new CleanUpButton(width / 2 - 100, height / 4 + 96 + 12,
-				() -> "重命名所有服务器: " + yesOrNo(cleanupRename),
-				"Renames your servers to \"Grief me #1\",\n"
-					+ "\"Grief me #2\", etc.",
-				b -> cleanupRename = !cleanupRename));
+		addDrawableChild(new CleanUpButton(width / 2 - 100,
+			height / 4 + 96 + 12, () -> "重命名所有服务器: " + yesOrNo(cleanupRename),
+			"Renames your servers to \"Grief me #1\",\n"
+				+ "\"Grief me #2\", etc.",
+			b -> cleanupRename = !cleanupRename));
 	}
 	
 	private String yesOrNo(boolean b)

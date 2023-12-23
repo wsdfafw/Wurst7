@@ -100,8 +100,7 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report =
-				CrashReport.create(e, "增加 Wurst 事件监听");
+			CrashReport report = CrashReport.create(e, "增加 Wurst 事件监听");
 			CrashReportSection section = report.addElement("影响的监听");
 			section.add("监听类型", () -> type.getName());
 			section.add("监听类", () -> listener.getClass().getName());
@@ -124,8 +123,7 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report =
-				CrashReport.create(e, "移除wurst监听事件");
+			CrashReport report = CrashReport.create(e, "移除wurst监听事件");
 			CrashReportSection section = report.addElement("影响的监听");
 			section.add("监听类型", () -> type.getName());
 			section.add("监听类", () -> listener.getClass().getName());

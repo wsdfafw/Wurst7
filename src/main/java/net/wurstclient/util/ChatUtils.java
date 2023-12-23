@@ -32,8 +32,7 @@ public enum ChatUtils
 		"\u00a7c[\u00a76\u00a7l警告\u00a7c]\u00a7r ";
 	private static final String ERROR_PREFIX =
 		"\u00a7c[\u00a74\u00a7l错误\u00a7c]\u00a7r ";
-	private static final String SYNTAX_ERROR_PREFIX =
-		"\u00a74语法错误:\u00a7r ";
+	private static final String SYNTAX_ERROR_PREFIX = "\u00a74语法错误:\u00a7r ";
 	
 	private static boolean enabled = true;
 	

@@ -25,7 +25,7 @@ public final class DisableOtf extends OtherFeature
 	
 	public DisableOtf()
 	{
-		super("禁用香肠","要禁用香肠,请转到统计屏幕并按“禁用香肠”按钮.\n一旦按下它就会变成一个“启用Wurst”按钮.");
+		super("禁用香肠", "要禁用香肠,请转到统计屏幕并按“禁用香肠”按钮.\n一旦按下它就会变成一个“启用Wurst”按钮.");
 		addSetting(hideEnableButton);
 	}
 	

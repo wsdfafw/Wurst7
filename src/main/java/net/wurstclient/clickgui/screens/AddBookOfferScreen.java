@@ -314,8 +314,8 @@ public final class AddBookOfferScreen extends Screen
 		
 		if(alreadyAdded && offerToAdd != null)
 		{
-			String errorText = offerToAdd.getEnchantmentNameWithLevel()
-				+ " 已经在您的列表中!";
+			String errorText =
+				offerToAdd.getEnchantmentNameWithLevel() + " 已经在您的列表中!";
 			context.drawTextWithShadow(tr, errorText, 0, height - 40, 0xff5555);
 		}
 		

@@ -18,9 +18,8 @@ public final class DigCmd extends Command
 {
 	public DigCmd()
 	{
-		super("dig",
-			"自动挖出选定区域，在前左上角.",
-			".dig  <长> <宽> <高>(设定挖掘范围)", ".dig stop(停止挖掘)");
+		super("dig", "自动挖出选定区域，在前左上角.", ".dig  <长> <宽> <高>(设定挖掘范围)",
+			".dig stop(停止挖掘)");
 	}
 	
 	@Override

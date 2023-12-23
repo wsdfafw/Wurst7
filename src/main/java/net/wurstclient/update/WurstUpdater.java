@@ -85,8 +85,7 @@ public final class WurstUpdater implements UpdateListener
 		
 		if(latestVersion == null || latestVersion.isInvalid())
 		{
-			String text = "检查更新时发生错误."
-				+ " 点击 \u00a7nhere\u00a7r 手动检查.";
+			String text = "检查更新时发生错误." + " 点击 \u00a7nhere\u00a7r 手动检查.";
 			String url =
 				"https://www.wurstclient.net/download/?utm_source=Wurst+Client&utm_medium=WurstUpdater+chat+message&utm_content=An+error+occurred+while+checking+for+updates.";
 			showLink(text, url);

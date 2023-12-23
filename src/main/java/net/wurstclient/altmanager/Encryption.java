@@ -77,8 +77,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(
-				CrashReport.create(e, "创建AES密码"));
+			throw new CrashException(CrashReport.create(e, "创建AES密码"));
 		}
 	}
 	
@@ -326,8 +325,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(
-				CrashReport.create(e, "创建RSA密钥对"));
+			throw new CrashException(CrashReport.create(e, "创建RSA密钥对"));
 		}
 	}
 	

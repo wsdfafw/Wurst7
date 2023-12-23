@@ -37,7 +37,6 @@ public final class FilterBabiesSetting extends EntityFilterCheckbox
 	
 	public static FilterBabiesSetting genericCombat(boolean checked)
 	{
-		return new FilterBabiesSetting(
-			"不会攻击小猪仔,小村民, 诸如此类.", checked);
+		return new FilterBabiesSetting("不会攻击小猪仔,小村民, 诸如此类.", checked);
 	}
 }

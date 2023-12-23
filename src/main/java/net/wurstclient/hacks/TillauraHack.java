@@ -28,7 +28,6 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
-import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.RotationUtils;
 
@@ -37,9 +36,12 @@ import net.wurstclient.util.RotationUtils;
 	"auto hoe"})
 public final class TillauraHack extends Hack implements UpdateListener
 {
-	private final SliderSetting range = new SliderSetting("范围", "农田转化器所转化的范围.", 5.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final CheckboxSetting multiTill = new CheckboxSetting("多倍转农田", "一下子将多个地转化为农田.\n但无法绕过反作弊.", false);
-    private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野", "防止农田转化触及到无法触及的方块.\n在有反作弊服务器中表现很好,\n在原生态无插件服务器中无需.", true);
+	private final SliderSetting range = new SliderSetting("范围", "农田转化器所转化的范围.",
+		5.0, 1.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
+	private final CheckboxSetting multiTill =
+		new CheckboxSetting("多倍转农田", "一下子将多个地转化为农田.\n但无法绕过反作弊.", false);
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野",
+		"防止农田转化触及到无法触及的方块.\n在有反作弊服务器中表现很好,\n在原生态无插件服务器中无需.", true);
 	
 	private final List<Block> tillableBlocks = Arrays.asList(Blocks.GRASS_BLOCK,
 		Blocks.DIRT_PATH, Blocks.DIRT, Blocks.COARSE_DIRT);

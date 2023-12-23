@@ -77,8 +77,7 @@ public final class EnabledHaxCmd extends Command
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError(
-				"配置文件'" + name + "' 已损坏: " + e.getMessage());
+			throw new CmdError("配置文件'" + name + "' 已损坏: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
@@ -135,8 +134,7 @@ public final class EnabledHaxCmd extends Command
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, files.size());
 		
-		ChatUtils.message(
-			"开启作弊档案功能列表 (页码 " + page + "/" + pages + ")");
+		ChatUtils.message("开启作弊档案功能列表 (页码 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

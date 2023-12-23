@@ -22,12 +22,9 @@ public final class AnchorAuraFilterList extends EntityFilterList
 	public static AnchorAuraFilterList create()
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
-		String damageWarning =
-			"\n如果他们离有效目标或现有锚太近，他们仍然会受到伤害.";
+		String damageWarning = "\n如果他们离有效目标或现有锚太近，他们仍然会受到伤害.";
 		
-		builder.add(new FilterPlayersSetting(
-			"自动放置锚点时不会瞄准其他玩家."
-				+ damageWarning,
+		builder.add(new FilterPlayersSetting("自动放置锚点时不会瞄准其他玩家." + damageWarning,
 			false));
 		
 		builder.add(new FilterHostileSetting("Won't target hostile mobs like"
@@ -80,19 +77,13 @@ public final class AnchorAuraFilterList extends EntityFilterList
 			true));
 		
 		builder.add(new FilterInvisibleSetting(
-			"自动放置锚点时不会瞄准不可见的实体."
-				+ damageWarning,
-			false));
+			"自动放置锚点时不会瞄准不可见的实体." + damageWarning, false));
 		
 		builder.add(new FilterNamedSetting(
-			"自动放置锚点时不会以名称标记的实体为目标."
-				+ damageWarning,
-			false));
+			"自动放置锚点时不会以名称标记的实体为目标." + damageWarning, false));
 		
 		builder.add(new FilterArmorStandsSetting(
-			"自动放置锚时不会瞄准盔甲架."
-				+ damageWarning,
-			true));
+			"自动放置锚时不会瞄准盔甲架." + damageWarning, true));
 		
 		return new AnchorAuraFilterList(builder);
 	}

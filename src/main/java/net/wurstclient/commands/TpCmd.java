@@ -32,8 +32,7 @@ public final class TpCmd extends Command
 	
 	public TpCmd()
 	{
-		super("tp", "将你传送至10个方块以外", ".tp <x> <y> <z>",
-			".tp <entity>");
+		super("tp", "将你传送至10个方块以外", ".tp <x> <y> <z>", ".tp <entity>");
 		addSetting(disableFreecam);
 	}
 	

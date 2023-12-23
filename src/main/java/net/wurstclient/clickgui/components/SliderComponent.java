@@ -101,8 +101,7 @@ public final class SliderComponent extends Component
 		if(hovering && mouseY < y3)
 			setTooltip();
 		else if(hSlider && !dragging)
-			GUI.setTooltip(
-				"§e[ctrl]§r+§e[左键]§r 来精确输入\n§e[右键]§r 进行重置");
+			GUI.setTooltip("§e[ctrl]§r+§e[左键]§r 来精确输入\n§e[右键]§r 进行重置");
 		
 		if(renderAsDisabled)
 		{

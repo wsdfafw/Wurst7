@@ -38,19 +38,18 @@ public final class BonemealAuraHack extends Hack implements UpdateListener
 	private final SliderSetting range =
 		new SliderSetting("距离", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
-		"§l快速§r 模式可以同时使用骨粉\n多次对多个方块.\n§l合法§r 模式可以绕过反作弊",
-		Mode.values(), Mode.FAST);
+	private final EnumSetting<Mode> mode =
+		new EnumSetting<>("模式", "§l快速§r 模式可以同时使用骨粉\n多次对多个方块.\n§l合法§r 模式可以绕过反作弊",
+			Mode.values(), Mode.FAST);
 	
 	private final EnumSetting<AutomationLevel> automationLevel =
 		new EnumSetting<>("自动的模式",
 			"自动骨粉应该要取决于哪种模式.\n§l右键§r 模式自动右键你手上的骨粉\n看个人喜好用.\n§l快捷栏§r 模式在你的快捷栏上选择骨粉并\n用在农作物上.\n§l背包§r 在你的背包里找到骨粉,\n并将其移动到快捷栏上使用他",
 			AutomationLevel.values(), AutomationLevel.RIGHT_CLICK);
 	
-	private final CheckboxSetting saplings =
-		new CheckboxSetting("树苗", true);
-	private final CheckboxSetting crops = new CheckboxSetting("农作物",
-		"小麦、胡萝卜、土豆和甜菜根.", true);
+	private final CheckboxSetting saplings = new CheckboxSetting("树苗", true);
+	private final CheckboxSetting crops =
+		new CheckboxSetting("农作物", "小麦、胡萝卜、土豆和甜菜根.", true);
 	private final CheckboxSetting stems =
 		new CheckboxSetting("有茎类", "Pumpkins and melons.", true);
 	private final CheckboxSetting cocoa = new CheckboxSetting("可可豆", true);

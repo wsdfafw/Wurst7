@@ -339,8 +339,7 @@ public class JGoogleAnalyticsTracker
 		String argHostName)
 	{
 		if(argPageURL == null)
-			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+			throw new IllegalArgumentException("页面 URL 不能为空, Google将不会跟踪数据.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -369,8 +368,7 @@ public class JGoogleAnalyticsTracker
 		String argReferrerPage)
 	{
 		if(argPageURL == null)
-			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+			throw new IllegalArgumentException("页面 URL 不能为空, Google将不会跟踪数据.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -400,8 +398,7 @@ public class JGoogleAnalyticsTracker
 		String argHostName, String argSearchSource, String argSearchKeywords)
 	{
 		if(argPageURL == null)
-			throw new IllegalArgumentException(
-				"页面 URL 不能为空, Google将不会跟踪数据.");
+			throw new IllegalArgumentException("页面 URL 不能为空, Google将不会跟踪数据.");
 		AnalyticsRequestData data = new AnalyticsRequestData();
 		data.setHostName(argHostName);
 		data.setPageTitle(argPageTitle);
@@ -472,8 +469,7 @@ public class JGoogleAnalyticsTracker
 	{
 		if(!enabled)
 		{
-			logger.log(Level.CONFIG,
-				"忽略跟踪请求，启用为false");
+			logger.log(Level.CONFIG, "忽略跟踪请求，启用为false");
 			return;
 		}
 		if(argData == null)
@@ -521,9 +517,7 @@ public class JGoogleAnalyticsTracker
 				fifo.notify();
 			}
 			if(!backgroundThreadMayRun)
-				logger.log(Level.SEVERE,
-					"一个跟踪请求被添加到队列中，但是后台线程没有运行.",
-					url);
+				logger.log(Level.SEVERE, "一个跟踪请求被添加到队列中，但是后台线程没有运行.", url);
 			break;
 		}
 	}

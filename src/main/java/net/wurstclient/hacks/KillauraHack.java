@@ -48,9 +48,8 @@ import net.wurstclient.util.RotationUtils;
 public final class KillauraHack extends Hack
 	implements UpdateListener, PostMotionListener, RenderListener
 {
-	private final SliderSetting range = new SliderSetting("范围",
-		"",
-		5, 1, 10, 0.05, ValueDisplay.DECIMAL);
+	private final SliderSetting range =
+		new SliderSetting("范围", "", 5, 1, 10, 0.05, ValueDisplay.DECIMAL);
 	
 	private final AttackSpeedSliderSetting speed =
 		new AttackSpeedSliderSetting();
@@ -62,9 +61,8 @@ public final class KillauraHack extends Hack
 	private final SliderSetting fov =
 		new SliderSetting("FOV", 360, 30, 360, 10, ValueDisplay.DEGREES);
 	
-	private final CheckboxSetting damageIndicator = new CheckboxSetting(
-		"伤害显示器","在目标内渲染一个彩色框，与其剩余生命值成反比.",
-		true);
+	private final CheckboxSetting damageIndicator =
+		new CheckboxSetting("伤害显示器", "在目标内渲染一个彩色框，与其剩余生命值成反比.", true);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);

@@ -23,8 +23,9 @@ public final class SetSliderCmd extends Command
 {
 	public SetSliderCmd()
 	{
-		super("setslider",
-			"改变一个 slider 设置的功能. 可以让你\n移动 sliders 通过快捷键.", ".setslider <功能> <设置> <数值>", ".setslider <功能> <设置> (more(更多)|less(更少))");
+		super("setslider", "改变一个 slider 设置的功能. 可以让你\n移动 sliders 通过快捷键.",
+			".setslider <功能> <设置> <数值>",
+			".setslider <功能> <设置> (more(更多)|less(更少))");
 	}
 	
 	@Override

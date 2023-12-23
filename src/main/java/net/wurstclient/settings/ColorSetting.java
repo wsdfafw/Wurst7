@@ -137,10 +137,10 @@ public final class ColorSetting extends Setting
 		addPKB(pkb, command + "#00FF00", description + "绿色");
 		addPKB(pkb, command + "#0000FF", description + "蓝色");
 		addPKB(pkb, command + "#FFFF00", description + "黄色");
-        addPKB(pkb, command + "#00FFFF", description + "青色");
-        addPKB(pkb, command + "#FF00FF", description + "品红");
-        addPKB(pkb, command + "#FFFFFF", description + "白色");
-        addPKB(pkb, command + "#000000", description + "黑色");
+		addPKB(pkb, command + "#00FFFF", description + "青色");
+		addPKB(pkb, command + "#FF00FF", description + "品红");
+		addPKB(pkb, command + "#FFFFFF", description + "白色");
+		addPKB(pkb, command + "#000000", description + "黑色");
 		return pkb;
 	}
 	

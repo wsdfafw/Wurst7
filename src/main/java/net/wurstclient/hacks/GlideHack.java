@@ -26,12 +26,12 @@ import net.wurstclient.util.BlockUtils;
 public final class GlideHack extends Hack
 	implements UpdateListener, AirStrafingSpeedListener
 {
-	private final SliderSetting fallSpeed = new SliderSetting("掉落速度",
-		0.125, 0.005, 0.25, 0.005, ValueDisplay.DECIMAL);
+	private final SliderSetting fallSpeed = new SliderSetting("掉落速度", 0.125,
+		0.005, 0.25, 0.005, ValueDisplay.DECIMAL);
 	
 	private final SliderSetting moveSpeed =
-		new SliderSetting("移动速度", "Horizontal movement factor.", 1.2, 1,
-			5, 0.05, ValueDisplay.PERCENTAGE);
+		new SliderSetting("移动速度", "Horizontal movement factor.", 1.2, 1, 5,
+			0.05, ValueDisplay.PERCENTAGE);
 	
 	private final SliderSetting minHeight = new SliderSetting("最少高度",
 		"Won't glide when you are too close to the ground.", 0, 0, 2, 0.01,

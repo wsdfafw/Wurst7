@@ -23,15 +23,11 @@ public final class FollowFilterList extends EntityFilterList
 	{
 		ArrayList<EntityFilter> builder = new ArrayList<>();
 		
-		builder.add(
-			new FilterPlayersSetting("不会跟随其他玩家.", false));
+		builder.add(new FilterPlayersSetting("不会跟随其他玩家.", false));
 		
-		builder.add(
-			new FilterSleepingSetting("不会跟随睡觉的玩家.", false));
+		builder.add(new FilterSleepingSetting("不会跟随睡觉的玩家.", false));
 		
-		builder.add(new FilterFlyingSetting(
-			"不会跟随距离地面至少给定距离的玩家.",
-			0));
+		builder.add(new FilterFlyingSetting("不会跟随距离地面至少给定距离的玩家.", 0));
 		
 		builder.add(new FilterHostileSetting(
 			"Won't follow hostile mobs like zombies and creepers.", true));
@@ -46,8 +42,7 @@ public final class FollowFilterList extends EntityFilterList
 		builder.add(new FilterPassiveWaterSetting("Won't follow passive water"
 			+ " mobs like fish, squid, dolphins and axolotls.", true));
 		
-		builder.add(new FilterBabiesSetting(
-			"不会跟随小猪、小村民等", true));
+		builder.add(new FilterBabiesSetting("不会跟随小猪、小村民等", true));
 		
 		builder.add(new FilterBatsSetting("Won't follow bats and any other"
 			+ " \"ambient\" mobs that might be added by mods.", true));
@@ -59,8 +54,7 @@ public final class FollowFilterList extends EntityFilterList
 		
 		builder.add(new FilterSlimesSetting("Won't follow slimes.", true));
 		
-		builder.add(new FilterPetsSetting(
-			"不会跟随驯服的狼、驯服的马等.", true));
+		builder.add(new FilterPetsSetting("不会跟随驯服的狼、驯服的马等.", true));
 		
 		builder.add(new FilterVillagersSetting(
 			"Won't follow villagers and wandering traders.", true));
@@ -84,14 +78,11 @@ public final class FollowFilterList extends EntityFilterList
 		
 		builder.add(new FilterAllaysSetting("Won't follow allays.", true));
 		
-		builder.add(new FilterInvisibleSetting(
-			"不会跟随隐形实体.", false));
+		builder.add(new FilterInvisibleSetting("不会跟随隐形实体.", false));
 		
-		builder.add(
-			new FilterArmorStandsSetting("不会跟随盔甲架.", true));
+		builder.add(new FilterArmorStandsSetting("不会跟随盔甲架.", true));
 		
-		builder
-			.add(new FilterMinecartsSetting("不会跟随矿车.", true));
+		builder.add(new FilterMinecartsSetting("不会跟随矿车.", true));
 		
 		return new FollowFilterList(builder);
 	}

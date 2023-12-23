@@ -36,14 +36,12 @@ public final class AimAssistHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting rotationSpeed =
-		new SliderSetting("抬前轮速度", 600, 10, 3600, 10,
-			ValueDisplay.DEGREES.withSuffix("/s"));
+	private final SliderSetting rotationSpeed = new SliderSetting("抬前轮速度", 600,
+		10, 3600, 10, ValueDisplay.DEGREES.withSuffix("/s"));
 	
 	private final SliderSetting fov = new SliderSetting("FOV",
-		"视野 - 一个实体在被忽略之前离你的十字准线有多远.\n"
-			+ "360\u00b0 = 瞄准你周围的实体.",
-		120, 30, 360, 10, ValueDisplay.DEGREES);
+		"视野 - 一个实体在被忽略之前离你的十字准线有多远.\n" + "360\u00b0 = 瞄准你周围的实体.", 120, 30, 360,
+		10, ValueDisplay.DEGREES);
 	
 	private final CheckboxSetting checkLOS = new CheckboxSetting(
 		"Check line of sight", "Won't aim at entities behind blocks.", true);

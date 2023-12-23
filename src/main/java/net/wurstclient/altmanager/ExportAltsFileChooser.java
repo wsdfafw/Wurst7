@@ -25,8 +25,8 @@ public final class ExportAltsFileChooser extends JFileChooser
 		SwingUtils.setLookAndFeel();
 		
 		int response = JOptionPane.showConfirmDialog(null,
-			"这将创建一个未加密(纯文本)的alt列表副本.\n以明文形式存储密码是有风险的，因为它们很容易被病毒窃取.\n将此副本保存在安全的地方，并将其保存在Minecraft文件夹之外!", "警告", JOptionPane.OK_CANCEL_OPTION,
-			JOptionPane.WARNING_MESSAGE);
+			"这将创建一个未加密(纯文本)的alt列表副本.\n以明文形式存储密码是有风险的，因为它们很容易被病毒窃取.\n将此副本保存在安全的地方，并将其保存在Minecraft文件夹之外!",
+			"警告", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 		
 		if(response != JOptionPane.OK_OPTION)
 			return;

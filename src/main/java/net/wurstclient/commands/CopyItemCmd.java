@@ -20,9 +20,7 @@ public final class CopyItemCmd extends Command
 {
 	public CopyItemCmd()
 	{
-		super("copyitem",
-			"复制其他人持有或穿着的物品\n仅创造模式",
-			".copyitem <玩家> <物品槽>",
+		super("copyitem", "复制其他人持有或穿着的物品\n仅创造模式", ".copyitem <玩家> <物品槽>",
 			"有效插槽: hand(手), head(头部), chest(胸部), legs(腿部), feet(足部)");
 	}
 	

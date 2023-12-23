@@ -11,15 +11,19 @@ import net.wurstclient.Category;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
-import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
 public final class NoWeatherHack extends Hack
 {
-	private final CheckboxSetting disableRain = new CheckboxSetting("关闭雨天", true);
-    private final CheckboxSetting changeTime = new CheckboxSetting("改变世界时间", false);
-    private final SliderSetting time = new SliderSetting("时间", 6000.0, 0.0, 23900.0, 100.0, SliderSetting.ValueDisplay.INTEGER);
-    private final CheckboxSetting changeMoonPhase = new CheckboxSetting("改变月亮的阶段", false);
-    private final SliderSetting moonPhase = new SliderSetting("月亮阶段", 0.0, 0.0, 7.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
+	private final CheckboxSetting disableRain =
+		new CheckboxSetting("关闭雨天", true);
+	private final CheckboxSetting changeTime =
+		new CheckboxSetting("改变世界时间", false);
+	private final SliderSetting time = new SliderSetting("时间", 6000.0, 0.0,
+		23900.0, 100.0, SliderSetting.ValueDisplay.INTEGER);
+	private final CheckboxSetting changeMoonPhase =
+		new CheckboxSetting("改变月亮的阶段", false);
+	private final SliderSetting moonPhase = new SliderSetting("月亮阶段", 0.0, 0.0,
+		7.0, 1.0, SliderSetting.ValueDisplay.INTEGER);
 	
 	public NoWeatherHack()
 	{

@@ -79,8 +79,8 @@ public class ZoomManagerScreen extends Screen implements PressAKeyCallback
 		CheckboxSetting scroll = zoom.getScrollSetting();
 		
 		scroll.setChecked(!scroll.isChecked());
-		scrollButton.setMessage(
-			Text.literal("使用鼠标滚轮: " + onOrOff(scroll.isChecked())));
+		scrollButton
+			.setMessage(Text.literal("使用鼠标滚轮: " + onOrOff(scroll.isChecked())));
 	}
 	
 	private String onOrOff(boolean on)

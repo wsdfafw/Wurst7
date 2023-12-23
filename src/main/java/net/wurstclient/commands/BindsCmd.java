@@ -31,7 +31,15 @@ public final class BindsCmd extends Command
 {
 	public BindsCmd()
 	{
-		super("binds", "可以让你管理绑定的键位在聊天栏处", ".binds add <按键名> <功能名>(增加功能快捷键)", ".binds add <按键名> <指令>(增加指令快捷键)", ".binds remove <按键>(删除与某个键相关的快捷键)", ".binds list [<页数>](现用的快捷键的键位)", ".binds load-profile <预设名>(加载现有的某一个预设)", ".binds save-profile <预设名>(将现用的快捷键设置另存为预设)", ".binds list-profiles [<页数>](查看现有的预设)", ".binds remove-all(删除所有快捷键)", ".binds reset(恢复默认快捷键)", "需要设置多个[功能/指令]时,\n用 ';'符号分隔,", "预设保存路径'.minecraft/wurst/keybinds'.");
+		super("binds", "可以让你管理绑定的键位在聊天栏处", ".binds add <按键名> <功能名>(增加功能快捷键)",
+			".binds add <按键名> <指令>(增加指令快捷键)",
+			".binds remove <按键>(删除与某个键相关的快捷键)", ".binds list [<页数>](现用的快捷键的键位)",
+			".binds load-profile <预设名>(加载现有的某一个预设)",
+			".binds save-profile <预设名>(将现用的快捷键设置另存为预设)",
+			".binds list-profiles [<页数>](查看现有的预设)",
+			".binds remove-all(删除所有快捷键)", ".binds reset(恢复默认快捷键)",
+			"需要设置多个[功能/指令]时,\n用 ';'符号分隔,",
+			"预设保存路径'.minecraft/wurst/keybinds'.");
 	}
 	
 	@Override
@@ -195,8 +203,7 @@ public final class BindsCmd extends Command
 		}catch(JsonException e)
 		{
 			e.printStackTrace();
-			throw new CmdError(
-				"档案 '" + name + "' 是不正确的: " + e.getMessage());
+			throw new CmdError("档案 '" + name + "' 是不正确的: " + e.getMessage());
 			
 		}catch(IOException e)
 		{
@@ -253,8 +260,7 @@ public final class BindsCmd extends Command
 		int start = (page - 1) * 8;
 		int end = Math.min(page * 8, files.size());
 		
-		ChatUtils
-			.message("键位档案列表 (页数 " + page + "/" + pages + ")");
+		ChatUtils.message("键位档案列表 (页数 " + page + "/" + pages + ")");
 		for(int i = start; i < end; i++)
 			ChatUtils.message(files.get(i).getFileName().toString());
 	}

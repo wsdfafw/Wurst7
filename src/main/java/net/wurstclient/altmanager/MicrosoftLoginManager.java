@@ -125,15 +125,15 @@ public enum MicrosoftLoginManager
 			
 			MinecraftProfile mcProfile = getMinecraftProfile(mcAccessToken);
 			
-			System.out.println("登录成功，耗时"
-				+ (System.nanoTime() - startTime) / 1e6D + " ms");
+			System.out.println(
+				"登录成功，耗时" + (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			return mcProfile;
 			
 		}catch(LoginException e)
 		{
-			System.out.println("登录失败，耗时 "
-				+ (System.nanoTime() - startTime) / 1e6D + " ms");
+			System.out.println(
+				"登录失败，耗时 " + (System.nanoTime() - startTime) / 1e6D + " ms");
 			
 			e.printStackTrace();
 			throw e;
@@ -224,16 +224,14 @@ public enum MicrosoftLoginManager
 					"验证服务器出现问题 (代码 " + responseCode + ").");
 			
 			if(responseCode != 200)
-				throw new LoginException(
-					"获得令牌 " + responseCode + "从 urlPost.");
+				throw new LoginException("获得令牌 " + responseCode + "从 urlPost.");
 			
 			String decodedUrl = URLDecoder.decode(
 				connection.getURL().toString(), StandardCharsets.UTF_8.name());
 			
 			Matcher matcher = AUTHCODE_REGEX.matcher(decodedUrl);
 			if(!matcher.find())
-				throw new LoginException(
-					"并没有获得登录令牌. (错误的邮箱/密码?)");
+				throw new LoginException("并没有获得登录令牌. (错误的邮箱/密码?)");
 			
 			return matcher.group(1);
 			

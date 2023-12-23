@@ -44,7 +44,6 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
-import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockBreaker;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.RegionPos;
@@ -61,8 +60,10 @@ public final class ExcavatorHack extends Hack
 	private ExcavatorPathFinder pathFinder;
 	private PathProcessor processor;
 	
-	private final SliderSetting range = new SliderSetting("范围", 5.0, 2.0, 6.0, 0.05, SliderSetting.ValueDisplay.DECIMAL);
-    private final EnumSetting<Mode> mode = new EnumSetting("模式", (Enum[])Mode.values(), (Enum)Mode.FAST);
+	private final SliderSetting range = new SliderSetting("范围", 5.0, 2.0, 6.0,
+		0.05, SliderSetting.ValueDisplay.DECIMAL);
+	private final EnumSetting<Mode> mode =
+		new EnumSetting("模式", (Enum[])Mode.values(), (Enum)Mode.FAST);
 	
 	public ExcavatorHack()
 	{

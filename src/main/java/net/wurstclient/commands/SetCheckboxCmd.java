@@ -22,8 +22,7 @@ public final class SetCheckboxCmd extends Command
 {
 	public SetCheckboxCmd()
 	{
-		super("setcheckbox",
-			"通过指令更改功能复选框设置(子选项设置)",
+		super("setcheckbox", "通过指令更改功能复选框设置(子选项设置)",
 			".setcheckbox <feature> <setting> (on|off)",
 			".setcheckbox <feature> <setting> toggle");
 	}

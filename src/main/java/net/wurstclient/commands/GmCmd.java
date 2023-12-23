@@ -15,7 +15,8 @@ public final class GmCmd extends Command
 {
 	public GmCmd()
 	{
-		super("gm", "快捷使用/gamemode指令\n(因为.gm的字数比/gamemode更少,\n所以用.gm指令更加快捷)", ".gm <gamemode>");
+		super("gm", "快捷使用/gamemode指令\n(因为.gm的字数比/gamemode更少,\n所以用.gm指令更加快捷)",
+			".gm <gamemode>");
 	}
 	
 	@Override

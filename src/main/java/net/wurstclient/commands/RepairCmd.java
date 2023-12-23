@@ -20,8 +20,7 @@ public final class RepairCmd extends Command
 {
 	public RepairCmd()
 	{
-		super("repair", "修理持有的物品 仅创造模式",
-			".repair");
+		super("repair", "修理持有的物品 仅创造模式", ".repair");
 	}
 	
 	@Override

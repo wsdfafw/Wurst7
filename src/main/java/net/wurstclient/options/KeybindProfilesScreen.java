@@ -178,16 +178,15 @@ public final class KeybindProfilesScreen extends Screen
 		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(client.textRenderer,
-			"键位档案", width / 2, 12, 0xffffff);
+		context.drawCenteredTextWithShadow(client.textRenderer, "键位档案",
+			width / 2, 12, 0xffffff);
 		
 		for(Drawable drawable : drawables)
 			drawable.render(context, mouseX, mouseY, partialTicks);
 		
 		if(loadButton.isSelected() && !loadButton.active)
 			context.drawTooltip(textRenderer,
-				Arrays.asList(Text.literal("您必须先选择一个文件.")),
-				mouseX, mouseY);
+				Arrays.asList(Text.literal("您必须先选择一个文件.")), mouseX, mouseY);
 	}
 	
 	@Override
