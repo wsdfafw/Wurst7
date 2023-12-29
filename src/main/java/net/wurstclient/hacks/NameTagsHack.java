@@ -11,26 +11,50 @@ import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.SliderSetting;
 
 @SearchTags({"name tags"})
 public final class NameTagsHack extends Hack
 {
+	private final SliderSetting scale =
+		new SliderSetting("Scale", "How large the nametags should be.", 1, 0.05,
+			5, 0.05, SliderSetting.ValueDisplay.PERCENTAGE);
+	
 	private final CheckboxSetting unlimitedRange =
 		new CheckboxSetting("Unlimited range", "取消了名片的64个街区距离限制.", true);
 	
-	private final CheckboxSetting seeThrough = new CheckboxSetting("透视模式",
-		"在透明文本层上呈现姓名标签。这使得它们在墙后更容易阅读，但是在水和其他透明的东西后面就很难阅读了。", false);
+	private final CheckboxSetting seeThrough = new CheckboxSetting(
+		"See-through mode",
+		"Renders nametags on the see-through text layer. This makes them"
+			+ " easier to read behind walls, but causes some graphical glitches"
+			+ " with water and other transparent things.",
+		false);
 	
-	private final CheckboxSetting forceNametags =
-		new CheckboxSetting("强制名片", "强制所有玩家的姓名标签可见，甚至是你自己的.", false);
+	private final CheckboxSetting forceMobNametags = new CheckboxSetting(
+		"Always show named mobs", "Displays the nametags of named mobs even"
+			+ " when you are not looking directly at them.",
+		true);
+	
+	private final CheckboxSetting forcePlayerNametags =
+		new CheckboxSetting("Always show player names",
+			"Displays your own nametag as well as any player names that would"
+				+ " normally be disabled by scoreboard team settings.",
+			false);
 	
 	public NameTagsHack()
 	{
 		super("名字标签");
 		setCategory(Category.RENDER);
+		addSetting(scale);
 		addSetting(unlimitedRange);
 		addSetting(seeThrough);
-		addSetting(forceNametags);
+		addSetting(forceMobNametags);
+		addSetting(forcePlayerNametags);
+	}
+	
+	public float getScale()
+	{
+		return scale.getValueF();
 	}
 	
 	public boolean isUnlimitedRange()
@@ -43,11 +67,16 @@ public final class NameTagsHack extends Hack
 		return isEnabled() && seeThrough.isChecked();
 	}
 	
-	public boolean shouldForceNametags()
+	public boolean shouldForceMobNametags()
 	{
-		return isEnabled() && forceNametags.isChecked();
+		return isEnabled() && forceMobNametags.isChecked();
 	}
 	
-	// See LivingEntityRendererMixin and
-	// EntityRendererMixin.wurstRenderLabelIfPresent()
+	public boolean shouldForcePlayerNametags()
+	{
+		return isEnabled() && forcePlayerNametags.isChecked();
+	}
+	
+	// See EntityRendererMixin.wurstRenderLabelIfPresent(),
+	// LivingEntityRendererMixin, MobEntityRendererMixin
 }
