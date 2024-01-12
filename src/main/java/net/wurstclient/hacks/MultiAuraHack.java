@@ -13,11 +13,9 @@ import java.util.stream.Stream;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
-import net.wurstclient.WurstClient;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.AttackSpeedSliderSetting;
@@ -116,12 +114,9 @@ public final class MultiAuraHack extends Hack implements UpdateListener
 		// attack entities
 		for(Entity entity : entities)
 		{
-			RotationUtils.Rotation rotations = RotationUtils
-				.getNeededRotations(entity.getBoundingBox().getCenter());
-			
-			WurstClient.MC.player.networkHandler.sendPacket(
-				new PlayerMoveC2SPacket.LookAndOnGround(rotations.getYaw(),
-					rotations.getPitch(), MC.player.isOnGround()));
+			RotationUtils
+				.getNeededRotations(entity.getBoundingBox().getCenter())
+				.sendPlayerLookPacket();
 			
 			WURST.getHax().criticalsHack.doCritical();
 			MC.interactionManager.attackEntity(player, entity);
