@@ -56,3 +56,13 @@ jobs:
       with:
         name: Artifacts
         path: build/libs/Wurst-Client-*.jar
+    - name: 自动释放
+      if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+      uses: marvinpinto/action-automatic-releases@v1.2.1
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "jar"
+        prerelease: true
+        title: "自动构建版本"
+        files: |
+          build/libs/Wurst-Client-*.jar
