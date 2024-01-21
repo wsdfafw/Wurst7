@@ -31,8 +31,8 @@ public final class AutoFishRodSelector
 		"当没有钓竿时停止", "如果启用了AutoFish，当它用完了所有的钓鱼竿时，它会自动关闭。", false);
 	
 	private final CheckboxSetting stopWhenInvFull = new CheckboxSetting(
-		"Stop when inv full",
-		"If enabled, AutoFish will turn itself off when your inventory is full.",
+		"当背包满时停止",
+		"如果启用，当你的背包满时AutoFish将自动关闭",
 		false);
 	
 	private final AutoFishHack autoFish;
