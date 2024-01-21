@@ -15,15 +15,11 @@ public final class UpdateBooksSetting
 {
 	public UpdateBooksSetting()
 	{
-		super("Update books",
-			"Automatically updates the list of wanted books when a villager"
-				+ " has learned to sell one of them.\n\n"
-				+ "\u00a7lOff\u00a7r - Don't update the list.\n\n"
-				+ "\u00a7lRemove\u00a7r - Remove the book from the list so"
-				+ " that the next villager will learn a different book.\n\n"
-				+ "\u00a7lPrice\u00a7r - Update the maximum price for the book"
-				+ " so that the next villager has to sell it for a cheaper"
-				+ " price.",
+		super("更新书籍",
+			"当村民学会出售其中一本时，自动更新想要的书籍列表。\n\n"
+				+ "\u00a7l关闭\u00a7r - 不要更新列表。\n\n"
+				+ "\u00a7l移除\u00a7r - 从列表中移除这本书籍，以便下一个村民将会学习不同的书籍。\n\n"
+				+ "\u00a7l价格\u00a7r - 更新这本书籍的最大售价，以便下一个村民必须以更低的价格出售。"),
 			UpdateBooks.values(), UpdateBooks.REMOVE);
 	}
 	
