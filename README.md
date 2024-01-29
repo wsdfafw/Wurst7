@@ -8,22 +8,17 @@
 
 （假设您正在使用已经安装了 [Eclipse](https://www.eclipse.org/downloads/) 和 [Java Development Kit 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot) 的 Windows 操作系统。）
 
-1. 在 PowerShell 中运行以下两个命令：
+1. Run this command in PowerShell:
 
 ```
-./gradlew.bat genSources
-./gradlew.bat eclipse
+./gradlew.bat genSources eclipse --no-daemon
 ```
 
 2. 在 Eclipse 中，转到 `导入...` > `从现有项目中导入` 并选择此项目。
 
 ## 贡献
 
-如果您想提供帮助但不确定该做什么，可以查看我们的 [规划板](https://github.com/orgs/Wurst-Imperium/projects/5/views/1) 或 [帮助需求列表](https://github.com/Wurst-Imperium/Wurst7/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)。当然，您可以提供任何您喜欢的内容，但这些问题尤其有用。
-
-如果您要贡献多个无关的功能，请为每个功能创建单独的拉取请求。将所有内容压缩到一个巨大的拉取请求中会使我很难添加您的功能，因为我必须逐个测试、验证并添加它们。
-
-感谢您的理解 - 再次感谢您抽出时间来贡献！！
+Pull requests are welcome, but please make sure to read the [contributing guidelines](CONTRIBUTING.md) first.
 
 ## 翻译
 
