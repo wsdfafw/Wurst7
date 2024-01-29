@@ -1,10 +1,10 @@
-<!--NOTE: Please make sure to read the contributing guidelines before submitting your pull request. There is a high chance your PR will be rejected or take a long time to be merged if you don't follow the guidelines. Thank you for your understanding - and thanks for taking the time to contribute!!-->
+<!--注意：请确保在提交拉取请求之前阅读贡献指南。如果您不遵循指南，您的 PR 很有可能会被拒绝或需要很长时间才能合并。感谢您的理解，并感谢您花时间做出贡献！-->
 
-## Description
-> What have you added and what does it do? (Alternatively, what have you fixed and how does it work?)
+## 描述
+> 您添加了什么内容？它有什么功能？（或者，您修复了什么问题以及它是如何工作的？）
 
-## Testing
-> How have you tested your changes? Any testing tips for the reviewer?
+## 测试
+> 您是如何测试您的更改的？对审阅者有何测试提示？
 
-## References
-> List any related issues, forum posts, videos and such here.
+## 参考资料
+> 在此处列出相关的议题、论坛帖子、视频等。
