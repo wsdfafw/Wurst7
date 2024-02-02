@@ -21,6 +21,7 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.hacks.autofish.AutoFishDebugDraw;
 import net.wurstclient.hacks.autofish.AutoFishRodSelector;
+import net.wurstclient.hacks.autofish.FishingSpotManager;
 import net.wurstclient.hacks.autofish.ShallowWaterWarningCheckbox;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
@@ -53,8 +54,9 @@ public final class AutoFishHack extends Hack
 	private final ShallowWaterWarningCheckbox shallowWaterWarning =
 		new ShallowWaterWarningCheckbox();
 	
+	private final FishingSpotManager fishingSpots = new FishingSpotManager();
 	private final AutoFishDebugDraw debugDraw =
-		new AutoFishDebugDraw(validRange);
+		new AutoFishDebugDraw(validRange, fishingSpots);
 	private final AutoFishRodSelector rodSelector =
 		new AutoFishRodSelector(this);
 	
@@ -66,7 +68,6 @@ public final class AutoFishHack extends Hack
 	{
 		super("自动钓鱼");
 		setCategory(Category.OTHER);
-		
 		addSetting(validRange);
 		addSetting(catchDelay);
 		addSetting(retryDelay);
@@ -74,6 +75,7 @@ public final class AutoFishHack extends Hack
 		debugDraw.getSettings().forEach(this::addSetting);
 		rodSelector.getSettings().forEach(this::addSetting);
 		addSetting(shallowWaterWarning);
+		fishingSpots.getSettings().forEach(this::addSetting);
 	}
 	
 	@Override
@@ -93,7 +95,11 @@ public final class AutoFishHack extends Hack
 		biteDetected = false;
 		rodSelector.reset();
 		debugDraw.reset();
+		fishingSpots.reset();
 		shallowWaterWarning.reset();
+		
+		WURST.getHax().antiAfkHack.setEnabled(false);
+		WURST.getHax().aimAssistHack.setEnabled(false);
 		
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(PacketInputListener.class, this);
@@ -127,9 +133,12 @@ public final class AutoFishHack extends Hack
 			if(castRodTimer > 0)
 				return;
 			
+			reelInTimer = 20 * patience.getValueI();
+			if(!fishingSpots.onCast())
+				return;
+			
 			MC.doItemUse();
 			castRodTimer = retryDelay.getValueI();
-			reelInTimer = 20 * patience.getValueI();
 			return;
 		}
 		
@@ -138,6 +147,7 @@ public final class AutoFishHack extends Hack
 		{
 			shallowWaterWarning.checkWaterType();
 			reelInTimer = catchDelay.getValueI();
+			fishingSpots.onBite(MC.player.fishHook);
 			biteDetected = false;
 			
 			// also reel in if an entity was hooked

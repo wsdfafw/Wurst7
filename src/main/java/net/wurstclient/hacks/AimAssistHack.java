@@ -95,7 +95,8 @@ public final class AimAssistHack extends Hack
 	@Override
 	protected void onEnable()
 	{
-		// disable other killauras
+		// disable incompatible hacks
+		WURST.getHax().autoFishHack.setEnabled(false);
 		WURST.getHax().clickAuraHack.setEnabled(false);
 		WURST.getHax().crystalAuraHack.setEnabled(false);
 		WURST.getHax().fightBotHack.setEnabled(false);
