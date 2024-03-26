@@ -11,7 +11,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@main
+      - uses: actions/stale@v9
         with:
           stale-issue-message: |
             这个问题已经开放了一段时间，最近没有任何活动。如果这个问题对您仍然重要，请在接下来的7天内添加一条评论以保持其开放状态。否则，为了释放时间用于其他任务，这个问题将会被自动关闭。
@@ -31,7 +31,9 @@ jobs:
             - 它们存在无法解决的错误或冲突
           days-before-stale: 60
           days-before-close: 7
+          exempt-issue-labels: "status:never-stale"
+          exempt-pr-labels: "status:never-stale"
           stale-issue-label: "status:stale"
           stale-pr-label: "status:stale"
-          operations-per-run: 50
+          operations-per-run: 200
           enable-statistics: true
