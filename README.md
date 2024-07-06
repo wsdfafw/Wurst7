@@ -6,7 +6,7 @@
 
 ## 设置（供开发者使用）
 
-（假设您正在使用已经安装了 [Eclipse](https://www.eclipse.org/downloads/) 和 [Java Development Kit 17](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot) 的 Windows 操作系统。）
+（假设您正在使用已经安装了 [Eclipse](https://www.eclipse.org/downloads/) 和 [Java Development Kit 21](https://adoptium.net/?variant=openjdk21&jvmVariant=hotspot) 的 Windows 操作系统。）
 
 1. Run this command in PowerShell:
 

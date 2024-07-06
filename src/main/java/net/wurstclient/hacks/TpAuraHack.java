@@ -25,6 +25,8 @@ import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.PauseAttackOnContainersSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.EntityUtils;
 import net.wurstclient.util.RotationUtils;
@@ -44,6 +46,9 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		"§l[距离]§r:距离最近的实体\r\n§l[角度]§r:§b[A]§r值最小的实体\n注:此处译者为方便解释而设了一个变量\n§b[A]§r值:你的头部转动到面向某实体所需的旋转角度\n§l[生命值]§r生命值最低的实体",
 		Priority.values(), Priority.ANGLE);
 	
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How TP-Aura should swing your hand when attacking.", SwingHand.CLIENT);
+	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);
 	
@@ -58,13 +63,14 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		addSetting(range);
 		addSetting(speed);
 		addSetting(priority);
+		addSetting(swingHand);
 		addSetting(pauseOnContainers);
 		
 		entityFilters.forEach(this::addSetting);
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other killauras
 		WURST.getHax().aimAssistHack.setEnabled(false);
@@ -82,7 +88,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
@@ -127,7 +133,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		
 		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(player, entity);
-		player.swingHand(Hand.MAIN_HAND);
+		swingHand.swing(Hand.MAIN_HAND);
 		speed.resetTimer();
 	}
 	

@@ -35,6 +35,8 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.FacingSetting.Facing;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.settings.filterlists.CrystalAuraFilterList;
 import net.wurstclient.settings.filterlists.EntityFilterList;
 import net.wurstclient.util.BlockUtils;
@@ -61,6 +63,11 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野",
 		"确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.", false);
 	
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		"How CrystalAura should swing your hand when placing and detonating"
+			+ " end crystals.",
+		SwingHand.CLIENT);
+	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
 		"从哪拿物品", "应该从哪拿末影水晶.", TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
@@ -76,13 +83,14 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		addSetting(autoPlace);
 		addSetting(faceBlocks);
 		addSetting(checkLOS);
+		addSetting(swingHand);
 		addSetting(takeItemsFrom);
 		
 		entityFilters.forEach(this::addSetting);
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		// disable other killauras
 		WURST.getHax().aimAssistHack.setEnabled(false);
@@ -99,7 +107,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
@@ -147,7 +155,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		}
 		
 		if(shouldSwing)
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		return newCrystals;
 	}
@@ -161,7 +169,7 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 		}
 		
 		if(!crystals.isEmpty())
-			MC.player.swingHand(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 	}
 	
 	private boolean placeCrystal(BlockPos pos)
