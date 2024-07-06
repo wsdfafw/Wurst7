@@ -40,13 +40,17 @@ public final class BonemealAuraHack extends Hack implements PostMotionListener
 	private final SliderSetting range =
 		new SliderSetting("距离", 4.25, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode =
-		new EnumSetting<>("模式", "§l快速§r 模式可以同时使用骨粉\n多次对多个方块.\n§l合法§r 模式可以绕过反作弊",
-			Mode.values(), Mode.FAST);
+	private final EnumSetting<Mode> mode = new EnumSetting<>("模式",
+		"\u00a7lFast\u00a7r mode can use bone meal on multiple blocks at once.\n"
+			+ "\u00a7lLegit\u00a7r mode can bypass NoCheat+.",
+		Mode.values(), Mode.FAST);
 	
 	private final EnumSetting<AutomationLevel> automationLevel =
-		new EnumSetting<>("自动的模式",
-			"自动骨粉应该要取决于哪种模式.\n§l右键§r 模式自动右键你手上的骨粉\n看个人喜好用.\n§l快捷栏§r 模式在你的快捷栏上选择骨粉并\n用在农作物上.\n§l背包§r 在你的背包里找到骨粉,\n并将其移动到快捷栏上使用他",
+		new EnumSetting<>("自动模式",
+			"How much of the bone-mealing process to automate.\n"
+				+ "\u00a7lRight Click\u00a7r simply right clicks plants with the bone meal in your hand.\n"
+				+ "\u00a7lHotbar\u00a7r selects bone meal in your hotbar and then uses it on plants.\n"
+				+ "\u00a7lInventory\u00a7r finds bone meal in your inventory, moves it to your hotbar and then uses it.",
 			AutomationLevel.values(), AutomationLevel.RIGHT_CLICK);
 	
 	private final CheckboxSetting saplings =
