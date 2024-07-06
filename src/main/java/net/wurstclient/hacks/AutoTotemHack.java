@@ -9,7 +9,6 @@ package net.wurstclient.hacks;
 
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.wurstclient.Category;
@@ -20,6 +19,7 @@ import net.wurstclient.mixinterface.IClientPlayerInteractionManager;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.util.InventoryUtils;
 
 @SearchTags({"auto totem", "offhand", "off-hand"})
 public final class AutoTotemHack extends Hack implements UpdateListener
@@ -30,9 +30,11 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	private final SliderSetting delay = new SliderSetting("延迟",
 		"装备下一个图腾前需要等待的时间.", 0, 0, 20, 1, ValueDisplay.INTEGER);
 	
-	private final SliderSetting health = new SliderSetting("生命",
-		"有效地禁用自动死亡，直到你的生命值达到或低于这个值.\n" + "0 = always active", 0, 0, 10, 0.5,
-		ValueDisplay.DECIMAL.withSuffix(" hearts").withLabel(0, "ignore"));
+	private final SliderSetting health = new SliderSetting("Health",
+		"Won't equip a totem until your health reaches this value or falls"
+			+ " below it.\n" + "0 = always active",
+		0, 0, 10, 0.5, ValueDisplay.DECIMAL.withSuffix(" hearts")
+			.withLabel(1, "1 heart").withLabel(0, "ignore"));
 	
 	private int nextTickSlot;
 	private int totems;
@@ -54,18 +56,14 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 		if(!showCounter.isChecked())
 			return getName();
 		
-		switch(totems)
-		{
-			case 1:
+		if(totems == 1)
 			return getName() + " [1 个图腾]";
-			
-			default:
-			return getName() + " [" + totems + " 图腾]";
-		}
+		
+		return getName() + " [" + totems + " 图腾]";
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		nextTickSlot = -1;
 		totems = 0;
@@ -75,7 +73,7 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 	}
@@ -85,13 +83,10 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 	{
 		finishMovingTotem();
 		
-		PlayerInventory inventory = MC.player.getInventory();
-		int nextTotemSlot = searchForTotems(inventory);
+		int nextTotemSlot = searchForTotems();
 		
-		ItemStack offhandStack = inventory.getStack(40);
-		if(isTotem(offhandStack))
+		if(isTotem(MC.player.getOffHandStack()))
 		{
-			totems++;
 			wasTotemInOffhand = true;
 			return;
 		}
@@ -102,15 +97,16 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 			wasTotemInOffhand = false;
 		}
 		
+		if(nextTotemSlot == -1)
+			return;
+		
 		float healthF = health.getValueF();
 		if(healthF > 0 && MC.player.getHealth() > healthF * 2F)
 			return;
 		
+		// don't move items while a container is open
 		if(MC.currentScreen instanceof HandledScreen
 			&& !(MC.currentScreen instanceof AbstractInventoryScreen))
-			return;
-		
-		if(nextTotemSlot == -1)
 			return;
 		
 		if(timer > 0)
@@ -119,19 +115,19 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 			return;
 		}
 		
-		moveTotem(nextTotemSlot, offhandStack);
+		moveToOffhand(nextTotemSlot);
 	}
 	
-	private void moveTotem(int nextTotemSlot, ItemStack offhandStack)
+	private void moveToOffhand(int itemSlot)
 	{
-		boolean offhandEmpty = offhandStack.isEmpty();
+		boolean offhandEmpty = MC.player.getOffHandStack().isEmpty();
 		
 		IClientPlayerInteractionManager im = IMC.getInteractionManager();
-		im.windowClick_PICKUP(nextTotemSlot);
+		im.windowClick_PICKUP(itemSlot);
 		im.windowClick_PICKUP(45);
 		
 		if(!offhandEmpty)
-			nextTickSlot = nextTotemSlot;
+			nextTickSlot = itemSlot;
 	}
 	
 	private void finishMovingTotem()
@@ -144,27 +140,18 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 		nextTickSlot = -1;
 	}
 	
-	private int searchForTotems(PlayerInventory inventory)
+	private int searchForTotems()
 	{
-		totems = 0;
-		int nextTotemSlot = -1;
+		totems = InventoryUtils.count(this::isTotem, 40, true);
+		if(totems <= 0)
+			return -1;
 		
-		for(int slot = 0; slot <= 36; slot++)
-		{
-			if(!isTotem(inventory.getStack(slot)))
-				continue;
-			
-			totems++;
-			
-			if(nextTotemSlot == -1)
-				nextTotemSlot = slot < 9 ? slot + 36 : slot;
-		}
-		
-		return nextTotemSlot;
+		int totemSlot = InventoryUtils.indexOf(this::isTotem, 40);
+		return InventoryUtils.toNetworkSlot(totemSlot);
 	}
 	
 	private boolean isTotem(ItemStack stack)
 	{
-		return stack.getItem() == Items.TOTEM_OF_UNDYING;
+		return stack.isOf(Items.TOTEM_OF_UNDYING);
 	}
 }

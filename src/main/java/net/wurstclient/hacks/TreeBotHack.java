@@ -65,13 +65,7 @@ public final class TreeBotHack extends Hack
 			+ " can be disorienting to look at.");
 	
 	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How TreeBot should swing your hand when breaking logs and leaves.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't swing your hand at all. Will be detected"
-			+ " by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Swing your hand on the server-side,"
-			+ " without playing the animation on the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Swing your hand on the client-side."
-			+ " This is the most legit option.");
+		"How TreeBot should swing your hand when breaking logs and leaves.");
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;
@@ -106,7 +100,7 @@ public final class TreeBotHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		treeFinder = new TreeFinder();
 		
@@ -115,7 +109,7 @@ public final class TreeBotHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(RenderListener.class, this);
@@ -249,7 +243,7 @@ public final class TreeBotHack extends Hack
 		// damage block and swing hand
 		if(MC.interactionManager.updateBlockBreakingProgress(pos,
 			params.side()))
-			swingHand.getSelected().swing(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		// update progress
 		overlay.updateProgress();

@@ -9,6 +9,7 @@ package net.wurstclient.hacks;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -16,17 +17,21 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -65,10 +70,11 @@ public final class AutoLibrarianHack extends Hack
 		"想要的附魔书",
 		"你想让你的村民卖掉的魔法书的清单.\n\n" + "一旦自动图书馆学会出售这些书，它将停止训练当前的村民.\n\n"
 			+ "你也可以为每本书设定一个最高价格，以防你已经有一个村民\n在卖这本书，但是你想要一个更便宜的价格.",
-		"minecraft:depth_strider", "minecraft:efficiency",
-		"minecraft:feather_falling", "minecraft:fortune", "minecraft:looting",
-		"minecraft:mending", "minecraft:protection", "minecraft:respiration",
-		"minecraft:sharpness", "minecraft:silk_touch", "minecraft:unbreaking");
+		"minecraft:depth_strider;3", "minecraft:efficiency;5",
+		"minecraft:feather_falling;4", "minecraft:fortune;3",
+		"minecraft:looting;3", "minecraft:mending;1", "minecraft:protection;4",
+		"minecraft:respiration;3", "minecraft:sharpness;5",
+		"minecraft:silk_touch;1", "minecraft:unbreaking;3");
 	
 	private final CheckboxSetting lockInTrade = new CheckboxSetting("锁定贸易",
 		"一旦它学会出售你想要的书，它就会自动从村民那里买东西。这可以防止村民以后改变交易条件.\n\n"
@@ -85,14 +91,13 @@ public final class AutoLibrarianHack extends Hack
 			+ "\u00a7l服务器端\u00a7r - 在服务器端面对村民，同时仍可在客户端自由移动摄像头。\n\n"
 			+ "\u00a7l客户端\u00a7r - 通过在客户端移动摄像头来面对村民。这是最合法的选项，但可能会让人感到迷失。");
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"如何在与村民和工作站互动时挥动手臂.\n\n" + "\u00a7lOff\u00a7r - 完全不挥动手臂。会被反作弊插件检测到.\n\n"
-			+ "\u00a7lServer-side\u00a7r - 在服务器端挥动手臂，而在客户端不播放动画.\n\n"
-			+ "\u00a7lClient-side\u00a7r - 在客户端挥动手臂。这是最合法的选项.");
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting("How to swing your hand when interacting with the"
+			+ " villager and job site.");
 	
 	private final SliderSetting repairMode = new SliderSetting("修复模式",
 		"当你的斧头的耐久度达到设定的临界值时，防止自动图书馆员使用你的斧头，因此你可以在它坏掉之前修理它.\n"
-			+ "可以在0(关)到100之间调节.",
+			+ "Can be adjusted from 0 (off) to 100 remaining uses.",
 		1, 0, 100, 1, ValueDisplay.INTEGER.withLabel(0, "off"));
 	
 	private final OverlayRenderer overlay = new OverlayRenderer();
@@ -274,7 +279,7 @@ public final class AutoLibrarianHack extends Hack
 		// damage block and swing hand
 		if(MC.interactionManager.updateBlockBreakingProgress(jobSite,
 			params.side()))
-			swingHand.getSelected().swing(Hand.MAIN_HAND);
+			swingHand.swing(Hand.MAIN_HAND);
 		
 		// update progress
 		overlay.updateProgress();
@@ -314,7 +319,8 @@ public final class AutoLibrarianHack extends Hack
 			? Hand.MAIN_HAND : Hand.OFF_HAND;
 		
 		// sneak-place to avoid activating trapdoors/chests/etc.
-		MC.options.sneakKey.setPressed(true);
+		IKeyBinding sneakKey = IKeyBinding.get(MC.options.sneakKey);
+		sneakKey.setPressed(true);
 		if(!MC.player.isSneaking())
 			return;
 		
@@ -322,7 +328,7 @@ public final class AutoLibrarianHack extends Hack
 		BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(jobSite);
 		if(params == null)
 		{
-			((IKeyBinding)MC.options.sneakKey).resetPressedState();
+			sneakKey.resetPressedState();
 			return;
 		}
 		
@@ -335,10 +341,10 @@ public final class AutoLibrarianHack extends Hack
 		
 		// swing hand
 		if(result.isAccepted() && result.shouldSwingHand())
-			swingHand.getSelected().swing(hand);
+			swingHand.swing(hand);
 		
 		// reset sneak
-		((IKeyBinding)MC.options.sneakKey).resetPressedState();
+		sneakKey.resetPressedState();
 	}
 	
 	private void openTradeScreen()
@@ -376,7 +382,7 @@ public final class AutoLibrarianHack extends Hack
 		
 		// swing hand
 		if(actionResult.isAccepted() && actionResult.shouldSwingHand())
-			swingHand.getSelected().swing(hand);
+			swingHand.swing(hand);
 		
 		// set cooldown
 		MC.itemUseCooldown = 4;
@@ -396,20 +402,24 @@ public final class AutoLibrarianHack extends Hack
 			if(!(stack.getItem() instanceof EnchantedBookItem))
 				continue;
 			
-			NbtList enchantmentNbt = EnchantedBookItem.getEnchantmentNbt(stack);
-			if(enchantmentNbt.isEmpty())
+			Set<Entry<RegistryEntry<Enchantment>>> enchantmentLevelMap =
+				EnchantmentHelper.getEnchantments(stack)
+					.getEnchantmentEntries();
+			if(enchantmentLevelMap.isEmpty())
 				continue;
 			
-			NbtList bookNbt = EnchantedBookItem.getEnchantmentNbt(stack);
-			String enchantment = bookNbt.getCompound(0).getString("id");
-			int level = bookNbt.getCompound(0).getInt("lvl");
-			int price = tradeOffer.getAdjustedFirstBuyItem().getCount();
+			Object2IntMap.Entry<RegistryEntry<Enchantment>> firstEntry =
+				enchantmentLevelMap.stream().findFirst().orElseThrow();
+			
+			String enchantment = firstEntry.getKey().getIdAsString();
+			int level = firstEntry.getIntValue();
+			int price = tradeOffer.getDisplayedFirstBuyItem().getCount();
 			BookOffer bookOffer = new BookOffer(enchantment, level, price);
 			
-			if(!bookOffer.isValid())
+			if(!bookOffer.isFullyValid())
 			{
 				System.out.println("Found invalid enchanted book offer.\n"
-					+ "NBT data: " + stack.getNbt());
+					+ "Component data: " + enchantmentLevelMap);
 				continue;
 			}
 			

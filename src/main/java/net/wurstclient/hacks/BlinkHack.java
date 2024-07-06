@@ -49,7 +49,7 @@ public final class BlinkHack extends Hack
 	}
 	
 	@Override
-	public void onEnable()
+	protected void onEnable()
 	{
 		fakePlayer = new FakePlayerEntity();
 		
@@ -58,7 +58,7 @@ public final class BlinkHack extends Hack
 	}
 	
 	@Override
-	public void onDisable()
+	protected void onDisable()
 	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(PacketOutputListener.class, this);
