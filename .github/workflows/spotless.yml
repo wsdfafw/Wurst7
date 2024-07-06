@@ -30,7 +30,7 @@ jobs:
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
         git pull origin spotless
-        git add src/main/java/net/wurstclient/hacks/BonemealAuraHack.java
+        git add src/main/java/net/wurstclient/hacks/TillauraHack.java
         git commit -m "$(date '+%Y-%m-%d %H:%M:%S') Gradle wrapper upgrade"
     - name: Push
       uses:  ad-m/github-push-action@master
