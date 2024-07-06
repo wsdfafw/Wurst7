@@ -42,7 +42,7 @@ jobs:
     - name: 设置Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Generate and submit dependency graph
+    - name: 生成并提交依赖关系图
       if: ${{ github.event_name == 'push' }}
       uses: gradle/actions/dependency-submission@v3
       with:
