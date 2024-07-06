@@ -26,12 +26,13 @@ public final class FilterGolemsSetting extends EntityFilterCheckbox
 	
 	public static FilterGolemsSetting genericCombat(boolean checked)
 	{
-		return new FilterGolemsSetting("不会攻击铁傀儡 雪傀儡 和 潜影盒.", checked);
+		return new FilterGolemsSetting(
+			"description.wurst.setting.generic.filter_golems_combat", checked);
 	}
 	
 	public static FilterGolemsSetting genericVision(boolean checked)
 	{
 		return new FilterGolemsSetting(
-			"Won't show iron golems and snow golems.", checked);
+			"description.wurst.setting.generic.filter_golems_vision", checked);
 	}
 }

@@ -37,20 +37,20 @@ public final class AimAssistHack extends Hack
 	private final SliderSetting rotationSpeed = new SliderSetting("抬前轮速度", 600,
 		10, 3600, 10, ValueDisplay.DEGREES.withSuffix("/s"));
 	
-	private final SliderSetting fov = new SliderSetting("FOV",
-		"视野 - 一个实体在被忽略之前离你的十字准线有多远.\n" + "360\u00b0 = 瞄准你周围的实体.", 120, 30, 360,
-		10, ValueDisplay.DEGREES);
+	private final SliderSetting fov =
+		new SliderSetting("FOV", "description.wurst.setting.aimassist.fov", 120,
+			30, 360, 10, ValueDisplay.DEGREES);
 	
 	private final AimAtSetting aimAt = new AimAtSetting(
 		"What point in the target's hitbox AimAssist should aim at.");
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight", "Won't aim at entities behind blocks.", true);
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("Check line of sight",
+			"description.wurst.setting.aimassist.check_line_of_sight", true);
 	
-	private final CheckboxSetting aimWhileBlocking = new CheckboxSetting(
-		"Aim while blocking", "Keeps aiming at entities while you're blocking"
-			+ " with a shield or using items.",
-		false);
+	private final CheckboxSetting aimWhileBlocking =
+		new CheckboxSetting("Aim while blocking",
+			"description.wurst.setting.aimassist.aim_while_blocking", false);
 	
 	private final EntityFilterList entityFilters =
 		new EntityFilterList(FilterPlayersSetting.genericCombat(false),

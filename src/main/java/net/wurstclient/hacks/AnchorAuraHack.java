@@ -49,19 +49,19 @@ import net.wurstclient.util.RotationUtils;
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", "", 6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", "description.wurst.setting.anchoraura.range",
+			6, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置的锚",
-		"When enabled, AnchorAura will automatically place anchors near valid entities.\n"
-			+ "When disabled, AnchorAura will only charge and detonate manually placed anchors.",
-		true);
+	private final CheckboxSetting autoPlace =
+		new CheckboxSetting("自动放置的锚",
+			"description.wurst.setting.anchoraura.auto-place_anchors", true);
 	
 	private final FacingSetting faceBlocks =
 		FacingSetting.withPacketSpam("面朝锚点",
-			"无论是否应该在放置和右键点击重生锚时使 AnchorAura 面向正确方向.\n\n" + "速度较慢，但可以帮助防作弊插件.",
-			Facing.OFF);
+			"description.wurst.setting.anchoraura.face_anchors", Facing.OFF);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
+	private final CheckboxSetting checkLOS = new CheckboxSetting(
+		"检查视线",
 		"Ensures that you don't reach through blocks when placing or right-clicking respawn anchors.\n\n"
 			+ "Slower but can help with anti-cheat plugins.",
 		false);
@@ -71,9 +71,10 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 			+ " detonating respawn anchors.",
 		SwingHand.CLIENT);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"从下列物品中提取", "Where to look for respawn anchors and glowstone.",
-		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
+		new EnumSetting<>("从下列物品中提取",
+			"description.wurst.setting.anchoraura.take_items_from",
+			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		AnchorAuraFilterList.create();
