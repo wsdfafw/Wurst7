@@ -53,11 +53,10 @@ public final class BonemealAuraHack extends Hack implements PostMotionListener
 				+ "\u00a7lInventory\u00a7r finds bone meal in your inventory, moves it to your hotbar and then uses it.",
 			AutomationLevel.values(), AutomationLevel.RIGHT_CLICK);
 	
-	private final CheckboxSetting saplings =
-		new CheckboxSetting("树苗", true);
+	private final CheckboxSetting saplings = new CheckboxSetting("树苗", true);
 	
-	private final CheckboxSetting crops = new CheckboxSetting("农作物",
-		"小麦、胡萝卜、土豆和甜菜根.", true);
+	private final CheckboxSetting crops =
+		new CheckboxSetting("农作物", "小麦、胡萝卜、土豆和甜菜根.", true);
 	
 	private final CheckboxSetting stems =
 		new CheckboxSetting("有茎类", "Pumpkins and melons.", true);
