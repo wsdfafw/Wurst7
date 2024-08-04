@@ -22,13 +22,13 @@ Pull requests are welcome, but please make sure to read the [contributing guidel
 
 ## 翻译
 
-我们有一个用于翻译的 [Crowdin 项目](https://crowdin.com/project/wurst7)。您也可以在 GitHub 上提交翻译，但优先使用 Crowdin，因为它更容易解决问题。
+The preferred way to submit translations is through a Pull Request here on GitHub.
 
 要在游戏中启用翻译，请转到 Wurst 选项 > 翻译 > 打开。
 
 功能（作弊/命令等）的名称应始终保持为英文。这确保每个人都可以使用相同的命令、快捷键等，无论其语言设置如何。这也使与使用不同语言的 Wurst 用户进行沟通更加容易。
 
-翻译文件位于 [此文件夹](https://github.com/Wurst-Imperium/Wurst7/tree/master/src/main/resources/assets/wurst/lang)，以防您需要它们。
+翻译文件位于 [此文件夹](https://github.com/Wurst-Imperium/Wurst7/tree/master/src/main/resources/assets/wurst/translations)，以防您需要它们。
 
 ## 许可证
 
