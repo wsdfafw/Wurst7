@@ -49,19 +49,17 @@ import net.wurstclient.util.RotationUtils;
 public final class AnchorAuraHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
-		new SliderSetting("范围", "description.wurst.setting.anchoraura.range",
-			6, 1, 6, 0.05, ValueDisplay.DECIMAL);
+		new SliderSetting("范围", "description.wurst.setting.anchoraura.range", 6,
+			1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting autoPlace =
-		new CheckboxSetting("自动放置的锚",
-			"description.wurst.setting.anchoraura.auto-place_anchors", true);
+	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置的锚",
+		"description.wurst.setting.anchoraura.auto-place_anchors", true);
 	
 	private final FacingSetting faceBlocks =
 		FacingSetting.withPacketSpam("面朝锚点",
 			"description.wurst.setting.anchoraura.face_anchors", Facing.OFF);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"检查视线",
+	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
 		"Ensures that you don't reach through blocks when placing or right-clicking respawn anchors.\n\n"
 			+ "Slower but can help with anti-cheat plugins.",
 		false);
@@ -71,10 +69,9 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 			+ " detonating respawn anchors.",
 		SwingHand.CLIENT);
 	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
-		new EnumSetting<>("从下列物品中提取",
-			"description.wurst.setting.anchoraura.take_items_from",
-			TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
+		"从下列物品中提取", "description.wurst.setting.anchoraura.take_items_from",
+		TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);
 	
 	private final EntityFilterList entityFilters =
 		AnchorAuraFilterList.create();
