@@ -13,7 +13,6 @@ on:
       - '**.json'
       - 'gradle**'
       - 'build.gradle'
-  # Makes it possible to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -53,7 +52,9 @@ jobs:
     - name: 使用Spotless修复代码
       id: spotless_Apply
       run: ./gradlew :spotlessApply
-      
+      env:
+        SPOTLESS_SKIP: ${{ github.event_name == 'pull_request' }}
+
     - name: 使用Spotless检查代码风格
       id: spotless_check
       run: ./gradlew spotlessCheck
@@ -75,6 +76,7 @@ jobs:
       with:
         name: Artifacts
         path: build/libs/Wurst-Client-*.jar
+
     - name: 自动释放
       if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
       uses: marvinpinto/action-automatic-releases@v1.2.1
