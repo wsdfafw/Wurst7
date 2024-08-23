@@ -185,7 +185,6 @@ public final class KillauraHack extends Hack
 		if(target == null)
 			return;
 		
-		WURST.getHax().criticalsHack.doCritical();
 		MC.interactionManager.attackEntity(MC.player, target);
 		swingHand.swing(Hand.MAIN_HAND);
 		
