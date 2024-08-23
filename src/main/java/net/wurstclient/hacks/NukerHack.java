@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,10 +26,11 @@ import net.wurstclient.events.LeftClickListener;
 import net.wurstclient.events.RenderListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.BlockListSetting;
 import net.wurstclient.settings.BlockSetting;
 import net.wurstclient.settings.CheckboxSetting;
-import net.wurstclient.settings.EnumSetting;
+import net.wurstclient.settings.NukerModeSetting;
+import net.wurstclient.settings.NukerModeSetting.NukerMode;
+import net.wurstclient.settings.NukerMultiIdListSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockBreaker;
@@ -46,13 +44,7 @@ public final class NukerHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
-		"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n"
-			+ "\u00a7lID\u00a7r mode only breaks the selected block type. Left-click on a block to select it.\n"
-			+ "\u00a7lMultiID\u00a7r mode only breaks the block types in your MultiID List.\n"
-			+ "\u00a7lFlat\u00a7r mode flattens the area around you, but won't dig down.\n"
-			+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be destroyed instantly (e.g. tall grass).",
-		Mode.values(), Mode.NORMAL);
+	private final NukerModeSetting mode = new NukerModeSetting();
 	
 	private final BlockSetting id =
 		new BlockSetting("ID", "The type of block to break in ID mode.\n"
@@ -62,22 +54,11 @@ public final class NukerHack extends Hack
 		"Prevents changing the ID by clicking on blocks or restarting Nuker.",
 		false);
 	
-	private final BlockListSetting multiIdList = new BlockListSetting(
-		"MultiID List", "The types of blocks to break in MultiID mode.",
-		"minecraft:ancient_debris", "minecraft:bone_block",
-		"minecraft:coal_ore", "minecraft:copper_ore",
-		"minecraft:deepslate_coal_ore", "minecraft:deepslate_copper_ore",
-		"minecraft:deepslate_diamond_ore", "minecraft:deepslate_emerald_ore",
-		"minecraft:deepslate_gold_ore", "minecraft:deepslate_iron_ore",
-		"minecraft:deepslate_lapis_ore", "minecraft:deepslate_redstone_ore",
-		"minecraft:diamond_ore", "minecraft:emerald_ore", "minecraft:glowstone",
-		"minecraft:gold_ore", "minecraft:iron_ore", "minecraft:lapis_ore",
-		"minecraft:nether_gold_ore", "minecraft:nether_quartz_ore",
-		"minecraft:raw_copper_block", "minecraft:raw_gold_block",
-		"minecraft:raw_iron_block", "minecraft:redstone_ore");
+	private final NukerMultiIdListSetting multiIdList =
+		new NukerMultiIdListSetting();
 	
 	private final ArrayDeque<Set<BlockPos>> prevBlocks = new ArrayDeque<>();
-	private final OverlayRenderer renderer = new OverlayRenderer();
+	private final OverlayRenderer overlay = new OverlayRenderer();
 	private BlockPos currentBlock;
 	
 	public NukerHack()
@@ -94,7 +75,25 @@ public final class NukerHack extends Hack
 	@Override
 	public String getRenderName()
 	{
-		return mode.getSelected().getRenderName(this);
+		switch(mode.getSelected())
+		{
+			default:
+			case NORMAL:
+			return getName();
+			
+			case ID:
+			return "IDNuker [" + id.getShortBlockName() + "]";
+			
+			case MULTI_ID:
+			int ids = multiIdList.size();
+			return "MultiIDNuker [" + ids + (ids == 1 ? " ID]" : " IDs]");
+			
+			case FLAT:
+			return "FlatNuker";
+			
+			case SMASH:
+			return "SmashNuker";
+		}
 	}
 	
 	@Override
@@ -126,7 +125,7 @@ public final class NukerHack extends Hack
 		}
 		
 		prevBlocks.clear();
-		renderer.resetProgress();
+		overlay.resetProgress();
 		
 		if(!lockId.isChecked())
 			id.setBlock(Blocks.AIR);
@@ -141,8 +140,8 @@ public final class NukerHack extends Hack
 		if(MC.options.attackKey.isPressed())
 			return;
 		
-		// abort if using IDNuker without an ID being set
-		if(mode.getSelected() == Mode.ID && id.getBlock() == Blocks.AIR)
+		// abort if using ID mode without an ID being set
+		if(mode.getSelected() == NukerMode.ID && id.getBlock() == Blocks.AIR)
 			return;
 		
 		Vec3d eyesVec = RotationUtils.getEyesPos();
@@ -153,15 +152,15 @@ public final class NukerHack extends Hack
 		Stream<BlockPos> stream =
 			BlockUtils.getAllInBoxStream(eyesBlock, blockRange)
 				.filter(pos -> pos.getSquaredDistance(eyesVec) <= rangeSq)
-				.filter(BlockUtils::canBeClicked)
-				.filter(mode.getSelected().getValidator(this)).sorted(Comparator
+				.filter(BlockUtils::canBeClicked).filter(this::shouldBreakBlock)
+				.sorted(Comparator
 					.comparingDouble(pos -> pos.getSquaredDistance(eyesVec)));
 		
 		// Break all blocks in creative mode
 		if(MC.player.getAbilities().creativeMode)
 		{
 			MC.interactionManager.cancelBlockBreaking();
-			renderer.resetProgress();
+			overlay.resetProgress();
 			
 			ArrayList<BlockPos> blocks = filterOutRecentBlocks(stream);
 			if(blocks.isEmpty())
@@ -179,14 +178,33 @@ public final class NukerHack extends Hack
 		if(currentBlock == null)
 		{
 			MC.interactionManager.cancelBlockBreaking();
-			renderer.resetProgress();
+			overlay.resetProgress();
 			return;
 		}
 		
-		if(BlockUtils.getHardness(currentBlock) < 1)
-			renderer.updateProgress();
-		else
-			renderer.resetProgress();
+		overlay.updateProgress();
+	}
+	
+	private boolean shouldBreakBlock(BlockPos pos)
+	{
+		switch(mode.getSelected())
+		{
+			default:
+			case NORMAL:
+			return true;
+			
+			case ID:
+			return BlockUtils.getName(pos).equals(id.getBlockName());
+			
+			case MULTI_ID:
+			return multiIdList.contains(BlockUtils.getBlock(pos));
+			
+			case FLAT:
+			return pos.getY() >= MC.player.getY();
+			
+			case SMASH:
+			return BlockUtils.getHardness(pos) >= 1;
+		}
 	}
 	
 	/*
@@ -212,74 +230,19 @@ public final class NukerHack extends Hack
 	@Override
 	public void onLeftClick(LeftClickEvent event)
 	{
-		if(mode.getSelected() != Mode.ID)
+		if(lockId.isChecked() || mode.getSelected() != NukerMode.ID)
 			return;
 		
-		if(lockId.isChecked())
+		if(!(MC.crosshairTarget instanceof BlockHitResult bHitResult)
+			|| bHitResult.getType() != HitResult.Type.BLOCK)
 			return;
 		
-		if(MC.crosshairTarget == null
-			|| MC.crosshairTarget.getType() != HitResult.Type.BLOCK)
-			return;
-		
-		BlockHitResult blockHitResult = (BlockHitResult)MC.crosshairTarget;
-		BlockPos pos = new BlockPos(blockHitResult.getBlockPos());
-		id.setBlockName(BlockUtils.getName(pos));
+		id.setBlockName(BlockUtils.getName(bHitResult.getBlockPos()));
 	}
 	
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
-		renderer.render(matrixStack, partialTicks, currentBlock);
-	}
-	
-	private enum Mode
-	{
-		NORMAL("普通", NukerHack::getName, (n, p) -> true),
-		
-		ID("ID",
-			n -> "IDNuker [" + n.id.getBlockName().replace("minecraft:", "")
-				+ "]",
-			(n, p) -> BlockUtils.getName(p).equals(n.id.getBlockName())),
-		
-		MULTI_ID("MultiID",
-			n -> "MultiIDNuker [" + n.multiIdList.getBlockNames().size()
-				+ (n.multiIdList.getBlockNames().size() == 1 ? " ID]"
-					: " IDs]"),
-			(n, p) -> n.multiIdList.getBlockNames()
-				.contains(BlockUtils.getName(p))),
-		
-		FLAT("平坦", n -> "平坦合法版挖块",
-			(n, p) -> p.getY() >= MC.player.getPos().getY()),
-		
-		SMASH("粉碎", n -> "粉碎合法版挖块", (n, p) -> BlockUtils.getHardness(p) >= 1);
-		
-		private final String name;
-		private final Function<NukerHack, String> renderName;
-		private final BiPredicate<NukerHack, BlockPos> validator;
-		
-		private Mode(String name, Function<NukerHack, String> renderName,
-			BiPredicate<NukerHack, BlockPos> validator)
-		{
-			this.name = name;
-			this.renderName = renderName;
-			this.validator = validator;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return name;
-		}
-		
-		public String getRenderName(NukerHack n)
-		{
-			return renderName.apply(n);
-		}
-		
-		public Predicate<BlockPos> getValidator(NukerHack n)
-		{
-			return p -> validator.test(n, p);
-		}
+		overlay.render(matrixStack, partialTicks, currentBlock);
 	}
 }
