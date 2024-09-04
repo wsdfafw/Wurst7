@@ -52,10 +52,6 @@ jobs:
       env:
         SPOTLESS_SKIP: ${{ github.event_name == 'pull_request' }}
 
-    - name: 使用Spotless检查代码风格
-      id: spotless_check
-      run: ./gradlew spotlessCheck
-
     - name: 执行Gradle构建
       run: ./gradlew spotlessCheck build --stacktrace --warning-mode=fail
 
@@ -75,20 +71,20 @@ jobs:
         path: build/libs/Wurst-Client-*.jar
 
     - name: Store reports
-      if: failure()
       uses: actions/upload-artifact@v4
       with:
         name: reports
         path: |
           **/build/reports/
           **/build/test-results/
+      continue-on-error: false
 
     - name: 自动释放
       if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "cs"
+        automatic_release_tag: "java"
         prerelease: true
         title: "自动构建版本"
         files: |
