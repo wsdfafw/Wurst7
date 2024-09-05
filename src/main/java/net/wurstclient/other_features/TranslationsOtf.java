@@ -22,15 +22,27 @@ public final class TranslationsOtf extends OtherFeature
 		new CheckboxSetting("Force English",
 			"用英语显示Wurst客户端,即使Minecraft设置为不同的语言即使Minecraft被设置为不同的语言.", true);
 	
+	private final CheckboxSetting fallbackToEnglish = new CheckboxSetting(
+		"Fallback to English",
+		"Display untranslated strings in English (instead of translation key names), "
+			+ "if some of them are currently unavailable for your language.",
+		true);
+	
 	public TranslationsOtf()
 	{
 		super("Translations",
 			"允许在 Wurst 中显示的文本以其他语言而非英语显示。它将使用 Minecraft 设置的相同语言。\n\n这是一个实验性的功能！");
 		addSetting(forceEnglish);
+		addSetting(fallbackToEnglish);
 	}
 	
 	public CheckboxSetting getForceEnglish()
 	{
 		return forceEnglish;
+	}
+	
+	public CheckboxSetting getFallbackToEnglish()
+	{
+		return fallbackToEnglish;
 	}
 }

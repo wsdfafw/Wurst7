@@ -11,9 +11,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.MinecraftClient;
 import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.Encryption;
@@ -167,7 +172,47 @@ public enum WurstClient
 	
 	public String translate(String key, Object... args)
 	{
-		return translator.translate(key, args);
+		if(otfs.translationsOtf.getForceEnglish().isChecked())
+		{
+			String string = ILanguageManager.getEnglish().get(key);
+			
+			try
+			{
+				return String.format(string, args);
+			}catch(IllegalFormatException e)
+			{
+				return key;
+			}
+		}
+		
+		// This extra check is necessary because `I18n.translate()` doesn't
+		// always return the key when the translation is missing. If the key
+		// contains a '%', it will return "Format Error: key" instead.
+		// But after implementing `LocalesGenerator`, which will be run every
+		// build for filling missing values with `DEFAULT_UNTRANSLATED_VALUE` in
+		// all locales depending on `DEFAULT_LOCALE` file, this will probably
+		// never be `true`.
+		if(!I18n.hasTranslation(key))
+			return key;
+		
+		String translated = I18n.translate(key, args);
+		
+		if(!translated
+			.equals(LocalesGenerator.Settings.DEFAULT_UNTRANSLATED_VALUE))
+			return translated;
+		
+		if(!otfs.translationsOtf.getFallbackToEnglish().isChecked())
+			return key;
+		
+		String string = ILanguageManager.getEnglish().get(key);
+		
+		try
+		{
+			return String.format(string, args);
+		}catch(IllegalFormatException e)
+		{
+			return key;
+		}
 	}
 	
 	public WurstAnalytics getAnalytics()

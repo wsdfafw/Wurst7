@@ -21,6 +21,7 @@ import net.minecraft.component.type.FoodComponent.StatusEffectEntry;
 import net.minecraft.component.type.FoodComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -28,6 +29,7 @@ import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.item.Item;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -46,40 +48,47 @@ import net.wurstclient.util.InventoryUtils;
 	"AutoFeeding", "auto feeding", "AutoSoup", "auto soup"})
 public final class AutoEatHack extends Hack implements UpdateListener
 {
-	private final SliderSetting targetHunger = new SliderSetting("瞄准饥饿",
-		"description.wurst.setting.autoeat.target_hunger", 10, 0, 10, 0.5,
+	private final SliderSetting targetHunger = new SliderSetting(
+		"Target hunger", "wurst.hack.autoeat.setting.target_hunger.description",
+		10, 0, 10, 0.5, ValueDisplay.DECIMAL);
+	
+	private final SliderSetting minHunger = new SliderSetting("Min hunger",
+		"wurst.hack.autoeat.setting.min_hunger.description", 6.5, 0, 10, 0.5,
 		ValueDisplay.DECIMAL);
 	
-	private final SliderSetting minHunger = new SliderSetting("最低饥饿值",
-		"description.wurst.setting.autoeat.min_hunger", 6.5, 0, 10, 0.5,
-		ValueDisplay.DECIMAL);
+	private final SliderSetting injuredHunger =
+		new SliderSetting("Injured hunger",
+			"wurst.hack.autoeat.setting.injured_hunger.description", 10, 0, 10,
+			0.5, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting injuredHunger = new SliderSetting("受伤进食",
-		"description.wurst.setting.autoeat.injured_hunger", 10, 0, 10, 0.5,
-		ValueDisplay.DECIMAL);
+	private final SliderSetting injuryThreshold =
+		new SliderSetting("Injury threshold",
+			"wurst.hack.autoeat.setting.injury_threshold.description", 1.5, 0.5,
+			10, 0.5, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting injuryThreshold = new SliderSetting("受伤阈值",
-		"description.wurst.setting.autoeat.injury_threshold", 1.5, 0.5, 10, 0.5,
-		ValueDisplay.DECIMAL);
-	
-	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
-		"从哪里拿物品", "description.wurst.setting.autoeat.take_items_from",
-		TakeItemsFrom.values(), TakeItemsFrom.HOTBAR);
+	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
+		new EnumSetting<>("Take items from",
+			"wurst.hack.autoeat.setting.take_items_from.description",
+			TakeItemsFrom.values(), TakeItemsFrom.HOTBAR);
 	
 	private final CheckboxSetting allowOffhand =
 		new CheckboxSetting("允许副手", true);
 	
-	private final CheckboxSetting eatWhileWalking = new CheckboxSetting("边走边吃",
-		"description.wurst.setting.autoeat.eat_while_walking", false);
+	private final CheckboxSetting eatWhileWalking =
+		new CheckboxSetting("Eat while walking",
+			"wurst.hack.autoeat.setting.eat_while_walking.description", false);
 	
-	private final CheckboxSetting allowHunger = new CheckboxSetting("允许饥饿效果",
-		"description.wurst.setting.autoeat.allow_hunger", true);
+	private final CheckboxSetting allowHunger =
+		new CheckboxSetting("Allow hunger effect",
+			"wurst.hack.autoeat.setting.allow_hunger.description", true);
 	
-	private final CheckboxSetting allowPoison = new CheckboxSetting("允许中毒效果",
-		"description.wurst.setting.autoeat.allow_poison", false);
+	private final CheckboxSetting allowPoison =
+		new CheckboxSetting("Allow poison effect",
+			"wurst.hack.autoeat.setting.allow_poison.description", false);
 	
-	private final CheckboxSetting allowChorus = new CheckboxSetting("允许紫颂果",
-		"description.wurst.setting.autoeat.allow_chorus", false);
+	private final CheckboxSetting allowChorus =
+		new CheckboxSetting("Allow chorus fruit",
+			"wurst.hack.autoeat.setting.allow_chorus.description", false);
 	
 	private int oldSlot = -1;
 	
