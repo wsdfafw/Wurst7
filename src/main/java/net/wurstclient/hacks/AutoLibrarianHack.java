@@ -56,6 +56,7 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.*;
 import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
@@ -87,13 +88,18 @@ public final class AutoLibrarianHack extends Hack
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"如何面对村民和工作站.\n\n" + "\u00a7l关闭\u00a7r - 完全不面对村民。会被反作弊插件检测到。\n\n"
-			+ "\u00a7l服务器端\u00a7r - 在服务器端面对村民，同时仍可在客户端自由移动摄像头。\n\n"
-			+ "\u00a7l客户端\u00a7r - 通过在客户端移动摄像头来面对村民。这是最合法的选项，但可能会让人感到迷失。");
+		"How AutoLibrarian should face the villager and job site.\n\n"
+			+ "\u00a7lOff\u00a7r - Don't face the villager at all. Will be"
+			+ " detected by anti-cheat plugins.\n\n"
+			+ "\u00a7lServer-side\u00a7r - Face the villager on the"
+			+ " server-side, while still letting you move the camera freely on"
+			+ " the client-side.\n\n"
+			+ "\u00a7lClient-side\u00a7r - Face the villager by moving your"
+			+ " camera on the client-side. This is the most legit option, but"
+			+ " can be disorienting to look at.");
 	
 	private final SwingHandSetting swingHand =
-		new SwingHandSetting("How to swing your hand when interacting with the"
-			+ " villager and job site.");
+		new SwingHandSetting(this, SwingHand.SERVER);
 	
 	private final SliderSetting repairMode = new SliderSetting("修复模式",
 		"当你的斧头的耐久度达到设定的临界值时，防止自动图书馆员使用你的斧头，因此你可以在它坏掉之前修理它.\n"

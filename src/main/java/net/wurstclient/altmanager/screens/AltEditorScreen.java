@@ -73,34 +73,6 @@ public abstract class AltEditorScreen extends Screen
 	@Override
 	public final void init()
 	{
-		addDrawableChild(doneButton = ButtonWidget
-			.builder(Text.literal(getDoneButtonText()), b -> pressDoneButton())
-			.dimensions(width / 2 - 100, height / 4 + 72 + 12, 200, 20)
-			.build());
-		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
-			.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
-			.build());
-		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("随机名称"),
-				b -> nameOrEmailBox.setText(NameGenerator.generateName()))
-			.dimensions(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
-			.build());
-		
-		addDrawableChild(stealSkinButton = ButtonWidget
-			.builder(Text.literal("盗取皮肤"),
-				b -> message = stealSkin(getNameOrEmail()))
-			.dimensions(width - (width / 2 - 100) / 2 - 64, height - 32, 128,
-				20)
-			.build());
-		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("打开皮肤文件夹"), b -> openSkinFolder())
-				.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
-				.build());
-		
 		nameOrEmailBox = new TextFieldWidget(textRenderer, width / 2 - 100, 60,
 			200, 20, Text.literal(""));
 		nameOrEmailBox.setMaxLength(48);
@@ -119,6 +91,34 @@ public abstract class AltEditorScreen extends Screen
 		});
 		passwordBox.setMaxLength(256);
 		addSelectableChild(passwordBox);
+		
+		addDrawableChild(doneButton = ButtonWidget
+			.builder(Text.literal(getDoneButtonText()), b -> pressDoneButton())
+			.dimensions(width / 2 - 100, height / 4 + 72 + 12, 200, 20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.builder(Text.literal("Cancel"), b -> client.setScreen(prevScreen))
+			.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.builder(Text.literal("Random Name"),
+				b -> nameOrEmailBox.setText(NameGenerator.generateName()))
+			.dimensions(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
+			.build());
+		
+		addDrawableChild(stealSkinButton = ButtonWidget
+			.builder(Text.literal("Steal Skin"),
+				b -> message = stealSkin(getNameOrEmail()))
+			.dimensions(width - (width / 2 - 100) / 2 - 64, height - 32, 128,
+				20)
+			.build());
+		
+		addDrawableChild(ButtonWidget
+			.builder(Text.literal("Open Skin Folder"), b -> openSkinFolder())
+			.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
+			.build());
 		
 		setFocused(nameOrEmailBox);
 	}
@@ -150,6 +150,7 @@ public abstract class AltEditorScreen extends Screen
 		
 		doneButton.active = !nameOrEmail.isEmpty()
 			&& !(alex && passwordBox.getText().isEmpty());
+		doneButton.setMessage(Text.literal(getDoneButtonText()));
 		
 		stealSkinButton.active = !alex;
 	}
@@ -358,13 +359,17 @@ public abstract class AltEditorScreen extends Screen
 		AltRenderer.drawAltBody(context, nameOrEmailBox.getText(),
 			width - (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
 		
+		String accountType = getPassword().isEmpty() ? "cracked" : "premium";
+		
 		// text
 		context.drawTextWithShadow(textRenderer, "名字 (盗版账户), 或者",
 			width / 2 - 100, 37, 10526880);
-		context.drawTextWithShadow(textRenderer, "邮箱 (正版账户)", width / 2 - 100,
-			47, 10526880);
-		context.drawTextWithShadow(textRenderer, "密码 (如果是盗版请留空)",
+		context.drawTextWithShadow(textRenderer, "E-Mail (for premium alts)",
+			width / 2 - 100, 47, 10526880);
+		context.drawTextWithShadow(textRenderer, "Password (for premium alts)",
 			width / 2 - 100, 87, 10526880);
+		context.drawTextWithShadow(textRenderer, "Account type: " + accountType,
+			width / 2 - 100, 127, 10526880);
 		
 		String[] lines = message.split("\n");
 		for(int i = 0; i < lines.length; i++)
