@@ -63,10 +63,8 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视野",
 		"确保你不会因为无法触碰到水晶\n方块,放下,左键\n引爆末影水晶.\n\n虽然会慢下来,但有效\n避开反作弊.", false);
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How CrystalAura should swing your hand when placing and detonating"
-			+ " end crystals.",
-		SwingHand.CLIENT);
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.CLIENT);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom = new EnumSetting<>(
 		"从哪拿物品", "应该从哪拿末影水晶.", TakeItemsFrom.values(), TakeItemsFrom.INVENTORY);

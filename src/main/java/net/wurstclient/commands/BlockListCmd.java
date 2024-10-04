@@ -7,14 +7,9 @@
  */
 package net.wurstclient.commands;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 import net.wurstclient.DontBlock;
 import net.wurstclient.Feature;
 import net.wurstclient.command.CmdError;
@@ -82,14 +77,12 @@ public final class BlockListCmd extends Command
 			throw new CmdSyntaxError();
 		
 		String inputBlockName = args[3];
-		Block block = getBlockFromNameOrID(inputBlockName);
+		Block block = BlockUtils.getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError("\"" + inputBlockName + "\" 不是一个有效的块.");
 		
 		String blockName = BlockUtils.getName(block);
-		int index =
-			Collections.binarySearch(setting.getBlockNames(), blockName);
-		if(index >= 0)
+		if(setting.contains(blockName))
 			throw new CmdError(feature.getName() + " " + setting.getName()
 				+ " 已经包含 " + blockName);
 		
@@ -103,13 +96,12 @@ public final class BlockListCmd extends Command
 			throw new CmdSyntaxError();
 		
 		String inputBlockName = args[3];
-		Block block = getBlockFromNameOrID(inputBlockName);
+		Block block = BlockUtils.getBlockFromNameOrID(inputBlockName);
 		if(block == null)
 			throw new CmdSyntaxError("\"" + inputBlockName + "\" 不是一个有效的块.");
 		
 		String blockName = BlockUtils.getName(block);
-		int index =
-			Collections.binarySearch(setting.getBlockNames(), blockName);
+		int index = setting.indexOf(blockName);
 		if(index < 0)
 			throw new CmdError(feature.getName() + " " + setting.getName()
 				+ " 不含 " + blockName);
@@ -163,27 +155,5 @@ public final class BlockListCmd extends Command
 				+ " 不是 BlockList 设置.");
 		
 		return (BlockListSetting)setting;
-	}
-	
-	private Block getBlockFromNameOrID(String nameOrId)
-	{
-		if(MathUtils.isInteger(nameOrId))
-		{
-			BlockState state = Block.STATE_IDS.get(Integer.parseInt(nameOrId));
-			if(state == null)
-				return null;
-			
-			return state.getBlock();
-		}
-		
-		try
-		{
-			return Registries.BLOCK.getOrEmpty(Identifier.of(nameOrId))
-				.orElse(null);
-			
-		}catch(InvalidIdentifierException e)
-		{
-			return null;
-		}
 	}
 }
