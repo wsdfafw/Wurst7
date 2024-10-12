@@ -1,18 +1,19 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * 版权所有 (c) 2014-2024 Wurst-Imperium 和贡献者。
  *
- * This source code is subject to the terms of the GNU General Public
- * License, version 3. If a copy of the GPL was not distributed with this
- * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+ * 本源代码受 GNU 通用公共许可证版本 3 的条款约束。如果没有随本文件分发 GPL 副本，
+ * 您可以在以下网址获取一份：https://www.gnu.org/licenses/gpl-3.0.txt
  */
 package net.wurstclient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IllegalFormatException;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.Lists;
@@ -31,8 +32,8 @@ public class WurstTranslator implements SynchronousResourceReloader
 	private final WurstClient wurst = WurstClient.INSTANCE;
 	private TranslationStorage mcEnglish;
 	
-	private final HashMap<String, String> englishOnlyStrings = new HashMap<>();
-	private final HashMap<String, String> currentLangStrings = new HashMap<>();
+	private Map<String, String> currentLangStrings = Map.of();
+	private Map<String, String> englishOnlyStrings = Map.of();
 	
 	@Override
 	public void reload(ResourceManager manager)
@@ -40,12 +41,16 @@ public class WurstTranslator implements SynchronousResourceReloader
 		mcEnglish = TranslationStorage.load(manager,
 			Lists.newArrayList("en_us"), false);
 		
-		currentLangStrings.clear();
+		HashMap<String, String> currentLangStrings = new HashMap<>();
 		loadTranslations(manager, getCurrentLangCodes(),
 			currentLangStrings::put);
+		this.currentLangStrings =
+			Collections.unmodifiableMap(currentLangStrings);
 		
-		englishOnlyStrings.clear();
+		HashMap<String, String> englishOnlyStrings = new HashMap<>();
 		loadTranslations(manager, List.of("en_us"), englishOnlyStrings::put);
+		this.englishOnlyStrings =
+			Collections.unmodifiableMap(englishOnlyStrings);
 	}
 	
 	/**
@@ -144,6 +149,17 @@ public class WurstTranslator implements SynchronousResourceReloader
 	public TranslationStorage getMcEnglish()
 	{
 		return mcEnglish;
+	}
+	
+	public Map<String, String> getMinecraftsCurrentLanguage()
+	{
+		return currentLangStrings;
+	}
+	
+	public Map<String, String> getWurstsCurrentLanguage()
+	{
+		return isForcedEnglish() ? englishOnlyStrings
+			: getMinecraftsCurrentLanguage();
 	}
 	
 	private ArrayList<String> getCurrentLangCodes()

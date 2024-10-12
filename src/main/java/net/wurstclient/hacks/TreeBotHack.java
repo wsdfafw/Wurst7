@@ -40,6 +40,7 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.BlockBreaker;
 import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockUtils;
@@ -54,18 +55,17 @@ public final class TreeBotHack extends Hack
 		"TreeBot 可以达到多远来打破块", 4.5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"How to face the logs and leaves when breaking them.\n\n"
-			+ "\u00a7lOff\u00a7r - Don't face the blocks at all. Will be"
-			+ " detected by anti-cheat plugins.\n\n"
-			+ "\u00a7lServer-side\u00a7r - Face the blocks on the"
-			+ " server-side, while still letting you move the camera freely on"
-			+ " the client-side.\n\n"
-			+ "\u00a7lClient-side\u00a7r - Face the blocks by moving your"
-			+ " camera on the client-side. This is the most legit option, but"
-			+ " can be disorienting to look at.");
+		"树木机器人在破坏木头和树叶时应如何面对它们。\n\n"
+			+ "\u00a7l关闭\u00a7r - 完全不面对方块。这会被"
+			+ " 反作弊插件检测到。\n\n"
+			+ "\u00a7l服务器端\u00a7r - 在服务器端面对方块，同时允许你在"
+			+ " 客户端自由移动镜头。\n\n"
+			+ "\u00a7l客户端\u00a7r - 通过移动你的"
+			+ " 镜头在客户端面对方块。这是最合法的选项，但"
+			+ " 可能会让人觉得不适应。");
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How TreeBot should swing your hand when breaking logs and leaves.");
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.SERVER);
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;

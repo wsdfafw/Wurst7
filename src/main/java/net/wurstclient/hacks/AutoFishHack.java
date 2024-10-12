@@ -9,7 +9,9 @@ package net.wurstclient.hacks;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
@@ -23,6 +25,7 @@ import net.wurstclient.hacks.autofish.AutoFishDebugDraw;
 import net.wurstclient.hacks.autofish.AutoFishRodSelector;
 import net.wurstclient.hacks.autofish.FishingSpotManager;
 import net.wurstclient.hacks.autofish.ShallowWaterWarningCheckbox;
+import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 
@@ -32,24 +35,34 @@ import net.wurstclient.settings.SliderSetting.ValueDisplay;
 public final class AutoFishHack extends Hack
 	implements UpdateListener, PacketInputListener, RenderListener
 {
+	private final EnumSetting<AutoFishHack.BiteMode> biteMode =
+		new EnumSetting<>("咬合模式",
+			"\u00a7l声音\u00a7r模式通过监听咬合声来检测咬合。"
+				+ "这种方法准确性较低，但对抗作弊的抵抗力较强。"
+				+ "请参见\"有效范围\"设置。\n\n"
+				+ "\u00a7l实体\u00a7r模式通过检查钓鱼钩的实体更新数据包来检测咬合。"
+				+ "它比声音方法更准确，但对抗作弊的抵抗力较弱。",
+			AutoFishHack.BiteMode.values(), AutoFishHack.BiteMode.SOUND);
+	
 	private final SliderSetting validRange = new SliderSetting("有效范围",
-		"在此范围之外发生的任何咬痕都将被忽略。\n\n"
-			+ "如果没有检测到咬痕，请增加您的范围；如果检测到其他人的咬痕被认为是您的，请减小范围。",
+		"任何发生在该范围之外的咬合将被忽略。\n\n"
+			+ "如果未检测到咬合，请增加您的范围；如果其他人的咬合被检测为您的咬合，请减少它。\n\n"
+			+ "当\"咬合模式\"设置为\"实体\"时，此设置将无效。",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting catchDelay = new SliderSetting("Catch delay",
-		"How long AutoFish will wait after a bite before reeling in.", 0, 0, 60,
+	private final SliderSetting catchDelay = new SliderSetting("捕捉延迟",
+		"AutoFish在咬合后等待多长时间再进行收线。", 0, 0, 60,
 		1, ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
-	private final SliderSetting retryDelay = new SliderSetting("Retry delay",
-		"If casting or reeling in the fishing rod fails, this is how long"
-			+ " AutoFish will wait before trying again.",
+	private final SliderSetting retryDelay = new SliderSetting("重试延迟",
+		"如果投竿或收线失败，AutoFish将在此等待多长时间后再尝试。",
 		15, 0, 100, 1,
 		ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
-	private final SliderSetting patience = new SliderSetting("Patience",
-		"How long AutoFish will wait if it doesn't get a bite before reeling in.",
-		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("s"));
+	private final SliderSetting patience = new SliderSetting("耐心",
+		"如果没有咬合，AutoFish将在此等待多长时间再进行收线。",
+		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("秒"));
+
 	
 	private final ShallowWaterWarningCheckbox shallowWaterWarning =
 		new ShallowWaterWarningCheckbox();
@@ -68,6 +81,7 @@ public final class AutoFishHack extends Hack
 	{
 		super("自动钓鱼");
 		setCategory(Category.OTHER);
+		addSetting(biteMode);
 		addSetting(validRange);
 		addSetting(catchDelay);
 		addSetting(retryDelay);
@@ -166,6 +180,15 @@ public final class AutoFishHack extends Hack
 	@Override
 	public void onReceivedPacket(PacketInputEvent event)
 	{
+		switch(biteMode.getSelected())
+		{
+			case SOUND -> processSoundUpdate(event);
+			case ENTITY -> processEntityUpdate(event);
+		}
+	}
+	
+	private void processSoundUpdate(PacketInputEvent event)
+	{
 		// check packet type
 		if(!(event.getPacket() instanceof PlaySoundS2CPacket sound))
 			return;
@@ -192,6 +215,28 @@ public final class AutoFishHack extends Hack
 		biteDetected = true;
 	}
 	
+	private void processEntityUpdate(PacketInputEvent event)
+	{
+		// check packet type
+		if(!(event.getPacket() instanceof EntityTrackerUpdateS2CPacket update))
+			return;
+		
+		// check if the entity is a bobber
+		if(!(MC.world
+			.getEntityById(update.id()) instanceof FishingBobberEntity bobber))
+			return;
+		
+		// check if it's our bobber
+		if(bobber != MC.player.fishHook)
+			return;
+		
+		// check if player is fishing
+		if(!isFishing())
+			return;
+		
+		biteDetected = true;
+	}
+	
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
@@ -204,5 +249,24 @@ public final class AutoFishHack extends Hack
 		return player != null && player.fishHook != null
 			&& !player.fishHook.isRemoved()
 			&& player.getMainHandStack().isOf(Items.FISHING_ROD);
+	}
+	
+	private enum BiteMode
+	{
+		SOUND("Sound"),
+		ENTITY("Entity");
+		
+		private final String name;
+		
+		private BiteMode(String name)
+		{
+			this.name = name;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return name;
+		}
 	}
 }

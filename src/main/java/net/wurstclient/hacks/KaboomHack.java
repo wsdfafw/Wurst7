@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.util.math.random.Random;
 import net.wurstclient.Category;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockBreaker;
@@ -26,13 +30,24 @@ import net.wurstclient.util.RotationUtils;
 public final class KaboomHack extends Hack implements UpdateListener
 {
 	private final SliderSetting power =
-		new SliderSetting("Power", 128, 32, 512, 32, ValueDisplay.INTEGER);
+		new SliderSetting("Power", "description.wurst.setting.kaboom.power",
+			128, 32, 512, 32, ValueDisplay.INTEGER);
+	
+	private final CheckboxSetting sound = new CheckboxSetting("Sound",
+		"description.wurst.setting.kaboom.sound", true);
+	
+	private final CheckboxSetting particles = new CheckboxSetting("Particles",
+		"description.wurst.setting.kaboom.particles", true);
+	
+	private final Random random = Random.create();
 	
 	public KaboomHack()
 	{
 		super("爆炸");
 		setCategory(Category.BLOCKS);
 		addSetting(power);
+		addSetting(sound);
+		addSetting(particles);
 	}
 	
 	@Override
@@ -50,23 +65,32 @@ public final class KaboomHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
-		// check fly-kick
+		// Abort if flying to prevent getting kicked
 		if(!MC.player.getAbilities().creativeMode && !MC.player.isOnGround())
 			return;
 		
-		// do explosion particles
-		new Explosion(MC.world, MC.player, MC.player.getX(), MC.player.getY(),
-			MC.player.getZ(), 6F, false, Explosion.DestructionType.KEEP)
-				.affectWorld(true);
+		double x = MC.player.getX();
+		double y = MC.player.getY();
+		double z = MC.player.getZ();
 		
-		// get valid blocks
+		// Do explosion effect
+		if(sound.isChecked())
+		{
+			float soundPitch =
+				(1F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F;
+			MC.world.playSound(x, y, z,
+				SoundEvents.ENTITY_GENERIC_EXPLODE.value(),
+				SoundCategory.BLOCKS, 4, soundPitch, false);
+		}
+		if(particles.isChecked())
+			MC.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1, 0,
+				0);
+		
+		// Break all blocks
 		ArrayList<BlockPos> blocks = getBlocksByDistanceReversed();
-		
-		// break all blocks
 		for(int i = 0; i < power.getValueI(); i++)
 			BlockBreaker.breakBlocksWithPacketSpam(blocks);
 		
-		// disable
 		setEnabled(false);
 	}
 	

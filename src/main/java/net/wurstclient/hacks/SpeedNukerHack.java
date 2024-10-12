@@ -10,10 +10,9 @@ package net.wurstclient.hacks;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.wurstclient.Category;
@@ -22,71 +21,41 @@ import net.wurstclient.events.LeftClickListener;
 import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.DontSaveState;
 import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.BlockSetting;
-import net.wurstclient.settings.CheckboxSetting;
-import net.wurstclient.settings.NukerModeSetting;
-import net.wurstclient.settings.NukerModeSetting.NukerMode;
-import net.wurstclient.settings.NukerMultiIdListSetting;
+import net.wurstclient.hacks.nukers.CommonNukerSettings;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.BlockBreaker;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.RotationUtils;
 
 @SearchTags({"speed nuker", "FastNuker", "fast nuker"})
 @DontSaveState
-public final class SpeedNukerHack extends Hack
-	implements LeftClickListener, UpdateListener
+public final class SpeedNukerHack extends Hack implements UpdateListener
 {
 	private final SliderSetting range =
 		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final NukerModeSetting mode = new NukerModeSetting();
+	private final CommonNukerSettings commonSettings =
+		new CommonNukerSettings();
 	
-	private final BlockSetting id =
-		new BlockSetting("ID", "The type of block to break in ID mode.\n"
-			+ "air = won't break anything", "minecraft:air", true);
-	
-	private final CheckboxSetting lockId = new CheckboxSetting("Lock ID",
-		"Prevents changing the ID by clicking on blocks or restarting SpeedNuker.",
-		false);
-	
-	private final NukerMultiIdListSetting multiIdList =
-		new NukerMultiIdListSetting();
+	private final SwingHandSetting swingHand = new SwingHandSetting(
+		SwingHandSetting.genericMiningDescription(this), SwingHand.OFF);
 	
 	public SpeedNukerHack()
 	{
 		super("矿井+");
 		setCategory(Category.BLOCKS);
 		addSetting(range);
-		addSetting(mode);
-		addSetting(id);
-		addSetting(lockId);
-		addSetting(multiIdList);
+		commonSettings.getSettings().forEach(this::addSetting);
+		addSetting(swingHand);
 	}
 	
 	@Override
 	public String getRenderName()
 	{
-		switch(mode.getSelected())
-		{
-			default:
-			case NORMAL:
-			return getName();
-			
-			case ID:
-			return "IDSpeedNuker [" + id.getShortBlockName() + "]";
-			
-			case MULTI_ID:
-			int ids = multiIdList.size();
-			return "MultiIDSpeedNuker [" + ids + (ids == 1 ? " ID]" : " IDs]");
-			
-			case FLAT:
-			return "FlatSpeedNuker";
-			
-			case SMASH:
-			return "SmashSpeedNuker";
-		}
+		return getName() + commonSettings.getRenderNameSuffix();
 	}
 	
 	@Override
@@ -97,27 +66,25 @@ public final class SpeedNukerHack extends Hack
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().nukerLegitHack.setEnabled(false);
 		WURST.getHax().tunnellerHack.setEnabled(false);
+		WURST.getHax().veinMinerHack.setEnabled(false);
 		
-		EVENTS.add(LeftClickListener.class, this);
+		EVENTS.add(LeftClickListener.class, commonSettings);
 		EVENTS.add(UpdateListener.class, this);
 	}
 	
 	@Override
 	protected void onDisable()
 	{
-		EVENTS.remove(LeftClickListener.class, this);
+		EVENTS.remove(LeftClickListener.class, commonSettings);
 		EVENTS.remove(UpdateListener.class, this);
 		
-		// resets
-		if(!lockId.isChecked())
-			id.setBlock(Blocks.AIR);
+		commonSettings.reset();
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		// abort if using ID mode without an ID being set
-		if(mode.getSelected() == NukerMode.ID && id.getBlock() == Blocks.AIR)
+		if(commonSettings.isIdModeWithAir())
 			return;
 		
 		Vec3d eyesVec = RotationUtils.getEyesPos();
@@ -125,52 +92,25 @@ public final class SpeedNukerHack extends Hack
 		double rangeSq = range.getValueSq();
 		int blockRange = range.getValueCeil();
 		
-		ArrayList<BlockPos> blocks =
+		Stream<BlockPos> stream =
 			BlockUtils.getAllInBoxStream(eyesBlock, blockRange)
-				.filter(pos -> pos.getSquaredDistance(eyesVec) <= rangeSq)
-				.filter(BlockUtils::canBeClicked).filter(this::shouldBreakBlock)
-				.sorted(Comparator
-					.comparingDouble(pos -> pos.getSquaredDistance(eyesVec)))
-				.collect(Collectors.toCollection(ArrayList::new));
+				.filter(BlockUtils::canBeClicked)
+				.filter(commonSettings::shouldBreakBlock);
 		
-		if(!blocks.isEmpty())
-			WURST.getHax().autoToolHack.equipIfEnabled(blocks.get(0));
+		if(commonSettings.isSphereShape())
+			stream = stream
+				.filter(pos -> pos.getSquaredDistance(eyesVec) <= rangeSq);
 		
+		ArrayList<BlockPos> blocks = stream
+			.sorted(Comparator
+				.comparingDouble(pos -> pos.getSquaredDistance(eyesVec)))
+			.collect(Collectors.toCollection(ArrayList::new));
+		
+		if(blocks.isEmpty())
+			return;
+		
+		WURST.getHax().autoToolHack.equipIfEnabled(blocks.get(0));
 		BlockBreaker.breakBlocksWithPacketSpam(blocks);
-	}
-	
-	private boolean shouldBreakBlock(BlockPos pos)
-	{
-		switch(mode.getSelected())
-		{
-			default:
-			case NORMAL:
-			return true;
-			
-			case ID:
-			return BlockUtils.getName(pos).equals(id.getBlockName());
-			
-			case MULTI_ID:
-			return multiIdList.contains(BlockUtils.getBlock(pos));
-			
-			case FLAT:
-			return pos.getY() >= MC.player.getY();
-			
-			case SMASH:
-			return BlockUtils.getHardness(pos) >= 1;
-		}
-	}
-	
-	@Override
-	public void onLeftClick(LeftClickEvent event)
-	{
-		if(lockId.isChecked() || mode.getSelected() != NukerMode.ID)
-			return;
-		
-		if(!(MC.crosshairTarget instanceof BlockHitResult bHitResult)
-			|| bHitResult.getType() != HitResult.Type.BLOCK)
-			return;
-		
-		id.setBlockName(BlockUtils.getName(bHitResult.getBlockPos()));
+		swingHand.swing(Hand.MAIN_HAND);
 	}
 }

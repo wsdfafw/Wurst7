@@ -26,7 +26,7 @@ public final class AddAltScreen extends AltEditorScreen
 	@Override
 	protected String getDoneButtonText()
 	{
-		return "添加";
+		return getPassword().isEmpty() ? "添加裂缝账号" : "添加高级账号";
 	}
 	
 	@Override
