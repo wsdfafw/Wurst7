@@ -64,7 +64,7 @@ jobs:
           ./build/libs/*.jar
       continue-on-error: true
 
-    - name: Run the mod and take screenshots
+    - name: 运行模组并截图
       uses: modmuss50/xvfb-action@v1
       with:
         run: ./gradlew runEndToEndTest --stacktrace --warning-mode=fail
