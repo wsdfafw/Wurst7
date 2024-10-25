@@ -64,6 +64,18 @@ jobs:
           ./build/libs/*.jar
       continue-on-error: true
 
+    - name: Run the mod and take screenshots
+      uses: modmuss50/xvfb-action@v1
+      with:
+        run: ./gradlew runEndToEndTest --stacktrace --warning-mode=fail
+
+    - name: Upload test screenshots
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: Test Screenshots
+        path: run/screenshots
+
     - name: 捕获构建产物
       uses: actions/upload-artifact@v4
       with:

@@ -65,7 +65,7 @@ public final class StepHack extends Hack implements UpdateListener
 			&& player.input.movementSideways == 0)
 			return;
 		
-		if(player.input.jumping)
+		if(player.jumping)
 			return;
 		
 		Box box = player.getBoundingBox().offset(0, 0.05, 0).expand(0.05);
@@ -84,11 +84,11 @@ public final class StepHack extends Hack implements UpdateListener
 		
 		netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
 			player.getX(), player.getY() + 0.42 * stepHeight, player.getZ(),
-			player.isOnGround()));
+			player.isOnGround(), MC.player.horizontalCollision));
 		
 		netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
 			player.getX(), player.getY() + 0.753 * stepHeight, player.getZ(),
-			player.isOnGround()));
+			player.isOnGround(), MC.player.horizontalCollision));
 		
 		player.setPosition(player.getX(), player.getY() + stepHeight,
 			player.getZ());
