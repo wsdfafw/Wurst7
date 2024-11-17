@@ -1,4 +1,4 @@
-name: Update Gradle Dependency Graph
+name: 更新 Gradle 依赖关系图
 
 on:
   push:
@@ -15,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Checkout repository
+    - name: 检出仓库
       uses: actions/checkout@v4
 
-    - name: Set up Java 21
+    - name: 设置 Java 21
       uses: actions/setup-java@v4
       with:
         java-version: "21"
         distribution: "microsoft"
 
-    - name: Grant execute permission for gradlew
+    - name: 为 gradlew 授予执行权限
       run: chmod +x gradlew
 
-    - name: Generate and submit dependency graph
+    - name: 生成并提交依赖关系图
       uses: gradle/actions/dependency-submission@v4
       with:
         build-scan-publish: true
