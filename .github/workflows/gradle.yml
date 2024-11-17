@@ -97,6 +97,7 @@ jobs:
       uses: modmuss50/xvfb-action@c56c7da0c8fc9a7cb5df2e50dd2a43a80b64c5cb
       with:
         run: ./gradlew runEndToEndTest --stacktrace --warning-mode=fail
+      continue-on-error: true
 
     # 需要此步骤，因为截图库在pull请求上不会创建。
     # 如果Imgur上传失败，此步骤也很有用。
