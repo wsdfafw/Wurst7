@@ -16,12 +16,9 @@ public final class NukerModeSetting
 	{
 		super("模式",
 			"\u00a7l普通\u00a7r模式会破坏你周围的所有方块。\n\n"
-				+ "\u00a7lID\u00a7r模式仅破坏所选的方块类型。"
-				+ " 左键点击一个方块以选择它。\n\n"
-				+ "\u00a7l多ID\u00a7r模式仅破坏你在"
-				+ " 多ID列表中的方块类型。\n\n"
-				+ "\u00a7l破坏\u00a7r模式仅破坏可以"
-				+ " 被瞬间破坏的方块（例如高草）。",
+				+ "\u00a7lID\u00a7r模式仅破坏所选的方块类型。" + " 左键点击一个方块以选择它。\n\n"
+				+ "\u00a7l多ID\u00a7r模式仅破坏你在" + " 多ID列表中的方块类型。\n\n"
+				+ "\u00a7l破坏\u00a7r模式仅破坏可以" + " 被瞬间破坏的方块（例如高草）。",
 			NukerMode.values(), NukerMode.NORMAL);
 	}
 	

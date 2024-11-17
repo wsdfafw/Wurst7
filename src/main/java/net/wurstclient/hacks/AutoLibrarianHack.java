@@ -86,8 +86,8 @@ public final class AutoLibrarianHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"AutoLibrarian 应该如何面向村民和工作地点。\n\n"
+	private final FacingSetting facing =
+		FacingSetting.withoutPacketSpam("AutoLibrarian 应该如何面向村民和工作地点。\n\n"
 			+ "\u00a7l关闭\u00a7r - 完全不面向村民。这将被反作弊插件检测到。\n\n"
 			+ "\u00a7l服务器端\u00a7r - 在服务器端面向村民，同时允许您在客户端自由移动视角。\n\n"
 			+ "\u00a7l客户端\u00a7r - 通过在客户端移动视角来面向村民。这是最合法的选择，但可能会让人感到晕眩。");

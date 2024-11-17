@@ -37,32 +37,28 @@ public final class AutoFishHack extends Hack
 {
 	private final EnumSetting<AutoFishHack.BiteMode> biteMode =
 		new EnumSetting<>("咬合模式",
-			"\u00a7l声音\u00a7r模式通过监听咬合声来检测咬合。"
-				+ "这种方法准确性较低，但对抗作弊的抵抗力较强。"
+			"\u00a7l声音\u00a7r模式通过监听咬合声来检测咬合。" + "这种方法准确性较低，但对抗作弊的抵抗力较强。"
 				+ "请参见\"有效范围\"设置。\n\n"
 				+ "\u00a7l实体\u00a7r模式通过检查钓鱼钩的实体更新数据包来检测咬合。"
 				+ "它比声音方法更准确，但对抗作弊的抵抗力较弱。",
 			AutoFishHack.BiteMode.values(), AutoFishHack.BiteMode.SOUND);
 	
 	private final SliderSetting validRange = new SliderSetting("有效范围",
-		"任何发生在该范围之外的咬合将被忽略。\n\n"
-			+ "如果未检测到咬合，请增加您的范围；如果其他人的咬合被检测为您的咬合，请减少它。\n\n"
+		"任何发生在该范围之外的咬合将被忽略。\n\n" + "如果未检测到咬合，请增加您的范围；如果其他人的咬合被检测为您的咬合，请减少它。\n\n"
 			+ "当\"咬合模式\"设置为\"实体\"时，此设置将无效。",
 		1.5, 0.25, 8, 0.25, ValueDisplay.DECIMAL);
 	
-	private final SliderSetting catchDelay = new SliderSetting("捕捉延迟",
-		"AutoFish在咬合后等待多长时间再进行收线。", 0, 0, 60,
-		1, ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
+	private final SliderSetting catchDelay =
+		new SliderSetting("捕捉延迟", "AutoFish在咬合后等待多长时间再进行收线。", 0, 0, 60, 1,
+			ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
 	private final SliderSetting retryDelay = new SliderSetting("重试延迟",
-		"如果投竿或收线失败，AutoFish将在此等待多长时间后再尝试。",
-		15, 0, 100, 1,
+		"如果投竿或收线失败，AutoFish将在此等待多长时间后再尝试。", 15, 0, 100, 1,
 		ValueDisplay.INTEGER.withSuffix(" ticks").withLabel(1, "1 tick"));
 	
-	private final SliderSetting patience = new SliderSetting("耐心",
-		"如果没有咬合，AutoFish将在此等待多长时间再进行收线。",
-		60, 10, 120, 1, ValueDisplay.INTEGER.withSuffix("秒"));
-
+	private final SliderSetting patience =
+		new SliderSetting("耐心", "如果没有咬合，AutoFish将在此等待多长时间再进行收线。", 60, 10, 120,
+			1, ValueDisplay.INTEGER.withSuffix("秒"));
 	
 	private final ShallowWaterWarningCheckbox shallowWaterWarning =
 		new ShallowWaterWarningCheckbox();
