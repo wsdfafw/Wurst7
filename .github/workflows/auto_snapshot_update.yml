@@ -1,42 +1,37 @@
-# Experimental workflow to automate updating to a new Minecraft snapshot.
+# 实验性工作流，用于自动化更新到新的Minecraft快照。
 
-# Currently this is very similar to the semi-automatic scripts I already use,
-# but moving them to GitHub Actions means I don't have to be around to start
-# them. This should allow for further automation in the future.
+# 目前这和我目前使用的半自动脚本非常相似，
+# 但将它们迁移到GitHub Actions意味着我不必在场来启动它们。
+# 这应该允许未来进行更多的自动化。
 
-# TODO:
-# - Add more thorough automated testing where it runs the game, creates a test
-#   world and takes screenshots, similar to what Fabric API does in their
-#   GitHub Actions workflow.
-# - Set up a server to trigger this workflow when a new snapshot is out and
-#   Fabric has updated to it. This might end up running twice per snapshot,
-#   because there is no way to know ahead of time if the previous Fabric API
-#   build still works or if we have to wait for a new build made specifically
-#   for the new snapshot.
-# - Add a step to automatically release the new snapshot build if all tests
-#   have passed. This will only ever run on small snapshots that don't break
-#   anything, but should save a ton of time at the end of each snapshot cycle
-#   when Mojang is spamming tiny pre-releases every day.
+# 待办事项：
+# - 添加更全面的自动化测试，运行游戏，创建测试世界并截图，
+#   类似于Fabric API在其GitHub Actions工作流中所做的那样。
+# - 设置一个服务器，当新的快照发布且Fabric已更新时触发此工作流。
+#   这可能每个快照运行两次，因为无法提前知道之前的Fabric API构建是否仍然有效，
+#   还是必须等待专门为新的快照制作的新的构建。
+# - 添加一个步骤，如果所有测试都通过，则自动发布新的快照构建。
+#   这只会在不影响任何内容的较小快照上运行，但应该能节省每次快照周期结束时
+#   Mojang每天发布的小型预发布的大量时间。
 
-# In case it isn't obvious, these todos are very ambitious and might not end
-# up working as planned.
+# 如果不明显，这些待办事项非常雄心勃勃，可能不会按计划工作。
 
-name: Auto Snapshot Update
+name: 自动快照更新
 
 on:
   workflow_dispatch:
     inputs:
       mc_version:
-        description: "Minecraft version to update to"
+        description: "要更新的Minecraft版本"
         required: true
       yarn_mappings:
-        description: "Yarn mappings version"
+        description: "Yarn映射版本"
         required: true
       fabric_loader:
-        description: "Fabric Loader version"
+        description: "Fabric Loader版本"
         required: true
       fapi_version:
-        description: "Fabric API version"
+        description: "Fabric API版本"
         required: true
 
 permissions:
@@ -47,74 +42,74 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Checkout repository
+    - name: 检出仓库
       uses: actions/checkout@v4
       with:
-        # Include all branches in case the new snapshot branch already exists.
+        # 包括所有分支，以防新的快照分支已经存在。
         fetch-depth: 0
 
-    - name: Set up Python 3.12
+    - name: 设置Python 3.12
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 
-    - name: Set up Java 21
+    - name: 设置Java 21
       uses: actions/setup-java@v4
       with:
         java-version: "21"
         distribution: "microsoft"
 
-    - name: Grant execute permission for gradlew
+    - name: 为gradlew授予执行权限
       run: chmod +x gradlew
 
-    - name: Setup Gradle
+    - name: 设置Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
         build-scan-publish: true
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"
 
-    - name: Create and checkout new snapshot branch
+    - name: 创建并检出新的快照分支
       run: |
         BRANCH_NAME="${{ github.event.inputs.mc_version }}"
         CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
         
         if [ "$CURRENT_BRANCH" = "$BRANCH_NAME" ]; then
-          echo "Already on branch $BRANCH_NAME. Skipping branch creation."
+          echo "已经在分支 $BRANCH_NAME 上。跳过分支创建。"
         elif git show-ref --quiet refs/heads/$BRANCH_NAME; then
-          echo "Branch $BRANCH_NAME already exists but is not currently checked out. Failing the workflow."
+          echo "分支 $BRANCH_NAME 已经存在但当前未检出。工作流失败。"
           exit 1
         else
           git checkout -b $BRANCH_NAME
-          echo "Created and checked out new branch: $BRANCH_NAME"
+          echo "已创建并检出新分支：$BRANCH_NAME"
         fi
       shell: bash
 
-    - name: Run migrateMappings task
+    - name: 运行migrateMappings任务
       run: |
         ./gradlew migrateMappings --mappings ${{ github.event.inputs.yarn_mappings }}
       shell: bash
 
-    - name: Replace src/main/java with remapped files
+    - name: 替换src/main/java与重映射文件
       run: |
         rm -rf ./src/main/java
         mv ./remappedSrc ./src/main/java
       shell: bash
 
-    - name: Update version constants
+    - name: 更新版本常量
       run: |
         python scripts/update_version_constants.py "${{ github.event.inputs.mc_version }}" "${{ github.event.inputs.yarn_mappings }}" "${{ github.event.inputs.fabric_loader }}" "${{ github.event.inputs.fapi_version }}"
       shell: bash
 
-    # To fix any style issues that the migration scripts might cause
-    - name: Run spotlessApply task
+    # 修复迁移脚本可能引起的任何样式问题
+    - name: 运行spotlessApply任务
       run: ./gradlew spotlessApply
 
-    - name: Commit and push changes
+    - name: 提交并推送更改
       run: |
-        git config --global user.name "Wurst-Bot"
+        git config --global user.name "lroj-Bot"
         git config --global user.email "contact.wurstimperium@gmail.com"
         git add .
-        git commit -m "[Wurst-Bot] Update to ${{ github.event.inputs.mc_version }}"
+        git commit -m "[lroj-Bot] 更新到 ${{ github.event.inputs.mc_version }}"
         git push --set-upstream origin ${{ github.event.inputs.mc_version }}
       shell: bash
