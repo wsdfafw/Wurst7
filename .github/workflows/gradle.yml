@@ -48,22 +48,22 @@ jobs:
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"
 
-    - name: Compile Java code
+    - name: 编译Java代码
       run: ./gradlew remapJar --stacktrace --warning-mode=fail
 
-    - name: Validate JSON files
-      run: ./gradlew spotlessJsonCheck || (echo "::error::JSON validation failed! Run './gradlew spotlessApply' to fix style issues, or check the full error message for syntax errors." && exit 1)
+    - name: 验证JSON文件
+      run: ./gradlew spotlessJsonCheck || (echo "::error::JSON验证失败！运行'./gradlew spotlessApply'修复样式问题，或检查完整错误消息以查找语法错误。" && exit 1)
 
-    - name: Validate Java code style
-      run: ./gradlew spotlessCheck || (echo "::error::Java code style validation failed! To fix, run 'Clean Up' and then 'Format' in Eclipse, or './gradlew spotlessApply' in the terminal." && exit 1)
+    - name: 验证Java代码风格
+      run: ./gradlew spotlessCheck || (echo "::error::Java代码风格验证失败！要修复，请在Eclipse中运行'Clean Up'和'Format'，或在终端中运行'./gradlew spotlessApply'。" && exit 1)
 
-    - name: Run unit tests
+    - name: 运行单元测试
       run: ./gradlew test --stacktrace --warning-mode=fail
 
-    - name: Validate access widener
+    - name: 验证访问 widener
       run: ./gradlew validateAccessWidener --stacktrace --warning-mode=fail
 
-    - name: Build
+    - name: 构建
       run: ./gradlew build --stacktrace --warning-mode=fail
 
     - name: VirusTotal扫描
@@ -74,16 +74,15 @@ jobs:
         vt_api_key: ${{ env.VIRUSTOTAL_API_KEY }}
         files: |
           ./build/libs/*.jar
-      # An error in this step means that the upload failed, not that a false
-      # positive was detected.
+      # 此步骤中的错误表示上传失败，而不是检测到假阳性。
       continue-on-error: true
 
-    - name: Add VirusTotal links to build summary
+    - name: 将VirusTotal链接添加到构建摘要
       if: ${{ env.VIRUSTOTAL_API_KEY && steps.virustotal.outputs.analysis }}
       shell: bash
       run: |
         echo "<details open>" >> $GITHUB_STEP_SUMMARY
-        echo "<summary>🛡️ VirusTotal Scans</summary>" >> $GITHUB_STEP_SUMMARY
+        echo "<summary>🛡️ VirusTotal扫描</summary>" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         IFS=',' read -ra ANALYSIS <<< "${{ steps.virustotal.outputs.analysis }}"
         for i in "${ANALYSIS[@]}"; do
@@ -99,21 +98,21 @@ jobs:
       with:
         run: ./gradlew runEndToEndTest --stacktrace --warning-mode=fail
 
-    # Needed because the screenshot gallery won't be created on pull requests.
-    # Also useful if Imgur uploads fail.
-    - name: Upload Test Screenshots.zip artifact
+    # 需要此步骤，因为截图库在pull请求上不会创建。
+    # 如果Imgur上传失败，此步骤也很有用。
+    - name: 上传Test Screenshots.zip构件
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: Test Screenshots
         path: run/screenshots
 
-    - name: Create test screenshot gallery
+    - name: 创建测试截图图库
       if: ${{ env.IMGUR_CLIENT_ID && (success() || failure()) }}
       shell: bash
       run: |
         echo "<details open>" >> $GITHUB_STEP_SUMMARY
-        echo "<summary>📸 Test Screenshots</summary>" >> $GITHUB_STEP_SUMMARY
+        echo "<summary>📸 测试截图</summary>" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
         for img in run/screenshots/*.png; do
@@ -121,17 +120,17 @@ jobs:
             filename=$(basename "$img")
             name_without_ext="${filename%.*}"
 
-            # Upload to Imgur
+            # 上传到Imgur
             response=$(curl -s -X POST \
               -H "Authorization: Client-ID $IMGUR_CLIENT_ID" \
               -F "image=@$img" \
               https://api.imgur.com/3/image)
 
-            # Extract the URL from the response
+            # 从响应中提取URL
             url=$(echo $response | grep -o '"link":"[^"]*"' | cut -d'"' -f4)
 
             if [ ! -z "$url" ]; then
-              # Convert underscores to spaces and capitalize first letter of each word
+              # 将下划线转换为空格，并将每个单词的首字母大写
               title=$(echo "$name_without_ext" | tr '_' ' ' | awk '{for(i=1;i<=NF;i++)sub(/./,toupper(substr($i,1,1)),$i)}1')
               echo "### $title" >> $GITHUB_STEP_SUMMARY
               echo "![${name_without_ext}]($url)" >> $GITHUB_STEP_SUMMARY
@@ -149,7 +148,7 @@ jobs:
         name: Artifacts
         path: build/libs/Wurst-Client-*.jar
 
-    - name: 自动释放
+    - name: 自动发布
       if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
