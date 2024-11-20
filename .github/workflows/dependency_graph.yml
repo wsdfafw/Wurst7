@@ -2,6 +2,11 @@ name: 更新 Gradle 依赖关系图
 
 on:
   push:
+    branches:
+      # Submitting dependency graph reports on non-default branches does nothing
+      - "master"
+    tags-ignore:
+      - "**"
     paths:
       - "gradle**"
       - "*.gradle"
