@@ -1,5 +1,9 @@
 name: Publish Release
 
+permissions:
+  # Needed to push the tag.
+  contents: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -32,7 +36,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           # Include all tags in case the new tag already exists.
           fetch-tags: true
@@ -54,11 +59,11 @@ jobs:
 
       - name: Create and push tag
         run: |
-          MOD_VERSION=$(grep "mod_version" gradle.properties | cut -d'=' -f2 | tr -d ' ')
+          MOD_VERSION=$(grep "mod_version" gradle.properties | cut -d'=' -f2 | tr -d ' \r')
           git config --global user.name "Wurst-Bot"
           git config --global user.email "contact.wurstimperium@gmail.com"
-          git tag $MOD_VERSION
-          git push origin $MOD_VERSION
+          git tag "$MOD_VERSION"
+          git push origin "$MOD_VERSION"
 
       - name: Close milestone
         if: ${{ inputs.close_milestone }}
@@ -79,10 +84,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.WURSTCLIENT_NET_PUBLISH_TOKEN }}
         run: |
-          MOD_VERSION=$(grep "mod_version" gradle.properties | cut -d'=' -f2 | tr -d ' ')
-          WURST_VERSION=$(echo $MOD_VERSION | sed 's/^v//' | sed 's/-MC.*$//')
-          MC_VERSION=$(grep "minecraft_version" gradle.properties | cut -d'=' -f2 | tr -d ' ')
-          FAPI_VERSION=$(grep "fabric_version" gradle.properties | cut -d'=' -f2 | tr -d ' ')
+          MOD_VERSION=$(grep "mod_version" gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+          WURST_VERSION=$(echo "$MOD_VERSION" | sed 's/^v//' | sed 's/-MC.*$//')
+          MC_VERSION=$(grep "minecraft_version" gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+          FAPI_VERSION=$(grep "fabric_version" gradle.properties | cut -d'=' -f2 | tr -d ' \r')
           gh workflow run add_wurst_port.yml \
             -R Wurst-Imperium/WurstClient.net \
             -f wurst_version="$WURST_VERSION" \
