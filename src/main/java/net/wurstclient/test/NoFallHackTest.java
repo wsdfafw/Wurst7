@@ -53,15 +53,15 @@ public enum NoFallHackTest
 	private static void assertOnGround()
 	{
 		if(!submitAndGet(mc -> mc.player.isOnGround()))
-			throw new RuntimeException("Player is not on ground");
+			throw new RuntimeException("玩家不在地面上");
 	}
 	
 	private static void assertPlayerHealth(Predicate<Float> healthCheck)
 	{
 		float health = submitAndGet(mc -> mc.player.getHealth());
 		if(healthCheck.test(health))
-			System.out.println("Player's health is correct: " + health);
+			System.out.println("玩家血量正确: " + health);
 		else
-			throw new RuntimeException("Player's health is wrong: " + health);
+			throw new RuntimeException("玩家血量错误: " + health);
 	}
 }
