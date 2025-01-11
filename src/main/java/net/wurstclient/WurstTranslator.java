@@ -1,5 +1,5 @@
 /*
- * 版权所有 (c) 2014-2024 Wurst-Imperium 和贡献者。
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * 本源代码受 GNU 通用公共许可证版本 3 的条款约束。如果没有随本文件分发 GPL 副本，
  * 您可以在以下网址获取一份：https://www.gnu.org/licenses/gpl-3.0.txt
