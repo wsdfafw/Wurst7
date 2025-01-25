@@ -14,16 +14,15 @@ public final class NukerModeSetting
 {
 	public NukerModeSetting()
 	{
-		super("模式",
-                """
-                        §l普通§r模式会破坏你周围的所有方块。
-                        
-                        §lID§r模式仅破坏所选的方块类型。 左键点击一个方块以选择它。
-                        
-                        §l多ID§r模式仅破坏你在 多ID列表中的方块类型。
-                        
-                        §l破坏§r模式仅破坏可以 被瞬间破坏的方块（例如高草）。""",
-			NukerMode.values(), NukerMode.NORMAL);
+		super("模式", """
+			§l普通§r模式会破坏你周围的所有方块。
+			
+			§lID§r模式仅破坏所选的方块类型。 左键点击一个方块以选择它。
+			
+			§l多ID§r模式仅破坏你在 多ID列表中的方块类型。
+			
+			§l破坏§r模式仅破坏可以 被瞬间破坏的方块（例如高草）。""", NukerMode.values(),
+			NukerMode.NORMAL);
 	}
 	
 	public enum NukerMode
