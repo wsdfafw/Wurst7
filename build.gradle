@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
 	id "fabric-loom" version "1.9-SNAPSHOT"
-	id "com.diffplug.spotless" version "7.0.1"
+	id "com.diffplug.spotless" version "7.0.2"
 }
 
 def ENV = System.getenv()
@@ -130,7 +130,7 @@ spotless {
 	lineEndings("WINDOWS")
 	java {
 		removeUnusedImports()
-		indentWithTabs()
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		eclipse().configFile(file("codestyle/formatter.xml"))
 	}
@@ -163,23 +163,24 @@ def getChangelogUrl() {
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
-task github(dependsOn: build) {
+tasks.register('github') {
+	dependsOn build
 	onlyIf {
 		ENV.GITHUB_TOKEN
 	}
-	
+
 	doLast {
 		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
 		def repository = github.getRepository("Wurst-Imperium/Wurst-MCX2")
 		def ghVersion = getGhVersion()
-		
+
 		def ghRelease = repository.getReleaseByTagName(ghVersion as String)
-		if(ghRelease == null) {
+		if (ghRelease == null) {
 			def releaseBuilder = new GHReleaseBuilder(repository, ghVersion as String)
 			releaseBuilder.prerelease(ghVersion.contains("pre"))
 			ghRelease = releaseBuilder.create()
 		}
-		
+
 		ghRelease.uploadAsset(remapJar.archiveFile.get().getAsFile(), "application/java-archive")
 		ghRelease.uploadAsset(remapSourcesJar.archiveFile.get().getAsFile(), "application/java-archive")
 	}
@@ -191,22 +192,22 @@ import org.kohsuke.github.GHMilestoneState
 import java.time.ZoneId
 import java.time.Instant
 
-task closeMilestone {
+tasks.register('closeMilestone') {
 	onlyIf {
 		ENV.GITHUB_TOKEN
 	}
-	
+
 	doLast {
 		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
 		def repository = github.getRepository("Wurst-Imperium/Wurst7")
 		def ghVersion = getGhVersion()
-		
+
 		// Weird API design: listMilestones() requires GHIssueState while everything else uses GHMilestoneState.
 		def milestone = repository.listMilestones(GHIssueState.ALL).find { it.title == ghVersion }
 		if (milestone == null) {
-			milestone = repository.createMilestone(ghVersion, "")
+			milestone = repository.createMilestone(ghVersion.toString(), "")
 		}
-		
+
 		if (milestone.getState() != GHMilestoneState.CLOSED) {
 			milestone.setDueOn(Date.from(Instant.now()))
 			milestone.setDescription(getChangelogUrl())
@@ -215,40 +216,61 @@ task closeMilestone {
 	}
 }
 
-task uploadBackups {
+tasks.register('uploadBackups') {
 	dependsOn build
-	
+
 	onlyIf {
 		ENV.WI_BACKUPS_API_KEY
 	}
-	
+
 	doLast {
 		def shortVersion = getGhVersion().substring(1)
 		def backupUrl = "https://api.wurstclient.net/artifact-backups/Wurst/${shortVersion}"
-		
-		def connection = new URL(backupUrl).openConnection() as HttpURLConnection
-		def boundary = UUID.randomUUID().toString()
-		connection.setRequestMethod("POST")
-		connection.setRequestProperty("X-API-Key", ENV.WI_BACKUPS_API_KEY)
-		connection.setRequestProperty("Accept", "application/json")
-		connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
-		connection.doOutput = true
-		
-		def output = connection.outputStream
-		[remapJar, remapSourcesJar].each { jarTask ->
-			def file = jarTask.archiveFile.get().asFile
-			output << "--${boundary}\r\n"
-			output << "Content-Disposition: form-data; name=\"files\"; filename=\"${file.name}\"\r\n"
-			output << "Content-Type: application/java-archive\r\n\r\n"
-			file.withInputStream { input -> 
-				output << input
+
+		def maxRetries = 3
+		def retryCount = 0
+		def success = false
+
+		while (!success && retryCount < maxRetries) {
+			try {
+//				def connection = new URL(backupUrl).openConnection() as HttpURLConnection
+//				def backupUrl = URI.create("https://api.wurstclient.net/artifact-backups/Wurst/${shortVersion}")
+				def connection = backupUrl.toURL().openConnection() as HttpURLConnection
+				def boundary = UUID.randomUUID().toString()
+				connection.setRequestMethod("POST")
+				connection.setRequestProperty("X-API-Key", ENV.WI_BACKUPS_API_KEY)
+				connection.setRequestProperty("Accept", "application/json")
+				connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+				connection.doOutput = true
+
+				def output = connection.outputStream
+				[remapJar, remapSourcesJar].each { jarTask ->
+					def file = jarTask.archiveFile.get().asFile
+					output << "--${boundary}\r\n"
+					output << "Content-Disposition: form-data; name=\"files\"; filename=\"${file.name}\"\r\n"
+					output << "Content-Type: application/java-archive\r\n\r\n"
+					file.withInputStream { input ->
+						output << input
+					}
+					output << "\r\n"
+				}
+				output << "--${boundary}--\r\n"
+				output.flush()
+
+				if (connection.responseCode != 200) {
+					throw new IOException("HTTP ${connection.responseCode}: ${connection.responseMessage}")
+				}
+
+				success = true
+
+			} catch (Exception e) {
+				retryCount++
+				if (retryCount >= maxRetries) {
+					throw new GradleException("Failed to upload backups after ${maxRetries} attempts: ${e.message}")
+				}
+				println "Upload attempt ${retryCount} failed: ${e.message}. Retrying in 5 seconds..."
+				Thread.sleep(5000)
 			}
-			output << "\r\n"
 		}
-		output << "--${boundary}--\r\n"
-		output.flush()
-		
-		if(connection.responseCode != 200)
-			throw new GradleException("Failed to upload backups: ${connection.responseCode} ${connection.responseMessage}")
 	}
 }

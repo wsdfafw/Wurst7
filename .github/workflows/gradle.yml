@@ -20,6 +20,10 @@ on:
       - "gradle**"
       - "*.gradle"
   workflow_dispatch:
+    inputs:
+      distinct_id:
+        description: "Automatically set by the return-dispatch action (leave blank if running manually)"
+        required: false
 
 jobs:
   build:
@@ -28,6 +32,9 @@ jobs:
       VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
       IMGUR_CLIENT_ID: ${{ secrets.IMGUR_CLIENT_ID }}
     steps:
+
+    - name: Echo distinct ID ${{ github.event.inputs.distinct_id }}
+      run: echo ${{ github.event.inputs.distinct_id }}
 
     - name: 检出仓库
       uses: actions/checkout@v4
@@ -83,7 +90,8 @@ jobs:
         vt_api_key: ${{ env.VIRUSTOTAL_API_KEY }}
         files: |
           ./build/libs/*.jar
-      # 此步骤中的错误表示上传失败，而不是检测到假阳性。
+      # An error in this step means that the upload failed, not that a false
+      # positive was detected.
       continue-on-error: true
 
     - name: 将VirusTotal链接添加到构建摘要
@@ -106,11 +114,10 @@ jobs:
       uses: GabrielBB/xvfb-action@v1.7
       with:
         run: ./gradlew runEndToEndTest --stacktrace --warning-mode=fail
-      continue-on-error: true
 
-    # 需要此步骤，因为截图库在pull请求上不会创建。
-    # 如果Imgur上传失败，此步骤也很有用。
-    - name: 上传Test Screenshots.zip构件
+    # Needed because the screenshot gallery won't be created on pull requests.
+    # Also useful if Imgur uploads fail.
+    - name: Upload Test Screenshots.zip artifact
       uses: actions/upload-artifact@v4
       if: always()
       with:
@@ -126,21 +133,17 @@ jobs:
         echo "<details open>" >> $GITHUB_STEP_SUMMARY
         echo "<summary>📸 测试截图</summary>" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-
         for img in run/screenshots/*.png; do
           if [ -f "$img" ]; then
             filename=$(basename "$img")
             name_without_ext="${filename%.*}"
-
             # 上传到Imgur
             response=$(curl -s -X POST \
               -H "Authorization: Client-ID $IMGUR_CLIENT_ID" \
               -F "image=@$img" \
               https://api.imgur.com/3/image)
-
             # 从响应中提取URL
             url=$(echo $response | grep -o '"link":"[^"]*"' | cut -d'"' -f4)
-
             if [ ! -z "$url" ]; then
               # 将下划线转换为空格，并将每个单词的首字母大写
               title=$(echo "$name_without_ext" | tr '_' ' ' | awk '{for(i=1;i<=NF;i++)sub(/./,toupper(substr($i,1,1)),$i)}1')
