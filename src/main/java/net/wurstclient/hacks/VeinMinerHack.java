@@ -53,8 +53,8 @@ public final class VeinMinerHack extends Hack
 	private final SliderSetting range =
 		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
 	
-	private final CheckboxSetting flat = new CheckboxSetting("平坦模式",
-		"在您脚下不会破坏任何方块。", false);
+	private final CheckboxSetting flat =
+		new CheckboxSetting("平坦模式", "在您脚下不会破坏任何方块。", false);
 	
 	private final NukerMultiIdListSetting multiIdList =
 		new NukerMultiIdListSetting("要作为矿石开采的方块类型。");
@@ -68,13 +68,10 @@ public final class VeinMinerHack extends Hack
 	private BlockPos currentBlock;
 	
 	private final SliderSetting maxVeinSize = new SliderSetting("最大矿脉大小",
-		"在单个矿脉中最大开采的方块数。", 64, 1, 1000, 1,
-		ValueDisplay.INTEGER);
+		"在单个矿脉中最大开采的方块数。", 64, 1, 1000, 1, ValueDisplay.INTEGER);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"检查视线",
-		"确保在破坏方块时不会穿墙。",
-		false);
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("检查视线", "确保在破坏方块时不会穿墙。", false);
 	
 	public VeinMinerHack()
 	{

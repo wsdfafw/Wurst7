@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
- * 本源代码受 GNU 通用公共许可证版本 3 的条款约束。如果没有随本文件分发 GPL 副本，
- * 您可以在以下网址获取一份：https://www.gnu.org/licenses/gpl-3.0.txt
+ * This source code is subject to the terms of the GNU General Public
+ * License, version 3. If a copy of the GPL was not distributed with this
+ * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 package net.wurstclient;
 

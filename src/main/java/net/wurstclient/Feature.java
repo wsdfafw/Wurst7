@@ -33,7 +33,7 @@ public abstract class Feature
 		new LinkedHashSet<>();
 	
 	private final String searchTags =
-		getClass().isAnnotationPresent(SearchTags.class) ? String.join("\u00a7",
+		getClass().isAnnotationPresent(SearchTags.class) ? String.join("§",
 			getClass().getAnnotation(SearchTags.class).value()) : "";
 	
 	private final boolean safeToBlock =
@@ -76,7 +76,7 @@ public abstract class Feature
 		
 		if(settings.containsKey(key))
 			throw new IllegalArgumentException(
-				"重复设置: " + getName() + " " + key);
+				"Duplicate setting: " + getName() + " " + key);
 		
 		settings.put(key, setting);
 		possibleKeybinds.addAll(setting.getPossibleKeybinds(getName()));
