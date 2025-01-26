@@ -62,6 +62,8 @@ dependencies {
 	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
 }
 
+
+import groovy.json.JsonSlurper
 import net.fabricmc.loom.util.Platform
 tasks.register('runEndToEndTest', JavaExec) {
 	dependsOn remapJar, downloadAssets
@@ -239,13 +241,18 @@ tasks.register('checkLocalization') {
 				// 匹配构造函数中 super 方法调用传递的字符串参数
 				def pattern = /super\s*\(\s*"([^"]+)"\s*\);/
 				def matcher = (fileText =~ pattern)
-
 				// 遍历匹配到的所有字符串参数
 				matcher.each { match ->
+					println "匹配到的内容: $match"
+//					def param = match[1].trim().replaceAll(/[\\p{C}]/, "") // 去除控制字符
 					def param = match[1].trim() // 去除前后空格
+					println "内容: $param"
 					def key = "description.wurst.hack.$param"
 					def jsonKeys = json.keySet().collect { it.trim().toLowerCase() } // 统一 JSON 文件中键的格式
-					// 检查键是否在 zh_cn.json 文件中
+					println "脚本构建的键: $key"
+					jsonKeys.each { jsonKey ->
+//						println "JSON 文件中的键: $jsonKey"
+					}
 					if (!jsonKeys.contains(key) && !missingKeys.contains(key)) {
 						println "未添加到 zh_cn.json 的本地化键: $key"
 						missingKeys.add(key)
