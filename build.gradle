@@ -233,15 +233,16 @@ tasks.register('checkLocalization') {
 			if (file.name.endsWith('.class')) {
 				// 使用javap反编译class文件为文本
 				def classText = "javap -verbose ${file.absolutePath}".execute().text
-				// 匹配所有本地化键，这里假设键的格式为"description.wurst.*"
-				def pattern = /description\.wurst\.[a-zA-Z_]*/
+				// 匹配构造函数中传入的字符串参数
+				def pattern = /super\("([^"]+)"\);/
 				def matcher = (classText =~ pattern)
 
 				// 遍历匹配到的所有键
 				matcher.each { match ->
-					def key = match
+					def param = match[1]
+					def key = "description.wurst.hack.$param"
 					// 检查键是否在zh_cn.json文件中
-					if (!json.containsKey(key)) {
+					if (!json.containsKey(key) && !missingKeys.contains(key)) {
 						println "未添加到zh_cn.json的本地化键: $key"
 					}
 				}
