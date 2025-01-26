@@ -1,6 +1,6 @@
 {
   "description.wurst.hack.瞄准辅助": "帮助你瞄准附近的实体。",
-  "description.wurst.hack.airplace": "允许你在空中放置方块。",
+  "description.wurst.hack.空中放置": "允许你在空中放置方块。",
   "description.wurst.hack.重生锚功能": "自动放置（可选），充能，引爆重生锚并击杀你附近的实体。",
   "description.wurst.hack.反挂机": "随机走动，用于避免服务器挂机检测。",
   "description.wurst.hack.反失明": "防止失明和黑暗效果。\n与 OptiFine 不兼容。",
@@ -162,7 +162,7 @@
   "description.wurst.hack.trollpotion": "生成一个恼人的药水效果。\n§o需要创造模式。§r",
   "description.wurst.hack.truesight": "允许你看到隐身的实体。",
   "description.wurst.hack.tunneller": "自动挖一个隧道。\n\n§c§l警告：§r 尽管这个 AI 会自动避开岩浆和其他危险，但无法确保你不会死亡，除非你不介意一定概率失去你的全部物品。",
-  "description.wurst.hack.x-ray": "透视矿物所在位置（请自行确保服务器内无假矿插件）。",
+  "description.wurst.hack.透视": "透视矿物所在位置（请自行确保服务器内无假矿插件）。",
   "description.wurst.other_feature.nochatreports": "禁用自 1.19 以来附加到你的聊天消息的加密签名。\n\n§c§l警告：§c如果你发送聊天消息并附加签名, §c你的Minecraft帐号将可以被举报，从而被禁止访问多人游戏!§r\n\n即使你在聊天中说的话并无恶意，你的消息也可能被批量举报从而导致你的账户被封禁。\n\n如果你必须重新启用聊天签名才能加入服务器，请考虑不在此服务器发言。或者使用你不介意被封禁的小号进行游戏。",
   "button.wurst.nochatreports.disable_signatures": "禁用签名",
   "button.wurst.nochatreports.re-enable_signatures": "重新启用签名",
