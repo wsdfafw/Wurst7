@@ -216,6 +216,40 @@ tasks.register('closeMilestone') {
 	}
 }
 
+// 定义任务
+tasks.register('checkLocalization') {
+	doLast {
+		// 定义zh_cn.json文件路径
+		def jsonFile = file('src/main/resources/assets/wurst/translations/zh_cn.json')
+		// 读取zh_cn.json文件内容
+		def jsonText = jsonFile.text
+		// 解析JSON内容
+		def json = new groovy.json.JsonSlurper().parseText(jsonText)
+
+		// 定义需要扫描的目录
+		def sourceDir = file('build/classes/java/main')
+		// 遍历目录下的所有Java文件
+		sourceDir.eachFileRecurse { file ->
+			if (file.name.endsWith('.class')) {
+				// 使用javap反编译class文件为文本
+				def classText = "javap -verbose ${file.absolutePath}".execute().text
+				// 匹配所有本地化键，这里假设键的格式为"description.wurst.*"
+				def pattern = /description\.wurst\.[a-zA-Z_]*/
+				def matcher = (classText =~ pattern)
+
+				// 遍历匹配到的所有键
+				matcher.each { match ->
+					def key = match
+					// 检查键是否在zh_cn.json文件中
+					if (!json.containsKey(key)) {
+						println "未添加到zh_cn.json的本地化键: $key"
+					}
+				}
+			}
+		}
+	}
+}
+
 tasks.register('uploadBackups') {
 	dependsOn build
 
