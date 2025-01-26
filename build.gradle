@@ -226,6 +226,9 @@ tasks.register('checkLocalization') {
 		// 解析JSON内容
 		def json = new groovy.json.JsonSlurper().parseText(jsonText)
 
+		// 用于存储已经发现的未添加的本地化键
+		def missingKeys = new HashSet<String>()
+
 		// 定义需要扫描的目录
 		def sourceDir = file('build/classes/java/main')
 		// 遍历目录下的所有Java文件
