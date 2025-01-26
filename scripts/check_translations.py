@@ -135,10 +135,10 @@ def check_known_issues(en_us: dict, translations: dict):
 
 
 def main():
-	en_us = util.read_json_file(translations_dir / "en_us.json")
+	en_us = util.read_json_file(translations_dir / "zh_cn.json")
 	translations = {}
 	for path in sorted(translations_dir.rglob("*.json"), key=lambda x: x.name):
-		if path.is_file() and path.name != "en_us.json":
+		if path.is_file() and path.name != "zh_cn.json":
 			lang = path.name.removesuffix(".json")
 			data = util.read_json_file(path)
 			translations[lang] = data
