@@ -63,7 +63,7 @@ def update_mc_version_constant(mc_version):
 	if found:
 		print("MC_VERSION constant updated.")
 	else:
-		print("Couldn't find MC_VERSION constant in WurstClient.java.")
+		print("在 WurstClient.java 中未找到 MC_VERSION 常量。")
 		exit(1)
 
 

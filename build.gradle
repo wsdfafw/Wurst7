@@ -221,9 +221,9 @@ tasks.register('closeMilestone') {
 // 定义任务
 tasks.register('checkLocalization') {
 	doLast {
-		// 定义zh_cn.json文件路径
+		// 定义 zh_cn.json 文件路径
 		def jsonFile = file('src/main/resources/assets/wurst/translations/zh_cn.json')
-		// 读取zh_cn.json文件内容
+		// 以 UTF-8 编码读取 zh_cn.json 文件内容
 		def jsonText = jsonFile.getText('UTF-8')
 		// 解析 JSON 内容
 		def json = new groovy.json.JsonSlurper().parseText(jsonText)
@@ -235,26 +235,37 @@ tasks.register('checkLocalization') {
 		def sourceDir = file('src/main/java')
 		// 遍历目录下的所有 Java 文件
 		sourceDir.eachFileRecurse { file ->
+//			println "正在处理文件: ${file.absolutePath}"
 			if (file.name.endsWith('.java')) {
 				// 读取 Java 文件内容
 				def fileText = file.text
 				// 匹配构造函数中 super 方法调用传递的字符串参数
 				def pattern = /super\s*\(\s*"([^"]+)"\s*\);/
 				def matcher = (fileText =~ pattern)
-				// 遍历匹配到的所有字符串参数
+				def uniqueParams = new HashSet<String>()
 				matcher.each { match ->
-					println "匹配到的内容: $match"
-//					def param = match[1].trim().replaceAll(/[\\p{C}]/, "") // 去除控制字符
-					def param = match[1].trim() // 去除前后空格
-					println "内容: $param"
-					def key = "description.wurst.hack.$param"
-					def jsonKeys = json.keySet().collect { it.trim().toLowerCase() } // 统一 JSON 文件中键的格式
-					println "脚本构建的键: $key"
-					jsonKeys.each { jsonKey ->
-//						println "JSON 文件中的键: $jsonKey"
+					uniqueParams.add(match[1])
+				}
+				uniqueParams.each { param ->
+					def originalParam = param
+					def cleanedParam = param.replaceAll(/\s+/, "").replaceAll(/[\\p{C}]/, "")
+					def originalKey = "description.wurst.hack.$originalParam".toLowerCase()
+					def key = "description.wurst.hack.$cleanedParam".toLowerCase()
+					println "原始参数: $originalParam"
+					println "原始键: $originalKey"
+					println "清理后键: $key"
+
+					def jsonKeys = json.keySet().collect {
+						def originalJsonKey = it
+						def cleanedJsonKey = it.replaceAll(/\s+/, "").replaceAll(/[\\p{C}]/, "").toLowerCase()
+//						println "原始 JSON 键: $originalJsonKey"
+//						println "清理后 JSON 键: $cleanedJsonKey"
+						cleanedJsonKey
 					}
-					if (!jsonKeys.contains(key) && !missingKeys.contains(key)) {
-						println "未添加到 zh_cn.json 的本地化键: $key"
+
+					def found = jsonKeys.find { jsonKey -> jsonKey == key }
+					if (!found && !missingKeys.contains(key)) {
+//						println "未添加到 zh_cn.json 的本地化键: $key"
 						missingKeys.add(key)
 					}
 				}
