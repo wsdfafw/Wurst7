@@ -141,8 +141,8 @@ public final class KeybindManagerScreen extends Screen
 		renderBackground(context, mouseX, mouseY, partialTicks);
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器", width / 2, 8,
-			0xFFFFFF);
+		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器",
+			width / 2, 8, 0xFFFFFF);
 		
 		int count = WurstClient.INSTANCE.getKeybinds().getAllKeybinds().size();
 		context.drawCenteredTextWithShadow(textRenderer, "键绑定: " + count,

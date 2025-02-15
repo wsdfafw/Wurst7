@@ -326,7 +326,7 @@ public final class AltManagerScreen extends Screen
 			}catch(InvalidPathException e)
 			{
 				throw new IOException(
-					"来自FileChooser的响应不是有效路径");
+					"来自 FileChooser 的响应不是有效路径");
 			}
 		}
 	}

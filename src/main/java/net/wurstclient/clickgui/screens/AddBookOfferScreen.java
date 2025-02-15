@@ -384,7 +384,7 @@ public final class AddBookOfferScreen extends Screen
 				false);
 			
 			int maxLevel = enchantment.value().getMaxLevel();
-			String levels = maxLevel + (maxLevel == 1 ? " 等级" : " 等级");
+			String levels = maxLevel + (maxLevel == 1 ? " 水平" : " 水平");
 			context.drawText(tr, levels, x + 28, y + 18, 0xA0A0A0, false);
 		}
 	}

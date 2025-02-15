@@ -7,6 +7,8 @@
  */
 package net.wurstclient.util;
 
+import java.util.OptionalDouble;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -18,6 +20,7 @@ import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -32,6 +35,40 @@ public enum RenderUtils
 	;
 	
 	private static final Box DEFAULT_BOX = new Box(0, 0, 0, 1, 1, 1);
+	
+	/**
+	 * Similar to {@link RenderLayer#getDebugLineStrip(double)}, but as a
+	 * non-srip version with support for transparency.
+	 *
+	 * @implNote Just like {@link RenderLayer#getDebugLineStrip(double)}, this
+	 *           layer doesn't support any other line width than 1px. Changing
+	 *           the line width number does nothing.
+	 */
+	public static final RenderLayer.MultiPhase ONE_PIXEL_LINES =
+		RenderLayer.of("wurst:1px_lines", VertexFormats.POSITION_COLOR,
+			DrawMode.DEBUG_LINES, 1536, false, true,
+			RenderLayer.MultiPhaseParameters.builder()
+				.program(RenderLayer.POSITION_COLOR_PROGRAM)
+				.lineWidth(new RenderPhase.LineWidth(OptionalDouble.of(1)))
+				.transparency(RenderLayer.TRANSLUCENT_TRANSPARENCY)
+				.cull(RenderLayer.DISABLE_CULLING).build(false));
+	
+	/**
+	 * Similar to {@link RenderLayer#getDebugLineStrip(double)}, but with
+	 * support for transparency.
+	 *
+	 * @implNote Just like {@link RenderLayer#getDebugLineStrip(double)}, this
+	 *           layer doesn't support any other line width than 1px. Changing
+	 *           the line width number does nothing.
+	 */
+	public static final RenderLayer.MultiPhase ONE_PIXEL_LINE_STRIP =
+		RenderLayer.of("wurst:1px_line_strip", VertexFormats.POSITION_COLOR,
+			DrawMode.DEBUG_LINE_STRIP, 1536, false, true,
+			RenderLayer.MultiPhaseParameters.builder()
+				.program(RenderLayer.POSITION_COLOR_PROGRAM)
+				.lineWidth(new RenderPhase.LineWidth(OptionalDouble.of(1)))
+				.transparency(RenderLayer.TRANSLUCENT_TRANSPARENCY)
+				.cull(RenderLayer.DISABLE_CULLING).build(false));
 	
 	/**
 	 * Enables a new scissor box with the given coordinates, while avoiding the
@@ -125,6 +162,14 @@ public enum RenderUtils
 	public static void setShaderColor(float[] rgb, float opacity)
 	{
 		RenderSystem.setShaderColor(rgb[0], rgb[1], rgb[2], opacity);
+	}
+	
+	public static int toIntColor(float[] rgb, float opacity)
+	{
+		return (int)(MathHelper.clamp(opacity, 0, 1) * 255) << 24
+			| (int)(MathHelper.clamp(rgb[0], 0, 1) * 255) << 16
+			| (int)(MathHelper.clamp(rgb[1], 0, 1) * 255) << 8
+			| (int)(MathHelper.clamp(rgb[2], 0, 1) * 255);
 	}
 	
 	public static void drawSolidBox(MatrixStack matrixStack)
@@ -761,5 +806,170 @@ public enum RenderUtils
 		}
 		
 		RenderSystem.setShaderColor(1, 1, 1, 1);
+	}
+	
+	/**
+	 * Similar to {@link DrawContext#fill(int, int, int, int, int)}, but uses
+	 * floating-point coordinates instead of integers.
+	 */
+	public static void fill2D(DrawContext context, float x1, float y1, float x2,
+		float y2, int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(RenderLayer.getGui());
+			buffer.vertex(matrix, x1, y1, 0).color(color);
+			buffer.vertex(matrix, x1, y2, 0).color(color);
+			buffer.vertex(matrix, x2, y2, 0).color(color);
+			buffer.vertex(matrix, x2, y1, 0).color(color);
+		});
+	}
+	
+	/**
+	 * Renders the given vertices in QUADS draw mode.
+	 *
+	 * @apiNote Due to back-face culling, quads will be invisible if their
+	 *          vertices are not supplied in counter-clockwise order.
+	 */
+	public static void fillQuads2D(DrawContext context, float[][] vertices,
+		int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(RenderLayer.getGui());
+			for(float[] vertex : vertices)
+				buffer.vertex(matrix, vertex[0], vertex[1], 0).color(color);
+		});
+	}
+	
+	/**
+	 * Renders the given vertices in TRIANGLE_STRIP draw mode.
+	 *
+	 * @apiNote Due to back-face culling, triangles will be invisible if their
+	 *          vertices are not supplied in counter-clockwise order.
+	 */
+	public static void fillTriangle2D(DrawContext context, float[][] vertices,
+		int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer =
+				consumers.getBuffer(RenderLayer.getDebugFilledBox());
+			for(float[] vertex : vertices)
+				buffer.vertex(matrix, vertex[0], vertex[1], 0).color(color);
+		});
+	}
+	
+	/**
+	 * Similar to {@link DrawContext#drawHorizontalLine(int, int, int, int)} and
+	 * {@link DrawContext#drawVerticalLine(int, int, int, int)}, but supports
+	 * diagonal lines, uses floating-point coordinates instead of integers, is
+	 * one actual pixel wide instead of one scaled pixel, uses fewer draw calls
+	 * than the vanilla method, and uses a z value of 1 to ensure that lines
+	 * show up above fills.
+	 */
+	public static void drawLine2D(DrawContext context, float x1, float y1,
+		float x2, float y2, int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(ONE_PIXEL_LINES);
+			buffer.vertex(matrix, x1, y1, 1).color(color);
+			buffer.vertex(matrix, x2, y2, 1).color(color);
+		});
+	}
+	
+	/**
+	 * Similar to {@link DrawContext#drawBorder(int, int, int, int, int)}, but
+	 * uses floating-point coordinates instead of integers, is one actual pixel
+	 * wide instead of one scaled pixel, uses fewer draw calls than the vanilla
+	 * method, and uses a z value of 1 to ensure that lines show up above fills.
+	 */
+	public static void drawBorder2D(DrawContext context, float x1, float y1,
+		float x2, float y2, int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(ONE_PIXEL_LINE_STRIP);
+			buffer.vertex(matrix, x1, y1, 1).color(color);
+			buffer.vertex(matrix, x2, y1, 1).color(color);
+			buffer.vertex(matrix, x2, y2, 1).color(color);
+			buffer.vertex(matrix, x1, y2, 1).color(color);
+			buffer.vertex(matrix, x1, y1, 1).color(color);
+		});
+	}
+	
+	/**
+	 * Draws a 1px border around the given polygon.
+	 */
+	public static void drawLineStrip2D(DrawContext context, float[][] vertices,
+		int color)
+	{
+		Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(ONE_PIXEL_LINE_STRIP);
+			for(float[] vertex : vertices)
+				buffer.vertex(matrix, vertex[0], vertex[1], 1).color(color);
+			buffer.vertex(matrix, vertices[0][0], vertices[0][1], 1)
+				.color(color);
+		});
+	}
+	
+	/**
+	 * Draws a box shadow around the given rectangle.
+	 */
+	public static void drawBoxShadow2D(DrawContext context, int x1, int y1,
+		int x2, int y2)
+	{
+		float[] acColor = WurstClient.INSTANCE.getGui().getAcColor();
+		
+		// outline
+		float xo1 = x1 - 0.1F;
+		float xo2 = x2 + 0.1F;
+		float yo1 = y1 - 0.1F;
+		float yo2 = y2 + 0.1F;
+		
+		int outlineColor = toIntColor(acColor, 0.5F);
+		drawBorder2D(context, xo1, yo1, xo2, yo2, outlineColor);
+		
+		// shadow
+		float xs1 = x1 - 1;
+		float xs2 = x2 + 1;
+		float ys1 = y1 - 1;
+		float ys2 = y2 + 1;
+		
+		int shadowColor1 = toIntColor(acColor, 0.75F);
+		int shadowColor2 = 0x00000000;
+		
+		MatrixStack matrixStack = context.getMatrices();
+		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		
+		context.draw(consumers -> {
+			VertexConsumer buffer = consumers.getBuffer(RenderLayer.getGui());
+			
+			// top
+			buffer.vertex(matrix, x1, y1, 0).color(shadowColor1);
+			buffer.vertex(matrix, x2, y1, 0).color(shadowColor1);
+			buffer.vertex(matrix, xs2, ys1, 0).color(shadowColor2);
+			buffer.vertex(matrix, xs1, ys1, 0).color(shadowColor2);
+			
+			// left
+			buffer.vertex(matrix, xs1, ys1, 0).color(shadowColor2);
+			buffer.vertex(matrix, xs1, ys2, 0).color(shadowColor2);
+			buffer.vertex(matrix, x1, y2, 0).color(shadowColor1);
+			buffer.vertex(matrix, x1, y1, 0).color(shadowColor1);
+			
+			// right
+			buffer.vertex(matrix, x2, y1, 0).color(shadowColor1);
+			buffer.vertex(matrix, x2, y2, 0).color(shadowColor1);
+			buffer.vertex(matrix, xs2, ys2, 0).color(shadowColor2);
+			buffer.vertex(matrix, xs2, ys1, 0).color(shadowColor2);
+			
+			// bottom
+			buffer.vertex(matrix, x2, y2, 0).color(shadowColor1);
+			buffer.vertex(matrix, x1, y2, 0).color(shadowColor1);
+			buffer.vertex(matrix, xs1, ys2, 0).color(shadowColor2);
+			buffer.vertex(matrix, xs2, ys2, 0).color(shadowColor2);
+		});
 	}
 }
