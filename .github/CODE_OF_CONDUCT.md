@@ -1,10 +1,15 @@
 ＃ 行为守则
 
-1. **在提出索赔之前，请尝试证明自己是错误的。**
-    如果可行，请对其进行测试。 如果没有，谷歌它看看其他人是否已经证明它是错误的。 这可以让您免于尴尬，同时有助于阻止错误信息的传播。
+- Try your best to be respectful and composed. Be constructive with your criticisms, and don't intentionally upset people. When providing negative feedback, attack concepts rather than people. Detailed opinions and reasoning is good, "[project] bad/cursed" is not.
 
-2. **在提出问题之前，请尝试自己回答。**
-    如果可行，请对其进行测试。 如果没有，谷歌一下，看看之前有没有其他人问过它。 这可以节省您的时间（谷歌搜索比等待人类回复更快）并避免我们感到沮丧（作为主持人，一遍又一遍地回答相同的问题很烦人）。
+- If you're getting heated and your discussions are becoming unproductive, consider stepping away from the conversation until you feel better and can think more clearly.
 
-3. **不要做混蛋。**
-    我们感谢讨论，但不接受人身攻击和骂人。
+- Remember that everyone has a life as interesting, rich and varied as your own, and these experiences will shape everyone differently. If someone asks you to stop behaving in a certain way, you should listen to them (especially if it directly involves them).
+
+- Don't be afraid to help out if you see someone in need of support. We were all beginners at some point, and everyone benefits from working together on problems.
+
+- All voices are welcome, regardless of age, background, or level of experience. Try to be helpful and encouraging towards newcomers and those that need help, and don't make fun of them for knowing less than you do.
+
+- Avoid being disruptive - don't dump memes or complaints without relevance to the topic at hand, and don't try to interrupt discussions or force them onto another topic.
+
+- Don't ask to ask, just ask! Instead of asking for someone to help, state your problem directly. This makes it more likely for people to engage in conversation and try to help you. See: https://solhsa.com/dontask.html
