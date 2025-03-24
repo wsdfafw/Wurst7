@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -196,10 +196,11 @@ public final class AutoToolHack extends Hack
 		{
 			DynamicRegistryManager drm =
 				WurstClient.MC.world.getRegistryManager();
-			Registry<Enchantment> registry = drm.get(RegistryKeys.ENCHANTMENT);
+			Registry<Enchantment> registry =
+				drm.getOrThrow(RegistryKeys.ENCHANTMENT);
 			
 			Optional<Reference<Enchantment>> efficiency =
-				registry.getEntry(Enchantments.EFFICIENCY);
+				registry.getOptional(Enchantments.EFFICIENCY);
 			int effLvl = efficiency
 				.map(entry -> EnchantmentHelper.getLevel(entry, stack))
 				.orElse(0);

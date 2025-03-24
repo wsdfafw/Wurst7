@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,23 +14,23 @@ public final class NukerModeSetting
 {
 	public NukerModeSetting()
 	{
-		super("Mode",
-			"\u00a7lNormal\u00a7r mode simply breaks everything around you.\n\n"
-				+ "\u00a7lID\u00a7r mode only breaks the selected block type."
-				+ " Left-click on a block to select it.\n\n"
-				+ "\u00a7lMultiID\u00a7r mode only breaks the block types in"
-				+ " your MultiID List.\n\n"
-				+ "\u00a7lSmash\u00a7r mode only breaks blocks that can be"
-				+ " destroyed instantly (e.g. tall grass).",
-			NukerMode.values(), NukerMode.NORMAL);
+		super("模式", """
+			§l普通§r模式会破坏你周围的所有方块。
+			
+			§lID§r模式仅破坏所选的方块类型。 左键点击一个方块以选择它。
+			
+			§l多ID§r模式仅破坏你在 多ID列表中的方块类型。
+			
+			§l破坏§r模式仅破坏可以 被瞬间破坏的方块（例如高草）。""", NukerMode.values(),
+			NukerMode.NORMAL);
 	}
 	
 	public enum NukerMode
 	{
-		NORMAL("Normal"),
+		NORMAL("普通"),
 		ID("ID"),
-		MULTI_ID("MultiID"),
-		SMASH("Smash");
+		MULTI_ID("多ID"),
+		SMASH("破坏");
 		
 		private final String name;
 		

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -8,7 +8,6 @@
 package net.wurstclient.mixin;
 
 import java.io.File;
-import java.util.UUID;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +26,6 @@ import net.minecraft.client.WindowEventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.session.ProfileKeys;
-import net.minecraft.client.session.ProfileKeysImpl;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -59,7 +57,7 @@ public abstract class MinecraftClientMixin
 	private YggdrasilAuthenticationService authenticationService;
 	
 	private Session wurstSession;
-	private ProfileKeysImpl wurstProfileKeys;
+	private ProfileKeys wurstProfileKeys;
 	
 	private MinecraftClientMixin(WurstClient wurst, String name)
 	{
@@ -213,10 +211,12 @@ public abstract class MinecraftClientMixin
 	{
 		wurstSession = session;
 		
-		UserApiService userApiService = authenticationService
-			.createUserApiService(session.getAccessToken());
-		UUID uuid = wurstSession.getUuidOrNull();
+		UserApiService userApiService =
+			session.getAccountType() == Session.AccountType.MSA
+				? authenticationService.createUserApiService(
+					session.getAccessToken())
+				: UserApiService.OFFLINE;
 		wurstProfileKeys =
-			new ProfileKeysImpl(userApiService, uuid, runDirectory.toPath());
+			ProfileKeys.create(userApiService, session, runDirectory.toPath());
 	}
 }

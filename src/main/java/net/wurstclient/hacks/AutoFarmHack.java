@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -306,9 +306,11 @@ public final class AutoFarmHack extends Hack
 					.interactBlock(MC.player, hand, params.toHitResult());
 				
 				// swing arm
-				if(result.isAccepted() && result.shouldSwingHand())
-					SwingHand.SERVER.swing(hand);
-				
+				// Note: All SwingHand types correspond to SwingSource.CLIENT
+				if(result instanceof ActionResult.Success success
+					&& success.swingSource() == ActionResult.SwingSource.CLIENT)
+					SwingHand.SERVER.swing(hand); // intentional use of SERVER
+					
 				// reset cooldown
 				MC.itemUseCooldown = 4;
 				return true;

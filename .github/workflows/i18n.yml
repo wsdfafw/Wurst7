@@ -1,0 +1,74 @@
+name: 检查本地化
+
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+    tags-ignore:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      distinct_id:
+        description: "由 return-dispatch 操作自动设置（如果手动运行，则留空）"
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+      IMGUR_CLIENT_ID: ${{ secrets.IMGUR_CLIENT_ID }}
+    steps:
+
+    - name: Echo distinct ID ${{ github.event.inputs.distinct_id }}
+      run: echo ${{ github.event.inputs.distinct_id }}
+
+    - name: 检出仓库
+      uses: actions/checkout@v4
+
+    - name: 设置Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: "21"
+        distribution: "microsoft"
+
+    - name: 授予gradlew执行权限
+      run: chmod +x gradlew
+
+    - name: 使用Spotless修复代码
+      id: spotless_Apply
+      run: ./gradlew :spotlessApply
+      env:
+        SPOTLESS_SKIP: ${{ github.event_name == 'pull_request' }}
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        build-scan-publish: true
+        build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
+        build-scan-terms-of-use-agree: "yes"
+
+    - name: 编译Java代码
+      run: ./gradlew remapJar --stacktrace --warning-mode=fail
+
+    - name: 验证JSON文件
+      run: ./gradlew spotlessJsonCheck || (echo "::error::JSON验证失败！运行'./gradlew spotlessApply'修复样式问题，或检查完整错误消息以查找语法错误。" && exit 1)
+
+    - name: 验证Java代码风格
+      run: ./gradlew spotlessJavaCheck || (echo "::error::Java代码风格验证失败！要修复，请在Eclipse中运行'Clean Up'和'Format'，或在终端中运行'./gradlew spotlessApply'。" && exit 1)
+
+    - name: 验证许可证标头
+      run: ./gradlew spotlessLicenseHeaderCheck || (echo "::error::License headers are missing or malformed in some files! Run './gradlew spotlessApply' to fix this, or check the full error message for details." && exit 1)
+
+    - name: 运行单元测试
+      run: ./gradlew test --stacktrace --warning-mode=fail
+
+    - name: 验证访问 widener
+      run: ./gradlew validateAccessWidener --stacktrace --warning-mode=fail
+
+    - name: 构建
+      run: ./gradlew build --stacktrace --warning-mode=fail
+
+    - name: 检查本地化
+      run: ./gradlew checkLocalization

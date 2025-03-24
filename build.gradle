@@ -1,12 +1,12 @@
 buildscript {
 	dependencies {
-		classpath "org.kohsuke:github-api:1.326"
+		classpath "org.kohsuke:github-api:1.327"
 	}
 }
 
 plugins {
-	id "fabric-loom" version "1.7-SNAPSHOT"
-	id "com.diffplug.spotless" version "6.25.0"
+	id "fabric-loom" version "1.10-SNAPSHOT"
+	id "com.diffplug.spotless" version "7.0.2"
 }
 
 def ENV = System.getenv()
@@ -24,6 +24,18 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+}
+
+// Override vulnerable dependencies until Minecraft updates to newer versions
+configurations.all {
+	resolutionStrategy {
+		// v2.5.1, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2024-57699
+		force "net.minidev:json-smart:2.5.2"
+		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-25193
+		force "io.netty:netty-common:4.1.118.Final"
+		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-24970
+		force "io.netty:netty-handler:4.1.118.Final"
+	}
 }
 
 dependencies {
@@ -49,24 +61,58 @@ loom {
 	accessWidenerPath = file("src/main/resources/wurst.accesswidener")
 }
 
-task localesGenerate(dependsOn: compileJava) {
-	description = "Generate JSON translation files (locales)"
-	doLast {
-		javaexec {
-			classpath = sourceSets.main.runtimeClasspath
-			mainClass = "net.wurstclient.LocalesGenerator"
-			jvmArgs = ["-Dfile.encoding=UTF-8"]
+configurations {
+	productionRuntime {
+		extendsFrom configurations.minecraftLibraries
+		extendsFrom configurations.loaderLibraries
+		extendsFrom configurations.minecraftRuntimeLibraries
+	}
+}
+
+dependencies {
+	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+}
+
+
+import groovy.json.JsonSlurper
+import net.fabricmc.loom.util.Platform
+tasks.register('runEndToEndTest', JavaExec) {
+	dependsOn remapJar, downloadAssets
+	classpath.from configurations.productionRuntime
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	workingDir = file("run")
+	
+	doFirst {
+		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
+		
+		args(
+			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+			"--gameDir", workingDir.absolutePath
+		)
+		
+		if (Platform.CURRENT.operatingSystem.isMacOS()) {
+			jvmArgs("-XstartOnFirstThread")
 		}
+		
+		jvmArgs(
+			"-Dfabric.addMods=${configurations.modImplementation.find { it.name.contains('fabric-api') }.absolutePath}${File.pathSeparator}${remapJar.archiveFile.get().asFile.absolutePath}",
+			"-Dwurst.e2eTest",
+			"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
+			"-Dfabric-tag-conventions-v1.legacyTagWarning=fail",
+			"-Dmixin.debug.verify=true",
+			"-Dmixin.debug.countInjections=true"
+		)
 	}
 }
 
 processResources {
-	dependsOn("localesGenerate")
-
-	inputs.property "version", project.version
+	inputs.property "version", project.version.substring(1)
 	
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": inputs.properties.version
 	}
 }
 
@@ -86,22 +132,34 @@ java {
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+	
 	from("LICENSE") {
-		rename {"${it}_${project.base.archivesName.get()}"}
+		rename {"${it}_${inputs.properties.archivesName}"}
 	}
+	
+	exclude("intentionally_untranslated.json")
 }
 
+import com.diffplug.spotless.generic.LicenseHeaderStep
 spotless {
-	lineEndings("WINDOWS")
+	lineEndings = "WINDOWS"
 	java {
 		removeUnusedImports()
-		indentWithTabs()
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		eclipse().configFile(file("codestyle/formatter.xml"))
 	}
+	format("licenseHeader") {
+		target("src/*/java/**/*.java", "src/test/java/**/*.java")
+		targetExclude("src/main/java/net/wurstclient/analytics/dmurph/**/*.java")
+		def header_file = file("codestyle/license_header.txt")
+		def delimiter = LicenseHeaderStep.DEFAULT_JAVA_HEADER_DELIMITER
+		licenseHeaderFile(header_file, delimiter).updateYearWithLatest(true)
+	}
 	json {
 		target "src/**/*.json"
-		gson().indentWithSpaces(2).version("2.10.1")
+		gson().indentWithSpaces(2).version("2.11.0")
 	}
 }
 
@@ -109,38 +167,182 @@ test {
 	useJUnitPlatform()
 }
 
-task moveDevLibs(dependsOn: [remapJar, remapSourcesJar]) {
-	doLast {
-		def archivesName = project.base.archivesName.get() as String
-		ant.move(file:"${project.buildDir}/devlibs/${archivesName}-${version}-dev.jar", tofile:"${project.buildDir}/libs/${archivesName}-${version}-dev.jar")
-		ant.move(file:"${project.buildDir}/devlibs/${archivesName}-${version}-sources.jar", tofile:"${project.buildDir}/libs/${archivesName}-${version}-sources-dev.jar")
-	}
+def getGhVersion() {
+	return version.substring(0, version.indexOf("-MC"))
+}
+
+def getChangelogUrl() {
+	def versionSlug = version.substring(1, version.indexOf("-MC")).replace(".", "-")
+	return "https://www.wurstclient.net/updates/wurst-${versionSlug}/"
 }
 
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
-task github(dependsOn: moveDevLibs) {
+tasks.register('github') {
+	dependsOn build
 	onlyIf {
 		ENV.GITHUB_TOKEN
 	}
-	
+
 	doLast {
 		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
 		def repository = github.getRepository("Wurst-Imperium/Wurst-MCX2")
-		def ghVersion = version.substring(0, version.indexOf("-"))
-		def archivesName = project.base.archivesName.get() as String
-		
+		def ghVersion = getGhVersion()
+
 		def ghRelease = repository.getReleaseByTagName(ghVersion as String)
-		if(ghRelease == null) {
+		if (ghRelease == null) {
 			def releaseBuilder = new GHReleaseBuilder(repository, ghVersion as String)
 			releaseBuilder.prerelease(ghVersion.contains("pre"))
 			ghRelease = releaseBuilder.create()
 		}
-		
+
 		ghRelease.uploadAsset(remapJar.archiveFile.get().getAsFile(), "application/java-archive")
 		ghRelease.uploadAsset(remapSourcesJar.archiveFile.get().getAsFile(), "application/java-archive")
-		ghRelease.uploadAsset(new File("${project.buildDir}/libs/${archivesName}-${version}-dev.jar"), "application/java-archive")
-		ghRelease.uploadAsset(new File("${project.buildDir}/libs/${archivesName}-${version}-sources-dev.jar"), "application/java-archive")
+	}
+}
+
+import java.time.LocalDate
+import org.kohsuke.github.GHIssueState
+import org.kohsuke.github.GHMilestoneState
+import java.time.ZoneId
+import java.time.Instant
+
+tasks.register('closeMilestone') {
+	onlyIf {
+		ENV.GITHUB_TOKEN
+	}
+
+	doLast {
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repository = github.getRepository("Wurst-Imperium/Wurst7")
+		def ghVersion = getGhVersion()
+
+		// Weird API design: listMilestones() requires GHIssueState while everything else uses GHMilestoneState.
+		def milestone = repository.listMilestones(GHIssueState.ALL).find { it.title == ghVersion }
+		if (milestone == null) {
+			milestone = repository.createMilestone(ghVersion.toString(), "")
+		}
+
+		if (milestone.getState() != GHMilestoneState.CLOSED) {
+			milestone.setDueOn(Date.from(Instant.now()))
+			milestone.setDescription(getChangelogUrl())
+			milestone.close()
+		}
+	}
+}
+
+// 定义任务
+tasks.register('checkLocalization') {
+	doLast {
+		// 定义 zh_cn.json 文件路径
+		def jsonFile = file('src/main/resources/assets/wurst/translations/zh_cn.json')
+		// 以 UTF-8 编码读取 zh_cn.json 文件内容
+		def jsonText = jsonFile.getText('UTF-8')
+		// 解析 JSON 内容
+		def json = new groovy.json.JsonSlurper().parseText(jsonText)
+
+		// 用于存储已经发现的未添加的本地化键
+		def missingKeys = new HashSet<String>()
+
+		// 定义需要扫描的目录，这里直接扫描 Java 源文件目录
+		def sourceDir = file('src/main/java')
+		// 遍历目录下的所有 Java 文件
+		sourceDir.eachFileRecurse { file ->
+//			println "正在处理文件: ${file.absolutePath}"
+			if (file.name.endsWith('.java')) {
+				// 读取 Java 文件内容
+				def fileText = file.text
+				// 匹配构造函数中 super 方法调用传递的字符串参数
+				def pattern = /super\s*\(\s*"([^"]+)"\s*\);/
+				def matcher = (fileText =~ pattern)
+				def uniqueParams = new HashSet<String>()
+				matcher.each { match ->
+					uniqueParams.add(match[1])
+				}
+				uniqueParams.each { param ->
+					def originalParam = param
+					def cleanedParam = param.replaceAll(/\s+/, "").replaceAll(/[\\p{C}]/, "")
+					def originalKey = "description.wurst.hack.$originalParam".toLowerCase()
+					def key = "description.wurst.hack.$cleanedParam".toLowerCase()
+					println "原始参数: $originalParam"
+					println "原始键: $originalKey"
+					println "清理后键: $key"
+
+					def jsonKeys = json.keySet().collect {
+						def originalJsonKey = it
+						def cleanedJsonKey = it.replaceAll(/\s+/, "").replaceAll(/[\\p{C}]/, "").toLowerCase()
+//						println "原始 JSON 键: $originalJsonKey"
+//						println "清理后 JSON 键: $cleanedJsonKey"
+						cleanedJsonKey
+					}
+
+					def found = jsonKeys.find { jsonKey -> jsonKey == key }
+					if (!found && !missingKeys.contains(key)) {
+//						println "未添加到 zh_cn.json 的本地化键: $key"
+						missingKeys.add(key)
+					}
+				}
+			}
+		}
+	}
+}
+
+tasks.register('uploadBackups') {
+	dependsOn build
+
+	onlyIf {
+		ENV.WI_BACKUPS_API_KEY
+	}
+
+	doLast {
+		def shortVersion = getGhVersion().substring(1)
+		def backupUrl = "https://api.wurstclient.net/artifact-backups/Wurst/${shortVersion}"
+
+		def maxRetries = 3
+		def retryCount = 0
+		def success = false
+
+		while (!success && retryCount < maxRetries) {
+			try {
+//				def connection = new URL(backupUrl).openConnection() as HttpURLConnection
+//				def backupUrl = URI.create("https://api.wurstclient.net/artifact-backups/Wurst/${shortVersion}")
+				def connection = backupUrl.toURL().openConnection() as HttpURLConnection
+				def boundary = UUID.randomUUID().toString()
+				connection.setRequestMethod("POST")
+				connection.setRequestProperty("X-API-Key", ENV.WI_BACKUPS_API_KEY)
+				connection.setRequestProperty("Accept", "application/json")
+				connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+				connection.doOutput = true
+
+				def output = connection.outputStream
+				[remapJar, remapSourcesJar].each { jarTask ->
+					def file = jarTask.archiveFile.get().asFile
+					output << "--${boundary}\r\n"
+					output << "Content-Disposition: form-data; name=\"files\"; filename=\"${file.name}\"\r\n"
+					output << "Content-Type: application/java-archive\r\n\r\n"
+					file.withInputStream { input ->
+						output << input
+					}
+					output << "\r\n"
+				}
+				output << "--${boundary}--\r\n"
+				output.flush()
+
+				if (connection.responseCode != 200) {
+					throw new IOException("HTTP ${connection.responseCode}: ${connection.responseMessage}")
+				}
+
+				success = true
+
+			} catch (Exception e) {
+				retryCount++
+				if (retryCount >= maxRetries) {
+					throw new GradleException("Failed to upload backups after ${maxRetries} attempts: ${e.message}")
+				}
+				println "Upload attempt ${retryCount} failed: ${e.message}. Retrying in 5 seconds..."
+				Thread.sleep(5000)
+			}
+		}
 	}
 }

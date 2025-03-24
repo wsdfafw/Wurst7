@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -55,8 +55,8 @@ public enum WurstClient
 	public static MinecraftClient MC;
 	public static IMinecraftClient IMC;
 	
-	public static final String VERSION = "7.46";
-	public static final String MC_VERSION = "1.21.1";
+	public static final String VERSION = "7.47.1";
+	public static final String MC_VERSION = "1.21.4";
 	
 	private WurstAnalytics analytics;
 	private EventManager eventManager;

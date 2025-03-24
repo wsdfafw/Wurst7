@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -69,7 +69,15 @@ public final class ProblematicResourcePackDetector implements UpdateListener
 	
 	private boolean isVanillaTweaks(ResourcePackProfile profile)
 	{
-		return profile.getDescription().getString().contains("Vanilla Tweaks");
+		try
+		{
+			return profile != null && profile.getDescription() != null
+				&& profile.getDescription().getString() != null
+				&& profile.getDescription().getString().contains("Vanilla Tweaks");
+		}catch(Exception e)
+		{
+			return false;
+		}
 	}
 	
 	private boolean containsTwinklingStars(ResourcePack pack)

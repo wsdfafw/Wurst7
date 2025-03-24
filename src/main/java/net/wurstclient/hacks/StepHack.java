@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,16 +16,19 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.EnumSetting;
 import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.util.BlockUtils;
 
 public final class StepHack extends Hack implements UpdateListener
 {
-	private final EnumSetting<Mode> mode = new EnumSetting("模式",
-		"§l简单§r 模式 可以一下子走上X格高\n的方块 (开启滑块高度).\n§l合法§r 模式可以绕过反作弊.",
-		(Enum[])Mode.values(), (Enum)Mode.LEGIT);
+	private final EnumSetting<Mode> mode = new EnumSetting<>("Mode",
+		"\u00a7l简单\u00a7r 模式可以升级多个块（启用高度滑块）.\n"
+			+ "\u00a7l合法\u00a7r 模式可以绕过NoChate+.",
+		Mode.values(), Mode.LEGIT);
+	
 	private final SliderSetting height =
-		new SliderSetting("高度", "只在 §l简单§r 模式有作用.", 1.0, 1.0, 10.0, 1.0,
-			SliderSetting.ValueDisplay.INTEGER);
+		new SliderSetting("高度", "仅适用于§l 简单 §r模式。",
+			1, 1, 10, 1, ValueDisplay.INTEGER);
 	
 	public StepHack()
 	{
@@ -65,7 +68,7 @@ public final class StepHack extends Hack implements UpdateListener
 			&& player.input.movementSideways == 0)
 			return;
 		
-		if(player.input.jumping)
+		if(player.jumping)
 			return;
 		
 		Box box = player.getBoundingBox().offset(0, 0.05, 0).expand(0.05);
@@ -84,11 +87,11 @@ public final class StepHack extends Hack implements UpdateListener
 		
 		netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
 			player.getX(), player.getY() + 0.42 * stepHeight, player.getZ(),
-			player.isOnGround()));
+			player.isOnGround(), MC.player.horizontalCollision));
 		
 		netHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
 			player.getX(), player.getY() + 0.753 * stepHeight, player.getZ(),
-			player.isOnGround()));
+			player.isOnGround(), MC.player.horizontalCollision));
 		
 		player.setPosition(player.getX(), player.getY() + stepHeight,
 			player.getZ());

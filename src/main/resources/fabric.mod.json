@@ -17,7 +17,8 @@
   "environment": "client",
   "entrypoints": {
     "main": [
-      "net.wurstclient.WurstInitializer"
+      "net.wurstclient.WurstInitializer",
+      "net.wurstclient.test.WurstE2ETestClient"
     ]
   },
   "mixins": [
@@ -25,9 +26,9 @@
   ],
   "accessWidener": "wurst.accesswidener",
   "depends": {
-    "fabricloader": ">=0.15.10",
-    "fabric-api": ">=0.99.5",
-    "minecraft": "~1.21-beta.1",
+    "fabricloader": ">=0.16.10",
+    "fabric-api": ">=0.110.5",
+    "minecraft": "~1.21.4-rc.3",
     "java": ">=21"
   },
   "suggests": {
@@ -36,8 +37,7 @@
   "breaks": {
     "wi_zoom": "*",
     "wi-zoom": "*",
-    "vulkanmod": "*",
-    "sodium": "<0.6.0-beta.1"
+    "vulkanmod": "*"
   },
   "custom": {
     "modmenu": {

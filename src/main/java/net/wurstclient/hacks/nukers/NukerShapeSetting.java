@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,17 +14,15 @@ public final class NukerShapeSetting
 {
 	public NukerShapeSetting()
 	{
-		super("Shape",
-			"\u00a7lNote:\u00a7r If your range is set too high, the cube shape"
-				+ " will start to look like a sphere because you can't reach"
-				+ " the corners. Ranges 1-3 work best for the cube shape.",
+		super("形状",
+			"\u00a7l注意：\u00a7r 如果你的范围设置得过高，立方体形状将会开始看起来像一个球体，因为你无法到达角落。范围1-3对立方体形状效果最好。",
 			NukerShape.values(), NukerShape.SPHERE);
 	}
 	
 	public enum NukerShape
 	{
-		SPHERE("Sphere"),
-		CUBE("Cube");
+		SPHERE("球体"),
+		CUBE("立方体");
 		
 		private final String name;
 		

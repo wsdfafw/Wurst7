@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -10,15 +10,11 @@ package net.wurstclient.hacks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -43,21 +39,23 @@ import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockBreakingCache;
 import net.wurstclient.util.BlockUtils;
 import net.wurstclient.util.OverlayRenderer;
-import net.wurstclient.util.RegionPos;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.RotationUtils;
 
 public final class VeinMinerHack extends Hack
 	implements UpdateListener, LeftClickListener, RenderListener
 {
-	private final SliderSetting range =
-		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	private static final Box BLOCK_BOX =
+		new Box(1 / 16.0, 1 / 16.0, 1 / 16.0, 15 / 16.0, 15 / 16.0, 15 / 16.0);
 	
-	private final CheckboxSetting flat = new CheckboxSetting("Flat mode",
-		"Won't break any blocks below your feet.", false);
+	private final SliderSetting range =
+		new SliderSetting("范围", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting flat =
+		new CheckboxSetting("平坦模式", "在您脚下不会破坏任何方块。", false);
 	
 	private final NukerMultiIdListSetting multiIdList =
-		new NukerMultiIdListSetting("The types of blocks to mine as veins.");
+		new NukerMultiIdListSetting("要作为矿石开采的方块类型。");
 	
 	private final SwingHandSetting swingHand = new SwingHandSetting(
 		SwingHandSetting.genericMiningDescription(this), SwingHand.SERVER);
@@ -67,14 +65,11 @@ public final class VeinMinerHack extends Hack
 	private final HashSet<BlockPos> currentVein = new HashSet<>();
 	private BlockPos currentBlock;
 	
-	private final SliderSetting maxVeinSize = new SliderSetting("Max vein size",
-		"Maximum number of blocks to mine in a single vein.", 64, 1, 1000, 1,
-		ValueDisplay.INTEGER);
+	private final SliderSetting maxVeinSize = new SliderSetting("最大矿脉大小",
+		"在单个矿脉中最大开采的方块数。", 64, 1, 1000, 1, ValueDisplay.INTEGER);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting(
-		"Check line of sight",
-		"Makes sure that you don't reach through walls when breaking blocks.",
-		false);
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("检查视线", "确保在破坏方块时不会穿墙。", false);
 	
 	public VeinMinerHack()
 	{
@@ -247,32 +242,8 @@ public final class VeinMinerHack extends Hack
 		if(currentVein.isEmpty())
 			return;
 		
-		// GL settings
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		
-		matrixStack.push();
-		RegionPos region = RenderUtils.getCameraRegion();
-		RenderUtils.applyRegionalRenderOffset(matrixStack, region);
-		
-		double boxMin = 1 / 16.0;
-		double boxMax = 15 / 16.0;
-		Box box = new Box(boxMin, boxMin, boxMin, boxMax, boxMax, boxMax)
-			.offset(region.negate().toVec3d());
-		
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		RenderSystem.setShaderColor(0, 0, 0, 0.5F);
-		for(BlockPos pos : currentVein)
-			RenderUtils.drawOutlinedBox(box.offset(pos), matrixStack);
-		
-		matrixStack.pop();
-		
-		// GL resets
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_BLEND);
+		List<Box> boxes =
+			currentVein.stream().map(pos -> BLOCK_BOX.offset(pos)).toList();
+		RenderUtils.drawOutlinedBoxes(matrixStack, boxes, 0x80000000, false);
 	}
 }
