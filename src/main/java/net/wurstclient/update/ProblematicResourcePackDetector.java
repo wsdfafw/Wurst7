@@ -69,15 +69,7 @@ public final class ProblematicResourcePackDetector implements UpdateListener
 	
 	private boolean isVanillaTweaks(ResourcePackProfile profile)
 	{
-		try
-		{
-			return profile != null && profile.getDescription() != null
-				&& profile.getDescription().getString() != null
-				&& profile.getDescription().getString().contains("Vanilla Tweaks");
-		}catch(Exception e)
-		{
-			return false;
-		}
+		return profile.getDescription().getString().contains("Vanilla Tweaks");
 	}
 	
 	private boolean containsTwinklingStars(ResourcePack pack)

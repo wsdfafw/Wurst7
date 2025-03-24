@@ -164,7 +164,7 @@ public final class AutoLibrarianHack extends Hack
 		}
 		
 		if(placingJobSite && breakingJobSite)
-			throw new IllegalStateException("检测到异常操作：试图同时放置和破坏工作站。请检查状态机逻辑。");
+			throw new IllegalStateException("试图同时放置和破坏作业现场。有点不对劲。");
 		
 		if(placingJobSite)
 		{
@@ -253,8 +253,7 @@ public final class AutoLibrarianHack extends Hack
 	private void breakJobSite()
 	{
 		if(jobSite == null)
-			if(jobSite == null)
-			throw new IllegalStateException("工作地点未正确初始化，请确保先选择有效的工作位置。");
+			throw new IllegalStateException("工作地点为空.");
 		
 		BlockBreakingParams params =
 			BlockBreaker.getBlockBreakingParams(jobSite);
@@ -286,8 +285,7 @@ public final class AutoLibrarianHack extends Hack
 	private void placeJobSite()
 	{
 		if(jobSite == null)
-			if(jobSite == null)
-			throw new IllegalStateException("工作地点未正确初始化，请确保先选择有效的工作位置。");
+			throw new IllegalStateException("工作地点为空.");
 		
 		if(!BlockUtils.getState(jobSite).isReplaceable())
 		{
