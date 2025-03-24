@@ -88,27 +88,27 @@ public abstract class AltEditorScreen extends Screen
 			.build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Cancel"), b -> client.setScreen(prevScreen))
+			.builder(Text.literal("取消"), b -> client.setScreen(prevScreen))
 			.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
 			.build());
 		
 		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Random Name"),
+			.builder(Text.literal("随机名称"),
 				b -> nameOrEmailBox.setText(NameGenerator.generateName()))
 			.dimensions(width / 2 - 100, height / 4 + 96 + 12, 200, 20)
 			.build());
 		
 		addDrawableChild(stealSkinButton = ButtonWidget
-			.builder(Text.literal("Steal Skin"),
+			.builder(Text.literal("盗取皮肤"),
 				b -> message = stealSkin(getNameOrEmail()))
 			.dimensions(width - (width / 2 - 100) / 2 - 64, height - 32, 128,
 				20)
 			.build());
 		
-		addDrawableChild(ButtonWidget
-			.builder(Text.literal("Open Skin Folder"), b -> openSkinFolder())
-			.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
-			.build());
+		addDrawableChild(
+			ButtonWidget.builder(Text.literal("打开皮肤文件夹"), b -> openSkinFolder())
+				.dimensions((width / 2 - 100) / 2 - 64, height - 32, 128, 20)
+				.build());
 		
 		setFocused(nameOrEmailBox);
 	}

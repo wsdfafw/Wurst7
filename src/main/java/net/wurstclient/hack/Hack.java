@@ -28,7 +28,7 @@ public abstract class Hack extends Feature
 	public Hack(String name)
 	{
 		this.name = Objects.requireNonNull(name);
-		description = "wurst.hack." + name.toLowerCase() + ".description";
+		description = "description.wurst.hack." + name.toLowerCase();
 		addPossibleKeybind(name, "Toggle " + name);
 	}
 	
