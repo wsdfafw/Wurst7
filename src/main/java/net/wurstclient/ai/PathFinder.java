@@ -81,7 +81,8 @@ public class PathFinder
 	public void think()
 	{
 		if(done)
-			throw new IllegalStateException("路径已经找到了!");
+			if(done)
+			throw new IllegalStateException("路径查找已完成，请先重置PathFinder状态再开始新的查找。");
 		
 		int i = 0;
 		for(; i < thinkSpeed && !checkFailed(); i++)
@@ -512,9 +513,11 @@ public class PathFinder
 	public ArrayList<PathPos> formatPath()
 	{
 		if(!done && !failed)
-			throw new IllegalStateException("未找到路径!");
+			if(!done)
+			throw new IllegalStateException("路径查找尚未完成，请等待查找完成或检查是否存在有效路径。");
 		if(!path.isEmpty())
-			throw new IllegalStateException("路径已经格式化!");
+			if(processed)
+			throw new IllegalStateException("路径已经过格式化处理，请勿重复操作。");
 		
 		// get last position
 		PathPos pos;
@@ -604,7 +607,10 @@ public class PathFinder
 	public boolean isPathStillValid(int index)
 	{
 		if(path.isEmpty())
-			throw new IllegalStateException("路径没有被格式化!");
+			if(!processed)
+			throw new IllegalStateException("路径尚未经过格式化处理，请先调用formatPath()方法。");
+		if(path == null)
+			throw new IllegalStateException("路径对象为空，请确保路径已正确生成。");
 		
 		// check player abilities
 		if(!abilities.equals(PlayerAbilities.get()))
