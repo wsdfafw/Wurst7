@@ -1,11 +1,17 @@
+# 使用Gradle的Java CI工作流
 name: Java CI with Gradle
 
+# 定义工作流的触发条件
 on:
+  # 当推送代码时触发
   push:
+    # 忽略dependabot的分支
     branches-ignore:
       - "dependabot/**"
+    # 忽略所有标签
     tags-ignore:
       - "**"
+    # 只有这些文件发生变化时才触发
     paths:
       - "**.java"
       - "**.json"
@@ -13,7 +19,9 @@ on:
       - "gradle**"
       - "*.gradle"
       - "*.accesswidener"
+  # 当创建Pull Request时触发
   pull_request:
+    # 只有这些文件发生变化时才触发
     paths:
       - "**.java"
       - "**.json"
@@ -21,18 +29,33 @@ on:
       - "gradle**"
       - "*.gradle"
       - "*.accesswidener"
+  # 允许手动触发工作流
   workflow_dispatch:
     inputs:
       distinct_id:
         description: "Automatically set by the return-dispatch action (leave blank if running manually)"
         required: false
 
+# 并发控制：同一分支上的工作流运行会取消之前的运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# 定义工作流中的作业
 jobs:
   build:
+    # 在最新版本的Ubuntu上运行
     runs-on: ubuntu-latest
+    # 设置作业超时时间为30分钟
+    timeout-minutes: 30
+    # 设置环境变量
     env:
+      # VirusTotal API密钥，用于病毒扫描
       VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+      # Imgur客户端ID，用于上传图片
       IMGUR_CLIENT_ID: ${{ secrets.IMGUR_CLIENT_ID }}
+      # Gradle运行参数：禁用守护进程，启用并行构建，设置最大工作线程数
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4"
     steps:
 
     - name: Echo distinct ID ${{ github.event.inputs.distinct_id }}
@@ -59,12 +82,15 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
+        cache-read-only: ${{ github.ref != 'refs/heads/master' }}
         build-scan-publish: true
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"
+        gradle-home-cache-cleanup: true
 
     - name: 编译Java代码
-      run: ./gradlew remapJar --stacktrace --warning-mode=fail
+      run: ./gradlew remapJar --stacktrace --warning-mode=fail --parallel
+      continue-on-error: false
 
     - name: 验证JSON文件
       run: ./gradlew spotlessJsonCheck || (echo "::error::JSON验证失败！运行'./gradlew spotlessApply'修复样式问题，或检查完整错误消息以查找语法错误。" && exit 1)
@@ -75,14 +101,14 @@ jobs:
     - name: 验证许可证标头
       run: ./gradlew spotlessLicenseHeaderCheck || (echo "::error::License headers are missing or malformed in some files! Run './gradlew spotlessApply' to fix this, or check the full error message for details." && exit 1)
 
-    - name: 运行单元测试
-      run: ./gradlew test --stacktrace --warning-mode=fail
-
-    - name: 验证访问 widener
-      run: ./gradlew validateAccessWidener --stacktrace --warning-mode=fail
+    - name: 运行单元测试和验证
+      run: |
+        ./gradlew test validateAccessWidener --stacktrace --warning-mode=fail --parallel --continue
+      continue-on-error: false
 
     - name: 构建
-      run: ./gradlew build --stacktrace --warning-mode=fail
+      run: ./gradlew build --stacktrace --warning-mode=fail --parallel --no-daemon
+      continue-on-error: false
 
     - name: VirusTotal扫描
       id: virustotal
