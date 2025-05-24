@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
 	id "fabric-loom" version "1.10-SNAPSHOT"
-	id "com.diffplug.spotless" version "7.0.2"
+	id "com.diffplug.spotless" version "7.0.3"
 }
 
 def ENV = System.getenv()
@@ -31,10 +31,6 @@ configurations.all {
 	resolutionStrategy {
 		// v2.5.1, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2024-57699
 		force "net.minidev:json-smart:2.5.2"
-		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-25193
-		force "io.netty:netty-common:4.1.118.Final"
-		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-24970
-		force "io.netty:netty-handler:4.1.118.Final"
 	}
 }
 
@@ -152,7 +148,6 @@ spotless {
 	}
 	format("licenseHeader") {
 		target("src/*/java/**/*.java", "src/test/java/**/*.java")
-		targetExclude("src/main/java/net/wurstclient/analytics/dmurph/**/*.java")
 		def header_file = file("codestyle/license_header.txt")
 		def delimiter = LicenseHeaderStep.DEFAULT_JAVA_HEADER_DELIMITER
 		licenseHeaderFile(header_file, delimiter).updateYearWithLatest(true)

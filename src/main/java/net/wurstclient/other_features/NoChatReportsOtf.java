@@ -7,6 +7,8 @@
  */
 package net.wurstclient.other_features;
 
+import java.net.URI;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.MessageIndicator;
@@ -92,13 +94,13 @@ public final class NoChatReportsOtf extends OtherFeature
 		
 		event.cancel();
 		
-		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL,
-			"https://wurst.wiki/ncr");
-		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+		ClickEvent clickEvent = new ClickEvent.OpenUrl(
+			URI.create("https://www.wurstclient.net/chat-disabled-mpk/"));
+		HoverEvent hoverEvent = new HoverEvent.ShowText(
 			Text.literal("Original message: ").append(originalText));
 		
 		ChatUtils.component(Text.literal(
-			"The server is refusing to let you chat without enabling chat reports. See wurst.wiki/ncr")
+			"The server is refusing to let you chat without enabling chat reports. Click \u00a7nhere\u00a7r to learn more.")
 			.styled(
 				s -> s.withClickEvent(clickEvent).withHoverEvent(hoverEvent)));
 	}

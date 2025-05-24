@@ -47,7 +47,7 @@ public final class PotionCmd extends Command
 		if(!MC.player.getAbilities().creativeMode)
 			throw new CmdError("仅限创造模式.");
 		
-		ItemStack stack = MC.player.getInventory().getMainHandStack();
+		ItemStack stack = MC.player.getInventory().getSelectedStack();
 		if(!(stack.getItem() instanceof PotionItem))
 			throw new CmdError("你的主手必须拿着药水.");
 		
