@@ -34,7 +34,7 @@ on:
         description: "Fabric API版本"
         required: true
       distinct_id:
-        description: "Automatically set by the return-dispatch action (leave blank if running manually)"
+        description: "由返回分发操作自动设置（若手动运行则留空）"
         required: false
 
 permissions:
