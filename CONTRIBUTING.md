@@ -36,19 +36,19 @@ Thank you for considering to contribute! Here are some guidelines to help you ge
   - 你能解释该功能是如何工作的吗？
   - 你能通过拉取请求添加该功能吗？
   - 你还知道该功能的其他未提及的内容吗？
-- 帮助处理[Wurst Wiki](https://wiki.wurstclient.net/)
+- 帮助处理[Wurst Wiki](https://wurst.wiki/)
   - 将Wurst Wiki文章翻译成另一种语言
   - 在适当的地方添加功能截图
   - 确保最近的Wurst更新已记录
   - 挖掘旧的Wurst更新，找出某个功能的确切添加时间
 - 帮助那些无法弄清楚如何安装Wurst的人
 - 制作教程/操作视频
-  - 如何制作[AutoBuild模板](https://wiki.wurstclient.net/_detail/autobuild_templates_explained_ll.webp?id=autobuild)
+  - 如何制作[AutoBuild模板](https://wurst.wiki/autobuild#creating_templates)
   - 如何使用[配置系统](https://www.wurstclient.net/updates/wurst-7-1/)
 - 创建更多Wurst的备份/存档
   - [创建一个分支](https://github.com/Wurst-Imperium/Wurst7/fork) / 镜像此仓库
   - 将[WurstClient.net](https://www.wurstclient.net/)页面添加到互联网档案馆
-  - 将[Wurst Wiki](https://wiki.wurstclient.net/)文章添加到互联网档案馆
+  - 将[Wurst Wiki](https://wurst.wiki/)文章添加到互联网档案馆
   - 存档旧的[Wurst发布版本](https://www.wurstclient.net/download/)和源代码，以防它们被删除
   - 存档[WiZARDHAX Wurst视频](https://www.youtube.com/c/wizardhax/videos)，以防频道被删除
 - 只是传播信息，告诉人们关于Wurst等。
