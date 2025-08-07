@@ -38,7 +38,7 @@ on:
         required: false
 
 permissions:
-  # To push changes to the new snapshot branch.
+  # To push changes to the snapshot branch.
   contents: write
   # To trigger the CI workflow.
   actions: write
@@ -53,9 +53,6 @@ jobs:
 
     - name: 检出仓库
       uses: actions/checkout@v4
-      with:
-        # 包括所有分支，以防新的快照分支已经存在。
-        fetch-depth: 0
 
     - name: 设置Python 3.12
       uses: actions/setup-python@v5
@@ -78,22 +75,7 @@ jobs:
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"
 
-    - name: 创建并检出新的快照分支
-      run: |
-        BRANCH_NAME="${{ github.event.inputs.mc_version }}"
-        CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-        
-        if [ "$CURRENT_BRANCH" = "$BRANCH_NAME" ]; then
-          echo "已经在分支 $BRANCH_NAME 上。跳过分支创建。"
-        elif git show-ref --quiet refs/heads/$BRANCH_NAME; then
-          echo "分支 $BRANCH_NAME 已经存在但当前未检出。工作流失败。"
-          exit 1
-        else
-          git checkout -b $BRANCH_NAME
-          echo "已创建并检出新分支：$BRANCH_NAME"
-        fi
-
-    - name: 运行migrateMappings任务
+    - name: Run migrateMappings task
       run: |
         ./gradlew migrateMappings --mappings ${{ github.event.inputs.yarn_mappings }}
 
@@ -120,16 +102,16 @@ jobs:
         git config --global user.email "contact.wurstimperium@gmail.com"
         git add .
         git commit -m "[lroj-Bot] 更新到 ${{ github.event.inputs.mc_version }}"
-        git push --set-upstream origin ${{ github.event.inputs.mc_version }}
+        git push
 
-    - name: Trigger CI on the new branch
+    - name: Trigger CI
       id: ci_dispatch
       uses: codex-/return-dispatch@v2
       with:
         token: ${{ github.token }}
         owner: Wurst-Imperium
         repo: Wurst7
-        ref: ${{ github.event.inputs.mc_version }}
+        ref: ${{ github.ref }}
         workflow: gradle.yml
 
     - name: Wait for CI to finish (run ${{ steps.ci_dispatch.outputs.run_id }})
