@@ -72,8 +72,7 @@ public final class WurstE2ETestClient implements ModInitializer
 		System.out.println("到达创建世界界面");
 		
 		// Set MC version as world name
-		setTextFieldText(0,
-			"E2E测试 " + SharedConstants.getGameVersion().name());
+		setTextFieldText(0, "E2E测试 " + SharedConstants.getGameVersion().name());
 		// Select creative mode
 		clickButton("selectWorld.gameMode");
 		clickButton("selectWorld.gameMode");
