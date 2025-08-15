@@ -32,11 +32,14 @@ import net.minecraft.text.Text;
 import net.wurstclient.Category;
 import net.wurstclient.Feature;
 import net.wurstclient.WurstClient;
+import net.wurstclient.clickgui.SettingsOrganizer.SettingsGroup;
 import net.wurstclient.clickgui.components.FeatureButton;
 import net.wurstclient.hacks.ClickGuiHack;
 import net.wurstclient.settings.Setting;
 import net.wurstclient.util.RenderUtils;
 import net.wurstclient.util.json.JsonUtils;
+
+import java.util.Map;
 
 public final class ClickGui
 {
@@ -83,6 +86,13 @@ public final class ClickGui
 			
 		windows.addAll(windowMap.values());
 		
+		// Create organized settings windows
+		Map<String, SettingsGroup> settingsGroups =
+			SettingsOrganizer.createSettingsGroups();
+		SettingsOrganizer.populateSettingsGroups(settingsGroups);
+		windows.addAll(SettingsOrganizer.createSettingsWindows(settingsGroups));
+		
+		// Add UI settings window with ClickGuiHack settings
 		Window uiSettings = new Window("UI Settings");
 		uiSettings.add(new FeatureButton(WURST.getOtfs().wurstLogoOtf));
 		uiSettings.add(new FeatureButton(WURST.getOtfs().hackListOtf));

@@ -17,12 +17,16 @@ import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.ThemeSetting;
 
 @DontSaveState
 @DontBlock
 @SearchTags({"click gui", "WindowGUI", "window gui", "HackMenu", "hack menu"})
 public final class ClickGuiHack extends Hack
 {
+	private final ThemeSetting theme =
+		new ThemeSetting("主题", "界面主题", ThemeSetting.Theme.CLASSIC);
+	
 	private final ColorSetting bgColor =
 		new ColorSetting("背景", "背景颜色", new Color(0x404040));
 	
@@ -49,6 +53,7 @@ public final class ClickGuiHack extends Hack
 	public ClickGuiHack()
 	{
 		super("ClickGUI");
+		addSetting(theme);
 		addSetting(bgColor);
 		addSetting(acColor);
 		addSetting(txtColor);
@@ -65,18 +70,47 @@ public final class ClickGuiHack extends Hack
 		setEnabled(false);
 	}
 	
+	public ThemeSetting.Theme getCurrentTheme()
+	{
+		return theme.getCurrentTheme();
+	}
+	
 	public float[] getBackgroundColor()
 	{
+		// If using a theme, return the theme's background color
+		if(theme.getCurrentTheme() != ThemeSetting.Theme.CLASSIC)
+		{
+			int color = theme.getCurrentTheme().getBgColor();
+			float red = ((color >> 16) & 0xFF) / 255F;
+			float green = ((color >> 8) & 0xFF) / 255F;
+			float blue = (color & 0xFF) / 255F;
+			return new float[]{red, green, blue};
+		}
+		
 		return bgColor.getColorF();
 	}
 	
 	public float[] getAccentColor()
 	{
+		// If using a theme, return the theme's accent color
+		if(theme.getCurrentTheme() != ThemeSetting.Theme.CLASSIC)
+		{
+			int color = theme.getCurrentTheme().getAcColor();
+			float red = ((color >> 16) & 0xFF) / 255F;
+			float green = ((color >> 8) & 0xFF) / 255F;
+			float blue = (color & 0xFF) / 255F;
+			return new float[]{red, green, blue};
+		}
+		
 		return acColor.getColorF();
 	}
 	
 	public int getTextColor()
 	{
+		// If using a theme, return the theme's text color
+		if(theme.getCurrentTheme() != ThemeSetting.Theme.CLASSIC)
+			return theme.getCurrentTheme().getTxtColor();
+		
 		return txtColor.getColorI();
 	}
 	

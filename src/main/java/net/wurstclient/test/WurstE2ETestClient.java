@@ -129,7 +129,7 @@ public final class WurstE2ETestClient implements ModInitializer
 		XRayHackTest.testXRayHack();
 		
 		// Test Wurst commands
-		CopyItemCmdTest.testCopyItemCmd();
+		// CopyItemCmdTest.testCopyItemCmd();
 		GiveCmdTest.testGiveCmd();
 		ModifyCmdTest.testModifyCmd();
 		

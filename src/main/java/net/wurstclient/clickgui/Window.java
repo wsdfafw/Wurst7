@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.util.math.MathHelper;
 import net.wurstclient.WurstClient;
+import net.wurstclient.util.AnimationHelper;
 
 public class Window
 {
@@ -48,9 +49,19 @@ public class Window
 	private boolean draggingScrollbar;
 	private int scrollbarDragOffsetY;
 	
+	// Animation fields
+	private AnimationHelper openAnimation;
+	private AnimationHelper minimizeAnimation;
+	private boolean wasMinimized;
+	
 	public Window(String title)
 	{
 		this.title = title;
+		this.openAnimation = new AnimationHelper(200); // 200ms open animation
+		this.minimizeAnimation = new AnimationHelper(150); // 150ms minimize
+															// animation
+		this.wasMinimized = true; // Start as minimized
+		this.openAnimation.start();
 	}
 	
 	public final String getTitle()
@@ -277,9 +288,40 @@ public class Window
 		return minimized;
 	}
 	
-	public final void setMinimized(boolean minimized)
+	public void setMinimized(boolean minimized)
 	{
+		if(this.minimized != minimized)
+		{
+			// Start minimize animation
+			if(minimized)
+			{
+				// Minimizing - start reverse animation
+				minimizeAnimation.startReverse();
+			}else
+			{
+				// Expanding - start forward animation
+				minimizeAnimation.start();
+			}
+			wasMinimized = this.minimized;
+		}
+		
 		this.minimized = minimized;
+	}
+	
+	public float getMinimizeProgress()
+	{
+		if(minimizeAnimation.isFinished())
+			return minimized ? 0f : 1f;
+		
+		return minimizeAnimation.getSmoothProgress();
+	}
+	
+	public float getOpenProgress()
+	{
+		if(openAnimation.isFinished())
+			return 1f;
+		
+		return openAnimation.getSmoothProgress();
 	}
 	
 	public final boolean isMinimizable()
