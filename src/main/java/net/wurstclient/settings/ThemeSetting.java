@@ -28,8 +28,8 @@ public final class ThemeSetting extends Setting
 	public enum Theme
 	{
 		CLASSIC("经典", 0x404040, 0x101010, 0xF0F0F0),
-		DARK("暗色", 0x202020, 0x080808, 0xE0E0E0),
-		LIGHT("亮色", 0xF0F0F0, 0xD0D0D0, 0x202020);
+		DARK("暗色", 0x2D2D2D, 0x151515, 0xFFFFFF),
+		LIGHT("亮色", 0xF5F5F5, 0xDDDDDD, 0x000000);
 		
 		private final String name;
 		private final int bgColor;

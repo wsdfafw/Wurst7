@@ -33,7 +33,8 @@ public class GuiOptimizationTest
 		
 		// Check that animation started
 		float progressAfterMinimize = window.getMinimizeProgress();
-		assertTrue(progressAfterMinimize >= 0.0f && progressAfterMinimize <= 1.0f);
+		assertTrue(
+			progressAfterMinimize >= 0.0f && progressAfterMinimize <= 1.0f);
 		
 		// Expand the window again
 		window.setMinimized(false);
@@ -103,12 +104,12 @@ public class GuiOptimizationTest
 		assertEquals(0x101010, classic.getAcColor());
 		assertEquals(0xF0F0F0, classic.getTxtColor());
 		
-		assertEquals(0x202020, dark.getBgColor());
-		assertEquals(0x080808, dark.getAcColor());
-		assertEquals(0xE0E0E0, dark.getTxtColor());
+		assertEquals(0x2D2D2D, dark.getBgColor());
+		assertEquals(0x151515, dark.getAcColor());
+		assertEquals(0xFFFFFF, dark.getTxtColor());
 		
-		assertEquals(0xF0F0F0, light.getBgColor());
-		assertEquals(0xD0D0D0, light.getAcColor());
-		assertEquals(0x202020, light.getTxtColor());
+		assertEquals(0xF5F5F5, light.getBgColor());
+		assertEquals(0xDDDDDD, light.getAcColor());
+		assertEquals(0x000000, light.getTxtColor());
 	}
 }

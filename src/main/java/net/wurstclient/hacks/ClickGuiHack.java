@@ -109,7 +109,11 @@ public final class ClickGuiHack extends Hack
 	{
 		// If using a theme, return the theme's text color
 		if(theme.getCurrentTheme() != ThemeSetting.Theme.CLASSIC)
-			return theme.getCurrentTheme().getTxtColor();
+		{
+			int color = theme.getCurrentTheme().getTxtColor();
+			// Ensure full opacity for text
+			return color | 0xFF000000;
+		}
 		
 		return txtColor.getColorI();
 	}
