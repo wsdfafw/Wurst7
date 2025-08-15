@@ -41,7 +41,7 @@ public enum ModifyCmdTest
 		takeScreenshot("modify_command_result");
 		
 		// Clean up
-		runChatCommand("clear");
+		// runChatCommand("clear");
 		clearChat();
 	}
 }

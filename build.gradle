@@ -131,6 +131,8 @@ java {
 	
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
+	// 添加 UTF-8 编码支持
+	compileJava.options.encoding = 'UTF-8'
 }
 
 jar {

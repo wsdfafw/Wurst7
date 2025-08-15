@@ -159,7 +159,8 @@ public class WurstOptionsScreen extends Screen
 		int y2 = height / 4 + 24 - 28;
 		
 		context.drawCenteredTextWithShadow(tr,
-			"Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1, Colors.WHITE);
+			"Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1,
+			Colors.WHITE);
 		
 		context.drawCenteredTextWithShadow(tr, "设置选项", middleX - 104, y2,
 			WurstColors.VERY_LIGHT_GRAY);

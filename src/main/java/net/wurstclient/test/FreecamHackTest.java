@@ -23,7 +23,7 @@ public enum FreecamHackTest
 		
 		// Enable Freecam with default settings
 		runWurstCommand("setcheckbox Freecam tracer off");
-		runWurstCommand("t Freecam on");
+		runWurstCommand("t 灵魂出窍 on");
 		takeScreenshot("freecam_default", Duration.ofMillis(100));
 		clearChat();
 		
@@ -37,13 +37,13 @@ public enum FreecamHackTest
 		clearChat();
 		
 		// Tracer
-		runWurstCommand("setcheckbox Freecam tracer on");
+		runWurstCommand("setcheckbox 灵魂出窍 tracer on");
 		takeScreenshot("freecam_tracer", Duration.ofMillis(100));
 		clearChat();
 		
 		// Clean up
-		runWurstCommand("setcheckbox Freecam tracer off");
-		runWurstCommand("t Freecam off");
+		runWurstCommand("setcheckbox 灵魂出窍 tracer off");
+		runWurstCommand("t 灵魂出窍 off");
 		waitForWorldTicks(5);
 		clearChat();
 	}

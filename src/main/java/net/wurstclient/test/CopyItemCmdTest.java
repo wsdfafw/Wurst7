@@ -38,7 +38,7 @@ public enum CopyItemCmdTest
 		
 		// Clean up
 		setPerspective(Perspective.FIRST_PERSON);
-		runChatCommand("clear");
+		// runChatCommand("clear");
 		clearChat();
 	}
 }

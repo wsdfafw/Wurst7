@@ -23,15 +23,15 @@ public enum AutoMineHackTest
 		// Break a dirt block in survival mode
 		runChatCommand("setblock ~ ~1 ~2 minecraft:dirt");
 		waitForBlock(0, 1, 2, Blocks.DIRT);
-		runWurstCommand("t AutoMine on");
+		runWurstCommand("t 自动挖 on");
 		waitForBlock(0, 1, 2, Blocks.AIR);
 		takeScreenshot("automine_survival");
 		
 		// Clean up
-		runWurstCommand("t AutoMine off");
+		runWurstCommand("t 自动挖 off");
 		runChatCommand("gamemode creative");
 		runChatCommand("kill @e[type=item]");
-		runChatCommand("clear");
+		// runChatCommand("clear");
 		clearChat();
 	}
 }
