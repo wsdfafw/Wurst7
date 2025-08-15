@@ -1,12 +1,12 @@
 buildscript {
 	dependencies {
-		classpath "org.kohsuke:github-api:1.327"
+		classpath "org.kohsuke:github-api:1.329"
 	}
 }
 
 plugins {
-	id "fabric-loom" version "1.10-SNAPSHOT"
-	id "com.diffplug.spotless" version "7.0.2"
+	id "fabric-loom" version "${loom_version}"
+	id "com.diffplug.spotless" version "7.2.1"
 }
 
 def ENV = System.getenv()
@@ -29,12 +29,14 @@ repositories {
 // Override vulnerable dependencies until Minecraft updates to newer versions
 configurations.all {
 	resolutionStrategy {
-		// v2.5.1, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2024-57699
+		// v2.5.1, used by Minecraft 1.21.4 - 1.21.8, is vulnerable to CVE-2024-57699
 		force "net.minidev:json-smart:2.5.2"
-		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-25193
-		force "io.netty:netty-common:4.1.118.Final"
-		// v1.115.Final, used by Minecraft 1.21.4 - 1.21.5, is vulnerable to CVE-2025-24970
-		force "io.netty:netty-handler:4.1.118.Final"
+		// v2.13.4, used by Minecraft 1.21.4 - 1.21.8, is vulnerable to CVE-2025-52999
+		force "com.fasterxml.jackson.core:jackson-core:2.15.0"
+		// v3.17.0, used by Minecraft 1.21.4 - 1.21.8, is vulnerable to CVE-2025-48924
+		force "org.apache.commons:commons-lang3:3.18.0"
+		// v9.40, used by Minecraft 1.21.4 - 1.21.8, is vulnerable to CVE-2025-53864
+		force "com.nimbusds:nimbus-jose-jwt:10.0.2"
 	}
 }
 
@@ -134,8 +136,8 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 	
-	from("LICENSE") {
-		rename {"${it}_${inputs.properties.archivesName}"}
+	from("LICENSE.txt") {
+		rename { "LICENSE-${inputs.properties.archivesName}.txt" }
 	}
 	
 	exclude("intentionally_untranslated.json")
@@ -152,7 +154,6 @@ spotless {
 	}
 	format("licenseHeader") {
 		target("src/*/java/**/*.java", "src/test/java/**/*.java")
-		targetExclude("src/main/java/net/wurstclient/analytics/dmurph/**/*.java")
 		def header_file = file("codestyle/license_header.txt")
 		def delimiter = LicenseHeaderStep.DEFAULT_JAVA_HEADER_DELIMITER
 		licenseHeaderFile(header_file, delimiter).updateYearWithLatest(true)
@@ -171,9 +172,27 @@ def getGhVersion() {
 	return version.substring(0, version.indexOf("-MC"))
 }
 
-def getChangelogUrl() {
-	def versionSlug = version.substring(1, version.indexOf("-MC")).replace(".", "-")
-	return "https://www.wurstclient.net/updates/wurst-${versionSlug}/"
+def getChangelogLink(String platform, String from) {
+	def versionSlug = getGhVersion().substring(1).replace(".", "-")
+	def shortURL = "https://www.wurstclient.net/updates/wurst-${versionSlug}/"
+	def query = []
+	if (platform != "GitHub")
+		query.add("mc=${project.minecraft_version}")
+	query.add("utm_source=${platform}")
+	query.add("utm_medium=" + project.archives_base_name.replace("-", "+"))
+	def fullURL = shortURL + (query.isEmpty() ? "" : "?" + query.join("&"))
+	def encodedURL = java.net.URLEncoder.encode(fullURL, "UTF-8")
+	return "[${shortURL}](https://go.wimods.net/from/${from}?to=${encodedURL})"
+}
+
+def getChangelogImage(String from) {
+	return "![](https://img.wimods.net/${from})"
+}
+
+def getChangelog(String platform, String from) {
+	def prefix = platform == "GitHub" ? "" : "A changelog can be found at: "
+	def imgQuery = platform == "GitHub" ? "" : "?mc_version=${project.minecraft_version}&mod_loader=${project.mod_loader}"
+	return prefix + getChangelogLink(platform, from) + getChangelogImage(from + imgQuery)
 }
 
 import org.kohsuke.github.GHReleaseBuilder
@@ -187,12 +206,14 @@ tasks.register('github') {
 
 	doLast {
 		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
-		def repository = github.getRepository("Wurst-Imperium/Wurst-MCX2")
+		def repoId = project.mcx_repo_id
+		def repository = github.getRepository(repoId)
 		def ghVersion = getGhVersion()
 
 		def ghRelease = repository.getReleaseByTagName(ghVersion as String)
 		if (ghRelease == null) {
 			def releaseBuilder = new GHReleaseBuilder(repository, ghVersion as String)
+			releaseBuilder.body(getChangelogImage("github.com/${repoId}/releases/tag/${ghVersion}"))
 			releaseBuilder.prerelease(ghVersion.contains("pre"))
 			ghRelease = releaseBuilder.create()
 		}
@@ -202,10 +223,8 @@ tasks.register('github') {
 	}
 }
 
-import java.time.LocalDate
 import org.kohsuke.github.GHIssueState
 import org.kohsuke.github.GHMilestoneState
-import java.time.ZoneId
 import java.time.Instant
 
 tasks.register('closeMilestone') {
@@ -215,7 +234,8 @@ tasks.register('closeMilestone') {
 
 	doLast {
 		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
-		def repository = github.getRepository("Wurst-Imperium/Wurst7")
+		def repoId = project.gh_repo_id
+		def repository = github.getRepository(repoId)
 		def ghVersion = getGhVersion()
 
 		// Weird API design: listMilestones() requires GHIssueState while everything else uses GHMilestoneState.
@@ -226,7 +246,7 @@ tasks.register('closeMilestone') {
 
 		if (milestone.getState() != GHMilestoneState.CLOSED) {
 			milestone.setDueOn(Date.from(Instant.now()))
-			milestone.setDescription(getChangelogUrl())
+			milestone.setDescription(getChangelog("GitHub", "github.com/${repoId}/milestone/${ghVersion}"))
 			milestone.close()
 		}
 	}

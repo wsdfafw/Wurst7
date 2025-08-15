@@ -1,16 +1,14 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "net.wurstclient.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "AbstractBlockRenderContextMixin",
     "AbstractBlockStateMixin",
     "AbstractSignEditScreenMixin",
+    "AbstractTerrainRenderContextMixin",
     "AllowedAddressResolverMixin",
-    "BackgroundRendererMixin",
-    "BasicBakedModelMixin",
+    "AtmosphericFogModifierMixin",
     "BlockEntityRenderDispatcherMixin",
     "BlockMixin",
     "BlockModelRendererMixin",
@@ -30,13 +28,14 @@
     "ControlsListWidgetMixin",
     "CreativeInventoryScreenMixin",
     "DeathScreenMixin",
+    "DimensionOrBossFogModifierMixin",
     "DirectConnectScreenMixin",
-    "DisconnectedRealmsScreenMixin",
     "DisconnectedScreenMixin",
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
     "FluidRendererMixin",
+    "FogRendererMixin",
     "GameMenuScreenMixin",
     "GameRendererMixin",
     "GenericContainerScreenMixin",
@@ -46,7 +45,7 @@
     "KeyBindingMixin",
     "KeyboardMixin",
     "LanguageManagerMixin",
-    "LightmapTextureManagerMixin",
+    "LivingEntityMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "MobEntityRendererMixin",
@@ -60,8 +59,8 @@
     "ScreenMixin",
     "ShulkerBoxScreenMixin",
     "SimpleOptionMixin",
-    "SodiumDefaultFluidRendererMixin",
     "SodiumBlockOcclusionCacheMixin",
+    "SodiumDefaultFluidRendererMixin",
     "StatsScreenMixin",
     "StatusEffectInstanceMixin",
     "TelemetryManagerMixin",
@@ -72,5 +71,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

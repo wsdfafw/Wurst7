@@ -32,7 +32,7 @@ public final class AuthorCmd extends Command
 		if(!MC.player.getAbilities().creativeMode)
 			throw new CmdError("仅限创造模式");
 		
-		ItemStack heldStack = MC.player.getInventory().getMainHandStack();
+		ItemStack heldStack = MC.player.getInventory().getSelectedStack();
 		if(!heldStack.isOf(Items.WRITTEN_BOOK))
 			throw new CmdError(
 				"You must hold a written book in your main hand.");

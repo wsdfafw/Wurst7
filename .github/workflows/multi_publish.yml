@@ -1,4 +1,4 @@
-name: Publish Multiple Releases
+name: 发布多个版本
 run-name: Publish v${{ github.event.inputs.wurst_version }} build(s) from ${{ github.event.inputs.branches }}
 
 on:
@@ -13,17 +13,17 @@ on:
         required: true
         type: string
       announce_update:
-        description: "Announce as an update on WurstForum"
+        description: "在WurstForum上发布更新通知"
         required: true
         type: boolean
         default: false
       announce_ports:
-        description: "Announce as ports on WurstForum"
+        description: "在 WurstForum 上宣布端口"
         required: true
         type: boolean
         default: false
       dry_run:
-        description: "Dry-run mode (don't actually publish anything)"
+        description: "测试模式（不实际发布任何内容）"
         required: false
         type: boolean
         default: false

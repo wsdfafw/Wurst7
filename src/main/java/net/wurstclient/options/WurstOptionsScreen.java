@@ -19,15 +19,17 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Util;
 import net.minecraft.util.Util.OperatingSystem;
 import net.wurstclient.WurstClient;
-import net.wurstclient.analytics.WurstAnalytics;
+import net.wurstclient.analytics.PlausibleAnalytics;
 import net.wurstclient.commands.FriendsCmd;
 import net.wurstclient.hacks.XRayHack;
 import net.wurstclient.other_features.VanillaSpoofOtf;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.util.ChatUtils;
+import net.wurstclient.util.WurstColors;
 
 public class WurstOptionsScreen extends Screen
 {
@@ -57,7 +59,7 @@ public class WurstOptionsScreen extends Screen
 		WurstClient wurst = WurstClient.INSTANCE;
 		FriendsCmd friendsCmd = wurst.getCmds().friendsCmd;
 		CheckboxSetting middleClickFriends = friendsCmd.getMiddleClickFriends();
-		WurstAnalytics analytics = wurst.getAnalytics();
+		PlausibleAnalytics plausible = wurst.getPlausible();
 		VanillaSpoofOtf vanillaSpoofOtf = wurst.getOtfs().vanillaSpoofOtf;
 		CheckboxSetting forceEnglish =
 			wurst.getOtfs().translationsOtf.getForceEnglish();
@@ -69,10 +71,15 @@ public class WurstOptionsScreen extends Screen
 				.setChecked(!middleClickFriends.isChecked()));
 		
 		new WurstOptionsButton(-154, 48,
-			() -> "统计用户数: " + (analytics.isEnabled() ? "ON" : "OFF"),
-			"统计使用 Wurst 的人数以及哪些版本最受欢迎。我们使用这些数据来决定何时停止支持旧的 Minecraft 版本.\n\n"
-				+ "我们使用一个随机 ID 来区分用户，以确保这些数据永远不会与您的 Minecraft 帐户关联。随机 ID 每隔 3 天更改一次，以确保您保持匿名。",
-			b -> analytics.setEnabled(!analytics.isEnabled()));
+			() -> "Count Users: " + (plausible.isEnabled() ? "ON" : "OFF"),
+			"Counts how many people are using Wurst and which versions are the"
+				+ " most popular. This data helps me to decide when I can stop"
+				+ " supporting old versions.\n\n"
+				+ "These statistics are completely anonymous, never sold, and"
+				+ " stay in the EU (I'm self-hosting Plausible in Germany)."
+				+ " There are no cookies or persistent identifiers"
+				+ " (see plausible.io).",
+			b -> plausible.setEnabled(!plausible.isEnabled()));
 		
 		new WurstOptionsButton(-154, 72,
 			() -> "原版伪装: " + (vanillaSpoofOtf.isEnabled() ? "开启" : "关闭"),
@@ -104,24 +111,25 @@ public class WurstOptionsScreen extends Screen
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "官方网站", "§n§lWurstClient.net",
-			b -> os.open(
-				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
+		new WurstOptionsButton(54, 24, () -> "Official Website",
+			"§n§lWurstClient.net",
+			b -> os.open("https://www.wurstclient.net/options-website/"));
 		
-		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "§n§lWurst.Wiki\n"
-			+ "We are looking for volunteers to help us expand"
-			+ " the wiki and keep it up to date with the latest Wurst updates.",
-			b -> os.open(
-				"https://wurst.wiki/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Wurst+Wiki"));
+		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "§n§lWurst.Wiki",
+			b -> os.open("https://www.wurstclient.net/options-wiki/"));
 		
 		new WurstOptionsButton(54, 72, () -> "WurstForum", "§n§lWurstForum.net",
-			b -> os.open(
-				"https://wurstforum.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=WurstForum"));
+			b -> os.open("https://www.wurstclient.net/options-forum/"));
 		
 		new WurstOptionsButton(54, 96, () -> "Twitter", "@Wurst_Imperium",
-			b -> os.open("https://www.wurstclient.net/twitter/"));
+			b -> os.open("https://www.wurstclient.net/options-twitter/"));
 		
-		new WurstOptionsButton(54, 120, () -> "捐款 求捐款", "qq/微信/支付宝/支付",
+		new WurstOptionsButton(54, 120, () -> "Donate",
+			"§n§lWurstClient.net/donate\n"
+				+ "Donate now to help me keep the Wurst Client alive and free"
+				+ " to use for everyone.\n\n"
+				+ "Every bit helps and is much appreciated! You can also get a"
+				+ " few cool perks in return.",
 			b -> os.open("https://docs.qq.com/doc/DYWJKZ2ZtdmVPZmVY"));
 	}
 	
@@ -135,7 +143,6 @@ public class WurstOptionsScreen extends Screen
 	public void render(DrawContext context, int mouseX, int mouseY,
 		float partialTicks)
 	{
-		renderBackground(context, mouseX, mouseY, partialTicks);
 		renderTitles(context);
 		
 		for(Drawable drawable : drawables)
@@ -152,14 +159,14 @@ public class WurstOptionsScreen extends Screen
 		int y2 = height / 4 + 24 - 28;
 		
 		context.drawCenteredTextWithShadow(tr,
-			"Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1, 0xffffff);
+			"Wurst选择,作者id:lroj,qq:750215287,感谢逆向燃烧帮忙汉化", middleX, y1, Colors.WHITE);
 		
 		context.drawCenteredTextWithShadow(tr, "设置选项", middleX - 104, y2,
-			0xcccccc);
+			WurstColors.VERY_LIGHT_GRAY);
 		context.drawCenteredTextWithShadow(tr, "Managers", middleX, y2,
-			0xcccccc);
+			WurstColors.VERY_LIGHT_GRAY);
 		context.drawCenteredTextWithShadow(tr, "链接", middleX + 104, y2,
-			0xcccccc);
+			WurstColors.VERY_LIGHT_GRAY);
 	}
 	
 	private void renderButtonTooltip(DrawContext context, int mouseX,
