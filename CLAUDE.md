@@ -54,3 +54,20 @@ Key information:
 - Uses JUnit 5 for unit testing
 - Tests are located in `src/test/java/`
 - Run with `./gradlew test`
+
+## Additional Development Information
+
+### Internationalization (i18n)
+- Translation files are located in `src/main/resources/assets/wurst/translations/`
+- The main translation file is `zh_cn.json` for Chinese
+- Automatic translation updates can be performed with `./gradlew i18nUpdater`
+
+### Event System Details
+- Events are managed through the `EventManager` class
+- Features register listeners for specific events in their `onEnable()` method
+- Events are fired automatically by the mod's mixins
+
+### Settings System Details
+- Settings are defined as fields in feature classes
+- Various setting types are available (SliderSetting, CheckboxSetting, etc.)
+- Settings are automatically saved to and loaded from JSON files
