@@ -308,6 +308,87 @@ tasks.register('checkLocalization') {
 	}
 }
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+
+// 自动更新I18n文件的任务
+tasks.register('i18nUpdater') {
+	doLast {
+		def hacksDir = file('src/main/java/net/wurstclient/hacks')
+		def translationsDir = file('src/main/resources/assets/wurst/translations')
+		
+		// 收集所有Hack类的名称
+		def hackNames = [:]
+		hacksDir.eachFileRecurse { file ->
+			if (file.name.endsWith('.java')) {
+				def fileText = file.text
+				def pattern = /super\s*\(\s*"([^"]+)"\s*\);/
+				def matcher = (fileText =~ pattern)
+				if (matcher) {
+					def hackName = matcher[0][1]
+					def key = "description.wurst.hack.${hackName.toLowerCase().replaceAll(/[^a-z0-9\u4e00-\u9fa5]/, '')}"
+					hackNames[key] = hackName
+				}
+			}
+		}
+		
+		// 只更新中文翻译文件
+		def zhCnFile = file('src/main/resources/assets/wurst/translations/zh_cn.json')
+		if (zhCnFile.exists()) {
+			def jsonText = zhCnFile.getText('UTF-8')
+			def json = new groovy.json.JsonSlurper().parseText(jsonText)
+			def updated = false
+			
+			hackNames.each { key, hackName ->
+				// 只有当键不存在或键的值不是字符串时才添加
+				if (!json.containsKey(key) || !(json[key] instanceof String)) {
+					// 对于中文名称，添加"自动"前缀
+					json[key] = "自动${hackName}"
+					updated = true
+				}
+			}
+			
+			// 如果有更新，写回文件
+			if (updated) {
+				// 使用JsonBuilder确保正确的JSON格式
+				def jsonBuilder = new JsonBuilder(json)
+				def writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(zhCnFile), "UTF-8"))
+				def jsonString = JsonOutput.prettyPrint(jsonBuilder.toString())
+				// 解码Unicode转义字符
+				def decodedString = decodeUnicodeEscapes(jsonString)
+				writer.print(decodedString)
+				writer.close()
+				println "Updated file: ${zhCnFile.name}"
+			}
+		}
+		
+		println "I18n files updated successfully!"
+	}
+}
+
+// 解码Unicode转义字符的辅助方法
+def decodeUnicodeEscapes(String input) {
+	def result = new StringBuilder()
+	def i = 0
+	while (i < input.length()) {
+		if (input[i] == '\\' && i + 5 < input.length() && input[i+1] == 'u') {
+			try {
+				def hexCode = input.substring(i+2, i+6)
+				def charVal = Integer.parseInt(hexCode, 16)
+				result.append((char) charVal)
+				i += 6
+			} catch (NumberFormatException e) {
+				result.append(input[i])
+				i++
+			}
+		} else {
+			result.append(input[i])
+			i++
+		}
+	}
+	return result.toString()
+}
+
 tasks.register('uploadBackups') {
 	dependsOn build
 
