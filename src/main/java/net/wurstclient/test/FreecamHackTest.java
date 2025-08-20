@@ -19,10 +19,10 @@ public enum FreecamHackTest
 	
 	public static void testFreecamHack()
 	{
-		System.out.println("Testing Freecam hack");
+		System.out.println("Testing 灵魂出窍 hack");
 		
 		// Enable Freecam with default settings
-		runWurstCommand("setcheckbox Freecam tracer off");
+		runWurstCommand("setcheckbox 灵魂出窍 tracer off");
 		runWurstCommand("t 灵魂出窍 on");
 		takeScreenshot("freecam_default", Duration.ofMillis(100));
 		clearChat();
