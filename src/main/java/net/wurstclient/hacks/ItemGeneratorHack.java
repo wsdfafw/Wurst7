@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.random.Random;
@@ -21,6 +20,7 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.util.ChatUtils;
+import net.wurstclient.util.InventoryUtils;
 
 @SearchTags({"item generator", "drop infinite"})
 public final class ItemGeneratorHack extends Hack implements UpdateListener
@@ -47,12 +47,6 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 	protected void onEnable()
 	{
 		EVENTS.add(UpdateListener.class, this);
-		
-		if(!MC.player.getAbilities().creativeMode)
-		{
-			ChatUtils.error("仅限创造模式");
-			setEnabled(false);
-		}
 	}
 	
 	@Override
@@ -64,8 +58,14 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 	@Override
 	public void onUpdate()
 	{
+		if(!MC.player.isInCreativeMode())
+		{
+			ChatUtils.error("Creative mode only.");
+			setEnabled(false);
+		}
+		
 		int stacks = speed.getValueI();
-		for(int i = 9; i < 9 + stacks; i++)
+		for(int slot = 9; slot < 9 + stacks; slot++)
 		{
 			// Not sure if it's possible to get an empty optional here,
 			// but if so it will just retry.
@@ -76,10 +76,7 @@ public final class ItemGeneratorHack extends Hack implements UpdateListener
 			Item item = optional.get().value();
 			ItemStack stack = new ItemStack(item, stackSize.getValueI());
 			
-			CreativeInventoryActionC2SPacket packet =
-				new CreativeInventoryActionC2SPacket(i, stack);
-			
-			MC.player.networkHandler.sendPacket(packet);
+			InventoryUtils.setCreativeStack(slot, stack);
 		}
 		
 		for(int i = 9; i < 9 + stacks; i++)

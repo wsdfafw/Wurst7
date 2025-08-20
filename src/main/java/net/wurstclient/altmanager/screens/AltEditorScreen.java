@@ -80,10 +80,9 @@ public abstract class AltEditorScreen extends Screen
 			.dimensions(width / 2 - 100, height / 4 + 72 + 12, 200, 20)
 			.build());
 		
-		addDrawableChild(
-			ButtonWidget.builder(Text.literal("取消"), b -> close())
-				.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
-				.build());
+		addDrawableChild(ButtonWidget.builder(Text.literal("取消"), b -> close())
+			.dimensions(width / 2 - 100, height / 4 + 120 + 12, 200, 20)
+			.build());
 		
 		addDrawableChild(ButtonWidget
 			.builder(Text.literal("随机名称"),

@@ -70,8 +70,8 @@ public final class EditItemListScreen extends Screen
 				client.setScreen(EditItemListScreen.this);
 			}).dimensions(width / 2 - 2, height - 56, 30, 20).build());
 		
-		addDrawableChild(removeButton =
-			ButtonWidget.builder(Text.literal("删除选定"), b -> {
+		addDrawableChild(
+			removeButton = ButtonWidget.builder(Text.literal("删除选定"), b -> {
 				itemList.remove(itemList.getItemNames()
 					.indexOf(listGui.getSelectedBlockName()));
 				client.setScreen(EditItemListScreen.this);

@@ -52,7 +52,7 @@ jobs:
       run: echo ${{ github.event.inputs.distinct_id }}
 
     - name: 检出仓库
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: 设置Python 3.12
       uses: actions/setup-python@v5

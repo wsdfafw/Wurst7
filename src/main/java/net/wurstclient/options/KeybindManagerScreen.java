@@ -71,8 +71,7 @@ public final class KeybindManagerScreen extends Screen
 					WurstClient.INSTANCE.getKeybinds()
 						.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
 				client.setScreen(this);
-			}, Text.literal("您确定要重置密钥绑定吗？?"),
-				Text.literal("这是无法挽回的!"))))
+			}, Text.literal("您确定要重置密钥绑定吗？?"), Text.literal("这是无法挽回的!"))))
 			.dimensions(8, 8, 100, 20).build());
 		
 		addDrawableChild(ButtonWidget
@@ -142,8 +141,8 @@ public final class KeybindManagerScreen extends Screen
 	{
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器",
-			width / 2, 8, Colors.WHITE);
+		context.drawCenteredTextWithShadow(textRenderer, "键绑定管理器", width / 2, 8,
+			Colors.WHITE);
 		
 		int count = WurstClient.INSTANCE.getKeybinds().getAllKeybinds().size();
 		context.drawCenteredTextWithShadow(textRenderer, "键绑定: " + count,

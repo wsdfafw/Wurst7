@@ -68,9 +68,8 @@ public final class TunnellerHack extends Hack
 		0, 0, 1000, 1, ValueDisplay.INTEGER.withSuffix(" blocks")
 			.withLabel(1, "1 block").withLabel(0, "disabled"));
 	
-	private final CheckboxSetting torches = new CheckboxSetting("放火把",
-		"放置足够的火把防止暴徒在隧道里产卵.",
-		false);
+	private final CheckboxSetting torches =
+		new CheckboxSetting("放火把", "放置足够的火把防止暴徒在隧道里产卵.", false);
 	
 	private final OverlayRenderer overlay = new OverlayRenderer();
 	

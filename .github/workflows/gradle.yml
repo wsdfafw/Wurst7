@@ -39,7 +39,7 @@ jobs:
       run: echo ${{ github.event.inputs.distinct_id }}
 
     - name: 检出仓库
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: 设置Java 21
       uses: actions/setup-java@v4
