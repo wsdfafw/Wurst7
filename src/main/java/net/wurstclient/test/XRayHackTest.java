@@ -22,42 +22,42 @@ public enum XRayHackTest
 		clearChat();
 		
 		// Enable X-Ray with default settings
-		runWurstCommand("setcheckbox X-Ray only_show_exposed off");
-		runWurstCommand("setslider X-Ray opacity 0");
-		runWurstCommand("t X-Ray on");
+		runWurstCommand("setcheckbox 透视 only_show_exposed off");
+		runWurstCommand("setslider 透视 opacity 0");
+		runWurstCommand("t 透视 on");
 		takeScreenshot("xray_default", Duration.ofMillis(300));
-		runWurstCommand("t X-Ray off");
+		runWurstCommand("t 透视 off");
 		clearChat();
 		
 		// Exposed only
-		runWurstCommand("setcheckbox X-Ray only_show_exposed on");
-		runWurstCommand("setslider X-Ray opacity 0");
-		runWurstCommand("t X-Ray on");
+		runWurstCommand("setcheckbox 透视 only_show_exposed on");
+		runWurstCommand("setslider 透视 opacity 0");
+		runWurstCommand("t 透视 on");
 		takeScreenshot("xray_exposed_only", Duration.ofMillis(300));
-		runWurstCommand("t X-Ray off");
+		runWurstCommand("t 透视 off");
 		clearChat();
 		
 		// Opacity mode
-		runWurstCommand("setcheckbox X-Ray only_show_exposed off");
-		runWurstCommand("setslider X-Ray opacity 0.5");
-		runWurstCommand("t X-Ray on");
+		runWurstCommand("setcheckbox 透视 only_show_exposed off");
+		runWurstCommand("setslider 透视 opacity 0.5");
+		runWurstCommand("t 透视 on");
 		takeScreenshot("xray_opacity", Duration.ofMillis(300));
-		runWurstCommand("t X-Ray off");
+		runWurstCommand("t 透视 off");
 		clearChat();
 		
 		// Exposed only + opacity
-		runWurstCommand("setcheckbox X-Ray only_show_exposed on");
-		runWurstCommand("setslider X-Ray opacity 0.5");
-		runWurstCommand("t X-Ray on");
+		runWurstCommand("setcheckbox 透视 only_show_exposed on");
+		runWurstCommand("setslider 透视 opacity 0.5");
+		runWurstCommand("t 透视 on");
 		takeScreenshot("xray_exposed_only_opacity", Duration.ofMillis(300));
-		runWurstCommand("t X-Ray off");
+		runWurstCommand("t 透视 off");
 		clearChat();
 		
 		// Clean up
 		runChatCommand("fill ~-7 ~ ~-7 ~7 ~30 ~7 air");
-		runWurstCommand("setcheckbox X-Ray only_show_exposed off");
-		runWurstCommand("setslider X-Ray opacity 0");
-		runWurstCommand("t X-Ray off");
+		runWurstCommand("setcheckbox 透视 only_show_exposed off");
+		runWurstCommand("setslider 透视 opacity 0");
+		runWurstCommand("t 透视 off");
 		clearChat();
 	}
 	

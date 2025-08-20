@@ -27,7 +27,7 @@ public enum NoFallHackTest
 		assertPlayerHealth(health -> health == 20);
 		
 		// Fall 10 blocks with NoFall enabled
-		runWurstCommand("t NoFall on");
+		runWurstCommand("t 无摔伤 on");
 		runChatCommand("tp ~ ~10 ~");
 		waitForWorldTicks(5);
 		waitUntil("player is on ground", mc -> mc.player.isOnGround());
@@ -36,7 +36,7 @@ public enum NoFallHackTest
 		assertPlayerHealth(health -> health == 20);
 		
 		// Fall 10 blocks with NoFall disabled
-		runWurstCommand("t NoFall off");
+		runWurstCommand("t 无摔伤 off");
 		runChatCommand("tp ~ ~10 ~");
 		waitForWorldTicks(5);
 		waitUntil("player is on ground", mc -> mc.player.isOnGround());
