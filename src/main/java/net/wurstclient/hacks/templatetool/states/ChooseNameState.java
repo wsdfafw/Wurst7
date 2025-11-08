@@ -8,6 +8,7 @@
 package net.wurstclient.hacks.templatetool.states;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import org.lwjgl.glfw.GLFW;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -98,6 +100,9 @@ public final class ChooseNameState extends TemplateToolState
 		
 		private void done()
 		{
+			if(hack.getFile() == null)
+				return;
+			
 			hack.setBlockTypesEnabled(includeTypesBox.isChecked());
 			hack.setState(new SavingFileState());
 		}
@@ -111,28 +116,37 @@ public final class ChooseNameState extends TemplateToolState
 		public void tick()
 		{
 			if(nameField.getText().isEmpty())
-				return;
+				hack.setFile(null);
+			else
+				try
+				{
+					Path folder = WURST.getHax().autoBuildHack.getFolder();
+					Path file = folder.resolve(nameField.getText() + ".json");
+					hack.setFile(file.toFile());
+					
+				}catch(InvalidPathException e)
+				{
+					hack.setFile(null);
+				}
 			
-			Path folder = WURST.getHax().autoBuildHack.getFolder();
-			Path file = folder.resolve(nameField.getText() + ".json");
-			hack.setFile(file.toFile());
+			doneButton.active = hack.getFile() != null;
 		}
 		
 		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+		public boolean keyPressed(KeyInput context)
 		{
-			switch(keyCode)
+			switch(context.key())
 			{
 				case GLFW.GLFW_KEY_ESCAPE:
-				cancelButton.onPress();
+				cancelButton.onPress(context);
 				break;
 				
 				case GLFW.GLFW_KEY_ENTER:
-				doneButton.onPress();
+				doneButton.onPress(context);
 				break;
 			}
 			
-			return super.keyPressed(keyCode, scanCode, modifiers);
+			return super.keyPressed(context);
 		}
 		
 		@Override

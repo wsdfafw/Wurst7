@@ -11,9 +11,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import net.minecraft.util.Colors;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,8 +25,8 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.network.ServerInfo.ServerType;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Util;
-import net.wurstclient.mixinterface.IMultiplayerScreen;
 import net.wurstclient.util.MathUtils;
 
 public class ServerFinderScreen extends Screen
@@ -197,10 +197,9 @@ public class ServerFinderScreen extends Screen
 		serverList.add(new ServerInfo(name, ip, ServerType.OTHER), false);
 		serverList.saveFile();
 		
-		MultiplayerServerListWidget selector =
-			((IMultiplayerScreen)prevScreen).getServerListSelector();
-		selector.setSelected(null);
-		selector.setServers(serverList);
+		MultiplayerServerListWidget listWidget = prevScreen.serverListWidget;
+		listWidget.setSelected(null);
+		listWidget.setServers(serverList);
 	}
 	
 	@Override
@@ -211,24 +210,15 @@ public class ServerFinderScreen extends Screen
 	}
 	
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int int_3)
+	public boolean mouseClicked(Click context, boolean doubleClick)
 	{
-		if(keyCode == GLFW.GLFW_KEY_ENTER)
-			searchButton.onPress();
-		
-		return super.keyPressed(keyCode, scanCode, int_3);
-	}
-	
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button)
-	{
-		if(button == GLFW.GLFW_MOUSE_BUTTON_4)
+		if(context.button() == GLFW.GLFW_MOUSE_BUTTON_4)
 		{
 			close();
 			return true;
 		}
 		
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(context, doubleClick);
 	}
 	
 	@Override

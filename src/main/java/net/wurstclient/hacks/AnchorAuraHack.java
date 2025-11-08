@@ -31,8 +31,8 @@ import net.wurstclient.events.UpdateListener;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.EnumSetting;
-import net.wurstclient.settings.FacingSetting;
-import net.wurstclient.settings.FacingSetting.Facing;
+import net.wurstclient.settings.FaceTargetSetting;
+import net.wurstclient.settings.FaceTargetSetting.FaceTarget;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.SwingHandSetting;
@@ -55,14 +55,12 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 	private final CheckboxSetting autoPlace = new CheckboxSetting("自动放置的锚",
 		"description.wurst.setting.anchoraura.auto-place_anchors", true);
 	
-	private final FacingSetting faceBlocks =
-		FacingSetting.withPacketSpam("面朝锚点",
-			"description.wurst.setting.anchoraura.face_anchors", Facing.OFF);
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("Check line of sight",
+			"description.wurst.setting.anchoraura.check_line_of_sight", false);
 	
-	private final CheckboxSetting checkLOS = new CheckboxSetting("检查视线",
-		"Ensures that you don't reach through blocks when placing or right-clicking respawn anchors.\n\n"
-			+ "Slower but can help with anti-cheat plugins.",
-		false);
+	private final FaceTargetSetting faceTarget =
+		FaceTargetSetting.withPacketSpam(this, FaceTarget.OFF);
 	
 	private final SwingHandSetting swingHand =
 		new SwingHandSetting(this, SwingHand.CLIENT);
@@ -81,8 +79,8 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 		setCategory(Category.COMBAT);
 		addSetting(range);
 		addSetting(autoPlace);
-		addSetting(faceBlocks);
 		addSetting(checkLOS);
+		addSetting(faceTarget);
 		addSetting(swingHand);
 		addSetting(takeItemsFrom);
 		
@@ -241,7 +239,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 				&& !BlockUtils.hasLineOfSight(eyesPos, hitVec))
 				continue;
 			
-			faceBlocks.getSelected().face(hitVec);
+			faceTarget.face(hitVec);
 			
 			// place block
 			IMC.getInteractionManager().rightClickBlock(pos, side, hitVec);
@@ -287,7 +285,7 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 			if(!MC.player.isHolding(Items.RESPAWN_ANCHOR))
 				return false;
 			
-			faceBlocks.getSelected().face(hitVec);
+			faceTarget.face(hitVec);
 			
 			// place block
 			IMC.getInteractionManager().rightClickBlock(neighbor,
@@ -351,8 +349,8 @@ public final class AnchorAuraHack extends Hack implements UpdateListener
 		int rangeI = 2;
 		
 		Box targetBB = target.getBoundingBox();
-		Vec3d targetEyesVec =
-			target.getPos().add(0, target.getEyeHeight(target.getPose()), 0);
+		Vec3d targetEyesVec = target.getEntityPos().add(0,
+			target.getEyeHeight(target.getPose()), 0);
 		
 		Comparator<BlockPos> closestToTarget =
 			Comparator.<BlockPos> comparingDouble(

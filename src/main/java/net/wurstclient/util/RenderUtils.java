@@ -64,7 +64,7 @@ public enum RenderUtils
 	
 	public static Vec3d getCameraPos()
 	{
-		Camera camera = WurstClient.MC.getBlockEntityRenderDispatcher().camera;
+		Camera camera = WurstClient.MC.gameRenderer.getCamera();
 		if(camera == null)
 			return Vec3d.ZERO;
 		
@@ -73,7 +73,7 @@ public enum RenderUtils
 	
 	public static BlockPos getCameraBlockPos()
 	{
-		Camera camera = WurstClient.MC.getBlockEntityRenderDispatcher().camera;
+		Camera camera = WurstClient.MC.gameRenderer.getCamera();
 		if(camera == null)
 			return BlockPos.ORIGIN;
 		
@@ -540,6 +540,35 @@ public enum RenderUtils
 		vcp.draw(layer);
 	}
 	
+	public static void drawNodes(MatrixStack matrices, List<Box> boxes,
+		int color, boolean depthTest)
+	{
+		VertexConsumerProvider.Immediate vcp = getVCP();
+		RenderLayer layer = WurstRenderLayers.getLines(depthTest);
+		VertexConsumer buffer = vcp.getBuffer(layer);
+		
+		Vec3d camOffset = getCameraPos().negate();
+		for(Box box : boxes)
+			drawNode(matrices, buffer, box.offset(camOffset), color);
+		
+		vcp.draw(layer);
+	}
+	
+	public static void drawNodes(MatrixStack matrices, List<ColoredBox> boxes,
+		boolean depthTest)
+	{
+		VertexConsumerProvider.Immediate vcp = getVCP();
+		RenderLayer layer = WurstRenderLayers.getLines(depthTest);
+		VertexConsumer buffer = vcp.getBuffer(layer);
+		
+		Vec3d camOffset = getCameraPos().negate();
+		for(ColoredBox box : boxes)
+			drawNode(matrices, buffer, box.box().offset(camOffset),
+				box.color());
+		
+		vcp.draw(layer);
+	}
+	
 	public static void drawNode(VertexConsumer buffer, Box box, int color)
 	{
 		drawNode(new MatrixStack(), buffer, box, color);
@@ -662,7 +691,6 @@ public enum RenderUtils
 			context.drawText(tr, "?", 3, 2, WurstColors.VERY_LIGHT_GRAY, true);
 			
 			matrixStack.popMatrix();
-			context.state.goDownLayer();
 		}
 	}
 	
@@ -785,7 +813,10 @@ public enum RenderUtils
 		
 		context.getMatrices().pushMatrix();
 		context.getMatrices().scale(1F / scale);
-		context.drawBorder(x, y, w, h, color);
+		context.drawHorizontalLine(x, x + w - 1, y, color);
+		context.drawHorizontalLine(x, x + w - 1, y + h - 1, color);
+		context.drawVerticalLine(x, y + 1, y + h - 1, color);
+		context.drawVerticalLine(x + w - 1, y + 1, y + h - 1, color);
 		context.getMatrices().popMatrix();
 	}
 	
