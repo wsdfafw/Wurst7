@@ -42,6 +42,7 @@ public final class AutoMineHack extends Hack
 	@Override
 	protected void onEnable()
 	{
+		WURST.getHax().autoFarmHack.setEnabled(false);
 		WURST.getHax().excavatorHack.setEnabled(false);
 		WURST.getHax().nukerHack.setEnabled(false);
 		WURST.getHax().nukerLegitHack.setEnabled(false);
@@ -104,7 +105,7 @@ public final class AutoMineHack extends Hack
 		
 		if(im.updateBlockBreakingProgress(pos, side))
 		{
-			MC.particleManager.addBlockBreakingParticles(pos, side);
+			MC.world.spawnBlockBreakingParticle(pos, side);
 			MC.player.swingHand(Hand.MAIN_HAND);
 			MC.options.attackKey.setPressed(true);
 		}

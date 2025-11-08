@@ -100,12 +100,12 @@ public final class GoToCmd extends Command
 		if(entity == null)
 			throw new CmdError("实体 \"" + name + "\" 无法被找到.");
 		
-		return BlockPos.ofFloored(entity.getPos());
+		return BlockPos.ofFloored(entity.getEntityPos());
 	}
 	
 	private BlockPos argsToXyzPos(String... xyz) throws CmdSyntaxError
 	{
-		BlockPos playerPos = BlockPos.ofFloored(MC.player.getPos());
+		BlockPos playerPos = BlockPos.ofFloored(MC.player.getEntityPos());
 		int[] player = {playerPos.getX(), playerPos.getY(), playerPos.getZ()};
 		int[] pos = new int[3];
 		
