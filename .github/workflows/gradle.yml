@@ -99,7 +99,7 @@ jobs:
       run: xvfb-run --auto-servernum ./gradlew runEndToEndTest --stacktrace --warning-mode=fail --no-configuration-cache
 
     - name: Upload screenshots.zip artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: ${{ success() || failure() }}
       with:
         name: screenshots
@@ -107,7 +107,7 @@ jobs:
         compression-level: 0
 
     - name: Upload crash-reports.zip artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: ${{ failure() }}
       with:
         name: crash-reports
@@ -150,7 +150,7 @@ jobs:
         echo "</details>" >> $GITHUB_STEP_SUMMARY
 
     - name: 捕获构建产物
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: Artifacts
         path: build/libs/Wurst-Client-*.jar
