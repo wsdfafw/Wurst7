@@ -13,29 +13,33 @@ import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.CrackedAlt;
 import net.wurstclient.altmanager.MojangAlt;
 
-public final class AddAltScreen extends AltEditorScreen {
+public final class AddAltScreen extends AltEditorScreen
+{
 	private final AltManager altManager;
-
-	public AddAltScreen(Screen prevScreen, AltManager altManager) {
+	
+	public AddAltScreen(Screen prevScreen, AltManager altManager)
+	{
 		super(prevScreen, Component.literal("新的账号"));
 		this.altManager = altManager;
 	}
-
+	
 	@Override
-	protected String getDoneButtonText() {
+	protected String getDoneButtonText()
+	{
 		return getPassword().isEmpty() ? "添加裂缝账号" : "添加高级账号";
 	}
-
+	
 	@Override
-	protected void pressDoneButton() {
+	protected void pressDoneButton()
+	{
 		String nameOrEmail = getNameOrEmail();
 		String password = getPassword();
-
-		if (password.isEmpty())
+		
+		if(password.isEmpty())
 			altManager.add(new CrackedAlt(nameOrEmail));
 		else
 			altManager.add(new MojangAlt(nameOrEmail, password));
-
+		
 		minecraft.setScreen(prevScreen);
 	}
 }

@@ -12,29 +12,34 @@ import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 
-public final class JumpCmd extends Command {
-	public JumpCmd() {
+public final class JumpCmd extends Command
+{
+	public JumpCmd()
+	{
 		super("jump", "使你跳一下.");
 	}
-
+	
 	@Override
-	public void call(String[] args) throws CmdException {
-		if (args.length != 0)
+	public void call(String[] args) throws CmdException
+	{
+		if(args.length != 0)
 			throw new CmdSyntaxError();
-
-		if (!MC.player.onGround() && !WURST.getHax().jetpackHack.isEnabled())
+		
+		if(!MC.player.onGround() && !WURST.getHax().jetpackHack.isEnabled())
 			throw new CmdError("不能在空中跳跃.");
-
+		
 		MC.player.jumpFromGround();
 	}
-
+	
 	@Override
-	public String getPrimaryAction() {
+	public String getPrimaryAction()
+	{
 		return "跳";
 	}
-
+	
 	@Override
-	public void doPrimaryAction() {
+	public void doPrimaryAction()
+	{
 		WURST.getCmdProcessor().process("jump");
 	}
 }

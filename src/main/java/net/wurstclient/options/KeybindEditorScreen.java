@@ -104,8 +104,8 @@ public final class KeybindEditorScreen extends Screen
 		
 		context.drawString(font, "键位: " + Keybind.getDisplayKey(key),
 			width / 2 - 100, 47, WurstColors.VERY_LIGHT_GRAY);
-		context.drawString(font, "指令 (隔开方式 ';')", width / 2 - 100,
-			87, WurstColors.VERY_LIGHT_GRAY);
+		context.drawString(font, "指令 (隔开方式 ';')", width / 2 - 100, 87,
+			WurstColors.VERY_LIGHT_GRAY);
 		
 		commandField.render(context, mouseX, mouseY, partialTicks);
 		

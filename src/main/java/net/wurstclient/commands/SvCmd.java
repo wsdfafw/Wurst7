@@ -15,38 +15,44 @@ import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.LastServerRememberer;
 
-public final class SvCmd extends Command {
-	public SvCmd() {
+public final class SvCmd extends Command
+{
+	public SvCmd()
+	{
 		super("sv", "显示当前连接的服务器的版本.", ".sv");
 	}
-
+	
 	@Override
-	public void call(String[] args) throws CmdException {
-		if (args.length != 0)
+	public void call(String[] args) throws CmdException
+	{
+		if(args.length != 0)
 			throw new CmdSyntaxError();
-
+		
 		ChatUtils.message("服务器版本: " + getVersion());
 	}
-
-	private String getVersion() throws CmdError {
-		if (MC.hasSingleplayerServer())
+	
+	private String getVersion() throws CmdError
+	{
+		if(MC.hasSingleplayerServer())
 			throw new CmdError("无法在单人服务器中检查版本.");
-
+		
 		ServerData lastServer = LastServerRememberer.getLastServer();
-		if (lastServer == null)
+		if(lastServer == null)
 			throw new IllegalStateException(
-					"LastServerRememberer功能 并不记得最后一个服务器是什么!");
-
+				"LastServerRememberer功能 并不记得最后一个服务器是什么!");
+		
 		return lastServer.version.getString();
 	}
-
+	
 	@Override
-	public String getPrimaryAction() {
+	public String getPrimaryAction()
+	{
 		return "获得服务器版本";
 	}
-
+	
 	@Override
-	public void doPrimaryAction() {
+	public void doPrimaryAction()
+	{
 		WURST.getCmdProcessor().process("sv");
 	}
 }

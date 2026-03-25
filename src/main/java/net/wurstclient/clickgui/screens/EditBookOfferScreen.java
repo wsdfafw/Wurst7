@@ -310,8 +310,7 @@ public final class EditBookOfferScreen extends Screen
 		matrixStack.translate(width / 2 - 100, 112);
 		
 		context.drawString(tr, "等级:", 0, 0, WurstColors.VERY_LIGHT_GRAY);
-		context.drawString(tr, "最高价格:", 0, 16,
-			WurstColors.VERY_LIGHT_GRAY);
+		context.drawString(tr, "最高价格:", 0, 16, WurstColors.VERY_LIGHT_GRAY);
 		
 		if(alreadyAdded && offerToSave != null)
 		{

@@ -88,10 +88,8 @@ public final class CmdProcessor implements ChatOutputListener
 			
 		}catch(Throwable e)
 		{
-			CrashReport report =
-				CrashReport.forThrowable(e, "运行 Wurst 命令");
-			CrashReportCategory section =
-				report.addCategory("影响的命令");
+			CrashReport report = CrashReport.forThrowable(e, "运行 Wurst 命令");
+			CrashReportCategory section = report.addCategory("影响的命令");
 			section.setDetail("命令输入", () -> input);
 			throw new ReportedException(report);
 		}

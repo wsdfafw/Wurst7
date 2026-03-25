@@ -139,8 +139,8 @@ public final class SelectFileScreen extends Screen
 		
 		if(doneButton.isHoveredOrFocused() && !doneButton.active)
 			context.setComponentTooltipForNextFrame(font,
-				Arrays
-					.asList(Component.literal("你必须先选择一个文件.")), mouseX, mouseY);
+				Arrays.asList(Component.literal("你必须先选择一个文件.")), mouseX,
+				mouseY);
 	}
 	
 	@Override

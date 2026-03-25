@@ -72,8 +72,7 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report =
-				CrashReport.forThrowable(e, "发射Wurst事件");
+			CrashReport report = CrashReport.forThrowable(e, "发射Wurst事件");
 			CrashReportCategory section = report.addCategory("影响的事件");
 			section.setDetail("事件类", () -> event.getClass().getName());
 			
@@ -102,11 +101,9 @@ public final class EventManager
 			e.printStackTrace();
 			
 			CrashReport report = CrashReport.forThrowable(e, "增加 Wurst 事件监听");
-			CrashReportCategory section =
-				report.addCategory("影响的监听");
+			CrashReportCategory section = report.addCategory("影响的监听");
 			section.setDetail("监听类型", () -> type.getName());
-			section.setDetail("监听类",
-				() -> listener.getClass().getName());
+			section.setDetail("监听类", () -> listener.getClass().getName());
 			
 			throw new ReportedException(report);
 		}
@@ -127,11 +124,9 @@ public final class EventManager
 			e.printStackTrace();
 			
 			CrashReport report = CrashReport.forThrowable(e, "移除wurst监听事件");
-			CrashReportCategory section =
-				report.addCategory("影响的监听");
+			CrashReportCategory section = report.addCategory("影响的监听");
 			section.setDetail("监听类型", () -> type.getName());
-			section.setDetail("监听类",
-				() -> listener.getClass().getName());
+			section.setDetail("监听类", () -> listener.getClass().getName());
 			
 			throw new ReportedException(report);
 		}

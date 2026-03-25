@@ -73,8 +73,8 @@ public final class KeybindManagerScreen extends Screen
 					WurstClient.INSTANCE.getKeybinds()
 						.setKeybinds(KeybindList.DEFAULT_KEYBINDS);
 				minecraft.setScreen(this);
-			}, Component
-				.literal("您确定要重置密钥绑定吗？?"), Component.literal("这是无法挽回的!"))))
+			}, Component.literal("您确定要重置密钥绑定吗？?"),
+				Component.literal("这是无法挽回的!"))))
 			.bounds(8, 8, 100, 20).build());
 		
 		addRenderableWidget(Button

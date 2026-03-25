@@ -136,16 +136,16 @@ public final class KeybindProfilesScreen extends Screen
 	{
 		listGui.render(context, mouseX, mouseY, partialTicks);
 		
-		context.drawCenteredString(minecraft.font, "键位档案",
-			width / 2, 12, CommonColors.WHITE);
+		context.drawCenteredString(minecraft.font, "键位档案", width / 2, 12,
+			CommonColors.WHITE);
 		
 		for(Renderable drawable : renderables)
 			drawable.render(context, mouseX, mouseY, partialTicks);
 		
 		if(loadButton.isHoveredOrFocused() && !loadButton.active)
 			context.setComponentTooltipForNextFrame(font,
-				Arrays
-					.asList(Component.literal("您必须先选择一个文件.")), mouseX, mouseY);
+				Arrays.asList(Component.literal("您必须先选择一个文件.")), mouseX,
+				mouseY);
 	}
 	
 	@Override

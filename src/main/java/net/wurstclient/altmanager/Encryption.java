@@ -160,8 +160,7 @@ public final class Encryption
 			
 		}catch(IllegalArgumentException | GeneralSecurityException e)
 		{
-			throw new ReportedException(
-				CrashReport.forThrowable(e, "解密字节"));
+			throw new ReportedException(CrashReport.forThrowable(e, "解密字节"));
 		}
 	}
 	
@@ -219,8 +218,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new ReportedException(
-				CrashReport.forThrowable(e, "加密字节"));
+			throw new ReportedException(CrashReport.forThrowable(e, "加密字节"));
 		}
 	}
 	
@@ -327,7 +325,8 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new ReportedException(CrashReport.forThrowable(e, "创建RSA密钥对"));
+			throw new ReportedException(
+				CrashReport.forThrowable(e, "创建RSA密钥对"));
 		}
 	}
 	
@@ -351,8 +350,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new ReportedException(
-				CrashReport.forThrowable(e, "创建AES密钥"));
+			throw new ReportedException(CrashReport.forThrowable(e, "创建AES密钥"));
 		}
 	}
 	

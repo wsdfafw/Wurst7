@@ -60,8 +60,7 @@ public final class BunnyHopHack extends Hack implements UpdateListener
 	
 	private enum JumpIf
 	{
-		SPRINTING("疾跑",
-			p -> p.isSprinting() && (p.zza != 0 || p.xxa != 0)),
+		SPRINTING("疾跑", p -> p.isSprinting() && (p.zza != 0 || p.xxa != 0)),
 		
 		WALKING("走路", p -> p.zza != 0 || p.xxa != 0),
 		

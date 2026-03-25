@@ -21,65 +21,75 @@ import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 
-public final class EnchantCmd extends Command {
-	public EnchantCmd() {
+public final class EnchantCmd extends Command
+{
+	public EnchantCmd()
+	{
 		super("enchant", "附魔几乎任何东西(使用前把需要附魔的物品放在主手)", ".enchant");
 	}
-
+	
 	@Override
-	public void call(String[] args) throws CmdException {
-		if (!MC.player.getAbilities().instabuild)
+	public void call(String[] args) throws CmdException
+	{
+		if(!MC.player.getAbilities().instabuild)
 			throw new CmdError("仅限创造模式.");
-
-		if (args.length > 1)
+		
+		if(args.length > 1)
 			throw new CmdSyntaxError();
-
+		
 		enchant(getHeldItem(), 127);
 		ChatUtils.message("Item enchanted.");
 	}
-
-	private ItemStack getHeldItem() throws CmdError {
+	
+	private ItemStack getHeldItem() throws CmdError
+	{
 		ItemStack stack = MC.player.getMainHandItem();
-
-		if (stack.isEmpty())
+		
+		if(stack.isEmpty())
 			stack = MC.player.getOffhandItem();
-
-		if (stack.isEmpty())
+		
+		if(stack.isEmpty())
 			throw new CmdError("There is no item in your hand.");
-
+		
 		return stack;
 	}
-
-	private void enchant(ItemStack stack, int level) {
+	
+	private void enchant(ItemStack stack, int level)
+	{
 		RegistryAccess drm = MC.level.registryAccess();
-		Registry<Enchantment> registry = drm.lookupOrThrow(Registries.ENCHANTMENT);
-
-		for (Holder<Enchantment> entry : registry.asHolderIdMap()) {
+		Registry<Enchantment> registry =
+			drm.lookupOrThrow(Registries.ENCHANTMENT);
+		
+		for(Holder<Enchantment> entry : registry.asHolderIdMap())
+		{
 			// Skip curses
-			if (entry.is(EnchantmentTags.CURSE))
+			if(entry.is(EnchantmentTags.CURSE))
 				continue;
-
+			
 			// Skip Silk Touch so it doesn't remove Fortune
-			if (entry.unwrapKey().orElse(null) == Enchantments.SILK_TOUCH)
+			if(entry.unwrapKey().orElse(null) == Enchantments.SILK_TOUCH)
 				continue;
-
+			
 			// Limit Quick Charge to level 5 so it doesn't break
-			if (entry.unwrapKey().orElse(null) == Enchantments.QUICK_CHARGE) {
+			if(entry.unwrapKey().orElse(null) == Enchantments.QUICK_CHARGE)
+			{
 				stack.enchant(entry, Math.min(level, 5));
 				continue;
 			}
-
+			
 			stack.enchant(entry, level);
 		}
 	}
-
+	
 	@Override
-	public String getPrimaryAction() {
+	public String getPrimaryAction()
+	{
 		return "Enchant Held Item";
 	}
-
+	
 	@Override
-	public void doPrimaryAction() {
+	public void doPrimaryAction()
+	{
 		WURST.getCmdProcessor().process("enchant");
 	}
 }
