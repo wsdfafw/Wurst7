@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -9,9 +9,10 @@ package net.wurstclient.hacks.newchunks;
 
 import java.util.function.Consumer;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.util.BufferWithLayer;
@@ -35,7 +36,7 @@ public final class NewChunksRenderer
 		this.oldChunksColor = oldChunksColor;
 	}
 	
-	public void updateBuffer(int i, RenderLayer.MultiPhase layer,
+	public void updateBuffer(int i, RenderType layer,
 		Consumer<VertexConsumer> callback)
 	{
 		vertexBuffers[i] = BufferWithLayer.createAndUpload(layer, callback);
@@ -53,9 +54,9 @@ public final class NewChunksRenderer
 		}
 	}
 	
-	public void render(MatrixStack matrixStack, float partialTicks)
+	public void render(PoseStack matrixStack, float partialTicks)
 	{
-		matrixStack.push();
+		matrixStack.pushPose();
 		RenderUtils.applyRegionalRenderOffset(matrixStack);
 		
 		float alpha = opacity.getValueF();
@@ -67,7 +68,7 @@ public final class NewChunksRenderer
 			if(buffer == null)
 				continue;
 			
-			matrixStack.push();
+			matrixStack.pushPose();
 			if(i == 0 || i == 2)
 				matrixStack.translate(0, altitudeD, 0);
 			
@@ -76,9 +77,9 @@ public final class NewChunksRenderer
 			
 			buffer.draw(matrixStack, rgb, alpha);
 			
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 		
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

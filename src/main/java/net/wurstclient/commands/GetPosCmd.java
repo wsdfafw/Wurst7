@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,7 +7,7 @@
  */
 package net.wurstclient.commands;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
@@ -23,7 +23,7 @@ public final class GetPosCmd extends Command
 	@Override
 	public void call(String[] args) throws CmdException
 	{
-		BlockPos pos = BlockPos.ofFloored(MC.player.getEntityPos());
+		BlockPos pos = BlockPos.containing(MC.player.position());
 		String posString = pos.getX() + " " + pos.getY() + " " + pos.getZ();
 		
 		switch(String.join(" ", args).toLowerCase())
@@ -33,7 +33,7 @@ public final class GetPosCmd extends Command
 			break;
 			
 			case "copy":
-			MC.keyboard.setClipboard(posString);
+			MC.keyboardHandler.setClipboard(posString);
 			ChatUtils.message("位置已复制到剪贴板.");
 			break;
 			

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,63 +7,56 @@
  */
 package net.wurstclient.commands;
 
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.multiplayer.ServerData;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.LastServerRememberer;
 
-public final class IpCmd extends Command
-{
-	public IpCmd()
-	{
+public final class IpCmd extends Command {
+	public IpCmd() {
 		super("ip", "显示当前连接的服务器的IP,\n或将其IP复制到剪贴板", ".ip", "复制到剪贴板: .ip c");
 	}
-	
+
 	@Override
-	public void call(String[] args) throws CmdException
-	{
+	public void call(String[] args) throws CmdException {
 		String ip = getIP();
-		
-		switch(String.join(" ", args).toLowerCase())
-		{
+
+		switch (String.join(" ", args).toLowerCase()) {
 			case "":
-			ChatUtils.message("IP: " + ip);
-			break;
-			
+				ChatUtils.message("IP: " + ip);
+				break;
+
 			case "c":
-			MC.keyboard.setClipboard(ip);
-			ChatUtils.message("IP已经被复制到剪切板.");
-			break;
-			
+				MC.keyboardHandler.setClipboard(ip);
+				ChatUtils.message("IP已经被复制到剪切板.");
+				break;
+
 			default:
-			throw new CmdSyntaxError();
+				throw new CmdSyntaxError();
 		}
 	}
-	
-	private String getIP()
-	{
-		ServerInfo lastServer = LastServerRememberer.getLastServer();
-		if(lastServer == null || MC.isIntegratedServerRunning())
+
+	private String getIP() {
+		ServerData lastServer = LastServerRememberer.getLastServer();
+		if (lastServer == null || MC.hasSingleplayerServer())
 			return "127.0.0.1:25565";
-		
-		String ip = lastServer.address;
-		if(!ip.contains(":"))
+
+		String ip = lastServer.ip;
+		if (!ip.contains(":"))
 			ip += ":25565";
-		
+
 		return ip;
 	}
-	
+
 	@Override
-	public String getPrimaryAction()
-	{
+	public String getPrimaryAction() {
 		return "获得IP";
 	}
-	
+
 	@Override
-	public void doPrimaryAction()
-	{
+	public void doPrimaryAction() {
 		WURST.getCmdProcessor().process("ip");
 	}
 }

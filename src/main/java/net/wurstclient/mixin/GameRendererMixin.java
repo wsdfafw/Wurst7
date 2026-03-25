@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,12 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.LivingEntity;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.CameraTransformViewBobbingListener.CameraTransformViewBobbingEvent;
@@ -30,11 +28,11 @@ import net.wurstclient.hacks.FullbrightHack;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin implements AutoCloseable
 {
-	@WrapOperation(at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/render/GameRenderer;bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V",
-		ordinal = 0),
-		method = "renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V")
-	private void onBobView(GameRenderer instance, MatrixStack matrices,
+	@WrapOperation(method = "renderLevel(Lnet/minecraft/client/DeltaTracker;)V",
+		at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
+			ordinal = 0))
+	private void onBobView(GameRenderer instance, PoseStack matrices,
 		float tickDelta, Operation<Void> original)
 	{
 		CameraTransformViewBobbingEvent event =
@@ -45,36 +43,18 @@ public abstract class GameRendererMixin implements AutoCloseable
 			original.call(instance, matrices, tickDelta);
 	}
 	
-	@ModifyReturnValue(at = @At("RETURN"),
-		method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F")
+	@ModifyReturnValue(method = "getFov(Lnet/minecraft/client/Camera;FZ)F",
+		at = @At("RETURN"))
 	private float onGetFov(float original)
 	{
 		return WurstClient.INSTANCE.getOtfs().zoomOtf
 			.changeFovBasedOnZoom(original);
 	}
 	
-	/**
-	 * This is the part that makes Liquids work.
-	 */
-	@WrapOperation(at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/entity/Entity;raycast(DFZ)Lnet/minecraft/util/hit/HitResult;",
-		ordinal = 0),
-		method = "findCrosshairTarget(Lnet/minecraft/entity/Entity;DDF)Lnet/minecraft/util/hit/HitResult;")
-	private HitResult liquidsRaycast(Entity instance, double maxDistance,
-		float tickDelta, boolean includeFluids, Operation<HitResult> original)
-	{
-		if(!WurstClient.INSTANCE.getHax().liquidsHack.isEnabled())
-			return original.call(instance, maxDistance, tickDelta,
-				includeFluids);
-		
-		return original.call(instance, maxDistance, tickDelta, true);
-	}
-	
-	@WrapOperation(
+	@WrapOperation(method = "renderLevel(Lnet/minecraft/client/DeltaTracker;)V",
 		at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F",
-			ordinal = 0),
-		method = "renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V")
+			target = "Lnet/minecraft/util/Mth;lerp(FFF)F",
+			ordinal = 0))
 	private float onRenderWorldNauseaLerp(float delta, float start, float end,
 		Operation<Float> original)
 	{
@@ -84,8 +64,9 @@ public abstract class GameRendererMixin implements AutoCloseable
 		return 0;
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "getNightVisionStrength(Lnet/minecraft/entity/LivingEntity;F)F",
+	@Inject(
+		method = "getNightVisionScale(Lnet/minecraft/world/entity/LivingEntity;F)F",
+		at = @At("HEAD"),
 		cancellable = true)
 	private static void onGetNightVisionStrength(LivingEntity entity,
 		float tickDelta, CallbackInfoReturnable<Float> cir)
@@ -97,10 +78,10 @@ public abstract class GameRendererMixin implements AutoCloseable
 			cir.setReturnValue(fullbright.getNightVisionStrength());
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V",
+	@Inject(method = "bobHurt(Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
+		at = @At("HEAD"),
 		cancellable = true)
-	private void onTiltViewWhenHurt(MatrixStack matrices, float tickDelta,
+	private void onTiltViewWhenHurt(PoseStack matrices, float tickDelta,
 		CallbackInfo ci)
 	{
 		if(WurstClient.INSTANCE.getHax().noHurtcamHack.isEnabled())

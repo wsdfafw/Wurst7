@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.Encryption;
 import net.wurstclient.analytics.PlausibleAnalytics;
@@ -26,6 +26,7 @@ import net.wurstclient.event.EventManager;
 import net.wurstclient.events.ChatOutputListener;
 import net.wurstclient.events.GUIRenderListener;
 import net.wurstclient.events.KeyPressListener;
+import net.wurstclient.events.MouseButtonPressListener;
 import net.wurstclient.events.PostMotionListener;
 import net.wurstclient.events.PreMotionListener;
 import net.wurstclient.events.UpdateListener;
@@ -47,11 +48,11 @@ public enum WurstClient
 {
 	INSTANCE;
 	
-	public static MinecraftClient MC;
+	public static Minecraft MC;
 	public static IMinecraftClient IMC;
 	
-	public static final String VERSION = "7.51";
-	public static final String MC_VERSION = "1.21.10";
+	public static final String VERSION = "7.53";
+	public static final String MC_VERSION = "1.21.11";
 	
 	private PlausibleAnalytics plausible;
 	private EventManager eventManager;
@@ -80,7 +81,7 @@ public enum WurstClient
 	{
 		System.out.println("Starting Wurst Client...");
 		
-		MC = MinecraftClient.getInstance();
+		MC = Minecraft.getInstance();
 		IMC = (IMinecraftClient)MC;
 		wurstFolder = createWurstFolder();
 		
@@ -124,6 +125,7 @@ public enum WurstClient
 		KeybindProcessor keybindProcessor =
 			new KeybindProcessor(hax, keybinds, cmdProcessor);
 		eventManager.add(KeyPressListener.class, keybindProcessor);
+		eventManager.add(MouseButtonPressListener.class, keybindProcessor);
 		
 		hud = new IngameHUD();
 		eventManager.add(GUIRenderListener.class, hud);
@@ -145,7 +147,7 @@ public enum WurstClient
 	
 	private Path createWurstFolder()
 	{
-		Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
+		Path dotMinecraftFolder = MC.gameDirectory.toPath().normalize();
 		Path wurstFolder = dotMinecraftFolder.resolve("wurst");
 		
 		try

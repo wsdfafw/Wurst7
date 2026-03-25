@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -19,23 +19,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.ConnectionPacketOutputListener.ConnectionPacketOutputEvent;
 import net.wurstclient.events.PacketInputListener.PacketInputEvent;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 public abstract class ClientConnectionMixin
 	extends SimpleChannelInboundHandler<Packet<?>>
 {
 	private ConcurrentLinkedQueue<ConnectionPacketOutputEvent> events =
 		new ConcurrentLinkedQueue<>();
 	
-	@Inject(at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V",
-		ordinal = 0),
-		method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V",
+	@Inject(
+		method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V",
+		at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/network/Connection;genericsFtw(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;)V",
+			ordinal = 0),
 		cancellable = true)
 	private void onChannelRead0(ChannelHandlerContext context, Packet<?> packet,
 		CallbackInfo ci)
@@ -49,8 +50,9 @@ public abstract class ClientConnectionMixin
 	
 	// These mixins target the second "send" method. The one with two arguments.
 	
-	@ModifyVariable(at = @At("HEAD"),
-		method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;)V")
+	@ModifyVariable(
+		method = "send(Lnet/minecraft/network/protocol/Packet;Lio/netty/channel/ChannelFutureListener;)V",
+		at = @At("HEAD"))
 	public Packet<?> modifyPacket(Packet<?> packet)
 	{
 		ConnectionPacketOutputEvent event =
@@ -60,8 +62,9 @@ public abstract class ClientConnectionMixin
 		return event.getPacket();
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;)V",
+	@Inject(
+		method = "send(Lnet/minecraft/network/protocol/Packet;Lio/netty/channel/ChannelFutureListener;)V",
+		at = @At("HEAD"),
 		cancellable = true)
 	private void onSend(Packet<?> packet,
 		@Nullable ChannelFutureListener callback, CallbackInfo ci)

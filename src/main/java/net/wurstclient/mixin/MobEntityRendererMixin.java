@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,21 +13,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.wurstclient.WurstClient;
 
-@Mixin(MobEntityRenderer.class)
+@Mixin(MobRenderer.class)
 public abstract class MobEntityRendererMixin
 {
 	/**
 	 * Makes name-tagged mobs always show their name tags if configured in
 	 * NameTags.
 	 */
-	@Inject(at = @At(value = "FIELD",
-		target = "Lnet/minecraft/client/render/entity/EntityRenderManager;targetedEntity:Lnet/minecraft/entity/Entity;",
-		opcode = Opcodes.GETFIELD,
-		ordinal = 0),
-		method = "hasLabel(Lnet/minecraft/entity/mob/MobEntity;D)Z",
+	@Inject(method = "shouldShowName(Lnet/minecraft/world/entity/Mob;D)Z",
+		at = @At(value = "FIELD",
+			target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;crosshairPickEntity:Lnet/minecraft/world/entity/Entity;",
+			opcode = Opcodes.GETFIELD,
+			ordinal = 0),
 		cancellable = true)
 	private void onHasLabel(CallbackInfoReturnable<Boolean> cir)
 	{

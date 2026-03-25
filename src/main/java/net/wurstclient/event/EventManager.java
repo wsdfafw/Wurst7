@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 import net.wurstclient.WurstClient;
 
 public final class EventManager
@@ -72,11 +72,12 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report = CrashReport.create(e, "发射Wurst事件");
-			CrashReportSection section = report.addElement("影响的事件");
-			section.add("事件类", () -> event.getClass().getName());
+			CrashReport report =
+				CrashReport.forThrowable(e, "发射Wurst事件");
+			CrashReportCategory section = report.addCategory("影响的事件");
+			section.setDetail("事件类", () -> event.getClass().getName());
 			
-			throw new CrashException(report);
+			throw new ReportedException(report);
 		}
 	}
 	
@@ -100,12 +101,14 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report = CrashReport.create(e, "增加 Wurst 事件监听");
-			CrashReportSection section = report.addElement("影响的监听");
-			section.add("监听类型", () -> type.getName());
-			section.add("监听类", () -> listener.getClass().getName());
+			CrashReport report = CrashReport.forThrowable(e, "增加 Wurst 事件监听");
+			CrashReportCategory section =
+				report.addCategory("影响的监听");
+			section.setDetail("监听类型", () -> type.getName());
+			section.setDetail("监听类",
+				() -> listener.getClass().getName());
 			
-			throw new CrashException(report);
+			throw new ReportedException(report);
 		}
 	}
 	
@@ -123,12 +126,14 @@ public final class EventManager
 		{
 			e.printStackTrace();
 			
-			CrashReport report = CrashReport.create(e, "移除wurst监听事件");
-			CrashReportSection section = report.addElement("影响的监听");
-			section.add("监听类型", () -> type.getName());
-			section.add("监听类", () -> listener.getClass().getName());
+			CrashReport report = CrashReport.forThrowable(e, "移除wurst监听事件");
+			CrashReportCategory section =
+				report.addCategory("影响的监听");
+			section.setDetail("监听类型", () -> type.getName());
+			section.setDetail("监听类",
+				() -> listener.getClass().getName());
 			
-			throw new CrashException(report);
+			throw new ReportedException(report);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,39 +7,35 @@
  */
 package net.wurstclient.altmanager.screens;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.wurstclient.altmanager.AltManager;
 import net.wurstclient.altmanager.CrackedAlt;
 import net.wurstclient.altmanager.MojangAlt;
 
-public final class AddAltScreen extends AltEditorScreen
-{
+public final class AddAltScreen extends AltEditorScreen {
 	private final AltManager altManager;
-	
-	public AddAltScreen(Screen prevScreen, AltManager altManager)
-	{
-		super(prevScreen, Text.literal("新的账号"));
+
+	public AddAltScreen(Screen prevScreen, AltManager altManager) {
+		super(prevScreen, Component.literal("新的账号"));
 		this.altManager = altManager;
 	}
-	
+
 	@Override
-	protected String getDoneButtonText()
-	{
+	protected String getDoneButtonText() {
 		return getPassword().isEmpty() ? "添加裂缝账号" : "添加高级账号";
 	}
-	
+
 	@Override
-	protected void pressDoneButton()
-	{
+	protected void pressDoneButton() {
 		String nameOrEmail = getNameOrEmail();
 		String password = getPassword();
-		
-		if(password.isEmpty())
+
+		if (password.isEmpty())
 			altManager.add(new CrackedAlt(nameOrEmail));
 		else
 			altManager.add(new MojangAlt(nameOrEmail, password));
-		
-		client.setScreen(prevScreen);
+
+		minecraft.setScreen(prevScreen);
 	}
 }

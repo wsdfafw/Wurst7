@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.wurstclient.DontBlock;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
@@ -121,13 +122,16 @@ public final class BindsCmd extends Command
 	{
 		String key = displayKey.toLowerCase();
 		
-		String prefix = "key.keyboard.";
-		if(!key.startsWith(prefix))
-			key = prefix + key;
+		if(key.startsWith("key.mouse.") || key.startsWith("key.keyboard."))
+			; // Already has a full prefix
+		else if(key.startsWith("mouse."))
+			key = "key." + key;
+		else
+			key = "key.keyboard." + key;
 		
 		try
 		{
-			InputUtil.fromTranslationKey(key);
+			InputConstants.getKey(key);
 			return key;
 			
 		}catch(IllegalArgumentException e)

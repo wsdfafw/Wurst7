@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -12,37 +12,39 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
 import net.wurstclient.WurstClient;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.GUIRenderListener.GUIRenderEvent;
 import net.wurstclient.hack.HackList;
 
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public class IngameHudMixin
 {
 	// runs after renderScoreboardSidebar()
 	// and before playerListHud.setVisible()
-	@Inject(at = @At("HEAD"),
-		method = "renderPlayerList(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
-	private void onRenderPlayerList(DrawContext context,
-		RenderTickCounter tickCounter, CallbackInfo ci)
+	@Inject(
+		method = "renderTabList(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V",
+		at = @At("HEAD"))
+	private void onRenderPlayerList(GuiGraphics context,
+		DeltaTracker tickCounter, CallbackInfo ci)
 	{
-		if(WurstClient.MC.debugHudEntryList.isF3Enabled())
+		if(WurstClient.MC.debugEntries.isOverlayVisible())
 			return;
 		
-		float tickDelta = tickCounter.getTickProgress(true);
+		float tickDelta = tickCounter.getGameTimeDeltaPartialTick(true);
 		EventManager.fire(new GUIRenderEvent(context, tickDelta));
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "renderOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/util/Identifier;F)V",
+	@Inject(
+		method = "renderTextureOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/resources/Identifier;F)V",
+		at = @At("HEAD"),
 		cancellable = true)
-	private void onRenderOverlay(DrawContext context, Identifier texture,
+	private void onRenderOverlay(GuiGraphics context, Identifier texture,
 		float opacity, CallbackInfo ci)
 	{
 		if(texture == null)
@@ -60,10 +62,8 @@ public class IngameHudMixin
 			ci.cancel();
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "renderVignetteOverlay",
-		cancellable = true)
-	private void onRenderVignetteOverlay(DrawContext context, Entity entity,
+	@Inject(method = "renderVignette", at = @At("HEAD"), cancellable = true)
+	private void onRenderVignetteOverlay(GuiGraphics context, Entity entity,
 		CallbackInfo ci)
 	{
 		HackList hax = WurstClient.INSTANCE.getHax();

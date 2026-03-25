@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,7 +7,7 @@
  */
 package net.wurstclient.commands;
 
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.multiplayer.ServerData;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -15,44 +15,38 @@ import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 import net.wurstclient.util.LastServerRememberer;
 
-public final class SvCmd extends Command
-{
-	public SvCmd()
-	{
+public final class SvCmd extends Command {
+	public SvCmd() {
 		super("sv", "显示当前连接的服务器的版本.", ".sv");
 	}
-	
+
 	@Override
-	public void call(String[] args) throws CmdException
-	{
-		if(args.length != 0)
+	public void call(String[] args) throws CmdException {
+		if (args.length != 0)
 			throw new CmdSyntaxError();
-		
+
 		ChatUtils.message("服务器版本: " + getVersion());
 	}
-	
-	private String getVersion() throws CmdError
-	{
-		if(MC.isIntegratedServerRunning())
+
+	private String getVersion() throws CmdError {
+		if (MC.hasSingleplayerServer())
 			throw new CmdError("无法在单人服务器中检查版本.");
-		
-		ServerInfo lastServer = LastServerRememberer.getLastServer();
-		if(lastServer == null)
+
+		ServerData lastServer = LastServerRememberer.getLastServer();
+		if (lastServer == null)
 			throw new IllegalStateException(
-				"LastServerRememberer功能 并不记得最后一个服务器是什么!");
-		
+					"LastServerRememberer功能 并不记得最后一个服务器是什么!");
+
 		return lastServer.version.getString();
 	}
-	
+
 	@Override
-	public String getPrimaryAction()
-	{
+	public String getPrimaryAction() {
 		return "获得服务器版本";
 	}
-	
+
 	@Override
-	public void doPrimaryAction()
-	{
+	public void doPrimaryAction() {
 		WURST.getCmdProcessor().process("sv");
 	}
 }

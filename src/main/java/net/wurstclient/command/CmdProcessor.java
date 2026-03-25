@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -9,9 +9,9 @@ package net.wurstclient.command;
 
 import java.util.Arrays;
 
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 import net.wurstclient.WurstClient;
 import net.wurstclient.events.ChatOutputListener;
 import net.wurstclient.hacks.TooManyHaxHack;
@@ -88,10 +88,12 @@ public final class CmdProcessor implements ChatOutputListener
 			
 		}catch(Throwable e)
 		{
-			CrashReport report = CrashReport.create(e, "运行 Wurst 命令");
-			CrashReportSection section = report.addElement("影响的命令");
-			section.add("命令输入", () -> input);
-			throw new CrashException(report);
+			CrashReport report =
+				CrashReport.forThrowable(e, "运行 Wurst 命令");
+			CrashReportCategory section =
+				report.addCategory("影响的命令");
+			section.setDetail("命令输入", () -> input);
+			throw new ReportedException(report);
 		}
 	}
 	

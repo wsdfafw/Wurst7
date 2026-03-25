@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -9,8 +9,8 @@ package net.wurstclient.clickgui;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.Font;
+import net.minecraft.util.Mth;
 import net.wurstclient.WurstClient;
 
 public class Window
@@ -38,6 +38,7 @@ public class Window
 	private boolean closing;
 	
 	private boolean invisible;
+	private boolean positionClampingEnabled = true;
 	
 	private boolean fixedWidth;
 	private int innerHeight;
@@ -68,8 +69,11 @@ public class Window
 	 */
 	public final int getX()
 	{
-		int scaledWidth = WurstClient.MC.getWindow().getScaledWidth();
-		return MathHelper.clamp(x, -width + 1, scaledWidth - 1);
+		if(!positionClampingEnabled)
+			return x;
+		
+		int scaledWidth = WurstClient.MC.getWindow().getGuiScaledWidth();
+		return Mth.clamp(x, -width + 1, scaledWidth - 1);
 	}
 	
 	/**
@@ -92,8 +96,11 @@ public class Window
 	 */
 	public final int getY()
 	{
-		int scaledHeight = WurstClient.MC.getWindow().getScaledHeight();
-		return MathHelper.clamp(y, -12, scaledHeight - 1);
+		if(!positionClampingEnabled)
+			return y;
+		
+		int scaledHeight = WurstClient.MC.getWindow().getGuiScaledHeight();
+		return Mth.clamp(y, -12, scaledHeight - 1);
 	}
 	
 	/**
@@ -148,8 +155,8 @@ public class Window
 				maxChildWidth = c.getDefaultWidth();
 		maxChildWidth += 4;
 		
-		TextRenderer tr = WurstClient.MC.textRenderer;
-		int titleBarWidth = tr.getWidth(title) + 4;
+		Font tr = WurstClient.MC.font;
+		int titleBarWidth = tr.width(title) + 4;
 		if(minimizable)
 			titleBarWidth += 11;
 		if(pinnable)
@@ -340,6 +347,17 @@ public class Window
 	public final void setInvisible(boolean invisible)
 	{
 		this.invisible = invisible;
+	}
+	
+	public final boolean isPositionClampingEnabled()
+	{
+		return positionClampingEnabled;
+	}
+	
+	public final void setPositionClampingEnabled(
+		boolean positionClampingEnabled)
+	{
+		this.positionClampingEnabled = positionClampingEnabled;
 	}
 	
 	public final boolean isFixedWidth()

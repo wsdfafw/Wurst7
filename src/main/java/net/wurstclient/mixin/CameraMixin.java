@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -13,16 +13,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.enums.CameraSubmersionType;
-import net.minecraft.client.render.Camera;
+import net.minecraft.client.Camera;
+import net.minecraft.world.level.material.FogType;
 import net.wurstclient.WurstClient;
 import net.wurstclient.hacks.CameraDistanceHack;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin
 {
-	@ModifyVariable(at = @At("HEAD"),
-		method = "clipToSpace(F)F",
+	@ModifyVariable(method = "getMaxZoom(F)F",
+		at = @At("HEAD"),
 		argsOnly = true)
 	private float changeClipToSpaceDistance(float desiredCameraDistance)
 	{
@@ -34,7 +34,7 @@ public abstract class CameraMixin
 		return desiredCameraDistance;
 	}
 	
-	@Inject(at = @At("HEAD"), method = "clipToSpace(F)F", cancellable = true)
+	@Inject(method = "getMaxZoom(F)F", at = @At("HEAD"), cancellable = true)
 	private void onClipToSpace(float desiredCameraDistance,
 		CallbackInfoReturnable<Float> cir)
 	{
@@ -42,13 +42,13 @@ public abstract class CameraMixin
 			cir.setReturnValue(desiredCameraDistance);
 	}
 	
-	@Inject(at = @At("HEAD"),
-		method = "getSubmersionType()Lnet/minecraft/block/enums/CameraSubmersionType;",
+	@Inject(
+		method = "getFluidInCamera()Lnet/minecraft/world/level/material/FogType;",
+		at = @At("HEAD"),
 		cancellable = true)
-	private void onGetSubmersionType(
-		CallbackInfoReturnable<CameraSubmersionType> cir)
+	private void onGetSubmersionType(CallbackInfoReturnable<FogType> cir)
 	{
 		if(WurstClient.INSTANCE.getHax().noOverlayHack.isEnabled())
-			cir.setReturnValue(CameraSubmersionType.NONE);
+			cir.setReturnValue(FogType.NONE);
 	}
 }

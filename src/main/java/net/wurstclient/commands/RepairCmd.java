@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,8 +7,8 @@
  */
 package net.wurstclient.commands;
 
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
@@ -29,27 +29,27 @@ public final class RepairCmd extends Command
 		if(args.length > 0)
 			throw new CmdSyntaxError();
 		
-		ClientPlayerEntity player = MC.player;
+		LocalPlayer player = MC.player;
 		
-		if(!player.getAbilities().creativeMode)
+		if(!player.getAbilities().instabuild)
 			throw new CmdError("仅限创造模式.");
 		
 		int slot = player.getInventory().getSelectedSlot();
 		ItemStack stack = getHeldStack(player);
-		stack.setDamage(0);
+		stack.setDamageValue(0);
 		InventoryUtils.setCreativeStack(slot, stack);
 		
 		ChatUtils.message("物品已修复.");
 	}
 	
-	private ItemStack getHeldStack(ClientPlayerEntity player) throws CmdError
+	private ItemStack getHeldStack(LocalPlayer player) throws CmdError
 	{
-		ItemStack stack = player.getInventory().getSelectedStack();
+		ItemStack stack = player.getInventory().getSelectedItem();
 		
 		if(stack.isEmpty())
 			throw new CmdError("您需要手上的物品.");
 		
-		if(!stack.isDamageable())
+		if(!stack.isDamageableItem())
 			throw new CmdError("此物品不会受到损坏.");
 		
 		if(!stack.isDamaged())

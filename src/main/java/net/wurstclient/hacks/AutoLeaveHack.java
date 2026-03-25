@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,9 +7,9 @@
  */
 package net.wurstclient.hacks;
 
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.world.item.Items;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.UpdateListener;
@@ -57,7 +57,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	@Override
 	public String getRenderName()
 	{
-		if(MC.player != null && MC.player.getAbilities().creativeMode)
+		if(MC.player != null && MC.player.getAbilities().instabuild)
 			return getName() + " (paused)";
 		
 		return getName() + " [" + mode.getSelected() + "]";
@@ -79,7 +79,7 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	public void onUpdate()
 	{
 		// check gamemode
-		if(MC.player.getAbilities().creativeMode)
+		if(MC.player.getAbilities().instabuild)
 			return;
 		
 		// check health
@@ -105,14 +105,13 @@ public final class AutoLeaveHack extends Hack implements UpdateListener
 	public static enum Mode
 	{
 		QUIT("Quit",
-			() -> MC.world.disconnect(ClientWorld.QUITTING_MULTIPLAYER_TEXT)),
+			() -> MC.level.disconnect(ClientLevel.DEFAULT_QUIT_MESSAGE)),
 		
-		CHARS("Chars", () -> MC.getNetworkHandler().sendChatMessage("\u00a7")),
+		CHARS("Chars", () -> MC.getConnection().sendChat("\u00a7")),
 		
 		SELFHURT("SelfHurt",
-			() -> MC.getNetworkHandler()
-				.sendPacket(PlayerInteractEntityC2SPacket.attack(MC.player,
-					MC.player.isSneaking())));
+			() -> MC.getConnection().send(ServerboundInteractPacket
+				.createAttackPacket(MC.player, MC.player.isShiftKeyDown())));
 		
 		private final String name;
 		private final Runnable leave;

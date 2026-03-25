@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,13 +7,13 @@
  */
 package net.wurstclient.hacks.autofarm.plants;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CocoaBlock;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.CocoaBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.wurstclient.hacks.autofarm.AutoFarmPlantType;
 import net.wurstclient.settings.PlantTypeSetting;
 import net.wurstclient.util.BlockUtils;
@@ -29,9 +29,9 @@ public final class CocoaBeanPlantType extends AutoFarmPlantType
 	@Override
 	public final boolean hasPlantingSurface(BlockPos pos)
 	{
-		return Direction.Type.HORIZONTAL.stream().map(pos::offset)
+		return Direction.Plane.HORIZONTAL.stream().map(pos::relative)
 			.map(BlockUtils::getState)
-			.anyMatch(neighbor -> neighbor.isIn(BlockTags.JUNGLE_LOGS));
+			.anyMatch(neighbor -> neighbor.is(BlockTags.JUNGLE_LOGS));
 	}
 	
 	@Override
@@ -46,13 +46,13 @@ public final class CocoaBeanPlantType extends AutoFarmPlantType
 		if(!(state.getBlock() instanceof CocoaBlock))
 			return false;
 		
-		return state.get(CocoaBlock.AGE) >= CocoaBlock.MAX_AGE;
+		return state.getValue(CocoaBlock.AGE) >= CocoaBlock.MAX_AGE;
 	}
 	
 	@Override
 	protected PlantTypeSetting createSetting()
 	{
-		return new PlantTypeSetting("Cocoa Beans", Items.COCOA_BEANS, true,
+		return new PlantTypeSetting("Cocoa beans", Items.COCOA_BEANS, true,
 			true);
 	}
 }

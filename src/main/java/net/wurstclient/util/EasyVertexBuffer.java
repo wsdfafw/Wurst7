@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -18,19 +18,21 @@ import org.joml.Vector4f;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.MeshData;
+import com.mojang.blaze3d.vertex.MeshData.DrawState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.DrawMode;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BuiltBuffer;
-import net.minecraft.client.render.BuiltBuffer.DrawParameters;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.rendertype.OutputTarget;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.TextureTransform;
 
 /**
  * An abstraction of Minecraft 1.21.5's new {@code GpuBuffer} system that makes
@@ -38,21 +40,21 @@ import net.minecraft.client.util.math.MatrixStack;
  */
 public final class EasyVertexBuffer implements AutoCloseable
 {
-	private final RenderSystem.ShapeIndexBuffer shapeIndexBuffer;
+	private final RenderSystem.AutoStorageIndexBuffer shapeIndexBuffer;
 	private final GpuBuffer vertexBuffer;
 	private final int indexCount;
 	
 	/**
 	 * Drop-in replacement for {@code VertexBuffer.createAndUpload()}.
 	 */
-	public static EasyVertexBuffer createAndUpload(DrawMode drawMode,
+	public static EasyVertexBuffer createAndUpload(Mode drawMode,
 		VertexFormat format, Consumer<VertexConsumer> callback)
 	{
 		BufferBuilder bufferBuilder =
-			Tessellator.getInstance().begin(drawMode, format);
+			Tesselator.getInstance().begin(drawMode, format);
 		callback.accept(bufferBuilder);
 		
-		try(BuiltBuffer buffer = bufferBuilder.endNullable())
+		try(MeshData buffer = bufferBuilder.build())
 		{
 			if(buffer == null)
 				return new EasyVertexBuffer(drawMode);
@@ -61,30 +63,30 @@ public final class EasyVertexBuffer implements AutoCloseable
 		}
 	}
 	
-	private EasyVertexBuffer(BuiltBuffer buffer, DrawMode drawMode)
+	private EasyVertexBuffer(MeshData buffer, Mode drawMode)
 	{
-		DrawParameters drawParams = buffer.getDrawParameters();
+		DrawState drawParams = buffer.drawState();
 		shapeIndexBuffer = RenderSystem.getSequentialBuffer(drawParams.mode());
 		indexCount = drawParams.indexCount();
 		
-		vertexBuffer =
-			RenderSystem.getDevice().createBuffer(null, 40, buffer.getBuffer());
+		vertexBuffer = RenderSystem.getDevice().createBuffer(null,
+			GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST,
+			buffer.vertexBuffer());
 	}
 	
-	private EasyVertexBuffer(DrawMode drawMode)
+	private EasyVertexBuffer(Mode drawMode)
 	{
 		shapeIndexBuffer = null;
 		indexCount = 0;
 		vertexBuffer = null;
 	}
 	
-	public void draw(MatrixStack matrixStack, RenderLayer.MultiPhase layer)
+	public void draw(PoseStack matrixStack, RenderType layer)
 	{
 		draw(matrixStack, layer, 1, 1, 1, 1);
 	}
 	
-	public void draw(MatrixStack matrixStack, RenderLayer.MultiPhase layer,
-		int argb)
+	public void draw(PoseStack matrixStack, RenderType layer, int argb)
 	{
 		float alpha = (argb >> 24 & 0xFF) / 255F;
 		float red = (argb >> 16 & 0xFF) / 255F;
@@ -93,54 +95,54 @@ public final class EasyVertexBuffer implements AutoCloseable
 		draw(matrixStack, layer, red, green, blue, alpha);
 	}
 	
-	public void draw(MatrixStack matrixStack, RenderLayer.MultiPhase layer,
-		float[] rgba)
+	public void draw(PoseStack matrixStack, RenderType layer, float[] rgba)
 	{
 		draw(matrixStack, layer, rgba[0], rgba[1], rgba[2], rgba[3]);
 	}
 	
-	public void draw(MatrixStack matrixStack, RenderLayer.MultiPhase layer,
-		float[] rgb, float alpha)
+	public void draw(PoseStack matrixStack, RenderType layer, float[] rgb,
+		float alpha)
 	{
 		draw(matrixStack, layer, rgb[0], rgb[1], rgb[2], alpha);
 	}
 	
-	public void draw(MatrixStack matrixStack, RenderLayer.MultiPhase layer,
-		float red, float green, float blue, float alpha)
+	/*
+	 * Similar to {@link RenderLayer#draw(BuiltBuffer)}.
+	 */
+	public void draw(PoseStack matrixStack, RenderType layer, float red,
+		float green, float blue, float alpha)
 	{
 		if(vertexBuffer == null)
 			return;
 		
 		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
 		modelViewStack.pushMatrix();
-		modelViewStack.mul(matrixStack.peek().getPositionMatrix());
+		modelViewStack.mul(matrixStack.last().pose());
 		
-		layer.startDrawing();
-		GpuBufferSlice gpuBufferSlice = RenderSystem.getDynamicUniforms().write(
-			RenderSystem.getModelViewMatrix(),
-			new Vector4f(red, green, blue, alpha), new Vector3f(),
-			RenderSystem.getTextureMatrix(), RenderSystem.getShaderLineWidth());
+		GpuBufferSlice gpuBufferSlice = RenderSystem.getDynamicUniforms()
+			.writeTransform(RenderSystem.getModelViewMatrix(),
+				new Vector4f(red, green, blue, alpha), new Vector3f(),
+				TextureTransform.DEFAULT_TEXTURING.getMatrix());
 		
-		Framebuffer framebuffer = layer.phases.target.get();
-		RenderPipeline pipeline = layer.pipeline;
-		GpuBuffer indexBuffer = shapeIndexBuffer.getIndexBuffer(indexCount);
+		RenderTarget framebuffer =
+			OutputTarget.ITEM_ENTITY_TARGET.getRenderTarget();
+		RenderPipeline pipeline = layer.pipeline();
+		GpuBuffer indexBuffer = shapeIndexBuffer.getBuffer(indexCount);
 		
 		try(RenderPass renderPass =
 			RenderSystem.getDevice().createCommandEncoder().createRenderPass(
-				() -> "something from Wurst",
-				framebuffer.getColorAttachmentView(), OptionalInt.empty(),
-				framebuffer.getDepthAttachmentView(), OptionalDouble.empty()))
+				() -> "something from Wurst", framebuffer.getColorTextureView(),
+				OptionalInt.empty(), framebuffer.getDepthTextureView(),
+				OptionalDouble.empty()))
 		{
 			renderPass.setPipeline(pipeline);
 			RenderSystem.bindDefaultUniforms(renderPass);
 			renderPass.setUniform("DynamicTransforms", gpuBufferSlice);
 			renderPass.setVertexBuffer(0, vertexBuffer);
-			renderPass.setIndexBuffer(indexBuffer,
-				shapeIndexBuffer.getIndexType());
+			renderPass.setIndexBuffer(indexBuffer, shapeIndexBuffer.type());
 			renderPass.drawIndexed(0, 0, indexCount, 1);
 		}
 		
-		layer.endDrawing();
 		modelViewStack.popMatrix();
 	}
 	

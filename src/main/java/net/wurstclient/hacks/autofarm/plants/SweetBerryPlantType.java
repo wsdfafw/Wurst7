@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,13 +7,13 @@
  */
 package net.wurstclient.hacks.autofarm.plants;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SweetBerryBushBlock;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SweetBerryBushBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.wurstclient.hacks.autofarm.AutoFarmPlantType;
 import net.wurstclient.settings.PlantTypeSetting;
 import net.wurstclient.util.BlockUtils;
@@ -30,8 +30,8 @@ public final class SweetBerryPlantType extends AutoFarmPlantType
 	@Override
 	public final boolean hasPlantingSurface(BlockPos pos)
 	{
-		BlockState floor = BlockUtils.getState(pos.down());
-		return floor.isIn(BlockTags.DIRT) || floor.isOf(Blocks.FARMLAND);
+		BlockState floor = BlockUtils.getState(pos.below());
+		return floor.is(BlockTags.DIRT) || floor.is(Blocks.FARMLAND);
 	}
 	
 	@Override
@@ -52,13 +52,13 @@ public final class SweetBerryPlantType extends AutoFarmPlantType
 		if(!(state.getBlock() instanceof SweetBerryBushBlock))
 			return false;
 		
-		return state.get(SweetBerryBushBlock.AGE) > 1;
+		return state.getValue(SweetBerryBushBlock.AGE) > 1;
 	}
 	
 	@Override
 	protected PlantTypeSetting createSetting()
 	{
-		return new PlantTypeSetting("Sweet Berries", Items.SWEET_BERRIES, true,
+		return new PlantTypeSetting("Sweet berries", Items.SWEET_BERRIES, true,
 			true);
 	}
 }

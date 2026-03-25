@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -38,10 +38,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 import net.minecraft.util.Util;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import net.wurstclient.util.json.JsonException;
 import net.wurstclient.util.json.JsonUtils;
 import net.wurstclient.util.json.WsonArray;
@@ -77,14 +77,14 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建AES密码"));
+			throw new ReportedException(CrashReport.forThrowable(e, "创建AES密码"));
 		}
 	}
 	
 	private Path createEncryptionFolder(Path encFolder) throws IOException
 	{
 		Files.createDirectories(encFolder);
-		if(Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS)
+		if(Util.getPlatform() == Util.OS.WINDOWS)
 			Files.setAttribute(encFolder, "dos:hidden", true);
 		
 		Path readme = encFolder.resolve("READ ME I AM VERY IMPORTANT.txt");
@@ -143,12 +143,12 @@ public final class Encryption
 			
 		}catch(IOException e)
 		{
-			CrashReport report =
-				CrashReport.create(e, "Migrating Wurst encryption folder");
-			CrashReportSection section = report.addElement("Migration");
-			section.add("Old path", oldFolder);
-			section.add("New path", newFolder);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e,
+				"Migrating Wurst encryption folder");
+			CrashReportCategory section = report.addCategory("Migration");
+			section.setDetail("Old path", oldFolder);
+			section.setDetail("New path", newFolder);
+			throw new ReportedException(report);
 		}
 	}
 	
@@ -160,7 +160,8 @@ public final class Encryption
 			
 		}catch(IllegalArgumentException | GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "解密字节"));
+			throw new ReportedException(
+				CrashReport.forThrowable(e, "解密字节"));
 		}
 	}
 	
@@ -170,7 +171,7 @@ public final class Encryption
 		{
 			return new String(decrypt(Files.readAllBytes(path)), CHARSET);
 			
-		}catch(CrashException e)
+		}catch(ReportedException e)
 		{
 			throw new IOException(e);
 		}
@@ -218,7 +219,8 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "加密字节"));
+			throw new ReportedException(
+				CrashReport.forThrowable(e, "加密字节"));
 		}
 	}
 	
@@ -228,7 +230,7 @@ public final class Encryption
 		{
 			Files.write(path, encrypt(content.getBytes(CHARSET)));
 			
-		}catch(CrashException e)
+		}catch(ReportedException e)
 		{
 			throw new IOException(e);
 		}
@@ -325,7 +327,7 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建RSA密钥对"));
+			throw new ReportedException(CrashReport.forThrowable(e, "创建RSA密钥对"));
 		}
 	}
 	
@@ -349,7 +351,8 @@ public final class Encryption
 			
 		}catch(GeneralSecurityException e)
 		{
-			throw new CrashException(CrashReport.create(e, "创建AES密钥"));
+			throw new ReportedException(
+				CrashReport.forThrowable(e, "创建AES密钥"));
 		}
 	}
 	

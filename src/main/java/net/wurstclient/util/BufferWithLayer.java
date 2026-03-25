@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2026 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -9,42 +9,43 @@ package net.wurstclient.util;
 
 import java.util.function.Consumer;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-public record BufferWithLayer(EasyVertexBuffer buffer,
-	RenderLayer.MultiPhase layer) implements AutoCloseable
+import net.minecraft.client.renderer.rendertype.RenderType;
+
+public record BufferWithLayer(EasyVertexBuffer buffer, RenderType layer)
+	implements AutoCloseable
 {
-	public static BufferWithLayer createAndUpload(RenderLayer.MultiPhase layer,
+	public static BufferWithLayer createAndUpload(RenderType layer,
 		Consumer<VertexConsumer> callback)
 	{
-		return new BufferWithLayer(EasyVertexBuffer.createAndUpload(
-			layer.getDrawMode(), layer.getVertexFormat(), callback), layer);
+		return new BufferWithLayer(EasyVertexBuffer
+			.createAndUpload(layer.mode(), layer.format(), callback), layer);
 	}
 	
-	public void draw(MatrixStack matrixStack)
+	public void draw(PoseStack matrixStack)
 	{
 		buffer.draw(matrixStack, layer);
 	}
 	
-	public void draw(MatrixStack matrixStack, float red, float green,
-		float blue, float alpha)
+	public void draw(PoseStack matrixStack, float red, float green, float blue,
+		float alpha)
 	{
 		buffer.draw(matrixStack, layer, red, green, blue, alpha);
 	}
 	
-	public void draw(MatrixStack matrixStack, float[] rgba)
+	public void draw(PoseStack matrixStack, float[] rgba)
 	{
 		buffer.draw(matrixStack, layer, rgba);
 	}
 	
-	public void draw(MatrixStack matrixStack, float[] rgb, float alpha)
+	public void draw(PoseStack matrixStack, float[] rgb, float alpha)
 	{
 		buffer.draw(matrixStack, layer, rgb, alpha);
 	}
 	
-	public void draw(MatrixStack matrixStack, int argb)
+	public void draw(PoseStack matrixStack, int argb)
 	{
 		buffer.draw(matrixStack, layer, argb);
 	}
